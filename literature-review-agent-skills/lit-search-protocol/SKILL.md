@@ -73,10 +73,16 @@ Published discussions are among the most useful sources: they set out the disagr
 
 ## 6. Author requests
 
-1. Search for the author with `search_entities`. Examine the candidates' affiliations, topics, works and ORCID.
-2. If several people share the name, say so, and explain how you told them apart: co-authors, affiliation, topic or ORCID.
-3. List the works from the verified profile with DOIs. Merge preprints with their published versions.
-4. State the total found, the date range, and whether the list is complete as far as the index shows. Record author-profile issues you notice, such as merged or split profiles.
+An author's publication list is judged by its completeness and its accuracy, and author profiles are often split or merged.
+
+1. **Identify the author.** Use `search_entities` and examine each candidate's affiliations, topics, works and ORCID. If several people share the name, say how you told them apart: co-authors, affiliation, topic or ORCID.
+2. **Look for split profiles.** Search works by name variants ("G. Archibong", with and without middle initials) without an author-ID filter, and across earlier affiliations such as previous universities. Add any works that belong to the same person but sit outside the main profile, and say so.
+3. **Cross-check** the list against the author's ORCID record, where one exists and is readable.
+4. **Present a table:** year, title, all authors (with this author's position), venue, type, DOI, status.
+   - **Type:** journal article, conference paper or extended abstract, preprint, thesis, book chapter, or other.
+   - **Status:** published, preprint, withdrawn, retracted or corrected (see `lit-source-verification`).
+   - Merge a preprint into its published version. Flag records that look like duplicates, such as the same title under two DOIs, rather than listing them twice.
+5. **State the coverage:** the total number of works, the sources checked, and whether the list is complete as far as those sources show. Never call a list "all papers" unless the checks above support it; say "works found in <sources>".
 
 ## 7. Keep a search log
 

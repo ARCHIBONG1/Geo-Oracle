@@ -15,13 +15,13 @@ For each work you intend to cite:
 2. **Compare the record** with what you believed: title, authors, year, venue. Where they differ, use the record, not your recollection.
 3. **Works without a DOI**, such as older papers, survey reports, theses and maps: use the OpenAlex record if there is one. Otherwise use the stable URL of the issuing institution, such as the survey's publication page or a repository handle. Record "no DOI".
 4. **Works that cannot be resolved:** do not cite them as verified. Leave them out, or list them as `UNVERIFIED`, with what you know about each and why it matters.
-5. **Preprint and published versions:** cite the published version. If only a preprint exists, say so.
+5. **Preprint and published versions:** cite the published version. If only a preprint exists, say so, and check its current status. On arXiv, the latest version can be marked **withdrawn**: a withdrawn preprint is not evidence, so list it as withdrawn.
 
 ## 2. Retractions and corrections
 
 Check the retraction flag in the OpenAlex record. If you have Crossref access, also check the work's `update-to` field for retraction or correction notices; Crossref includes the Retraction Watch data there.
 
-- **Retracted work:** do not use it as evidence. You may mention that it was retracted.
+- **Retracted work, or withdrawn preprint:** do not use it as evidence. You may mention that it was retracted or withdrawn.
 - **Corrected work:** use the corrected version, and note the correction if it matters.
 
 ## 3. Quality flags (inputs to appraisal, not reasons to exclude)
