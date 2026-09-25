@@ -44,6 +44,7 @@ Regional literature is often published in French, Portuguese, Spanish, Russian, 
 | Metadata for a known work; checking references | OpenAlex `get_work` (free); `resolve_references` (up to 25 per call) | See `lit-source-verification` |
 | Citation chaining (references, citing works, related works) | OpenAlex `list_citations` | Section 4 |
 | Authors, institutions, journals | OpenAlex `search_entities`, `get_entity` | Section 6 |
+| An author's works | OpenAlex `search_works` with `author_ids` (no query), then `find_candidate_works` | Section 6; never invent a `filter` argument |
 | Grey literature: geological surveys, government and operator reports, society pages, theses | Tavily, or Exa without a category | Restrict by domain where possible, e.g. the national survey's site |
 | Legal full text | The open-access location in the OpenAlex record, then the publisher's open-access page or a repository copy | Then fetch or extract the page |
 
@@ -73,16 +74,24 @@ Published discussions are among the most useful sources: they set out the disagr
 
 ## 6. Author requests
 
-An author's publication list is judged by its completeness and its accuracy, and author profiles are often split or merged.
+An author's publication list is judged by its completeness and its accuracy, and author profiles are often split or merged. Use this exact sequence, with the official OpenAlex tools:
 
-1. **Identify the author.** Use `search_entities` and examine each candidate's affiliations, topics, works and ORCID. If several people share the name, say how you told them apart: co-authors, affiliation, topic or ORCID.
-2. **Look for split profiles.** Search works by name variants ("G. Archibong", with and without middle initials) without an author-ID filter, and across earlier affiliations such as previous universities. Add any works that belong to the same person but sit outside the main profile, and say so.
-3. **Cross-check** the list against the author's ORCID record, where one exists and is readable.
-4. **Present a table:** year, title, all authors (with this author's position), venue, type, DOI, status.
+1. **Find the candidates.** `search_entities` `{"entity_type": "authors", "query": "<full name>"}`. If several people share the name, tell them apart by affiliation, topics, co-authors and ORCID, and say how you did.
+2. **Read the profile.** `get_entity` `{"entity_type": "authors", "id": "A…"}`. Note the affiliation history, the alternate names, the ORCID and `works_count`.
+3. **List the profile's works.** `search_works` `{"author_ids": ["A…"], "for_author": "A…", "limit": 50, "include_abstracts": false}`, with no `query`.
+   - The echoed `oql` must contain the author filter.
+   - `total_results` should be close to `works_count`.
+   - Each result carries `this_authorship`, which gives the author's position in the byline and the affiliation printed on the paper.
+   - If the echo shows no author filter, or the totals are in the millions, the call was malformed: discard the results.
+4. **Find works missing from the profile.** `find_candidate_works` `{"author_id": "A…", "orcid": "<ORCID if known>"}`. This covers works under name variants, works listed on the public ORCID record, and possible duplicate profiles. Run it again with `"name"` set to each alternate name, and with earlier affiliations if the results are noisy. Include only candidates whose byline, affiliation and co-authors match; list them separately as "found outside the main profile".
+5. **Check status and details.** Use `get_work` where the type, venue or DOI is unclear. For a preprint, check its current status on its own page (arXiv marks withdrawn versions) using a web extract tool.
+6. **Present a table:** year, title, all authors (with this author's position), venue or publisher, type, DOI, status.
    - **Type:** journal article, conference paper or extended abstract, preprint, thesis, book chapter, or other.
-   - **Status:** published, preprint, withdrawn, retracted or corrected (see `lit-source-verification`).
+   - **Status:** published, preprint, withdrawn, retracted or corrected.
    - Merge a preprint into its published version. Flag records that look like duplicates, such as the same title under two DOIs, rather than listing them twice.
-5. **State the coverage:** the total number of works, the sources checked, and whether the list is complete as far as those sources show. Never call a list "all papers" unless the checks above support it; say "works found in <sources>".
+7. **State the coverage:** the total number of works, the sources and tools used, and whether the list is complete as far as they show. Never call a list "all papers" unless steps 3 and 4 support it; say "works found in OpenAlex and ORCID".
+
+A request to list works must return the list itself. A count without the items is incomplete: report `partially_completed` and explain why.
 
 ## 7. Keep a search log
 
