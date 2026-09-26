@@ -79,6 +79,7 @@ The 3D tool drives [CIGVIS](https://github.com/JintaoLee-Roger/cigvis), a publis
 - Slice positions (`inline`, `crossline`, `z`) are in survey units, and default to the middle. To reveal bodies inside the volume, put the slices on the faces behind them (for example `inline` = last, `crossline` = first, `z` = bottom) and choose `azimuth` so those faces are at the back.
 - `hide_slices` removes slices that hide the feature.
 - `vertical_exaggeration` defaults to a roughly cubic box.
+- Leave `zoom` unset: the tool frames the scene automatically on any display, zooming out if it would be clipped and in if it is small, then cropping. Set `zoom` only to look closer at a detail (for example 2 for twice as close).
 - State the camera and slices in the caption.
 
 **How to present a 3D view**: show the static image inline (its `markdown` line), then give `interactive_url` with the tool's `interactive_note`. For example: "TrueForge's chat can show images but not interactive 3D, so the static view is shown here; to rotate, zoom and pan the same scene, open the interactive link in a browser tab: <interactive_url>". The interactive page is the same CIGVIS scene, decimated when large.
