@@ -1,6 +1,6 @@
 ---
 name: seismic-visualisation
-description: How the agent "sees" seismic - reading seismic_describe_section output as its only view of the data - and how to produce standardised audit figures for people with seismic_render_section and seismic_render_slice. Load before describing, rendering or citing any section.
+description: How the agent "sees" seismic - reading seismic_describe_section output as its only view of the data - reading map descriptions from the map tools, and how to produce standardised audit figures for people with seismic_render_section, seismic_render_slice and seismic_render_map. Load before describing, rendering or citing any section.
 ---
 
 # Seeing seismic without images
@@ -39,7 +39,13 @@ Limits:
 
 ## Audit figures
 
-`seismic_render_section` (inline or crossline) and `seismic_render_slice` (z-slice) write PNGs to fixed standards:
+## Your view of maps
+
+Map tools (`seismic_track_horizon`, `seismic_horizon_map`, `seismic_time_to_depth`, `seismic_avo`, `seismic_4d_difference`) return a `map` object: coverage, minimum and maximum with inline/crossline (and X/Y), p5/p50/p95, a grid of tile means with their inline and crossline ranges (null = no data), and the mean gradient per inline and crossline step. For structure maps (z down) the minimum is the shallowest point. Describe maps from these numbers only, with their locations.
+
+## Figures
+
+`seismic_render_section` (inline or crossline), `seismic_render_slice` (z-slice) and `seismic_render_map` (any map file: structure with contours, isochron, extraction, closure, facies or AVO classes, NRMS) write PNGs to fixed standards:
 - signed amplitude uses the RdBu_r colormap, clipped symmetrically at a percentile of |amplitude|;
 - unsigned attributes use cividis, clipped at percentiles;
 - axes are labelled inline/crossline and TWT or depth;

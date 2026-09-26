@@ -1,6 +1,6 @@
 ---
 name: seismic-stratigraphic
-description: Seismic stratigraphy and seismic facies - reflection configuration, continuity, amplitude and frequency character, reflection terminations and sequence boundaries - read from section descriptors and attributes. Lists planned stratigraphic tools. Load for questions about depositional setting, sequences, facies, channels or reservoir distribution.
+description: Seismic stratigraphy and seismic facies - termination detection and key surfaces, facies classification, stratal slices, reflection configuration and character, reflection terminations and sequence boundaries, from the termination and facies tools, section descriptors and attributes. Load for questions about depositional setting, sequences, facies, channels or reservoir distribution.
 ---
 
 # Seismic stratigraphy and facies
@@ -18,14 +18,23 @@ Describe sections along and across the expected depositional dip. The tile grids
 
 These thresholds describe; they don't classify rocks. A facies label ("continuous parallel high amplitude") is an **observation**. The depositional meaning ("shelf, alternating sand and shale") is an **interpretation** that needs alternatives and, ideally, a well or an upstream stratigraphy/sedimentology finding.
 
-## Terminations and boundaries
+## Terminations and key surfaces
 
-Termination types (onlap, downlap, toplap, truncation) show as a dip change between vertically adjacent tiles at the same lateral position. Reflections dipping in one row meet a flatter row above or below.
+Use `seismic_detect_terminations` on sections along and across depositional dip (at least two orientations).
 
-- Record the position and z of each change as an observation.
-- A candidate **sequence boundary** or unconformity needs the same angular relationship on several sections, together with truncation below or onlap above.
-- At tile resolution, terminations are suggested, not proven. Say so, and request dedicated tools or data in `recommended_followups`.
-- Alternatives: a fault, a velocity effect or a multiple.
+- Each termination has a projected position (where reflector and surface would meet), the last picked point, its type, the dips and the surface it ends against. Converging reflectors interfere and stop being picked about half a wavelength early; the projected position corrects for that.
+- Types are geometric: **onlap** (reflector less inclined than the surface below), **downlap** (more inclined than the surface below), **truncation_or_toplap** (ends against a surface above). Geometry cannot separate toplap from erosional truncation: name both unless other evidence (incision, regional truncation) decides it.
+- `surfaces` groups terminations by the surface they end against. A surface collecting three or more is a **candidate key surface**: onlap above suggests a sequence boundary or transgressive surface; downlap onto it suggests a downlap (maximum flooding) surface; truncation below suggests an unconformity.
+- A candidate sequence boundary needs the same relationship on several sections. One section gives a candidate, not a surface.
+- Aligned terminations at the same trace are excluded as fault-like; check faults on the same sections before calling a surface.
+- Terminations in time data show apparent dips; later tilting changes onlap/downlap geometry.
+- Alternatives: fault, velocity effect, multiple, and pinch-out below resolution.
+
+## Stratal slices and facies maps
+
+- Stratal slice: `seismic_horizon_map` operation `extract` with a horizon and offsets (for example rms from +10 to +30 ms). Proportional slice between two horizons: operation `proportional`. Horizon-parallel slices follow stratigraphy; time slices do not.
+- Facies map: `seismic_classify_facies` on an interval (between two horizons, or a window on one). Start with 3–5 classes. Classes are ordered by RMS amplitude and unlabelled: "class 3 (high amplitude, continuous)" is an **observation**; "channel sands" is an **interpretation** needing a well tie or other evidence.
+- Keep the window inside one stratigraphic unit: a window reaching into the next reflector classifies thickness, not facies. Check the class tile means against the isochron.
 
 ## Channels and bodies
 
@@ -33,11 +42,9 @@ Termination types (onlap, downlap, toplap, truncation) show as a dip change betw
 - Report its width in traces, converted to metres with the trace spacing from `seismic_convert_coordinates`, and its thickness in ms against the tuning thickness.
 - Bodies thinner than tuning show amplitude that changes with thickness (tuning). Their amplitude is not a lithology indicator.
 
-## Planned, not yet available
+## Not available
 
-Do not call these unless they appear in your tool list: horizon-based stratal and proportional slicing, automatic termination detection, seed-based seismic facies classification, and Wheeler or chronostratigraphic transforms. Without them:
-- say that facies maps and termination maps could not be produced;
-- use sections and windowed attributes instead.
+Wheeler (chronostratigraphic) transforms and automatic sequence-stratigraphic interpretation have no tool. Use terminations, key surfaces and stratal slices, and say that a Wheeler diagram could not be produced.
 
 ## Uncertainty to report
 

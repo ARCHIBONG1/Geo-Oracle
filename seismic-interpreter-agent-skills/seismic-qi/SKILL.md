@@ -1,6 +1,6 @@
 ---
 name: seismic-qi
-description: Quantitative interpretation and amplitude analysis - prerequisites for trusting amplitudes, DHI screening criteria, tuning, and the strict limits on fluid and lithology claims from post-stack data. Lists planned QI tools (well tie, wavelet, synthetic, AVO, inversion). Load for any question about amplitude anomalies, DHIs, fluids, lithology or reservoir quality.
+description: Quantitative interpretation and amplitude analysis - prerequisites for trusting amplitudes, wavelet, synthetic and well tie, AVO classes, coloured inversion, the DHI criteria screen and 4D differences, tuning, and the strict limits on fluid and lithology claims from post-stack data. Load for any question about amplitude anomalies, DHIs, fluids, lithology or reservoir quality.
 ---
 
 # Amplitude and quantitative interpretation
@@ -15,31 +15,41 @@ description: Quantitative interpretation and amplitude analysis - prerequisites 
 
 Record the status of all five in `limitations` whenever you discuss amplitude.
 
-## DHI screening with current tools
+## Inputs from other specialists
 
-The criteria below are screening **observations**. Measure each; don't assume it.
+| Tool | Needs | Usually from |
+|---|---|---|
+| `seismic_synthetic` | well logs (depth_m, rhob_g_cc, vp_m_s or dt_us_ft) and a time-depth table for the well | wells_petrophysics |
+| `seismic_well_tie` | the synthetic, the well location (inline/crossline via `seismic_convert_coordinates`) | as above |
+| `seismic_avo`, AVO part of `seismic_dhi_screen` | near and far stacks on the same grid and scaling, with their representative angles | data provider |
+| `seismic_4d_difference` | base and monitor surveys on the same grid | data provider |
 
-| Criterion | How to measure now |
-|---|---|
-| Anomalous amplitude | envelope or rms; describe_section anomalies relative to the background distribution |
-| Conformance to structure | The anomaly's lateral limit follows a constant z or contour. Only approximate without horizon tools; state this. |
-| Flat spot | A near-flat event (apparent dip ≈ 0) cutting dipping reflections inside the anomaly. Rule out multiples and processing artefacts. |
-| Phase or polarity change at the anomaly edge | instantaneous_phase, or apparent_polarity, across the edge |
-| Frequency shadow beneath | cwt_ricker at a low vs a high frequency below the anomaly; instantaneous_frequency drop |
-| Velocity sag beneath | apparent_dip pattern of deeper reflectors under the anomaly |
+Register supplied tables (`seismic_register_table`, kinds well_logs and time_depth) or read CSV files from the shared folder. Never assume angles, logs or a time-depth relation; if missing, write the `missing_data` entry (examples below).
 
-Rules:
-- One criterion alone never supports a fluid claim, and several criteria from the same volume are still one line of evidence.
-- A statement like "gas-charged sand" is at best a **hypothesis**, `proposed`, until well data or independent QI (AVO, a well tie) supports it.
-- Always give the alternatives: a lithology contrast (for example a tight carbonate, coal, volcanic or cemented layer), tuning, a processing or gain artefact, a multiple, or a residual-moveout effect.
+## Procedures
 
-## Planned, not yet available
+1. **Wavelet and tie.** `seismic_extract_wavelet` (statistical; phase assumed) → `seismic_synthetic` → `seismic_well_tie`.
+   - The tie measures the bulk shift and constant phase. Phase near 0 means the data are consistent with the synthetic's polarity convention (positive reflection coefficient = peak); near 180 means reversed; near ±90 means the data are not zero-phase.
+   - When `next_best_correlation_60deg_away` is close to the best, phase and shift trade off (a time shift looks like a phase rotation). Report both and constrain the shift with checkshots before relying on the phase.
+   - A tie below 0.6 correlation fixes nothing.
+2. **AVO.** `seismic_avo` with a horizon at the reflector gives intercept (A), gradient (B) and class maps. The class rules and near-zero limit are in the result; quote them. Classes depend on stack scaling: if near and far are not balanced together, class II vs III is unreliable.
+3. **Coloured inversion.** `seismic_coloured_inversion` gives relative impedance: compare values laterally (low relative impedance = softer than the surroundings). The default exponent assumes white reflectivity; say so, or use a value derived from supplied impedance logs. Input must be zero-phase (tie first).
+4. **DHI screen.** `seismic_dhi_screen` on the candidate top horizon, with near/far stacks when available. It reports for the strongest anomaly: amplitude strength, conformance to structure (edge level), flat spot (z, fraction of the anomaly, agreement with the edge level), frequency shadow and AVO class, each `met`, `not_met` or `indeterminate` with the measurement.
+   - A flat spot matching the conformance edge level is the strongest seismic criterion; still check for multiples and processing flats.
+   - `not_met` is informative too: report it, don't drop it.
+5. **4D.** `seismic_4d_difference`: first read the background NRMS (repeatability). Only changes well above it are interpretable. The change regions are measurements; "gas-water contact rose" is an interpretation needing production data.
 
-Do not call these unless they appear in your tool list: wavelet extraction, synthetic seismogram and well tie, AVO intercept/gradient and AVO class analysis, fluid factor, coloured or model-based inversion, and 4D difference analysis.
+## Rules for amplitude claims
 
-Without them, the following go in `missing_data`:
-- well logs: `wells_petrophysics: DT, RHOB and VSHALE logs with checkshot for W1 — LAS — needed for a synthetic tie that fixes polarity and phase`;
-- partial stacks: `data_provider: near and far angle stacks over the prospect — SEG-Y — needed for AVO class`.
+- The screen's criteria are **measurements** and **observations**. One criterion alone never supports a fluid claim, and all criteria from the same volume are one line of evidence.
+- A statement like "gas-charged sand" is at best a **hypothesis**, `proposed`, until well data or independent QI (a tie plus AVO consistent with rock physics from wells_petrophysics) supports it.
+- Always give the alternatives: a lithology contrast (tight carbonate, coal, volcanic or cemented layer), tuning, a processing or gain artefact, a multiple, or a residual-moveout effect.
+
+## Not available
+
+Fluid factor and rock-physics templates, three-term or prestack AVO (gathers), model-based or absolute inversion, and attenuation (Q) estimation have no tool. Without the inputs above, write `missing_data` entries such as:
+- `wells_petrophysics: DT, RHOB and VSHALE logs with checkshot for W1 — CSV depth_m,vp_m_s,rhob_g_cc and twt_ms,depth_m — needed for a synthetic tie that fixes polarity and phase`;
+- `data_provider: near and far angle stacks over the prospect with their angle ranges — SEG-Y — needed for AVO class`.
 
 ## Reporting
 
