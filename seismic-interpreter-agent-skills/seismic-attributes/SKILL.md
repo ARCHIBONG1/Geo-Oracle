@@ -5,7 +5,7 @@ description: Choosing, parameterising, running and reading seismic attributes wi
 
 # Seismic attributes
 
-Six tools, one per attribute family. Each takes `attribute`, `input_paths` (usually `{"darray": <volume path>}`), `params`, and optionally `wait_seconds`. The method names below come from the d2geo-derived library. **Confirm exact names, parameters and defaults with `list_seismic_attributes(category=...)`** before your first call in a task, because the installed fork may differ.
+Six tools, one per attribute family. Each takes `attribute`, `input_paths` (usually `{"darray": <volume path>}`, an ingested `.h5` volume, always in IL,XL,T order; raw `.npy` or plain `.h5` files are refused, so load them with `seismic_ingest_array` first, stating their axis order if it is not IL,XL,T), `params`, and optionally `wait_seconds`. The method names below come from the d2geo-derived library. **Confirm exact names, parameters and defaults with `list_seismic_attributes(category=...)`** before your first call in a task, because the installed fork may differ.
 
 Every result gives you:
 - `provenance_id`, which you cite;
@@ -21,6 +21,7 @@ Every result gives you:
 3. To run several independent attributes, start each with `wait_seconds: 0`, then collect them with `get_attribute_job_result`.
 4. Read the attribute volume with `seismic_describe_section` on the same sections you described in amplitude, and compare the two.
 5. Report the attribute, its effective parameters and the provenance id in `source_reference`.
+6. If the user wants the attribute volume itself, export it with `seismic_export_volume` and give the `download_url`.
 
 ## Decision matrix
 
@@ -48,7 +49,7 @@ Every result gives you:
 
 **B. Edge detection** (`seismic_edge_detection_attribute`)
 - Methods: semblance, eig_complex, chaos, gradient_structure_tensor, volume_curvature.
-- Default kernel (3,3,9) means inline, crossline and samples. The vertical size should span about half to one dominant period (period in samples = 1000 / (f_dom × dt_ms)). Increase the lateral size for noisy data.
+- Default kernel (3,3,9) means inline, crossline and samples, matching the volume's IL,XL,T order whatever the order of the user's original array. The vertical size should span about half to one dominant period (period in samples = 1000 / (f_dom × dt_ms)). Increase the lateral size for noisy data.
 - Low semblance means discontinuity: faults, channel edges, chaotic bodies or noise.
 - `volume_curvature` needs two inputs: `{"darray_il": <inline dip volume>, "darray_xl": <crossline dip volume>}`. Compute the dips first (Subset C).
 - It returns six components: H (mean), K (Gaussian), Kmax, Kmin, KMPos and KMNeg. Kmax and Kmin are the usual fault and flexure indicators.
