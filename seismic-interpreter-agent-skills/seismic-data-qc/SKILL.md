@@ -9,15 +9,15 @@ description: Getting seismic data in and out and judging its quality - chat uplo
 
 | The file is... | Do this first |
 |---|---|
-| named by a path in the shared seismic data folder | nothing: use the path |
+| named by a path in the shared inputs folder (`operations/inputs`) | nothing: use the path |
 | uploaded in your chat (listed in your sandbox's uploads folder) | `seismic_import_upload` with its absolute sandbox path |
 | uploaded in Geo Oracle's chat (the task says so) | `seismic_import_upload` with the path and `source_agent: "geo-oracle"` |
 
-The import returns a path such as `uploads/seismic.npy`; use that path from then on. Never read, convert or compute the upload in your sandbox.
+The import returns a path such as `uploads/seismic.npy` (in your work folder); use that path from then on. Never read, convert or compute the upload in your sandbox.
 
 ## Loading sequence
 
-1. `seismic_list_data` shows which SEG-Y files and volumes exist. Match them to the task's evidence paths. A path named in the task but absent from the list goes in `missing_data` as `data_provider: <file> — SEG-Y in the seismic data folder — <why>`.
+1. `seismic_list_data` shows which SEG-Y files and volumes exist. Match them to the task's evidence paths. A path named in the task but absent from the list goes in `missing_data` as `data_provider: <file> — SEG-Y in operations/inputs — <why>`.
 2. `seismic_scan_segy` reads headers only, so it is quick. Read:
    - `recommended_header_bytes` and `header_candidates`: which byte pair gives a regular inline/crossline grid. The standard pair is 189/193; older data often uses 9/21.
    - `sample_interval_field`: microseconds if the data is in time.
