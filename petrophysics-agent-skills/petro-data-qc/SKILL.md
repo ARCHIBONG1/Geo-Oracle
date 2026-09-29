@@ -122,7 +122,8 @@ Register every interpretation parameter before it is used, one set per zone or c
   "rho_ma": {"value": 2.65, "source": "core", "reference": "grain density, 46 plugs"}}}
 ```
 
-- **Sources**: core, scal, water_sample, log_crossplot, log_percentile, pressure_data, test, analogue, regional, task, assumption.
+- **Sources**: core, scal, water_sample, log_crossplot, log_sp, log_percentile, pressure_data, test, analogue, regional, task, assumption.
+- **Parameter names** also include `nphi_ma`, `rmf`, `rmf_temp_c`, `ssp_mv`, `qv` and `rwb` (see the property skills for when each is needed).
 - **What is refused**: a value with no source, or outside physical ranges. Every assumption is returned in `assumed`, with a request for `low`/`high` if missing.
 - **Report the set** in `assumptions`, citing its provenance id. Rw is never a textbook default: without a sample, SP-derived value or proven water zone, it goes to `missing_data`.
 
