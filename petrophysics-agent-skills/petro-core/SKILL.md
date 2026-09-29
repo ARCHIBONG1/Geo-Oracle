@@ -73,7 +73,24 @@ Each entry is exactly `<specialist>: <item> — <form> — <why>`:
 - `stratigraphy: correlated tops for W3 — MD per top — zone averages consistent with W1 and W2`
 - `regional_geology: formation-water salinity range for Unit B — ppm NaCl equivalent — bound Rw where no sample exists`
 
-## 7. Self-check before emitting
+## 7. Products for other specialists
+
+Much of your value reaches users through other specialists, so products follow fixed formats:
+- **`time_depth`**: CSV twt_ms, depth_m below the SRD.
+- **`elastic_logs`**: CSV depth_m, vp_m_s, vs_m_s, rhob_g_cc (+ twt_ms).
+- **`well_header`**: JSON.
+- **`zone_summary`**: JSON.
+- **`pressure_profile`**: CSV. **`fluid_contacts`**: JSON.
+- **`temperature_profile`**: CSV.
+
+Each has a JSON sidecar with units, datum, source and provenance.
+
+Handling rules:
+- **Refer to a product only by its reference**, `@petrophysics-agent/products/<file>`, copied from `result.products[].conclusion_line` into `conclusions` as `Product: <kind> — <ref>`.
+- **Never paste a product's rows** into statements.
+- **State the datum** (SRD) and the fluid case in the same conclusion, or in a measurement citing the product.
+
+## 8. Self-check before emitting
 
 1. Every number has a `prov:` id in `source_reference`.
 2. Every depth names MD or TVDSS, and the datum is stated (or stated as unknown).
@@ -81,5 +98,5 @@ Each entry is exactly `<specialist>: <item> — <form> — <why>`:
 4. Bad-hole intervals that bear on the question are stated.
 5. No property is claimed that needs uncomputed or uncalibrated data.
 6. Every `required_outputs` item is produced, or listed in `limitations` with the reason.
-7. Figures and downloads the user asked for appear in `conclusions` as `Figure: …` / `Download: …` lines.
+7. Figures and downloads the user asked for appear in `conclusions` as `Figure: …` / `Download: …` lines, and every product another specialist needs appears as a `Product: …` line.
 8. The object is under about 10,000 characters, with no curves or tables in statements.

@@ -126,7 +126,7 @@ Register every interpretation parameter before it is used, one set per zone or c
 ```
 
 - **Sources**: core, scal, water_sample, log_crossplot, log_sp, log_percentile, pressure_data, test, analogue, regional, task, assumption.
-- **Parameter names** also include `nphi_ma`, `rmf`, `rmf_temp_c`, `ssp_mv`, `qv`, `rwb`, `pef_sh`, `overburden_porosity_factor`, `overburden_perm_factor`, `swirr`, `sigma_cos_lab`, `sigma_cos_res`, `brine_density` and `fwl_tvdss_m` (see the property and rock skills for when each is needed).
+- **Parameter names** also include `nphi_ma`, `rmf`, `rmf_temp_c`, `ssp_mv`, `qv`, `rwb`, `pef_sh`, `overburden_porosity_factor`, `overburden_perm_factor`, `swirr`, `sigma_cos_lab`, `sigma_cos_res`, `brine_density`, `fwl_tvdss_m`, `srd_elevation_m`, `source_offset_m`, `salinity_ppm`, `oil_api`, `gor_l_per_l`, `gas_gravity`, `reservoir_pressure_mpa`, `reservoir_temp_c` and `circulation_hours` (see the property, rock and physics skills for when each is needed).
 - **What is refused**: a value with no source, or outside physical ranges. Every assumption is returned in `assumed`, with a request for `low`/`high` if missing.
 - **Report the set** in `assumptions`, citing its provenance id. Rw is never a textbook default: without a sample, SP-derived value or proven water zone, it goes to `missing_data`.
 

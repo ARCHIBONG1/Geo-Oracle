@@ -19,7 +19,7 @@ Record the status of all five in `limitations` whenever you discuss amplitude.
 
 | Tool | Needs | Usually from |
 |---|---|---|
-| `seismic_synthetic` | well logs (depth_m, rhob_g_cc, vp_m_s or dt_us_ft) and a time-depth table for the well | wells_petrophysics |
+| `seismic_synthetic` | well logs (depth_m, rhob_g_cc, vp_m_s or dt_us_ft) and a time-depth table for the well: the petrophysics products `elastic_logs` and `time_depth` (references `@petrophysics-agent/products/...`) | wells_petrophysics |
 | `seismic_well_tie` | the synthetic, the well location (inline/crossline via `seismic_convert_coordinates`) | as above |
 | `seismic_avo`, AVO part of `seismic_dhi_screen` | near and far stacks on the same grid and scaling, with their representative angles | data provider |
 | `seismic_4d_difference` | base and monitor surveys on the same grid | data provider |
@@ -29,6 +29,9 @@ Register supplied tables (`seismic_register_table`, kinds well_logs and time_dep
 ## Procedures
 
 1. **Wavelet and tie.** `seismic_extract_wavelet` (statistical; phase assumed) → `seismic_synthetic` → `seismic_well_tie`.
+   - **With petrophysics products**: pass the `elastic_logs` and `time_depth` references as they are. Both give depth below the same seismic reference datum, as their sidecars state: check that datum against the survey's.
+   - **Well position**: take X/Y from the `well_header` result in the task and convert with `seismic_convert_coordinates`.
+   - **A bulk shift of more than a sample or two** after a checkshot-calibrated time-depth points at a datum mismatch or wrong checkshot times: raise it with wells_petrophysics, rather than shifting silently.
    - The tie measures the bulk shift and constant phase. Phase near 0 means the data are consistent with the synthetic's polarity convention (positive reflection coefficient = peak); near 180 means reversed; near ±90 means the data are not zero-phase.
    - When `next_best_correlation_60deg_away` is close to the best, phase and shift trade off (a time shift looks like a phase rotation). Report both and constrain the shift with checkshots before relying on the phase.
    - A tie below 0.6 correlation fixes nothing.

@@ -12,6 +12,7 @@ description: Getting seismic data in and out and judging its quality - chat uplo
 | named by a path in the shared inputs folder (`operations/inputs`) | nothing: use the path |
 | uploaded in your chat (listed in your sandbox's uploads folder) | `seismic_import_upload` with its absolute sandbox path |
 | uploaded in Geo Oracle's chat (the task says so) | `seismic_import_upload` with the path and `source_agent: "geo-oracle"` |
+| a product of another specialist (`@petrophysics-agent/products/<file>`) | nothing: pass the reference as the table path; it is copied into your area on first use |
 
 The import returns a path such as `uploads/seismic.npy` (in your work folder); use that path from then on. Never read, convert or compute the upload in your sandbox.
 

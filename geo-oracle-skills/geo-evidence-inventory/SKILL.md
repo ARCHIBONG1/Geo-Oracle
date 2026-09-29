@@ -39,9 +39,20 @@ For each item the user supplies or mentions, record the following:
 - "Core" does not establish core descriptions, plug measurements or depth-shifted core.
 - "Geological report" does not establish that its interpretations are current, local or reliable. A report's interpretation is a published interpretation, not project data.
 
-## 3. What you may do with files yourself
+## 3. Where files are, and who can see them
 
-In your sandbox you may:
+| Location | Who can see it | How you learn what is there |
+|---|---|---|
+| Files uploaded to your chat | you (your sandbox) | look in your sandbox |
+| `operations/inputs` (the shared inputs folder) | the specialists' tools, **not you** | ask `literature_review` to list it (`required_outputs`: "complete listing of operations/inputs with type and opening specialist per file") |
+| Other specialists' products | the specialists | the producing specialist's `Product: …` conclusions |
+
+**Listing and documents**:
+- **Only `literature_review` sees the whole shared folder.** The seismic and petrophysics specialists list only their own file types.
+- **Documents there** (reports, papers, notes): ask `literature_review` to read or search them. It cites pages.
+- **Once listed**, a file's availability class is `named` until a specialist has opened it and confirmed its content (`verified`).
+
+**The files in your own sandbox** (chat uploads) you may handle yourself, as follows. In your sandbox you may:
 - open files;
 - read headers and metadata;
 - list curves, columns and extents;
@@ -67,6 +78,8 @@ If the user cannot provide the item, proceed with what exists. Record the gap in
 - **Tables** keep their header row with units. If you send a subset, say so, e.g. "rows for W1–W3 only; the full table has 40 wells".
 - **Bulk data** (full-resolution curves, seismic volumes, grids) goes by the identifier the specialists' own data tools can resolve, such as a project data-store URI or dataset ID, plus a short summary. Never retype large numeric arrays: a single transcription error silently corrupts an analysis.
 - **Seismic data** goes by its path relative to the shared inputs folder (`operations/inputs`), e.g. `{"id": "S1", "kind": "seismic_volume", "description": "survey_a/pstm_full.sgy", "excerpt": "3D PSTM, time, 2 ms; polarity and CRS not stated"}`. Only `seismic_interpretation` can open that folder. A seismic file the user uploaded to this chat is in your sandbox, not in the folder: pass it as `{"id": "S1", "kind": "seismic_volume", "description": "uploaded to Geo Oracle chat: /opt/tf/uploads/seismic.npy", "excerpt": "3D volume, axes T,XL,IL, 4 ms"}` using its real sandbox path, and the seismic specialist imports it. Include an array's axis order when the user states one other than the default IL,XL,T (inline, crossline, time). If no file name is known, ask `seismic_interpretation` to list the available seismic data.
+- **Well data** goes the same way: LAS and CSV files by their path relative to `operations/inputs` (e.g. `wells/W1.las`) or as a Geo Oracle upload. Only `wells_petrophysics` can open them.
+- **Products of one specialist for another** go by their reference, exactly as it appeared in the producer's conclusions, e.g. `{"id": "T02-petro/P1", "kind": "time_depth", "description": "@petrophysics-agent/products/W1-time_depth-5cff9900cf.csv", "excerpt": "TWT from SRD at MSL; drift-corrected sonic; checkshots 300-1560 m"}`. The receiving specialist copies it into its own area.
 - **Never pass a sandbox path.** Specialists run in their own environments and cannot read your sandbox.
 - **State what is uncertain about each item** in its `description`, and list missing items in `known_unknowns`.
 
