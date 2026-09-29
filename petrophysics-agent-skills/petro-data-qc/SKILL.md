@@ -69,6 +69,9 @@ Give a CSV file path, or `csv_text` for small tables from the task. Column names
 | pressure_data | md_m / tvdss_m (or _ft), pressure_psi (or pressure_bar, pressure_mpa) | mobility_md_cp, quality, well |
 | water_analysis | rw_ohmm or salinity_ppm_nacl | temp_c (or temp_f), sample, well |
 | temperature_data | md_m / tvdss_m (or _ft), temp_c (or temp_f) | kind, hours_since_circulation, well |
+| scal_formation_factor | porosity (or porosity_pct), ff | sample, well |
+| scal_resistivity_index | sw, ri | sample, well |
+| capillary_pressure | sample, porosity (or porosity_pct), permeability_md, pc_psi (or pc_bar, pc_kpa), sw | system, well |
 
 - **Refusals**: malformed tables are refused (a non-increasing survey, core porosity above 0.6, which is probably percent).
 - **Multi-well tables**: tools use only the rows whose `well` matches the loaded well's name. If names differ ("W-1" versus "W1"), reload the well with `well_name` set to match.
@@ -123,7 +126,7 @@ Register every interpretation parameter before it is used, one set per zone or c
 ```
 
 - **Sources**: core, scal, water_sample, log_crossplot, log_sp, log_percentile, pressure_data, test, analogue, regional, task, assumption.
-- **Parameter names** also include `nphi_ma`, `rmf`, `rmf_temp_c`, `ssp_mv`, `qv` and `rwb` (see the property skills for when each is needed).
+- **Parameter names** also include `nphi_ma`, `rmf`, `rmf_temp_c`, `ssp_mv`, `qv`, `rwb`, `pef_sh`, `overburden_porosity_factor`, `overburden_perm_factor`, `swirr`, `sigma_cos_lab`, `sigma_cos_res`, `brine_density` and `fwl_tvdss_m` (see the property and rock skills for when each is needed).
 - **What is refused**: a value with no source, or outside physical ranges. Every assumption is returned in `assumed`, with a request for `low`/`high` if missing.
 - **Report the set** in `assumptions`, citing its provenance id. Rw is never a textbook default: without a sample, SP-derived value or proven water zone, it goes to `missing_data`.
 

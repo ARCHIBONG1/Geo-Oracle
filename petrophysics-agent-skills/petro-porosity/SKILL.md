@@ -41,7 +41,7 @@ A wrong matrix density is the commonest porosity error: 0.05 g/cm3 in rho_ma mov
 
 ## Calibration
 
-If core porosity is supplied, compare the log porosity with it (bias and scatter) at matching depths, after a core depth shift and an overburden correction; that tool arrives in Phase 2b. Until then, state that the porosity is not calibrated to core.
+If core porosity is supplied, calibrate with `petro_core_calibrate` (skill `petro-core-scal`): depth shift, overburden correction, then log-versus-core bias and scatter. Take the grain density as `rho_ma` and rerun. Porosity is "calibrated to core" only when the bias is within about ±0.01 v/v. Without core, state that it is not calibrated.
 
 ## Reporting
 

@@ -41,7 +41,7 @@ Only when the task states that Rw is already at formation temperature, use `rw_a
 
 ## 4. a, m, n and Rsh
 
-- **a, m and n come from SCAL** (`scal`) if supplied. Otherwise a = 1, m = 2, n = 2 are allowed only as `assumption`, **with ranges** (e.g. m 1.8-2.2, n 1.8-2.2), so `petro_net_pay` can show their effect. m and n usually dominate the uncertainty in Sw.
+- **a, m and n come from SCAL** if supplied: fit them with `petro_scal` (formation factor and resistivity index; skill `petro-core-scal`) and register its `register_as`. Otherwise a = 1, m = 2, n = 2 are allowed only as `assumption`, **with ranges** (e.g. m 1.8-2.2, n 1.8-2.2), so `petro_net_pay` can show their effect. m and n usually dominate the uncertainty in Sw.
 - **Rsh** is read from a thick, in-gauge shale near the zone (`log_crossplot`, citing the interval).
 
 ## 5. Run and read: `petro_saturation`
