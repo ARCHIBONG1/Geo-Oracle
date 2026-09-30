@@ -51,6 +51,7 @@ For each item the user supplies or mentions, record the following:
 - **Only `literature_review` sees the whole shared folder.** The seismic and petrophysics specialists list only their own file types.
 - **Documents there** (reports, papers, notes): ask `literature_review` to read or search them. It cites pages.
 - **Once listed**, a file's availability class is `named` until a specialist has opened it and confirmed its content (`verified`).
+- **List the whole dataset folder**, not only the subfolders the user named: a well's LAS file may sit beside its converted tables, not with them.
 
 **The files in your own sandbox** (chat uploads) you may handle yourself, as follows. In your sandbox you may:
 - open files;

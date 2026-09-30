@@ -34,6 +34,7 @@ So your listing is the only complete view of the folder anyone has. Be exact: pa
 | seismic (SEG-Y), array / volume | seismic_interpretation | pass the path as given |
 | well logs (LAS) | wells_petrophysics | pass the path as given |
 | well logs (DLIS/LIS) | not supported | ask for LAS |
+| text (unrecognised extension) | you, as text | read it to identify the format; route its data to the specialist once converted to CSV or LAS |
 | spreadsheet, image, archive, legacy Office | nobody | say what would make it usable (export to CSV, save as PDF, unpack) |
 
 ## Reading: `lit_read_document`

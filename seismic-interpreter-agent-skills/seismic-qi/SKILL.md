@@ -30,8 +30,13 @@ Register supplied tables (`seismic_register_table`, kinds well_logs and time_dep
 
 1. **Wavelet and tie.** `seismic_extract_wavelet` (statistical; phase assumed) → `seismic_synthetic` → `seismic_well_tie`.
    - **With petrophysics products**: pass the `elastic_logs` and `time_depth` references as they are. Both give depth below the same seismic reference datum, as their sidecars state: check that datum against the survey's.
-   - **Well position**: take X/Y from the `well_header` result in the task and convert with `seismic_convert_coordinates`.
+   - **Well position**: take X/Y from the `well_header` result in the task and convert with `seismic_convert_coordinates`. Both wells must land inside the survey: if not, the well and survey CRS differ, so stop and report it.
+   - **Datum check (marine) before the tie**: pick the seabed at each well.
+     - If the seismic datum is sea level, the seabed is at about 2 × water depth / 1,480 m/s (e.g. 118 m of water gives about 159 ms).
+     - The difference between the seabed pick and the well time-depth's seabed time is a datum offset. Report it as a measurement so that Geo Oracle can have wells_petrophysics correct the time-depth (`td_time_shift_ms`) before the tie.
    - **A bulk shift of more than a sample or two** after a checkshot-calibrated time-depth points at a datum mismatch or wrong checkshot times: raise it with wells_petrophysics, rather than shifting silently.
+   - **No `elastic_logs` product in the task?** A tie cannot be made from markers and events by eye. Do the seabed check and `seismic_trace_events` at the well (marker times from the `tops_time` product), publish nothing as a tie, and put `wells_petrophysics: elastic_logs product (vs_source none is enough) — needed for the synthetic` in `missing_data`.
+   - **`seismic_trace_events`** gives the first strong event (the seabed) and the strongest events at the well, and matches marker times to their nearest event: use it for the datum check and to report which events sit at the markers. It is context for the tie, not a substitute for the synthetic.
    - The tie measures the bulk shift and constant phase. Phase near 0 means the data are consistent with the synthetic's polarity convention (positive reflection coefficient = peak); near 180 means reversed; near ±90 means the data are not zero-phase.
    - When `next_best_correlation_60deg_away` is close to the best, phase and shift trade off (a time shift looks like a phase rotation). Report both and constrain the shift with checkshots before relying on the phase.
    - A tie below 0.6 correlation fixes nothing.

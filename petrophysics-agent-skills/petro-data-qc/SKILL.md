@@ -41,6 +41,8 @@ It loads LAS 2.0/3.0 or CSV logs. DLIS is not supported; ask for LAS.
   | SP | SP |
 
 - **Units**: normalised to API, mV, in, g/cm3, v/v, b/e, us/ft and ohm.m (e.g. neutron in percent to v/v, density in kg/m3 to g/cm3, slowness in us/m to us/ft).
+- **Repeated mnemonics**: when a file lists a curve twice (e.g. two `DEPTH` curves), the loader recognises the base name, drops a repeat of the depth index, and says so in `warnings`.
+- **Neutron scale**: limestone-scale neutron (`NPHI`, `TNPH`, `NPHILS`) is preferred. If only a sandstone-scale neutron (`NPHISS`) exists, it becomes NPHI with a warning: set `nphi_ma` for that scale (0 for quartz), and read crossover displays, which are drawn on the limestone scale, with care.
 - **Unit conflicts are refused, never guessed.** If a header unit disagrees with the data, e.g. density labelled g/cm3 but reading 2300, nothing loads and the message names the curve. Pass `unit_overrides={"RHOB": "kg/m3"}` only with evidence (the report, the task, a vendor convention stated in the file). Record the override in `assumptions`.
 - **A curve with no unit** is read in its canonical unit only if its values are plausible. A unitless neutron with values above 1 is read as percent. Each such reading is reported in `warnings`: carry those into `limitations`.
 - **Header facts kept**: well name, UWI, datum (from `LMF`) and elevations (`EKB`, `EDF`, `EGL`, converted to m), X/Y and CRS, mud type, Rm, Rmf and Rmc with their temperatures, BHT, bit size.
@@ -69,15 +71,23 @@ Give a CSV file path, or `csv_text` for small tables from the task. Column names
 | pressure_data | md_m / tvdss_m (or _ft), pressure_psi (or pressure_bar, pressure_mpa) | mobility_md_cp, quality, well |
 | water_analysis | rw_ohmm or salinity_ppm_nacl | temp_c (or temp_f), sample, well |
 | temperature_data | md_m / tvdss_m (or _ft), temp_c (or temp_f) | kind, hours_since_circulation, well |
+| well_track | md_m (or md_ft), tvdss_m or tvd_m (or _ft) | x, y, well |
 | scal_formation_factor | porosity (or porosity_pct), ff | sample, well |
 | scal_resistivity_index | sw, ri | sample, well |
 | capillary_pressure | sample, porosity (or porosity_pct), permeability_md, pc_psi (or pc_bar, pc_kpa), sw | system, well |
 
+- **Layout**: comma, tab, semicolon or whitespace delimiters are detected, and lines starting with `#` are comments.
+- **Vendor column names**: map them with `columns`, where the unit in the canonical name drives the conversion, e.g. `{"MD (ft)": "md_ft", "TVDSS (ft)": "tvdss_ft"}`. Report the mapping in `assumptions`.
+  - **Times must be in milliseconds**: `twt_ms` (two-way) or `owt_ms` (one-way, doubled on registration). A mapping cannot convert seconds: ask for milliseconds (the OpendTect converter already writes them).
 - **Refusals**: malformed tables are refused (a non-increasing survey, core porosity above 0.6, which is probably percent).
 - **Multi-well tables**: tools use only the rows whose `well` matches the loaded well's name. If names differ ("W-1" versus "W1"), reload the well with `well_name` set to match.
 
 ## 4. Trajectory and TVDSS: `petro_trajectory`
 
+- **With a track** (`track`, a registered `well_track` table: MD with TVDSS or TVD, optional X/Y, as most interpretation software exports):
+  - TVDSS and X/Y are interpolated along the track.
+  - If the track gives TVDSS and its first leg is vertical, the datum elevation is **derived** from the data (MD - TVDSS at the top point) and reported. Otherwise supply it.
+  - If the header's datum elevation disagrees with the track's, the tool warns: report the disagreement.
 - **With a survey**: pass the registered `deviation_survey` table. The tool uses minimum curvature, following each leg's arc between stations. A survey that starts below the datum gets a vertical segment above its first station (warned). A log below the last station is extended along the last leg (warned; report it).
 - **Without a survey**: use `vertical: true` only when the task or data say the well is vertical. Otherwise list the survey in `missing_data`.
 - **TVDSS** = TVD - datum elevation: metres below mean sea level, positive down. With no datum elevation the tool refuses: supply it or report it missing. It is never assumed.

@@ -92,7 +92,7 @@ Handling rules:
 
 ## 8. Self-check before emitting
 
-1. Every number has a `prov:` id in `source_reference`.
+1. Every number has a `prov:` id in `source_reference`. Evidence fields list evidence ids (E#, or full upstream ids), never claim ids; claims link to claims only through `depends_on_claim_ids`.
 2. Every depth names MD or TVDSS, and the datum is stated (or stated as unknown).
 3. Every parameter has a source; assumptions are listed with a range.
 4. Bad-hole intervals that bear on the question are stated.
