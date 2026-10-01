@@ -32,6 +32,10 @@ Datum mismatches are the commonest cause of bad ties.
 
 `petro_elastic_logs(vs_source="none")` publishes depth, Vp and density only. It needs just DT, RHOB, a trajectory and `srd_elevation_m`: no shale volume, porosity or fluid parameters. The logs are used as measured, so check `petro_qc_logs` first: washouts and spikes make false reflections. Use the full elastic product (with Vs, substitution and Backus) when AVO or fluid cases are needed.
 
+## Water depth
+
+Register `water_depth_m` (source: the well reference or the task) in the parameter set used for `petro_well_header`: it travels in the `well_header` product, and the seismic specialist's seabed check needs it.
+
 ## `petro_well_header`
 
 Publishes a `well_header` (X/Y, CRS, datums, SRD, TD, bottom-hole X/Y). The seismic specialist converts X/Y to inline/crossline. A missing X/Y or CRS goes to `missing_data`.

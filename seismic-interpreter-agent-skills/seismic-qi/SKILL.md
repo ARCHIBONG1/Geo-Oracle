@@ -29,6 +29,15 @@ Register supplied tables (`seismic_register_table`, kinds well_logs and time_dep
 ## Procedures
 
 1. **Wavelet and tie.** `seismic_extract_wavelet` (statistical; phase assumed) → `seismic_synthetic` → `seismic_well_tie`.
+   - **Tie procedure with petrophysics products**, in this order:
+     1. Locate each well: `seismic_convert_coordinates(well_header=<ref>)`.
+     2. Seabed check: `seismic_trace_events(water_depth_m=<from the well header or the task>)` at each well. `offset_ms` near 0 means the seismic datum is sea level; a consistent offset at both wells is the datum correction.
+     3. Datum of the well relation: if the time-depth product gives a non-zero time at depth 0 (the petrophysics result says so), the relation is referenced to another datum. Ask Geo Oracle to have wells_petrophysics re-reference it (`td_time_shift_ms`), or proceed with `max_shift_ms` of 100 so the tie can find the offset, and report it.
+     4. Synthetic and tie. Read `shift_at_search_edge` and `alternative_shifts`: a shift at the edge means widen and rerun; two alternatives within a few hundredths of correlation mean the shift is ambiguous.
+     5. Markers against events: `seismic_trace_events(markers_table=<tops_time ref>)` and report which events sit at the markers.
+     6. Depth conversion from the calibration well: `seismic_time_to_depth(method="table", table=<its time_depth ref>)`. The result's `velocity_model.datum_shift_applied_ms` states any re-referencing it did; report it.
+     7. Cross-well check: `seismic_depth_function_check(time_depth=<calibration well's ref>, markers=<check well's tops_time ref>)`: residuals per marker and their summary. Residuals sharing a sign point at a datum offset between the wells before any velocity conclusion.
+   - **Reporting a tie**: correlation, phase, shift, the window, and the seabed check, each as a measurement with its provenance; the cross-well residuals likewise. A correlation below 0.6 is reported as a weak tie with the reasons tried (datum, window, phase), not as no tie.
    - **With petrophysics products**: pass the `elastic_logs` and `time_depth` references as they are. Both give depth below the same seismic reference datum, as their sidecars state: check that datum against the survey's.
    - **Well position**: `seismic_convert_coordinates(well_header=<the @petrophysics-agent/products/…well_header….json reference>)` reads the product's X/Y and CRS and returns the inline/crossline. Both wells must land inside the survey: if not, the well and survey CRS differ, so stop and report it. A well header without X/Y is a `missing_data` item for wells_petrophysics.
    - **Textual header**: `seismic_scan_segy` decodes it (EBCDIC or ASCII, reported as `textual_header_encoding`); read it for datum, polarity and CRS statements before assuming any.
