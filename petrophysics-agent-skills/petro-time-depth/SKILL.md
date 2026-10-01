@@ -40,7 +40,7 @@ Publishes a `well_header` (X/Y, CRS, datums, SRD, TD, bottom-hole X/Y). The seis
 
 `suspect_stations` lists checkshot intervals whose velocity disagrees with the sonic over the same interval by more than 20-25%. A single station far off (e.g. 2,700 m/s where the sonic reads 4,500 m/s in carbonates) is usually a wrong pick or a typo in the source table.
 - Report it as an observation with both velocities.
-- Rerun with `exclude_stations` for that station, say so in `assumptions`, and compare the drift before and after.
+- Rerun with `exclude_stations` for that station, say so in `assumptions`, and compare the drift before and after. **Publish the rerun's products as the well's relation** (the flawed one is not tie-ready), and say in `conclusions` which station was excluded and why.
 - Never fix a time by hand.
 
 ## Marker times

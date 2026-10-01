@@ -30,7 +30,8 @@ Register supplied tables (`seismic_register_table`, kinds well_logs and time_dep
 
 1. **Wavelet and tie.** `seismic_extract_wavelet` (statistical; phase assumed) → `seismic_synthetic` → `seismic_well_tie`.
    - **With petrophysics products**: pass the `elastic_logs` and `time_depth` references as they are. Both give depth below the same seismic reference datum, as their sidecars state: check that datum against the survey's.
-   - **Well position**: take X/Y from the `well_header` result in the task and convert with `seismic_convert_coordinates`. Both wells must land inside the survey: if not, the well and survey CRS differ, so stop and report it.
+   - **Well position**: `seismic_convert_coordinates(well_header=<the @petrophysics-agent/products/…well_header….json reference>)` reads the product's X/Y and CRS and returns the inline/crossline. Both wells must land inside the survey: if not, the well and survey CRS differ, so stop and report it. A well header without X/Y is a `missing_data` item for wells_petrophysics.
+   - **Textual header**: `seismic_scan_segy` decodes it (EBCDIC or ASCII, reported as `textual_header_encoding`); read it for datum, polarity and CRS statements before assuming any.
    - **Datum check (marine) before the tie**: pick the seabed at each well.
      - If the seismic datum is sea level, the seabed is at about 2 × water depth / 1,480 m/s (e.g. 118 m of water gives about 159 ms).
      - The difference between the seabed pick and the well time-depth's seabed time is a datum offset. Report it as a measurement so that Geo Oracle can have wells_petrophysics correct the time-depth (`td_time_shift_ms`) before the tie.
