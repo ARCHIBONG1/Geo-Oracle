@@ -60,6 +60,30 @@ Columns, row count and first rows. It is enough to describe a table and route it
 - **Geo Oracle's chat**: `source_agent: "geo-oracle"`, with the path from the task.
 - **Afterwards**: read the returned `uploads/...` path.
 
+## Retrieved documents: `lit_fetch_document`
+
+- Give the open-access URL (from OpenAlex's `best_oa_location`, Unpaywall, a repository, or a survey's own site) and a label (author, year, venue). The file lands in `retrieved/` with a sidecar: URL, final URL, date, content type, checksum.
+- **A landing page is not the paper**: the tool refuses a URL that returns HTML when a PDF was expected; find the PDF link. HTML pages are fetched as text when that is what you want (a survey web page, a report in HTML).
+- Then `lit_read_document(path='retrieved/…')` and `lit_search_documents(paths=[…])` as for any document. `lit_list_inputs` lists what you have retrieved.
+- Paywalled content is never fetched or bypassed; report it as a limitation with the citation.
+
+## The basin synthesis: `lit_publish_synthesis`
+
+For a basin or region's framework, one row per element:
+
+| Column | Content |
+|---|---|
+| element | `tectonic_phase`, `unit`, `unconformity`, `event` or `setting` |
+| name | e.g. "Late Jurassic rifting", "Agbada Formation" |
+| age_start_ma, age_end_ma | older first; null when the source gives no age |
+| time_scale | the time scale the ages are on (the source's, converted and noted if you changed it) |
+| description | one sentence |
+| geographic_relevance | study-area, immediate-region, basin-scale, regional-analogue, external-analogue, unknown |
+| source | `doi:…` or `project:<path>, p. n` |
+| access | full-text, abstract, metadata, secondary |
+
+Rules: no row without a source (a row from memory is recall); a dated row names its time scale; where sources disagree, give each its own row and say so in `notes`. The product's reference goes in `conclusions`.
+
 ## Reporting what you found
 
 Use the citation forms of your system prompt (section 7):
