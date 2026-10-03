@@ -1,6 +1,6 @@
 ---
 name: geo-investigation-planning
-description: How Geo Oracle turns an exploration objective into testable geological questions, specialist tasks and a dependency graph, runs them in parallel waves, judges whether another specialist call is worth making, and decides when to stop. Use when starting an investigation, when the user changes the objective or supplies major new data, when a result changes the model enough to re-plan, when choosing the next specialist call, and when deciding whether the investigation is finished.
+description: How Geo Oracle turns an exploration objective into testable geological questions, specialist tasks and a dependency graph, runs them in parallel waves, budgets the turn's time, judges whether another specialist call is worth making, and decides when to stop. Use when starting an investigation, when the user changes the objective or supplies major new data, when a result changes the model enough to re-plan, when choosing the next specialist call, and when deciding whether the investigation is finished.
 ---
 
 # Investigation planning
@@ -43,9 +43,10 @@ Calling every specialist "for completeness" adds cost and noise, and creates an 
 
 The following are typical constraint flows, not a fixed order. Use them to spot prerequisites.
 
-- `wells_petrophysics` → `stratigraphy`: log-based tops, facies and net reservoir.
+- `wells_petrophysics` → `stratigraphy`: correlation logs, reported tops, facies and net reservoir.
 - `stratigraphy` → `seismic_interpretation`: well ties and horizon identity.
-- `seismic_interpretation` → `structural_geology`: fault and horizon geometry.
+- `seismic_interpretation` → `structural_geology`: fault and horizon geometry (depth products).
+- `regional_geology` → `structural_geology`: the stress field as a regional prior.
 - `sedimentology` → reservoir distribution → `subsurface_play`.
 - `regional_geology` and `literature_review` → context and analogues for every discipline. These are context, not local evidence.
 - Integrated model → `subsurface_play` → `prospect_target` → `risk_uncertainty`.
@@ -95,9 +96,20 @@ Poor reasons:
 - asking again for the same evidence in the hope of more confidence;
 - polishing a result that is already adequate for the decision.
 
-## 7. Budget, time and checkpoints
+## 7. The turn budget: time and iterations
 
-- **Turn time.** A TrueForge turn has a time limit, one hour by default. Plan roughly how many waves fit.
+A TrueForge turn has two ceilings. The platform's turn time limit (one hour unless your deployment changes it) cuts the turn where it stands, with no failure message: the sentence simply ends. The iteration limit in the agent's runtime configuration (100 by default; raise it to 300 for Geo Oracle if the field allows) counts every model step: each tool call, each poll of `get_specialist_result`, each skill read and each ledger update is one iteration. A turn cut at either ceiling loses nothing if the ledger is current, because the next turn resumes from it; a turn cut before the ledger was written loses the reasoning. So both budgets are managed explicitly:
+
+1. **At the start of every turn** call `get_current_datetime` and write the start time and an iteration count of 0 into the ledger's header.
+2. **Estimate before starting.** A specialist call costs three to five minutes and two to four iterations (start, poll, collect, review); a wave of three parallel calls costs about the same time as one but three times the iterations; a skill read or a ledger update is one iteration. If the estimate exceeds either limit, plan the turn as the first part of the investigation and say so to the user.
+3. **After every wave** call `get_current_datetime` and count the iterations used so far. When three quarters of either budget is spent (45 minutes of an hour, 75 of 100 iterations), stop launching new work.
+4. **Checkpoint before the cut:** update the ledger (running job ids, open questions, next steps), then end the turn with a short summary drawn from the ledger and the sentence "Continue, and I resume from the ledger." The next turn begins by reading the ledger and collecting any jobs still running.
+5. **Never start a specialist call you cannot collect.** A job started at minute 55 will finish after the cut; start it in the next turn, or start it with `wait_seconds: 0` and record its job id so the next turn can collect it.
+
+**The checkpoint is where a person joins.** When a human reviewer is added to the system, the checkpoint summary is the point at which Geo Oracle asks them whether to continue, change direction or stop; the "ask user" capability exists for that moment and for material ambiguities in the objective, not for routine progress. Specialists never ask: their "ask user" capability is off, and a question from one stalls its job.
+
+## 8. Checkpoints and retries
+
 - **Checkpoints.** At a natural checkpoint, or before the limit, stop with:
   - the ledger updated;
   - the job ids of any running jobs;
@@ -106,7 +118,7 @@ Poor reasons:
 - **Retries.** Retry an execution failure at most once, with a stated reason.
 - **Repeated failure.** If a specialist fails repeatedly, record the analysis as not executed and continue with what can be done.
 
-## 8. When to stop
+## 9. When to stop
 
 Stop when all of the following are true:
 1. The major questions have been addressed as far as the evidence allows.

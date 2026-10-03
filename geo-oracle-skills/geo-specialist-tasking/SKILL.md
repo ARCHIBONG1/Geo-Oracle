@@ -41,6 +41,10 @@ An upstream result that is uncalibrated, bounded, assumed or regional is still a
 
 Never invent a product reference. If a producer failed to publish a product, pass its findings in `upstream_findings` (with their ids and status) and name the missing product in `known_unknowns`; a fabricated `@agent/products/...` reference is a false evidence item. When the failure was a tool fault (a dataset that would not read, a format the tool rejected), retry that producer once with the fault named in `reason_for_reanalysis` before moving on without its product.
 
+## 1b. A specialist that returns partially_completed
+
+A specialist that ran out of its own turn budget returns `partially_completed` with the products it published listed in `conclusions` and the remaining work named in `recommended_followups`. Continue it as a `follow_up` in the same session (`specialist_session_id` from the result, `previous_task_id` the task), with the remaining items as the `geological_question`: its records, products and context are still there. Do not start a new session for this, and do not treat the partial result as a failure to retry from scratch.
+
 ## 2. Session choice
 
 - **Continue the session** (pass `specialist_session_id`) for clarifications, missing items, format repairs, or a narrow extension of the same analysis. The specialist keeps its context, which saves tokens and time.
