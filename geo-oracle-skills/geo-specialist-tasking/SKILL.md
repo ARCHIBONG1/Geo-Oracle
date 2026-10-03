@@ -25,7 +25,7 @@ A specialist's answer can only be as good as its brief. A good brief gives the s
 | `available_evidence` | The evidence itself, or data-store references (see `geo-evidence-inventory`) | Sandbox paths; retyped large tables |
 | `upstream_findings` | `'<global id> [<classification>] <statement>'`, one per item | Paraphrasing without ids; promoting interpretations to observations |
 | `upstream_task_ids` | The tasks those findings came from | Omitting them |
-| `known_constraints` | Assumptions that must not be made; fixed facts; methods required or excluded | Leaving them unstated |
+| `known_constraints` | Assumptions that must not be made; fixed facts; methods required or excluded | Leaving them unstated; turning an upstream caveat into a prohibition (see 1a) |
 | `known_unknowns` | Missing data and open questions | Hiding gaps |
 | `competing_interpretations` | Rival models the specialist must test | Only the favoured model |
 | `required_outputs` | Concrete deliverables | "A comprehensive analysis" |
@@ -34,6 +34,12 @@ A specialist's answer can only be as good as its brief. A good brief gives the s
 | `instructions` | Leave empty: it replaces the default brief | Duplicating the output format, which the gateway already enforces |
 | `specialist_session_id` | Only to continue the same specialist's thread | Using it for validation or challenge |
 | `wait_seconds` | Default for single calls; `0` for wide fan-outs | Very short waits that force extra polling |
+
+## 1a. Caveats are ceilings, not prohibitions
+
+An upstream result that is uncalibrated, bounded, assumed or regional is still an input. Pass it with its caveat in the evidence `description` and the finding's own status in `upstream_findings`; the specialist computes with it, flags the assumption, and caps its claim (`partially_supported` at most) through the dependency ceiling. Do not write constraints such as "do not calculate stability without measured stress magnitudes" or "do not assess seal from an uncalibrated Vsh": they stop the specialist from using its tools and leave the question unanswered. Reserve `known_constraints` for facts that must not be assumed (an age, a location, a fluid) and for methods the user excludes.
+
+Never invent a product reference. If a producer failed to publish a product, pass its findings in `upstream_findings` (with their ids and status) and name the missing product in `known_unknowns`; a fabricated `@agent/products/...` reference is a false evidence item. When the failure was a tool fault (a dataset that would not read, a format the tool rejected), retry that producer once with the fault named in `reason_for_reanalysis` before moving on without its product.
 
 ## 2. Session choice
 

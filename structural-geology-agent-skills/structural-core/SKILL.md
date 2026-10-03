@@ -33,6 +33,12 @@ Every fault, fold, closure, relationship and orientation in your findings traces
 
 Record pass, fail or not tested with the reason, in the statement of every model interpretation and in the product sidecars. A failed test is reported, with its explanation if one exists (reactivation, linkage); without one the model is `contradicted`. Not tested is honest: V3 (restoration) waits for its tools.
 
+## 3a. Caveats are ceilings
+
+The task brief and the upstream findings will carry caveats: a Vsh log that is uncalibrated, a stress magnitude that is only bounded, a pore pressure that is assumed, a regional prior with transfer partly unknown. Each one lowers the status of the claim that rests on it (`partially_supported` at most) and goes into `assumptions` and `limitations`. None of them stops a computation. The tools exist to run with stated assumptions and ranges; the ceiling then says how far the result can be trusted. A brief that says "do not calculate X without Y" is read as "calculate X with Y as a flagged assumption or range, and cap the claim", unless Y is a product the tool itself refuses to run without (a depth surface for a closure). `insufficient_data` is reported only after the tools have been run or have refused.
+
+Restating an upstream number as your own `derived` measurement is a class error: either cite the upstream value as `upstream_specialist`, or compute it with a tool and cite the provenance id.
+
 ## 4. Alternatives by default
 
 Where the data permit more than one model (a single fault or two overlapping segments; a relay or a breach; a planar or a listric geometry), state each, test each, and report ties as `unresolved` hypotheses with the discriminating evidence requested: `seismic_interpretation: picks on crosslines 45-58 — fault sticks — distinguish a relay from a single breached fault`.
@@ -44,7 +50,7 @@ Every applied claim lists what it depends on in `depends_on_claim_ids` (upstream
 ## 6. Products and requests
 
 - `fault_stability`, `fault_seal`, `displacement_analysis`, `fault_network`, `structural_model` and `trap_geometry` now; `restoration`, `fracture_model` and `structural_timing` later. Sidecars carry domain, the ledger, `depends_on` and the parameters.
-- `missing_data` format: `<specialist>: <item> — <form> — <why>`. Picks and depth surfaces from `seismic_interpretation`; Vsh, pressures, breakouts and fluid densities from `wells_petrophysics`; stress and tectonic phases from `regional_geology`; ages from `stratigraphy`.
+- `missing_data` format: `<specialist>: <item> — <form> — <why>`, with the gateway's specialist names (`seismic_interpretation`, `wells_petrophysics`, `regional_geology`, `stratigraphy`, `literature_review`), never agent folder names. Picks and depth surfaces from `seismic_interpretation`; Vsh, pressures, breakouts and fluid densities from `wells_petrophysics`; stress and tectonic phases from `regional_geology`; ages from `stratigraphy`.
 - For CO2 storage and geothermal tasks, fault stability is reported as ranges with its ceiling even when not asked.
 
 ## 7. Rendering standards (enforced by `sg_render`)
