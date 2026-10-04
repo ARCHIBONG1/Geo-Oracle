@@ -17,6 +17,10 @@ description: The fixed description vocabulary (Wentworth grain-size classes, str
 
 Code = lithology letter (S sand, M mud, G gravel) + grain code + dominant structure, the dominant chosen by a fixed priority that puts diagnostic structures first (Tb, Md, Xbb, Hcs, Gf, Lac, Xb, Sm, Ng, Wr, Cr, Ht, Pl, Cv, Rt, Lg, Bi, Ms). The scheme (`facies_scheme` product) records every feature seen in each facies, with its version; the `facies_log` carries the code per interval with its source (described) and the depth reference.
 
+## Thicknesses
+
+Quote thicknesses from `sed_interval_totals`, not from your own addition: it gives thickness by well, facies and lithology, the gaps between described intervals (uncored or undescribed, not absent rock), and the true vertical thickness when you supply the cosine of the hole angle for a deviated well. A described thickness is not net reservoir, not connected thickness and not pore volume, and the difference matters to every consumer of the number.
+
 ## Cuttings
 
 From cuttings the structures are unreliable and the lithology proportions are smeared over the sample interval; code lithology and grain size only, and say so.

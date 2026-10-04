@@ -9,7 +9,7 @@ description: Facies transitions, the embedded Markov test, Walther's law and the
 
 - Upward transitions between facies across bed boundaries in one well; the embedded Markov chain test (Powers & Easterling 1982) compares the counts with those expected from the facies proportions; links above random (observed well above expected) are the evidence of an association.
 - Walther's law holds only within conformable successions: give the framework's key surfaces (`key_surfaces_m`, same depth reference) and the boundaries at them are excluded. Without the framework, say that the test includes unconformable boundaries.
-- Fewer than 10 transitions give the test no power: S3 reads not tested, and the well's associations are weak.
+- Too few transitions give the test no power: S3 reads not tested (`min_transitions`, ten by default, a power convention you can change with a reason), and the count available is reported with the result so a reader can judge it.
 
 ## Pooling and associations
 

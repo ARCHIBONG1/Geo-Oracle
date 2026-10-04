@@ -16,13 +16,14 @@ description: Ranking tie points, correlating wells by dynamic time warping const
 ## DTW: what it does and does not do
 
 - Aligns one curve (GR by default) between two wells within a band (`band_m`, about the largest plausible thickness change), by segments between the anchors, so the path passes through every anchor. The mapping is monotonic.
-- `mean_cost` is the mean z-scored mismatch along the path; `c6.percentile` is where that cost sits among rigid shifts of the same curve. Below 25 % passes C6; above, the pattern match is no better than a shift and the surfaces between the anchors are rank-5 at best.
+- `mean_cost` is the mean z-scored mismatch along the path; `c6.percentile` is where that cost sits among rigid shifts of the same curve, and the rigid costs themselves are reported beside it. The bar (`c6_percentile`, a quarter by default) is a stated convention, not a measurement: loosen it for a short or noisy interval and say that you did. Above the bar the pattern match is no better than a shift, and the surfaces between the anchors are rank-5 at best.
 - A DTW match between rank 1-3 anchors inherits rank 2-3 for surfaces close to the anchors and rank 5 for surfaces far from them; say which.
 - Repeating patterns (parasequence sets) can be matched one cycle off: anchors are what prevent it. Without anchors, build two panels one cycle apart and let C2 and C4 decide.
 
 ## Panels
 
 - Picks carry `tie_rank`, `basis` and `source` (the `prov:` id of the DTW or the table). Reported tops enter tagged reported from the `well_tops` products, never as picks.
+- A surface's name is the datum it follows, not a unit it may cross (see `strat-core`, section 2a): a time line mapped from a well's sand top is `time line at <well> <surface>`, so that where rock and time lines diverge the panel reads as a divergence rather than as an error in someone's pick.
 - `datum`: the surface to hang the rendered panel on; a time line (rank 1-2) is the right datum; hanging on a rock line manufactures thickness changes.
 - C4 anomalies: a thickness change above 50 % and 10 m between neighbouring wells; give `thickness_explanations` keyed `<top>-<base>@<wellA>-<wellB>` when a fault cut-out (structural product), erosion or growth explains it; otherwise the panel fails.
 

@@ -19,6 +19,10 @@ description: The stratigraphy specialist's working rules - the two ledgers, the 
 
 Reported tops arrive in `well_tops` products or supplied tables. They are `data`, cited by their product reference, and never moved. Your picks are `interpretation`, with a tie rank and a source. The panel holds both, tagged; `stg_consistency` lists every disagreement beyond the tolerance (C1). A disagreement is reported in `contradictions` with the likeliest reason (a lithostratigraphic pick, a different datum, a depth-reference error) and the discriminating data. C1 fails only when a pick is untagged or a reported top was replaced.
 
+## 2a. Name a correlated surface for what it follows
+
+A surface you correlate takes the name of the datum or key surface it follows, never the name of a lithostratigraphic unit it crosses. Where a rock line and a time line diverge, the time line through a well's "Top Sand A" is not that well's Top Sand A in the next well: the sand there may be older or younger. Call it what it is (`time line at W1 Top Sand A`, `FS2`, `LO Globotruncana datum`), keep the operator's lithostratigraphic top under its own name in the reported ledger, and report the separation between them as a divergence of rock and time lines, not as a discrepancy in a pick. Naming the time line after the unit makes a correct correlation read as a 45 m error in the sand top, which is the opposite of what it shows.
+
 ## 3. The tie-point hierarchy
 
 | Rank | Tie point | Gives | Caveat |
