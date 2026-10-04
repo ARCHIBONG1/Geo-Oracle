@@ -102,9 +102,12 @@ A TrueForge turn has two ceilings. The platform's turn time limit (one hour unle
 
 1. **At the start of every turn** call `get_current_datetime` and write the start time and an iteration count of 0 into the ledger's header.
 2. **Estimate before starting.** A specialist call costs three to five minutes and two to four iterations (start, poll, collect, review); a wave of three parallel calls costs about the same time as one but three times the iterations; a skill read or a ledger update is one iteration. If the estimate exceeds either limit, plan the turn as the first part of the investigation and say so to the user.
-3. **After every wave** call `get_current_datetime` and count the iterations used so far. When three quarters of either budget is spent (45 minutes of an hour, 75 of 100 iterations), stop launching new work.
+3. **Before every specialist call and every poll** compute the remaining turn time from `get_current_datetime` and the start time in the ledger: `remaining = limit - elapsed`. Then:
+   - `wait_seconds = min(cap, remaining - 120)`: a call may never run past the turn's end. A wait that would be under 60 s is not worth making: checkpoint instead.
+   - At three quarters of either budget spent (45 minutes of an hour, 75 of 100 iterations) stop launching new specialists.
+   - A specialist call cut by the turn limit returns a timeout error and the turn ends there; the job itself is unharmed and the next turn collects it, but the checkpoint was never written. The arithmetic above is what prevents that.
 4. **Checkpoint before the cut:** update the ledger (running job ids, open questions, next steps), then end the turn with a short summary drawn from the ledger and the sentence "Continue, and I resume from the ledger." The next turn begins by reading the ledger and collecting any jobs still running.
-5. **Never start a specialist call you cannot collect.** A job started at minute 55 will finish after the cut; start it in the next turn, or start it with `wait_seconds: 0` and record its job id so the next turn can collect it.
+5. **Never start a specialist call you cannot collect.** A job started at minute 55 will finish after the cut; start it in the next turn, or start it with `wait_seconds: 0` and record its job id so the next turn can collect it. Specialist runs on several wells take 10 to 20 minutes: a turn holds about three of them. Plan the waves accordingly and checkpoint between them.
 
 **The checkpoint is where a person joins.** When a human reviewer is added to the system, the checkpoint summary is the point at which Geo Oracle asks them whether to continue, change direction or stop; the "ask user" capability exists for that moment and for material ambiguities in the objective, not for routine progress. Specialists never ask: their "ask user" capability is off, and a question from one stalls its job.
 

@@ -13,7 +13,8 @@ Core depths are driller's depths; logs are logger's depths. They routinely diffe
 2. **Overburden factors**: if the core was measured at ambient conditions (usual for routine analysis), put `overburden_porosity_factor` and `overburden_perm_factor` in the parameter set, from SCAL at stress (`core`, `scal`) or the report. In situ value = ambient x factor.
    - Without them the tool uses core as measured, and says so: report it.
    - Typical ranges are about 0.95-0.99 for porosity and 0.5-0.95 for permeability, but use measured values.
-3. **Run the tool** with the log to compare, usually `PHIE` from `petro_porosity`.
+3. **Compute a porosity log first, then run the tool against it.** The comparison curve must rise with core porosity: `PHIE` or `PHID` from `petro_porosity` (density, or density-neutron). Never compare core porosity with raw `NPHI` or `RHOB`: in a sand-shale succession neutron porosity is *higher* in shale and density is *lower* in sand, so both anti-correlate with core porosity and the tool refuses them (correlation at or below zero).
+4. **Read the refusals.** A best shift at the search boundary means the correlation is still rising beyond the window: widen `max_shift_m` only if a shift that large is physically plausible (a misnumbered core run); otherwise the compared intervals are not the same rock, and core-run tie markers are needed. A weak correlation after shifting (below 0.3) is published with a warning: say it in `limitations`.
 
 **Reading the result:**
 - **`depth_shift_m`**: added to core depths. A shift at the edge of the search, or a `second_best` almost as good (warned), makes the match ambiguous: report both, and do not over-interpret thin-bed comparisons. Expect a precision of about ±0.1-0.2 m.

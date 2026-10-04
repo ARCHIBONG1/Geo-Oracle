@@ -9,8 +9,8 @@ description: Ranking tie points, correlating wells by dynamic time warping const
 
 1. `stg_rank_ties` with the logs, the registered tables and the seismic ties: every candidate tie per well with its rank; `shared_between_wells` shows which can anchor a pair. Reported tops are listed for reference, not as ties, unless you argue a top marks a key surface (rank 4).
 2. Choose the reference well (the most complete, or the one with the most rank 1-3 ties) and pick the surfaces there, with their basis.
-3. `stg_dtw_pair` from the reference to each well, `anchors` = the rank 1-3 ties shared by the pair, `query_depths_a` = the surfaces' TVDSS in the reference well. The result maps each surface into the other well, with the C6 support.
-4. `stg_build_panel` with the picks (tie rank 2 or 3 for a DTW mapping between such anchors; 5 for an unanchored mapping) and the `well_tops` products.
+3. `stg_dtw_chain` once, from the reference to every other well: `surfaces` = the surfaces' TVDSS in the reference well, `anchors_by_well` = the rank 1-3 ties each well shares with the reference, `tie_rank` 2 or 3 for mappings between such anchors (5 unanchored). It returns `picks` in the shape `stg_build_panel` takes and `c6_results` in the shape `stg_consistency` takes. `stg_dtw_pair` is for one pair or an interval-specific rerun.
+4. `stg_build_panel` with those picks and the `well_tops` products.
 5. `stg_consistency` with the C6 results and any thickness explanations. Then the alternative panel, then `stg_compare_panels`.
 
 ## DTW: what it does and does not do
