@@ -33,7 +33,7 @@ A specialist's answer can only be as good as its brief. A good brief gives the s
 | `previous_task_id`, `reason_for_reanalysis` | For every non-initial mode | Leaving them empty |
 | `instructions` | Leave empty: it replaces the default brief | Duplicating the output format, which the gateway already enforces |
 | `specialist_session_id` | Only to continue the same specialist's thread | Using it for validation or challenge |
-| `wait_seconds` | Default for single calls; `0` for wide fan-outs | Very short waits that force extra polling |
+| `wait_seconds` | Default for single calls; `0` for wide fan-outs; never above the gateway's cap (its description states it: the harness's per-call timeout minus a margin) | Very short waits that force extra polling; a wait that outlasts the harness, which returns a server-execution-timeout and nothing else |
 
 ## 1a. Caveats are ceilings, not prohibitions
 
@@ -102,7 +102,7 @@ A session runs one task at a time. The gateway refuses a follow-up while that se
 ## 4. Running jobs
 
 - **Parallel calls.** Put independent calls in one step. TrueForge runs them concurrently, and each waits up to `wait_seconds` (default about 3 minutes).
-- **Jobs still running.** If a result says `running`, call `get_specialist_result(job_id=...)`. Each call waits a few minutes. Work on something else useful, such as the ledger, between polls if you can.
+- **Jobs still running.** If a result says `running`, call `get_specialist_result(job_id=...)`. Each call waits up to the gateway's cap (about 90 s by default), then returns `running` again with the elapsed time; keep polling, and work on something else useful, such as the ledger, between polls. A call that itself fails with a timeout or a transport error has not lost the job: the specialist is still running; poll again with the same job id.
 - **Wide fan-outs.** For more than about three jobs in a step, start them with `wait_seconds: 0`, then collect each with `get_specialist_result`. This keeps each step's combined tool output within TrueForge's size limits.
 - **Trimmed results.** Results are size-limited. When `omitted` lists sections you need, call `get_specialist_result(job_id=..., sections=["claims"], offset=N)` as `next_action` suggests. If TrueForge replaced a result with a "too big" preview, re-fetch it the same way.
 - **Unneeded work.** Cancel jobs you no longer need with `cancel_specialist_job`.
