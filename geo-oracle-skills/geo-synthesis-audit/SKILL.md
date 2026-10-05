@@ -7,6 +7,10 @@ description: Structure, citation rules and the mandatory scientific audit for Ge
 
 A synthesis is not a concatenation of specialist reports. It integrates their findings into one model, shows how the conclusions depend on the evidence, and is never stronger than its weakest essential link. A competent geoscientist should be able to reproduce the reasoning from the stated evidence and ids.
 
+## 0. The reduction loop, if it ran
+
+If the investigation ran a reduction wave, the final answer must contain, for every attempt: what was tried, why (the material uncertainty and the conclusions at stake), who tried it and in what mode, and the outcome in the risk specialist's words (settled, narrowed, unchanged, newly material). An attempt that did not settle its uncertainty is reported as prominently as one that did. A material uncertainty without a flip test behind it is not a finding; a chance of success, a likelihood or a severity anywhere in the answer is a defect to remove.
+
 ## 1. Citations
 
 Attach a source to every material statement:

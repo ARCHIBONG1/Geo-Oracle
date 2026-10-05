@@ -50,9 +50,19 @@ The following are typical constraint flows, not a fixed order. Use them to spot 
 - `sedimentology` → reservoir distribution → `subsurface_play`.
 - `regional_geology` and `literature_review` → context and analogues for every discipline. These are context, not local evidence.
 - Integrated model → `subsurface_play` → `prospect_target` → `risk_uncertainty`.
-- `risk_uncertainty` → back to the specialist who can reduce each critical uncertainty.
+- `risk_uncertainty` → the reduction wave → `risk_uncertainty` again in `follow_up` mode (section 8).
 
 Mark iterative loops explicitly. For example, stratigraphy and seismic often need an initial pass each, then a reconciliation once the horizon interpretation exists.
+
+## 4a. The risk gate and the reduction loop
+
+Risk runs after the play and prospect waves, and the investigation does not end at its first answer:
+
+1. **Gate.** Task `risk_uncertainty` with the ledger's sandbox path (`/investigation/ledger.md`, kind `investigation_ledger`), every finding relied on as `upstream_findings` with ids, statuses, scope tags and `depends_on`, every product by reference, the objectives in scope and the decision context. It returns the register, the materiality report and a `reduction_plan` whose items are split into `actionable_now` and `needs_acquisition`, each with an owner, an `analysis_mode` and a `task_framing`.
+2. **Reduction wave.** Run every `actionable_now` item as one wave, each as a task to the named owner in the named mode (`challenge` or `validation`, never `initial`) with the item's `task_framing` as the geological question, unchanged: it is framed as a test, and reframing it as a confirmation is the one thing that would make the loop harmful. Record each task in the ledger as an attempt: entry, task id, owner, mode, what is being tried, why. When a human-on-the-loop setting is on, present the plan first and run only what the human approves; when it is off, run the wave automatically. The `needs_acquisition` items are not tasks; they go to the user in the final answer.
+3. **Follow-up.** Task `risk_uncertainty` again in `follow_up` mode with the new products, the prior materiality file and every attempt. It reruns the same flip tests and returns `reduction_outcomes`: per attempt, what was tried, why, and whether the uncertainty was settled, narrowed, unchanged or newly material.
+4. **One wave by default.** A second reduction wave only when the user asks. An attempt already recorded in the ledger is never reissued; an unchanged outcome is reported, not retried.
+5. **Report every attempt.** The final answer says what was tried, why, and what happened, whichever way it went. A reduction that did not settle its uncertainty is one of the more useful things the investigation can report, and the acquisition items are its recommendations.
 
 ## 5. Plan waves
 

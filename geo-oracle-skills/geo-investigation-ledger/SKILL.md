@@ -54,7 +54,7 @@ Scope: screening | detailed
 |----|---------------|------|-----------------------|-------------------------|------|--------|
 
 ## Uncertainties
-| U# | Source | Affects (ids) | Consequence | Severity | Reducible? | How / by whom |
+| U# | Source | Affects (ids) | Consequence | Materiality (from risk_uncertainty's flip tests; blank until then) | Reducible? | How / by whom |
 |----|--------|---------------|-------------|----------|------------|---------------|
 
 ## Dependencies
