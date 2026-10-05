@@ -101,6 +101,10 @@ A claim is **load-bearing** if reservoir, seal, trap, charge, timing, prospect g
 - Keep published interpretations, analogues and local evidence apart.
 - Preserve disagreement within the literature, and note gaps in coverage.
 
+## 7a. Figures
+
+A result's `figures` entries (or its `Figure:` conclusion lines) are recorded in the ledger with the claims each supports, and the claims are checked the usual way: a figure changes nothing about a claim's status, and a claim you would not have accepted without the picture is not accepted with it. A figure whose `supports` claim you reject or lower is kept in the ledger and not shown in the answer.
+
 ## 8. Record the review
 
 Update the ledger:

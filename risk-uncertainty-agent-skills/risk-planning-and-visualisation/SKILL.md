@@ -5,6 +5,13 @@ description: The reduction plan - actions with owners, modes and neutral framing
 
 # Planning, outcomes, figures
 
+
+## What a figure is and is not
+
+A figure illustrates a claim a tool computed. It never carries a claim, and no number, depth, area or boundary is read off it: those come from tools, as they always did. A striking figure can make an untested claim feel tested, which is the one way a picture can damage an argument.
+
+You do not see the figures you render: the tool returns a URL, not an image. They are for the reader and for the audit, so the caption must say what the figure shows, from which product and version, well enough to be read without you.
+
 ## The plan (`ru_reduction_plan`)
 
 For every material entry: the action, the owning specialist, the analysis mode and a task framing.

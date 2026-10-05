@@ -5,6 +5,13 @@ description: Status matrices, events charts and dependency graphs - the standard
 
 # Play visualisation
 
+
+## What a figure is and is not
+
+A figure illustrates a claim a tool computed. It never carries a claim, and no number, depth, area or boundary is read off it: those come from tools, as they always did. A striking figure can make an untested claim feel tested, which is the one way a picture can damage an argument.
+
+You do not see the figures you render: the tool returns a URL, not an image. They are for the reader and for the audit, so the caption must say what the figure shows, from which product and version, well enough to be read without you.
+
 ## `play_render`
 
 - `status_matrix`: plays as rows, elements as columns, the status word in every cell, unknown hatched, the weakest critical element outlined, supporting elements marked.

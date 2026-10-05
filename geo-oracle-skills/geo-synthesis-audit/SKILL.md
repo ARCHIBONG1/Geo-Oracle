@@ -11,6 +11,12 @@ A synthesis is not a concatenation of specialist reports. It integrates their fi
 
 If the investigation ran a reduction wave, the final answer must contain, for every attempt: what was tried, why (the material uncertainty and the conclusions at stake), who tried it and in what mode, and the outcome in the risk specialist's words (settled, narrowed, unchanged, newly material). An attempt that did not settle its uncertainty is reported as prominently as one that did. A material uncertainty without a flip test behind it is not a finding; a chance of success, a likelihood or a severity anywhere in the answer is a defect to remove.
 
+## 0a. Figures in the answer
+
+Specialists render; you place. Choose three to six figures for the answer, the ones that carry the conclusions a reader must see, and put each immediately beside the conclusion it supports, with that conclusion's evidence ids and source as usual: the markdown image line, then a one-line caption naming the specialist and the product it came from. List the remaining figures at the end as captions with links. You render nothing yourself: a figure illustrates a claim, and the claims are the specialists'.
+
+A figure never stands in for evidence. If the conclusion beside it is not cited and traced, the figure does not make it so, and a figure whose claim did not reach the answer is not shown. An interactive link (a seismic 3D view) is passed on as a link with its note; the chat cannot show it, and neither can you.
+
 ## 1. Citations
 
 Attach a source to every material statement:

@@ -13,6 +13,7 @@ Long investigations outgrow the context window. Compaction summarises away ids a
 - **When to update.** Update after every reviewed result, before calling the next specialist.
 - **Global ids.** Use them exactly as returned, e.g. `T03-seis/E2` or `T05-struct/C1`. Your own items use `H#` (hypotheses), `X#` (contradictions), `U#` (uncertainties) and `Q#` (open questions).
 - **Sources.** Every row needs a source. Record only what exists.
+- **Figures.** Record every figure a specialist returns (its `figures` entries, or its `Figure:` conclusion lines) with the claims it supports. URLs do not survive compaction otherwise, and the final answer places figures by these rows.
 - **Size.** Keep it compact: one-line statements, referenced by id. Do not paste specialist output; the gateway can re-fetch any result by `job_id`.
 - **History.** Mark items as superseded; do not delete them. The history is part of the audit trail.
 - **Resuming.** When resuming after a new turn or compaction:
@@ -56,6 +57,10 @@ Scope: screening | detailed
 ## Uncertainties
 | U# | Source | Affects (ids) | Consequence | Materiality (from risk_uncertainty's flip tests; blank until then) | Reducible? | How / by whom |
 |----|--------|---------------|-------------|----------|------------|---------------|
+
+## Figures
+| ID | Caption | URL | From task | Supports (claim ids) | Interactive |
+|----|---------|-----|-----------|----------------------|-------------|
 
 ## Dependencies
 - H1 (Main Sand structural play) ← T05-struct/C1 (closure at H3) ← T04-seis/E2 (H3 pick) ← T03-strat/C1 (tie to Main Sand top)
