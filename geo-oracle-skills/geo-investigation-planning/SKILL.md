@@ -54,6 +54,10 @@ The following are typical constraint flows, not a fixed order. Use them to spot 
 
 Mark iterative loops explicitly. For example, stratigraphy and seismic often need an initial pass each, then a reconciliation once the horizon interpretation exists.
 
+## 4b. Human on the loop
+
+Before the second specialist call of any new objective, ask the activation question and record the answer: see `geo-human-on-the-loop`, which also holds the checkpoint summary, the accept / refuse / edit rules and the work gate. The gateway refuses specialist calls until the mode is set, refuses a wave whose checkpoint is unfiled, refuses a specialist the person struck from the plan, and stops at the work ceiling; those refusals name what to do, and the work already done is never lost.
+
 ## 4a. The risk gate and the reduction loop
 
 Risk runs after the play and prospect waves, and the investigation does not end at its first answer:
