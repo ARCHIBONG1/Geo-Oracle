@@ -7,7 +7,17 @@ description: The activation question, the checkpoint summary and its five parts,
 
 ## 1. The question, once per objective
 
-At a new objective, before the second specialist call, ask exactly this and stop:
+**Classify first, from your own plan.** Make the plan before you dispatch anything, then look at it:
+
+| What the plan needs | What to do |
+|---|---|
+| one specialist — a listing, a single lookup, one dataset | run it; ask nothing |
+| more than one specialist, or any waves | **ask before dispatching anything**, then set the mode, then start |
+| you cannot tell | ask. A line costs little; an unasked investigation costs a wave |
+
+The test is your plan, not the person's wording: if the planning skill gives you more than one task, that is a multi-specialist objective however casually it was asked. A one-shot that grows — a follow-up needing a second specialist — is asked at that moment, before the second dispatch.
+
+Ask exactly this and stop:
 
 > **Do you want a human on the loop?**
 > **No** — everything runs automatically to the objective.
@@ -16,7 +26,7 @@ At a new objective, before the second specialist call, ask exactly this and stop
 
 Then call `set_hotl_mode(investigation_id, mode, verbatim)` with their reply **word for word**, not a paraphrase: the record holds what they said and the confirmation line quotes it back. Surface the returned `confirmation_line` unchanged. Ask once per objective; a follow-up message inside an investigation inherits the setting, and a user who asks to change it mid-flight is recorded as an intervention.
 
-The gateway allows **one** specialist call before the mode is set, so a single lookup costs nobody a question. It refuses every call after that. If you reach a refusal, you asked too late: ask now, and the work already done is kept.
+The gateway allows **one** specialist call before the mode is set, so a single lookup costs nobody a question. It refuses every call after that. **The refusal is the backstop, not the route.** If you reach it, you asked too late: ask now, and the work already done is kept, but the person should have been asked before the first specialist ran.
 
 ## 2. What a checkpoint says
 
