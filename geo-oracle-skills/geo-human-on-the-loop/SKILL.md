@@ -5,9 +5,35 @@ description: The activation question, the checkpoint summary and its five parts,
 
 # Human on the loop
 
-## 1. The question, once per objective
+## 0. How to ask — every question in this skill, without exception
 
-**Every question in this skill is asked inline, with the ask-user tool, in the same turn** — the activation question and every checkpoint alike. Update the ledger first, every time.
+Call **`ask_user_question`**, by that name. Both parameters are required:
+
+| Parameter | Shape |
+|---|---|
+| `question` | the text. Put the whole summary in it; there is nowhere else for it to go |
+| `options` | 0 to 5 mutually exclusive choices, plain strings. **A free-text box is always rendered beside them**, so the person can pick one, type something else, or both |
+
+The question **blocks until it is answered and the turn survives**, so the investigation carries on in the same turn. You cannot perceive the wait: the answer simply appears, with nothing to tell you whether it took five seconds or an hour. Never reason about how long it took, and never say a question returned immediately.
+
+Before asking, always: **update the ledger, including its Pending question block.** A question holds the turn open, and if nobody answers the turn is cut at its limit with no message. The ledger is what makes the work recoverable.
+
+A worked example — the activation question, whose shape every other trigger copies:
+
+```
+ask_user_question(
+  question: "This is a multi-specialist CO2 storage investigation: inventory and QC, then structure, "
+            "then the play and site gates, then a risk review and its reduction wave. "
+            "Do you want a human on the loop?",
+  options: ["No - run automatically to the objective",
+            "Yes, every wave - a checkpoint after each reviewed wave",
+            "Yes, key decisions only - the plan, scope changes, the reduction wave, contradictions and refusals"]
+)
+```
+
+**Three rules about options.** Five is the hard maximum, so design for three or four and let the free-text box carry the rest: accept / edit / refuse / stop is four, and "edit" is really free text anyway, so three plus the box usually reads better than five. Append the exact suffix `" (Recommended)"` to one option **only** where you are asking the person to sanity-check your judgement — a plan, a retry, a reduction wave. **Never at an alternatives checkpoint**: recommending is pre-selection in a thin disguise, and the point of that question is their judgement, not your agreement (section 7). And if more than five alternatives are in play, do not silently drop one — say in the question how many there are and offer the ones that differ most, or ask them to narrow it first.
+
+## 1. The question, once per objective
 
 **Classify first, from your own plan.** Make the plan before you dispatch anything, then look at it:
 
@@ -19,7 +45,7 @@ description: The activation question, the checkpoint summary and its five parts,
 
 The test is your plan, not the person's wording: if the planning skill gives you more than one task, that is a multi-specialist objective however casually it was asked. A one-shot that grows — a follow-up needing a second specialist — is asked at that moment, before the second dispatch.
 
-Ask exactly this and stop:
+Ask it with `ask_user_question` as section 0 shows, and carry on in the same turn when they answer:
 
 > **Do you want a human on the loop?**
 > **No** — everything runs automatically to the objective.
@@ -58,11 +84,28 @@ Mark the two halves plainly, so the reader knows which parts the system can vouc
 
 The activation answer approves wave 1 and nothing else. Every wave after it is a question you put to the person and an answer they give to **that** question. The gateway refuses a decision whose words are the activation answer, or any reply already on file from an earlier checkpoint: a recycled quote is not an answer, and recycling one is how a supervised investigation quietly becomes an unsupervised one.
 
-So the sequence at every wave boundary is: file nothing yet → **update the ledger, including its Pending question block** → put the five-part summary and the question to the person **inline, with the ask-user tool** → they answer in the same turn → file the checkpoint with their words and clear the pending block. Filing before they have answered is the mistake the refusal exists to catch.
+So the sequence at every wave boundary is: file nothing yet → **update the ledger, including its Pending question block** → put the five-part summary and the question through **`ask_user_question`** (section 0), with accept / refuse / stop as options and the free-text box carrying any edit → they answer in the same turn → file the checkpoint with their words and clear the pending block. Filing before they have answered is the mistake the refusal exists to catch.
 
-**Do not end your turn to ask.** The question blocks until it is answered and the turn survives: an answered checkpoint carries straight on, and the whole investigation runs in one turn. You cannot perceive the wait — the answer simply appears, with nothing to tell you whether it took five seconds or an hour — so never reason about how long it took, and never claim a question returned immediately.
+**Do not end your turn to ask.** `ask_user_question` blocks and the turn survives it, so an answered checkpoint carries straight on and the whole investigation runs in one turn.
 
 **If nobody answers, the turn is cut at its limit with no message.** That is the accepted cost of supervision: a supervised investigation is only as alive as its supervisor, which is the point of it. Nothing is lost provided the ledger was written first, which is why the pending block goes in before the question and not after. An investigation meant to run unattended is `off` mode, not `every_wave`.
+
+## 3b. Key decisions only
+
+The same machinery as every-wave, fired at four moments instead of at every boundary. **Every one of them is an `ask_user_question` call, answered in the same turn, exactly as in every-wave mode (section 0).** Never prose, never a turn ending, never a statement of what you intend followed by a stop.
+
+| Trigger | When | What you ask |
+|---|---|---|
+| **The plan** | once, before the first wave | the waves you intend to run, the specialists in each, and what each should settle. Their answer approves it |
+| **A change of scope or direction** | whenever the plan you had approved no longer fits what you found | what changed, what you now propose instead, and why |
+| **The reduction wave** | when the risk specialist's plan has actionable items | the items, their owners and modes, and what each would settle |
+| **A contradiction or a refusal** | when a specialist flags either | both sides of the contradiction, or what was refused and why, and what you propose to do |
+
+The last two can fire **mid-wave**, not only at a boundary. Ask when you reach them; do not save them for the end of the wave, because by then you may have built on the thing in question.
+
+**Between triggers, waves open without waiting.** File the record with `decision: "automatic"` — the gateway still requires it, so the audit trail matches a supervised run — and carry straight on. Do not ask at a wave boundary in this mode: the person chose not to be asked there, and asking anyway is the same failure as not asking in every-wave mode, from the other side.
+
+**The plan trigger fires once.** Its answer approves the plan, not the whole investigation: a later change of scope is its own question.
 
 ## 4. Accept, refuse, edit
 
@@ -87,7 +130,7 @@ A person who disagrees with a status supplies evidence or asks for a `challenge`
 
 ## 7. Presenting alternatives
 
-When a checkpoint asks the person to choose between competing models, show them blind: neutral labels, randomised order, the same number of lines and the same figures each, evidence and test records first, and no option pre-chosen. Give your own preference only **after** they have answered, and if the models genuinely tie, say so and offer none. A confident recommendation is a strong anchor, and the point of the checkpoint is their judgement, not your agreement.
+When a checkpoint asks the person to choose between competing models, show them blind: neutral labels, randomised order, the same number of lines and the same figures each, evidence and test records first, and no option pre-chosen — in particular **no option carries `" (Recommended)"` here**, which is pre-selection in a thin disguise. With more than five alternatives, say how many there are and offer those that differ most, rather than dropping one silently to fit. Give your own preference only **after** they have answered, and if the models genuinely tie, say so and offer none. A confident recommendation is a strong anchor, and the point of the checkpoint is their judgement, not your agreement.
 
 ## 8. What the system cannot vouch for
 
