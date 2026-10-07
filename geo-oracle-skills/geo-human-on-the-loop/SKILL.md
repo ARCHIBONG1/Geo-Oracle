@@ -7,6 +7,8 @@ description: The activation question, the checkpoint summary and its five parts,
 
 ## 1. The question, once per objective
 
+**Every question in this skill is asked inline, with the ask-user tool, in the same turn** — the activation question and every checkpoint alike. Update the ledger first, every time.
+
 **Classify first, from your own plan.** Make the plan before you dispatch anything, then look at it:
 
 | What the plan needs | What to do |
@@ -23,6 +25,8 @@ Ask exactly this and stop:
 > **No** — everything runs automatically to the objective.
 > **Yes, every wave** — a checkpoint after each reviewed wave.
 > **Yes, key decisions only** — the plan before the first wave, any change of scope or direction, the reduction wave, and anything a specialist flags as a contradiction or a refusal.
+
+**Mint a new `investigation_id` for a new investigation**, with the date and time in it: `INV-dome-co2-20261006T0504`. The same name twice makes the second investigation inherit the first's run count, approved plan and any checkpoint left due, so a rerun of yesterday's question would start two-thirds through its work ceiling. The gateway refuses activation on an id that already carries work, and the refusal tells you to pick a new one.
 
 Then call `set_hotl_mode(investigation_id, mode, verbatim)` with their reply **word for word**, not a paraphrase: the record holds what they said and the confirmation line quotes it back. Surface the returned `confirmation_line` unchanged. Ask once per objective; a follow-up message inside an investigation inherits the setting, and a user who asks to change it mid-flight is recorded as an intervention.
 
@@ -54,7 +58,11 @@ In `every_wave` mode the record is filed **after** the person answers, never bef
 
 The activation answer approves wave 1 and nothing else. Every wave after it is a question you put to the person and an answer they give to **that** question. The gateway refuses a decision whose words are the activation answer, or any reply already on file from an earlier checkpoint: a recycled quote is not an answer, and recycling one is how a supervised investigation quietly becomes an unsupervised one.
 
-So the sequence at every wave boundary is: file nothing yet → put the five-part summary to the person → **end your turn and wait** → when they reply, file the checkpoint with their words. Filing before they have answered is the mistake the refusal exists to catch.
+So the sequence at every wave boundary is: file nothing yet → **update the ledger, including its Pending question block** → put the five-part summary and the question to the person **inline, with the ask-user tool** → they answer in the same turn → file the checkpoint with their words and clear the pending block. Filing before they have answered is the mistake the refusal exists to catch.
+
+**Do not end your turn to ask.** The question blocks until it is answered and the turn survives: an answered checkpoint carries straight on, and the whole investigation runs in one turn. You cannot perceive the wait — the answer simply appears, with nothing to tell you whether it took five seconds or an hour — so never reason about how long it took, and never claim a question returned immediately.
+
+**If nobody answers, the turn is cut at its limit with no message.** That is the accepted cost of supervision: a supervised investigation is only as alive as its supervisor, which is the point of it. Nothing is lost provided the ledger was written first, which is why the pending block goes in before the question and not after. An investigation meant to run unattended is `off` mode, not `every_wave`.
 
 ## 4. Accept, refuse, edit
 

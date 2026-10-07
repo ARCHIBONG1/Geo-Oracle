@@ -9,6 +9,8 @@ Long investigations outgrow the context window. Compaction summarises away ids a
 
 ## Rules
 
+- **Before any inline question**, fill Pending question and save the ledger. A question blocks the turn until it is answered; if the person walks away, the turn is cut at its limit with no message, and this block is the only thing that makes the work recoverable. Write it first, ask second. Clear it when the answer is filed.
+- **The investigation id** is new for every new objective, with the date and time in it (`INV-dome-co2-20261006T0504`), and is used for every task and every gateway call of that investigation. Reusing a previous one makes this investigation inherit its counters and its approved plan.
 - **Location.** Keep the file at `investigation/ledger.md`. If one session holds several investigations, use `investigation/<investigation_id>/ledger.md`.
 - **When to update.** Update after every reviewed result, before calling the next specialist.
 - **Global ids.** Use them exactly as returned, e.g. `T03-seis/E2` or `T05-struct/C1`. Your own items use `H#` (hypotheses), `X#` (contradictions), `U#` (uncertainties) and `Q#` (open questions).
@@ -67,6 +69,20 @@ Scope: screening | detailed
 
 ## Open questions
 - Q1 ...
+
+## Pending question
+*Written immediately BEFORE any inline question, cleared when the answer is filed. This is what a new turn resumes from if the person walks away and the turn is cut.*
+
+| Field | Content |
+|-------|---------|
+| Asked at | |
+| Wave | |
+| Work line | n of N specialist runs used |
+| Question | the question exactly as put |
+| Options | the choices offered |
+| Summary as put | done · why · contribution · next, as the person saw it |
+| Plan awaiting decision | the specialists proposed |
+| Jobs still running | job ids, which keep running and stay collectable |
 
 ## Next steps
 - ...
