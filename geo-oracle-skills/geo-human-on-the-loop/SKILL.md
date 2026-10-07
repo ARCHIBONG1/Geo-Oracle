@@ -46,7 +46,15 @@ Mark the two halves plainly, so the reader knows which parts the system can vouc
 
 `hotl_checkpoint(investigation_id, record, decision, verbatim, approved_plan)`. The record is the five parts; `decision` is what the person said; `approved_plan` is the specialists they approved, **and only those will run**. An edit is binding: a specialist struck from the plan is refused by the gateway, so do not re-propose it in the same wave.
 
-In `off` and `key_decisions` mode waves open without waiting, but file the record anyway with `decision: "automatic"`: the audit trail of an unattended run should be identical to a supervised one.
+In `every_wave` mode the record is filed **after** the person answers, never before, and `automatic` is refused there. In `off` and `key_decisions` mode waves open without waiting, so file the record with `decision: "automatic"`: the audit trail of an unattended run should be identical to a supervised one.
+
+**`automatic` is only for those two modes.** In `every_wave` the gateway refuses it, because it would open the next wave without anyone being asked — the one thing this mode exists to prevent. There, every checkpoint carries a real decision (accept, edit, refuse or stop) and the person's own words. If a checkpoint is due and you have not put the summary to them yet, put it to them and end your turn; their reply is what you file.
+
+## 3a. Each wave needs its own answer
+
+The activation answer approves wave 1 and nothing else. Every wave after it is a question you put to the person and an answer they give to **that** question. The gateway refuses a decision whose words are the activation answer, or any reply already on file from an earlier checkpoint: a recycled quote is not an answer, and recycling one is how a supervised investigation quietly becomes an unsupervised one.
+
+So the sequence at every wave boundary is: file nothing yet → put the five-part summary to the person → **end your turn and wait** → when they reply, file the checkpoint with their words. Filing before they have answered is the mistake the refusal exists to catch.
 
 ## 4. Accept, refuse, edit
 
