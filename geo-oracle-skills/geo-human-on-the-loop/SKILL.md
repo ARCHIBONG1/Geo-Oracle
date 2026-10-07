@@ -98,14 +98,33 @@ The same machinery as every-wave, fired at four moments instead of at every boun
 |---|---|---|
 | **The plan** | once, before the first wave | the waves you intend to run, the specialists in each, and what each should settle. Their answer approves it |
 | **A change of scope or direction** | whenever the plan you had approved no longer fits what you found | what changed, what you now propose instead, and why |
-| **The reduction wave** | when the risk specialist's plan has actionable items | the items, their owners and modes, and what each would settle |
-| **A contradiction or a refusal** | when a specialist flags either | both sides of the contradiction, or what was refused and why, and what you propose to do |
+| **The reduction wave** | when the risk specialist's plan has actionable items | the items, their owners and modes, and what each would settle. The gateway sees a published `reduction_plan` and refuses a wave filed as "no key decision here" that contains one |
+| **A contradiction or a refusal** | when a specialist flags either | both sides of the contradiction, or what was refused and why, and what you propose to do. The gateway sees contradictions: a wave filed as "no key decision here" that contains one is refused |
 
 The last two can fire **mid-wave**, not only at a boundary. Ask when you reach them; do not save them for the end of the wave, because by then you may have built on the thing in question.
 
 **Between triggers, waves open without waiting.** File the record with `decision: "automatic"` — the gateway still requires it, so the audit trail matches a supervised run — and carry straight on. Do not ask at a wave boundary in this mode: the person chose not to be asked there, and asking anyway is the same failure as not asking in every-wave mode, from the other side.
 
 **The plan trigger fires once.** Its answer approves the plan, not the whole investigation: a later change of scope is its own question.
+
+## 3c. The confirmation line
+
+Every `hotl_checkpoint` returns one, built from state you cannot set — the wave number, the specialists opening, the run count — and you surface it to the person **unchanged**. Each says which setting it acted under, so a wave that opened without asking cannot be mistaken for one that skipped them:
+
+```
+Wave 2: Approved as recorded — opening: structural_geology. 4 of 15 runs used.
+        Your words on file: "yes, but skip the seismic rerun"
+Wave 2: HOTL Selection — Key Decisions Only (no key decision here) — opening: structural_geology. 4 of 15 runs used.
+Wave 2: HOTL Selection — Unsupervised — opening: subsurface_play. 4 of 15 runs used.
+Wave 3: Work gate — 15 runs used, continuing to 30. This gate holds even unsupervised.
+        Your words on file: "yes, keep going, raise it to 30"
+Wave 3: Refused — opening nothing. 7 of 15 runs used.
+Wave 3: Stopped at your request — nothing further opened. 7 of 15 runs used.
+```
+
+The second and third are the ones that matter most to read out. `automatic` is also the word the gateway refuses in every-wave mode, so a bare "Wave 2 automatic" reads, to someone who asked for key decisions, like you skipping them. The line says the setting instead.
+
+**Two of the four triggers are checked, not trusted.** If any specialist in the wave returned a contradiction, or published a `reduction_plan`, the gateway refuses a record filed as "no key decision here" and tells you to ask. A change of scope and some refusals it cannot see, so those remain your judgement: if the plan you had approved no longer fits what you found, that is a trigger whether or not anything flags it.
 
 ## 4. Accept, refuse, edit
 
