@@ -134,6 +134,8 @@ The second and third are the ones that matter most to read out. `automatic` is a
 
 ## 5. The work gate
 
+**The ceiling is theirs, not yours.** It starts at 15 and the gateway refuses a different one unless the person's own words contain that number, in digits or spelled out. Do not decide that a long investigation deserves more rope: the work gate is the only gate that holds in every mode, so it is the one thing between an unattended run and unlimited spending, and choosing your own ceiling is choosing how much rope you get. If you think 15 is too low for the scope, say so when you ask the activation question and let them name a number — or let the gate fire at 15 and ask then, which costs one interruption.
+
 Every specialist run counts, including a repeat of the same specialist, a follow-up, a challenge run and a reduction task. At the ceiling (15 by default) the gateway stops and waits, **in every mode**, and again at every ceiling after. Put the work line in every checkpoint summary so the ceiling is never a surprise; the person can raise it at a checkpoint before it bites. Clear the gate with `decision: "work_acknowledged"` and their words, and `new_ceiling` if they set one.
 
 ## 6. What a person may change, and what they may not
