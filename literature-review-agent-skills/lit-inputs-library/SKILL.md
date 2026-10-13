@@ -122,6 +122,7 @@ demonstration that the implementation is correct.
 Use the citation forms of your system prompt (section 7):
 - **Listing**: in `observations` (`classification` `data`, `source_type` `project_data`), with `source_reference` `project:operations/inputs | lit_list_inputs | m:lit/list-inputs | <time of the call>`.
 - **Document content**: one evidence item per point, with `source_reference` `project:<path> | p. <n> | prov:<id> | m:lit/read-document | relevance: … | access: full-text`.
+  - Two limits of the readers, to state when they matter: a Word document's tables nested inside table cells, and any content inside tracked changes, are not extracted (python-docx documents both exclusions); and a `.txt` file may be read as a document with `lit_read_document` or, when it is a delimited table, previewed with `lit_preview_table` - say which you did.
   - The user's own reports are `project_data`. A published paper found in the folder is `literature`, resolved to its DOI as well.
   - A report's conclusion stays that report's `interpretation`, however confident it sounds.
 - **Conclusions**: for Geo Oracle, the paths to pass on, grouped by specialist, e.g. "wells_petrophysics: wells/W1.las, wells/W1_tops.csv".
