@@ -7,6 +7,8 @@ description: Saturation-height functions - Leverett J and Brooks-Corey fits of c
 
 ## Data and fit
 
+`petro_saturation_height` does the fits, the conversion and the comparison described here; what follows is how to choose its inputs and read its result.
+
 - **Register the data**: capillary-pressure data (`capillary_pressure`: sample, porosity, permeability_md, pc_psi / pc_bar / pc_kpa, sw, system) from mercury, porous-plate or centrifuge tests.
 - **Leverett J** (`method: "leverett_j"`): J = 0.21645 Pc(psi) / (sigma cos theta) x sqrt(k/phi) normalises plugs of different quality. One curve, Sw = Swirr + a J^-b (capped at 1), is fitted to all plugs.
   - Needs `sigma_cos_lab`, the interfacial tension times the cosine of the contact angle of the lab system (e.g. air-brine about 72 dyne/cm, mercury-air about 367 dyne/cm), with source.

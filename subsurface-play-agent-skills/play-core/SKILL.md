@@ -21,6 +21,7 @@ Ordinal: demonstrated > inferred > analogue-supported > hypothesised > unknown. 
 ## 2. The rules the matrix applies
 
 - **Scope.** A link whose scope is regional or analogue caps the element at analogue-supported. Claiming more is refused with the reason.
+- **The elements come from the template.** `play_element_template` gives, per domain, the critical and supporting elements, their dependencies and what evidence lifts each; link evidence to those elements and no others.
 - **Weakest link.** The play's status is the minimum over its critical elements; the capping element is named.
 - **Dependencies.** maturation needs source; migration needs maturation; timing needs trap and maturation; preservation needs timing (hydrocarbon). injectivity and trapping need the storage unit; the pressure limit needs caprock and fault containment (CO2). permeability needs the structural setting; recharge needs permeability (geothermal). generation needs a source; migration needs generation (natural hydrogen); cycling integrity needs caprock and well containment (hydrogen storage). A demonstrated product proves its prerequisites: a measured hydrogen flux lifts source to inferred. An element above its prerequisite is flagged; a discovery proves the charge chain.
 - **A claimed status may lower an element, never raise it.** Lower with the reason in the note (a product's ledger fails, a transfer is unknown, a caveat upstream).
@@ -89,6 +90,8 @@ reference. Report the two separately, and never let a citation stand in for a
 demonstration that the implementation is correct.
 
 ## 8. Self-check before emitting
+
+- `source_reference` on every tool-derived item carries the `prov:` id **and** every `m:` id from the result's `methods`, copied exactly; a missing `m:` id is a missing citation.
 
 1. Every status on a cited link; no element demonstrated on regional or analogue evidence; the weakest link named.
 2. Every well classified or PT5 failing; every event dated by a cited claim.

@@ -51,7 +51,7 @@ Never paste raw tool output into findings. Summarise the value and cite the prov
 
 Good statements are specific and located. For example: "Reflector continuity falls to 0.28 between XL 248 and 250 over 300–700 ms on IL 120 (E3)." Every interpretation lists the evidence ids it rests on in `supporting_evidence_ids`, and its `assumptions` and `limitations`.
 
-`source_reference` has this form: `prov:<id> <tool> <key args>`. For task-supplied evidence, use the task's own reference.
+`source_reference` has this form: `prov:<id> <tool> <key args> | m:<domain>/<name>` — the `prov:` id and then every id from the result's `methods` field, copied exactly (for an attribute result that is the one method actually run, e.g. `m:seis/edge-semblance`). The `m:` id is not optional: without it Geo Oracle cannot say which method produced the number. For task-supplied evidence, use the task's own reference.
 
 ## 4. Claims and independence
 

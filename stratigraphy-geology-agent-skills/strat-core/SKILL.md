@@ -98,6 +98,8 @@ demonstration that the implementation is correct.
 
 ## 8. Self-check before emitting
 
+- `source_reference` on every tool-derived item carries the `prov:` id **and** every `m:` id from the result's `methods`, copied exactly; a missing `m:` id is a missing citation.
+
 1. Every surface and pick traces to a reference or `prov:` id; reported tops untouched; disagreements in `contradictions`.
 2. Every panel interpretation carries its ledger and its best tie rank; every claim its ceiling.
 3. Depth reference stated (TVDSS); MD only for picks.

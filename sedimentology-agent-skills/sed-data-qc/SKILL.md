@@ -16,7 +16,7 @@ description: Registering core and cuttings descriptions, analyses, analogue tabl
 | `regional_framework` | regional_geology | setting, transfer | S4 |
 | horizon extractions | seismic_interpretation | domain, attribute | Geometry (phase 2) |
 
-A well file or seismic volume listed by `sed_list_data` cannot be opened here: ask the owner for the product.
+Read every product's sidecar with `sed_read_product` before using it: the depth reference, the shift, the domain and the provenance come from there, not from the file name. A well file or seismic volume listed by `sed_list_data` cannot be opened here: ask the owner for the product.
 
 ## Depth
 

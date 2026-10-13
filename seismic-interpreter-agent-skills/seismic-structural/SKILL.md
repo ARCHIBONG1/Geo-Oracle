@@ -60,6 +60,10 @@ description: Structural interpretation from seismic - horizon tracking, faults a
 3. The velocity model is an input: name its source (task, well W1 checkshot, wells_petrophysics finding). A constant or linear velocity is an **assumption** unless supplied.
 4. Closure is not a hydrocarbon column. A spill point bounds the trap; the fluid contact needs other evidence (see `seismic-qi`).
 
+## Publishing for structural_geology
+
+When another specialist needs your faults and horizons — structural_geology above all — publish them with `seismic_publish_structure`: fault traces in X/Y with z ranges and, given a time-depth table or a depth volume, strike and dip; horizon grids with inline, crossline, x, y, z. The sidecar states the domain and the pick uncertainty, and structural_geology's tools refuse a time-domain product, so convert first where depth is needed. List each reference in `conclusions` as `Product: fault_set — @seismic-interpreter-agent/products/<file>` (likewise `horizon`). A task that feeds a structural model, a closure with faults, fault stability or fault seal is incomplete until these are published.
+
 ## Classification
 
 - Tracked horizon values, map extremes, throw, closure numbers and depths are **measurements** (they depend on stated parameters and inputs).

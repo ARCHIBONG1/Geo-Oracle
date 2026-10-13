@@ -24,7 +24,7 @@ Five domains, read from `project_context`: hydrocarbon, CO2 storage, geothermal,
 | R2 trap in depth | the closure is in depth, closed, with V1 and V7 passed in the structural validity record |
 | R3 element tracing | every element has a status inherited from the play, with no refused claim |
 | R4 input provenance | every volume input resolves to a product or a stated range with its source |
-| R5 consistency | contact inside the closure and at or above spill, column within the seal capacity, reservoir present |
+| R5 consistency | contact inside the closure and at or above spill, column within the seal capacity, reservoir present — `pt_consistency`, run per scenario before `pt_readiness` |
 | R6 derived location | a target location passes every constraint (phase 2) |
 | R7 alternatives | two or more scenarios evaluated |
 
@@ -88,6 +88,8 @@ reference. Report the two separately, and never let a citation stand in for a
 demonstration that the implementation is correct.
 
 ## 7. Self-check before emitting
+
+- `source_reference` on every tool-derived item carries the `prov:` id **and** every `m:` id from the result's `methods`, copied exactly; a missing `m:` id is a missing citation.
 
 1. Every number from a tool, with its `prov:` id.
 2. No probability, chance, weight, recovery factor or commercial word anywhere.

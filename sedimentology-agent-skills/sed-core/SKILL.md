@@ -88,6 +88,8 @@ demonstration that the implementation is correct.
 
 ## 8. Self-check before emitting
 
+- `source_reference` on every tool-derived item carries the `prov:` id **and** every `m:` id from the result's `methods`, copied exactly; a missing `m:` id is a missing citation.
+
 1. Every facies on described features; the rung stated on every claim.
 2. Every environment with a diagnostic feature or stopped at the association rung.
 3. Every model with its ledger; the alternative built and tested where possible.

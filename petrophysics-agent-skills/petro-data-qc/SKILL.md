@@ -17,6 +17,8 @@ The import returns a path such as `uploads/W1.las`; use it from then on. If the 
 
 ## 2. Loading logs: `petro_load_well`
 
+For several wells at once, `petro_prepare_wells` loads, locates (a survey, a track, or `vertical: true` where the task says so) and publishes `correlation_logs` and `well_tops` in one call. Use it first for any multi-well task, then QC each well as below.
+
 It loads LAS 2.0/3.0 or CSV logs. DLIS is not supported; ask for LAS.
 
 **What it does:**

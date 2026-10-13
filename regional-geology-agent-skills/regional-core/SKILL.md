@@ -96,6 +96,8 @@ demonstration that the implementation is correct.
 
 ## 7. Self-check before emitting
 
+- `source_reference` on every tool-derived item carries the `prov:` id **and** every `m:` id from the result's `methods`, copied exactly; a missing `m:` id is a missing citation.
+
 1. Every claim traces to `prov:` ids or global ids; none rests on `unknown` evidence.
 2. Every statement has a scope tag; every `[transfer]` has T1-T5.
 3. Every dataset value names dataset and version; every age its time scale.

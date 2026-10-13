@@ -21,6 +21,7 @@ description: Reading correlation_logs and well_tops products and their sidecars,
 
 - Correlate in TVDSS. A deviated well without a trajectory-based TVDSS (sidecar `trajectory` "vertical (datum offset only)" with `deviated` true) needs `wells_petrophysics` to run `petro_trajectory` first; say so.
 - `stg_register_table` converts every table's MD to TVDSS with the wells' logs (`logs=`). A row for a well without logs stays MD-only and is flagged.
+- `stg_convert_depth` is the same MD-to-TVDSS conversion for a depth that reaches you outside a registered table — a quoted top, a core depth, a sample. Never convert by hand.
 - Report picks with both MD and TVDSS; the products carry both.
 
 ## Tables (`stg_register_table`)

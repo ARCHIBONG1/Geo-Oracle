@@ -120,8 +120,8 @@ demonstration that the implementation is correct.
 ## Reporting what you found
 
 Use the citation forms of your system prompt (section 7):
-- **Listing**: in `observations` (`classification` `data`, `source_type` `project_data`), with `source_reference` `project:operations/inputs | lit_list_inputs | <time of the call>`.
-- **Document content**: one evidence item per point, with `source_reference` `project:<path> | p. <n> | prov:<id> | relevance: … | access: full-text`.
+- **Listing**: in `observations` (`classification` `data`, `source_type` `project_data`), with `source_reference` `project:operations/inputs | lit_list_inputs | m:lit/list-inputs | <time of the call>`.
+- **Document content**: one evidence item per point, with `source_reference` `project:<path> | p. <n> | prov:<id> | m:lit/read-document | relevance: … | access: full-text`.
   - The user's own reports are `project_data`. A published paper found in the folder is `literature`, resolved to its DOI as well.
   - A report's conclusion stays that report's `interpretation`, however confident it sounds.
 - **Conclusions**: for Geo Oracle, the paths to pass on, grouped by specialist, e.g. "wells_petrophysics: wells/W1.las, wells/W1_tops.csv".

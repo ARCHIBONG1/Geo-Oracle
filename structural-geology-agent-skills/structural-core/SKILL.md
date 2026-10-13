@@ -99,6 +99,8 @@ demonstration that the implementation is correct.
 
 ## 8. Self-check before emitting
 
+- `source_reference` on every tool-derived item carries the `prov:` id **and** every `m:` id from the result's `methods`, copied exactly; a missing `m:` id is a missing citation.
+
 1. Every observation and claim traces to a reference or `prov:` id; nothing invented.
 2. Every model interpretation carries its ledger; every applied claim its `depends_on_claim_ids` and ceiling.
 3. Every surface's domain stated; nothing time-domain used for closures or stress.

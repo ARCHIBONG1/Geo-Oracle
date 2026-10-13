@@ -49,7 +49,7 @@ Each item states one fact, with its depth reference and its source:
 
 ```json
 {"evidence_id": "E4", "statement": "Washout (caliper more than 1 in over bit size) at 1320.1-1330.2 m MD (1242.6-1251.3 m TVDSS); density and neutron there are unreliable",
- "classification": "measurement", "source_type": "derived", "source_reference": "prov:9c1e0f3a7b2d4e61 petro_qc_logs"}
+ "classification": "measurement", "source_type": "derived", "source_reference": "prov:9c1e0f3a7b2d4e61 petro_qc_logs | m:petro/qc-logs"}
 ```
 
 - **Header facts** (datum, mud, bit size) are `data` / `project_data`, cited as the loaded file plus the load's provenance id.
@@ -89,6 +89,7 @@ Much of your value reaches users through other specialists, so products follow f
 - **`zone_summary`**: JSON.
 - **`pressure_profile`**: CSV. **`fluid_contacts`**: JSON.
 - **`temperature_profile`**: CSV.
+- **`correlation_logs`** and **`well_tops`**: what the stratigraphy specialist correlates on. Published per well by `petro_publish_correlation_logs`, or for a list of wells in one call by `petro_prepare_wells` (load, locate, publish); use the latter first for any multi-well task. A task that asks for a correlation, a panel or a framework downstream is incomplete until these are published.
 
 Each has a JSON sidecar with units, datum, source and provenance.
 
@@ -132,7 +133,7 @@ demonstration that the implementation is correct.
 
 ## 8. Self-check before emitting
 
-1. Every number has a `prov:` id in `source_reference`. Evidence fields list evidence ids (E#, or full upstream ids), never claim ids; claims link to claims only through `depends_on_claim_ids`.
+1. Every number has a `prov:` id **and** the result's `m:` method id(s) in `source_reference`; a missing `m:` id is a missing citation. Evidence fields list evidence ids (E#, or full upstream ids), never claim ids; claims link to claims only through `depends_on_claim_ids`.
 2. Every depth names MD or TVDSS, and the datum is stated (or stated as unknown).
 3. Every parameter has a source; assumptions are listed with a range.
 4. Bad-hole intervals that bear on the question are stated.

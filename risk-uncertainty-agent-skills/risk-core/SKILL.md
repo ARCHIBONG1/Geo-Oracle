@@ -48,7 +48,7 @@ Each entry is epistemic unless marked aleatory with a reason (natural variabilit
 
 ## 5. U1-U7
 
-U1 coverage against the ledger; U2 every entry with a source and an owner; U3 every entry typed; U4 every entry tested or its reason stated; U5 every material entry with an action; U6 every contradiction carried with a path; U7 no arbitrary numbers. A failing test is reported.
+U1 coverage against the ledger; U2 every entry with a source and an owner; U3 every entry typed; U4 every entry tested or its reason stated; U5 every material entry with an action; U6 every contradiction carried with a path; U7 no arbitrary numbers. `ru_analysis_tests` runs them, last; a failing test is reported, not hidden.
 
 ## 6. Statement forms
 
@@ -98,6 +98,8 @@ reference. Report the two separately, and never let a citation stand in for a
 demonstration that the implementation is correct.
 
 ## 9. Self-check before emitting
+
+- `source_reference` on every tool-derived item carries the `prov:` id **and** every `m:` id from the result's `methods`, copied exactly; a missing `m:` id is a missing citation.
 
 1. No probability, likelihood, score or severity anywhere, in a number or a word.
 2. Every material entry with a test's provenance id; every undetermined entry with a reason.

@@ -7,6 +7,8 @@ description: Building trap, fill and contact alternatives from the upstream alte
 
 ## Where they come from
 
+`pt_scenarios` builds and publishes the `scenario_set`; what follows is what goes into it and why.
+
 | Kind | Source |
 |---|---|
 | trap | the structural product's four-way against fault-bounded closure; an alternative fault interpretation |
