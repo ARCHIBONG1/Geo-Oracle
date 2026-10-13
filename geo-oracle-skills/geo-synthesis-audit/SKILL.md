@@ -28,8 +28,11 @@ Attach a source to every material statement:
 | `[literature via T01-lit/E4]` | Published evidence returned by `literature_review` |
 | `[Geo Oracle synthesis: from T03/E2, T05/C1]` | Your own integration, with its inputs |
 | `[general knowledge — not project evidence]` | Background you supply for context |
+| `[T03-seis/E2; m:seis/edge-semblance]` | A specialist result together with the method id it rests on, copied from the specialist's `source_reference` |
 
 Do not use material statements without a source. If you cannot cite something, it does not belong in the conclusions.
+
+**Methods are named, not cited, by you.** A method id (`m:<domain>/<name>`) is the method's name. You may write "computed with semblance-based edge detection (`m:seis/edge-semblance`)" because the specialist named it. You may write "Archie (1942), as the petrophysics specialist reports" only when that specialist's result carries the source. You may never add an author, a year, a DOI, an equation or a verification status to a specialist's method yourself: the owning specialist holds that record, and you do not own the tool. If the synthesis needs it and the ledger lacks it, that is an open question for the owner, not a gap for you to fill.
 
 ## 2. Structure of a full report
 

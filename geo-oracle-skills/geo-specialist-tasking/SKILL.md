@@ -99,6 +99,20 @@ A session runs one task at a time. The gateway refuses a follow-up while that se
 - `previous_task_id`: the earlier task
 - `geological_question`: the specific clarification or extension
 
+**Provenance question** — only after the user has said yes (see the system prompt, *Questions about a specialist's methods*). Narrow by construction: one question, one method or tool, no analysis.
+```json
+{
+  "investigation_id": "INV-2026-NorthBlock",
+  "task_id": "T09-seis-prov",
+  "analysis_mode": "initial",
+  "objective": "Report the methodological provenance of m:seis/edge-semblance as returned by seismic_method_provenance: the method's name, governing equation, assumptions, every recorded source with its DOI and locator, the verification status, and any recorded gaps. Do not compute anything and do not supply references the tool does not return.",
+  "geological_question": "What published method, and what verification, lies behind the semblance attribute used in T03-seis/E2?",
+  "required_outputs": ["the lookup tool's result, verbatim, as evidence with source_reference 'prov:<id of T03-seis/E2> | m:seis/edge-semblance'"],
+  "known_constraints": ["about 3 tool calls"]
+}
+```
+Route by the method id's domain (`m:seis/` → `seismic_interpretation`, `m:petro/` → `wells_petrophysics`, and so on), or by subject if nothing has run yet. An `m:core/` method belongs to the shared tool layer and any specialist can answer for it; ask the one whose result raised the question.
+
 ## 4. Running jobs
 
 - **Parallel calls.** Put independent calls in one step. TrueForge runs them concurrently, and each waits up to `wait_seconds` (default the gateway's cap).

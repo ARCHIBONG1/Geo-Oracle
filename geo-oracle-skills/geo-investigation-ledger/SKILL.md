@@ -48,6 +48,8 @@ Scope: screening | detailed
 | ID | Class | Statement (1 line) | Source | Supported by | Independent lines | Status |
 |----|-------|--------------------|--------|--------------|-------------------|--------|
 
+The **Source** cell carries the specialist's tokens exactly as returned: the `prov:` id of the computation and every `m:<domain>/<name>` method id from its `source_reference`, e.g. `T03-seis/E2 · prov:2b551b72cc64912c · m:seis/edge-semblance`. The tokens are self-delimiting, so the risk specialist (which parses this ledger) can read them regardless of punctuation. Copy them; never compose a method id or a source yourself.
+
 ## Hypotheses
 | H# | Hypothesis | Supporting | Contradicting | Key assumptions | Discriminating test | Status |
 |----|------------|------------|---------------|-----------------|---------------------|--------|

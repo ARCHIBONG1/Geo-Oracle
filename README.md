@@ -218,6 +218,20 @@ is not in its tool list. Each skill also carries a "Not available" note where
 no tool exists for an analysis, so the agent records the gap in `limitations`
 instead of improvising.
 
+Since the provenance registry (`src/geo_oracle/tools/tool_suites/provenance/`)
+was wired in, skills also carry **method ids** (`m:seis/edge-semblance`) and
+name each pack's **lookup tool** (`seismic_method_provenance`). Each
+`<tag>-core` skill's *Methodological provenance* section tells the specialist
+to carry a result's `m:` ids into `source_reference` next to the `prov:` id,
+and to answer any "which equation / which paper" question from the lookup tool
+rather than from its own knowledge. The `geo-oracle` pack does the mirror
+image: Geo Oracle has no lookup tool, quotes ids out of the ledger as names
+only, and routes anything deeper to the owning specialist
+(`geo-synthesis-audit` §1, `geo-investigation-ledger`, `geo-specialist-tasking`
+§3). `tests/test_provenance_registry.py` checks that every quoted method id
+exists and that every pack names its lookup tool, so this coupling, unlike the
+tool-name one, is enforced offline.
+
 ### 4b. Some skills are written against tools this repo does not contain
 
 Not every tool a skill names lives in `src/geo_oracle/`. These are verified and
