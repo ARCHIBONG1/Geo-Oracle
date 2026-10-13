@@ -15,10 +15,11 @@ description: Porosity - choosing density, neutron-density or sonic methods by li
 
 | Method | Equations | Needs | Use when |
 |---|---|---|---|
-| neutron_density | phiD = (rho_ma - RHOB) / (rho_ma - rho_fl); phiN = (NPHI - nphi_ma) / (1 - nphi_ma); combined as their mean, or root-mean-square where phiD exceeds phiN by over 0.02 (gas) | rho_ma, rho_fl, nphi_ma (+ rho_sh, nphi_sh) | Default in sands and mixed lithology; handles gas |
+| neutron_density | phiD = (rho_ma - RHOB) / (rho_ma - rho_fl); phiN = (NPHI - nphi_ma) / (1 - nphi_ma); combined as their mean, or root-mean-square (Gaymard-Poupon) where phiD exceeds phiN by more than the gas tolerance (0.02 v/v by design, or the parameter nd_gas_tolerance with its source; the result states which) | rho_ma, rho_fl, nphi_ma (+ rho_sh, nphi_sh) | Default in sands and mixed lithology; handles gas |
 | density | phiD alone | rho_ma, rho_fl (+ rho_sh) | Known single mineralogy and liquid-filled; overstates porosity in gas |
 | sonic_wyllie | (DT - dt_ma) / (dt_fl - dt_ma) | dt_ma, dt_fl (+ dt_sh) | Bad hole (the sonic is less affected by washouts), consolidated rock; reads mostly intergranular porosity |
-| sonic_rhg | 0.625 (DT - dt_ma) / DT | dt_ma | Raymer-Hunt-Gardner alternative |
+| sonic_rhg | The published Raymer-Hunt-Gardner (1980) transform, inverted: V = (1 - phi)^2 Vma + phi Vf below 37 % porosity, the suspension form above 47 %, a linear blend between (their matrix velocities: sandstone 17,850, limestone 20,500, dolomite 22,750 ft/s, i.e. dt_ma 56, 49, 44 us/ft) | dt_ma, dt_fl, rho_ma, rho_fl (+ dt_sh) | Consolidated to unconsolidated sands without a compaction factor; the paper's stated advantage |
+| sonic_field | sonic_c (DT - dt_ma) / DT, the field approximation that is NOT in the RHG paper | dt_ma, sonic_c (+ dt_sh) | Only when a sourced C is in hand: the literature range is 0.625-0.70, 0.67 most accepted, 0.60 in gas (AAPG Wiki); register sonic_c with its source |
 
 ## Parameters
 
@@ -28,7 +29,9 @@ description: Porosity - choosing density, neutron-density or sonic methods by li
 | rho_fl | Mud filtrate in the flushed zone (about 1.0-1.1 g/cm3 for water-based mud) | `assumption` with a range |
 | nphi_ma | Neutron matrix point on the tool's scale: limestone-calibrated sandstone about -0.035, limestone 0, dolomite about +0.02 | — |
 | rho_sh, nphi_sh, dt_sh | Thick in-gauge shale (`log_crossplot`) | — |
-| dt_ma, dt_fl | Mineral and fluid slowness (quartz 55.5, calcite 47.6 us/ft; brine about 189) | — |
+| dt_ma, dt_fl | Mineral and fluid slowness (Wyllie: quartz 55.5, calcite 47.6 us/ft; RHG: sandstone 56, limestone 49, dolomite 44 us/ft; brine about 189) | — |
+| sonic_c | The field-approximation constant, only for sonic_field; cite its source (AAPG Wiki: 0.625-0.70, most accepted 0.67, 0.60 for gas) | — |
+| nd_gas_tolerance | Crossover tolerance for the gas correction; omit to use the design value 0.02 v/v | `assumption` with a range if changed |
 
 A wrong matrix density is the commonest porosity error: 0.05 g/cm3 in rho_ma moves density porosity by about 0.03. In mixed lithology, use the crossplot or core, and state it.
 
@@ -36,7 +39,7 @@ A wrong matrix density is the commonest porosity error: 0.05 g/cm3 in rho_ma mov
 
 - **Gas**: density porosity alone reads too high. The neutron-density gas correction brings it back. Report the gas-corrected intervals as observations supporting a gas interpretation, alongside the crossover.
 - **Washouts**: density and neutron read porous (a washout mimics gas). Gas-corrected intervals inside washouts (`petro_qc_logs`) are artefacts, and `petro_net_pay` excludes bad hole by default.
-- **Shale correction** needs `VSH`. Without it, PHIE = PHIT and shaly intervals are overstated.
+- **Shale correction** needs `VSH`. Without it, PHIE = PHIT and shaly intervals are overstated. Every method, sonic included, removes Vsh times the shale point's apparent porosity by the same transform (so the sonic methods need dt_sh).
 - **Carbonates**: sonic porosity misses vugs and fractures. A difference between neutron-density and sonic porosity is secondary porosity; report it as an interpretation.
 
 ## Calibration

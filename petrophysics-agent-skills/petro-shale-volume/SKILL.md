@@ -17,8 +17,8 @@ description: Shale volume (VSH) - choosing gamma-ray, neutron-density or SP meth
 | Method | Formula (IGR = (GR - GR_clean) / (GR_shale - GR_clean)) | Use when |
 |---|---|---|
 | gr_linear | VSH = IGR | Default upper bound; always compute it |
-| larionov_tertiary | 0.083 (2^(3.7 IGR) - 1) | Young, unconsolidated rocks (Tertiary) |
-| larionov_older | 0.33 (2^(2 IGR) - 1) | Older, consolidated rocks |
+| larionov_tertiary | 0.083 (2^(3.7 IGR) - 1) | Larionov's younger-rock curve. Kennedy (2021, SPWLA-2021-0073) shows the 1969 Russian label was 'Mesozoic', mistranslated as 'Tertiary'; choose by the rock's consolidation and state the choice, not by the name |
+| larionov_older | 0.33 (2^(2 IGR) - 1) | Larionov's older-rock (consolidated) curve |
 | clavier / stieber | Non-linear corrections | Alternatives; state why chosen |
 | neutron_density | (phiN - phiD) / (phiN_sh - phiD_sh) | Liquid-filled, known lithology; independent of gamma-ray radioactivity |
 | sp | 1 - PSP / SSP | Water-based mud and good SP only; water-bearing beds |

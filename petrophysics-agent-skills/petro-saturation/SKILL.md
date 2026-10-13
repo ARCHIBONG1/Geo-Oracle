@@ -12,7 +12,7 @@ Use the first method the data allow, and record which:
 | Rank | Method | Needs | Notes |
 |---|---|---|---|
 | 1 | `water_sample` | A registered `water_analysis` table (Rw at a temperature, or salinity) | Returns Rw at 25 degC in `register_as` |
-| 2 | `sp` | SP curve, water-based mud, a clean water-bearing bed (`md_range`), a thick shale for the baseline (`shale_md_range`), Rmf and its temperature (header or parameters), a temperature model | SSP = SP(clean) - SP(shale); Rw = Rwe from 0.85 Rmf. Approximate below 0.1 ohm.m (flagged). Not with oil-based mud |
+| 2 | `sp` | SP curve, water-based mud, a clean water-bearing bed (`md_range`), a thick shale for the baseline (`shale_md_range`), Rmf and its temperature (header or parameters), a temperature model | SSP = SP(clean) - SP(shale); Schlumberger chart SP-1: Kc = 61 + 0.133 T(degF); Rmfeq = 0.85 Rmf when Rmf at 75 degF exceeds 0.1 ohm.m, otherwise chart SP-2 read in reverse (saline mud, flagged); Rweq converted to Rw by chart SP-2 in its published closed form (Enikanselu & Adekanle 2008) up to 0.1 ohm.m; above 0.1 ohm.m (fresh water) Rw is returned equal to Rweq and flagged as a lower bound, so prefer a sample or a Pickett plot there. The result states the basis of each step (`rmfe_basis`, `rw_basis`). Not with oil-based mud |
 | 3 | `pickett` | PHIE (run `petro_porosity`) and RT in a **proven** water-bearing interval; `a` and `m` (or `m` fitted, if porosity varies) | Rw is only as good as the "100% water" assumption and the m used |
 | — | Regional value | Requested via `missing_data` from regional_geology | Never a textbook default |
 
@@ -20,7 +20,7 @@ Register the result exactly as returned in `register_as` (value, source, referen
 
 ## 2. Temperature
 
-Rw, Rmf and Rm change with temperature (Arps: R2 = R1 (T1 + 21.5) / (T2 + 21.5), degC). `petro_saturation` corrects Rw to every sample's formation temperature, so the parameter set needs `rw_temp_c` plus a temperature model:
+Rw, Rmf and Rm change with temperature (Arps 1953, in degF as printed: R2 = R1 (T1 + 6.77) / (T2 + 6.77); the tool converts degC exactly; chart Gen-6 states it valid 20-100 degC). `petro_saturation` corrects Rw to every sample's formation temperature, so the parameter set needs `rw_temp_c` plus a temperature model:
 - **`surface_temp_c` and `temperature_gradient_c_per_km`** (e.g. `regional`, with a range), or
 - **`surface_temp_c` alone**, in which case the header BHT at log TD is used. Uncorrected BHT reads low, so the temperatures are minima: say so.
 
@@ -33,7 +33,7 @@ Only when the task states that Rw is already at formation temperature, use `rw_a
 | Clean sand or carbonate (VSH below about 0.1), intergranular porosity | archie | rw, a, m, n |
 | Shaly sand, saline water, dispersed or structural clay | simandoux | + rsh (deep resistivity in a thick shale) |
 | Shaly sand with fresh or brackish water | indonesia | + rsh |
-| Cation-exchange capacity known from core | waxman_smits | + qv (meq/cm3); B from temperature and Rw (Juhasz) |
+| Cation-exchange capacity known from core | waxman_smits | + qv (meq/cm3), m_star and n_star (the shaly-sand exponents of Waxman & Smits: F* = PHIT^-m*, no tortuosity factor; Juhasz: n* about m* or m* + 0.1 in sands, 2.0 in carbonates - but from core when available); B from temperature and Rw (Juhasz 1981 eq. 5) |
 | Clay-bound water modelled explicitly | dual_water | + rwb (bound-water resistivity), PHIT and PHIE |
 | Vuggy or fractured carbonate | archie with m from SCAL | m from core, not 2 |
 

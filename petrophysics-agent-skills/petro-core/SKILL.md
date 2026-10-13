@@ -101,17 +101,21 @@ Handling rules:
 ## Methodological provenance
 
 Every tool result carries `methods` — the ids of the published methods that computation
-implements, such as `m:petro/saturation` — and `citation_version`, the state of the bibliography
-the answer reflects.
+ran, such as `m:petro/archie-saturation` — and `citation_version`, the state of the bibliography
+the answer reflects. A tool that selects its method by a parameter (`petro_vshale`,
+`petro_saturation`, `petro_porosity`, ...) lists only the methods that call used, in the
+order they ran: a `petro_saturation` result with `model: archie` and Rw corrected along the
+well carries `m:petro/archie-saturation`, `m:petro/formation-temperature-linear` and
+`m:petro/arps-resistivity-temperature`.
 
 **Carry the method ids up.** Append each `m:` id to the `source_reference` of every evidence
 item that rests on that result, next to its `prov:` id (for example
-`prov:2b551b72cc64912c | m:petro/saturation`), and name the method in words in the statement
+`prov:2b551b72cc64912c | m:petro/archie-saturation`), and name the method in words in the statement
 itself. The tokens are self-delimiting, so the exact separator does not matter. Geo Oracle
 cannot reach your lookup tool: what you write into `source_reference` is all it can quote
 to the user, and the method's name in words is what lets it answer without inventing anything.
 
-**An id is a name, not a citation.** A slug such as `m:petro/saturation` says which
+**An id is a name, not a citation.** A slug such as `m:petro/archie-saturation` says which
 method; it never says who published it or when. An author surname may be part of a
 method's name; a year never is. The reference lives in the registry, and
 only `petro_method_provenance` returns it.
