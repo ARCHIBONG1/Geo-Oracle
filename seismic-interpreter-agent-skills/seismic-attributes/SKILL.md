@@ -5,7 +5,7 @@ description: Choosing, parameterising, running and reading seismic attributes wi
 
 # Seismic attributes
 
-Six tools, one per attribute family. Each takes `attribute`, `input_paths` (usually `{"darray": <volume path>}`, an ingested `.h5` volume, always in IL,XL,T order; raw `.npy` or plain `.h5` files are refused, so load them with `seismic_ingest_array` first, stating their axis order if it is not IL,XL,T), `params`, and optionally `wait_seconds`. The method names below come from the d2geo-derived library. **Confirm exact names, parameters and defaults with `list_seismic_attributes(category=...)`** before your first call in a task, because the installed fork may differ.
+Six tools, one per attribute family. Each takes `attribute`, `input_paths` (usually `{"darray": <volume path>}`, an ingested `.h5` volume, always in IL,XL,T order; raw `.npy` or plain `.h5` files are refused, so load them with `seismic_ingest_array` first, stating their axis order if it is not IL,XL,T), `params`, and optionally `wait_seconds`. Every method is verified against the published literature cited in the provenance registry; cite the method's `source_reference`, never the tool. **Confirm exact names, parameters and defaults with `list_seismic_attributes(category=...)`** before your first call in a task.
 
 Every result gives you:
 - `provenance_id`, which you cite;
@@ -57,7 +57,8 @@ Every result gives you:
 **C. Dip and azimuth** (`seismic_dip_azimuth_attribute`)
 - Methods: gradient_dips (dip_factor, kernel), gradient_structure_tensor (kernel required), plus 2D/3D dip and azimuth methods if the fork has them.
 - The structure tensor returns six components (gi2, gj2, gk2, gigj, gigk, gjgk).
-- In time data, dips are apparent, in ms per trace. Convert to degrees only with a velocity and the trace spacing, and state both.
+- Dips from `gradient_dips` and `gst_2D_dips` are apparent dips in **samples per trace, multiplied by `dip_factor`** (default 10): divide by `dip_factor` and multiply by the sample interval for ms per trace. Convert to degrees only with a velocity and the trace spacing, and state both.
+- `gst_3D_dip` is the true dip in degrees **of the sample grid** (traces and samples as unit spacings), not of the physical geometry. `gst_3D_azm` is the **down-dip azimuth measured from the +crossline axis toward +inline**, 0–360°; add the survey azimuth to reach geographic north.
 
 **D. Frequency** (`seismic_frequency_attribute`)
 - Methods: lowpass_filter, highpass_filter, bandpass_filter (freq_lp, freq_hp), cwt_ricker (freq), cwt_ormsby (freqs).
@@ -74,6 +75,16 @@ Every result gives you:
 - Methods: rms (kernel), trace_agc, time_gain, reflection_intensity, first_derivative, second_derivative, gradient_magnitude, histogram_equalization, rescale_amplitude_range, phase_rotation (rotation).
 - `trace_agc` and `histogram_equalization` destroy relative amplitude. Use their outputs for structural or stratigraphic viewing only, never for amplitude claims.
 - `rms` with a vertical window about one period long is a stable amplitude-strength map attribute.
+- `trace_agc` is Yilmaz's rms automatic gain control: every sliding window of `kernel` samples is scaled to rms `desired_rms` (default 1).
+- `reflection_intensity` is the signed amplitude integrated over the window (trapezoid rule, sample units); peaks and troughs cancel within a window, so it is not an energy measure. Use `rms` for energy.
+
+## Units of the attributes
+
+- `instantaneous_frequency`, `instantaneous_bandwidth`, `dominant_frequency` and `response_frequency`: hertz. `quality_factor`: dimensionless, positive for decaying amplitude. `instantaneous_phase`: degrees in (−180, 180].
+- `relative_amplitude_change`: per **sample** (d ln A per sample), clipped to [−1, 1]. `amplitude_acceleration`: per **second²** and `frequency_change`: hertz per **second** (Barnes 2016 eqs 18–19), both scaled by the volume's sample rate.
+- `time_gain`: Yilmaz's g(t) = t^n on **time in seconds**, t = z_first + k·dt taken from the volume geometry; the gain is zero at t = 0.
+- `first_derivative`, `second_derivative`: per sample and per sample² along the chosen axis; the second derivative returns 0.934 on a unit parabola (the response of Farid & Simoncelli's published taps).
+- `sobel_filter_3d`: unnormalised, 32 per unit slope in 3-D. `volume_curvature`: 1/trace-spacing in grid units (dips in samples per trace).
 
 ## Reading attribute output
 
