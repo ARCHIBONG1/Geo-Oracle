@@ -25,11 +25,11 @@ description: Porosity - choosing density, neutron-density or sonic methods by li
 
 | Parameter | Preferred source | Otherwise |
 |---|---|---|
-| rho_ma | Core grain density (`core`) | Known mineral (quartz 2.65, calcite 2.71, dolomite 2.87) as `task` or `assumption` with a range |
+| rho_ma | Core grain density (`core`) | Known mineral (Schlumberger 2013 Appendix B: quartz 2.64, calcite 2.71, dolomite 2.85; grain densities 2.65/2.71/2.87) as `task` or `assumption` with a range |
 | rho_fl | Mud filtrate in the flushed zone (about 1.0-1.1 g/cm3 for water-based mud) | `assumption` with a range |
 | nphi_ma | Neutron matrix point on the tool's scale: limestone-calibrated sandstone about -0.035, limestone 0, dolomite about +0.02 | — |
 | rho_sh, nphi_sh, dt_sh | Thick in-gauge shale (`log_crossplot`) | — |
-| dt_ma, dt_fl | Mineral and fluid slowness (Wyllie: quartz 55.5, calcite 47.6 us/ft; RHG: sandstone 56, limestone 49, dolomite 44 us/ft; brine about 189) | — |
+| dt_ma, dt_fl | Mineral and fluid slowness (Schlumberger 2013 Appendix B: quartz 56.0, calcite 49.0, dolomite 44.0 us/ft; brine about 189) | — |
 | sonic_c | The field-approximation constant, only for sonic_field; cite its source (AAPG Wiki: 0.625-0.70, most accepted 0.67, 0.60 for gas) | — |
 | nd_gas_tolerance | Crossover tolerance for the gas correction; omit to use the design value 0.02 v/v | `assumption` with a range if changed |
 
