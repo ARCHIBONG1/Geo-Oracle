@@ -58,6 +58,7 @@ Map tools (`seismic_track_horizon`, `seismic_horizon_map`, `seismic_time_to_dept
 
 - Render the sections your key evidence rests on, so a person can check them. One figure per key claim is enough.
 - Cite the figure in the related evidence item's `source_reference`, for example `prov:… seismic_render_section IL 120, figure figures/….png`.
+- The QI tools draw their own figures: `seismic_extract_wavelet`, `seismic_synthetic` and `seismic_well_tie` return `wavelet_figure_markdown`, `synthetic_figure_markdown` and `well_tie_figure_markdown`. Publish all three for every well you tie (the seismic-qi skill says what the reader should check); the one-figure-per-claim limit does not apply to ties.
 
 ## Showing figures to the user
 
