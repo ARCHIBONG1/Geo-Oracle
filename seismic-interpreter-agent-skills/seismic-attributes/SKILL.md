@@ -85,6 +85,7 @@ Every result gives you:
 - `time_gain`: Yilmaz's g(t) = t^n on **time in seconds**, t = z_first + k·dt taken from the volume geometry; the gain is zero at t = 0.
 - `first_derivative`, `second_derivative`: per sample and per sample² along the chosen axis; the second derivative returns 0.934 on a unit parabola (the response of Farid & Simoncelli's published taps).
 - `sobel_filter_3d`: unnormalised, 32 per unit slope in 3-D. `volume_curvature`: 1/trace-spacing in grid units (dips in samples per trace).
+- **Depth volumes (z in m):** the units above are for time volumes. On a depth volume the frequency outputs are in **cycles per m**, rates of change per m (`frequency_change` cycles per m², `amplitude_acceleration` per m²), filter corners are read in cycles per m, and `time_gain` applies zⁿ with z in m; the tool warning says so. `sweetness`, `cwt_ricker` and `cwt_ormsby` are defined in time and are refused on a depth volume. `quality_factor` is the same in either domain.
 
 ## Reading attribute output
 

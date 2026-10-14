@@ -232,6 +232,15 @@ only, and routes anything deeper to the owning specialist
 exists and that every pack names its lookup tool, so this coupling, unlike the
 tool-name one, is enforced offline.
 
+A renamed tool must also be renamed in the provenance registry's `used_by`
+entries, or the specialist's lookup tool and the method ids in its results go
+wrong. That side is checked by every tool server as it starts (an ERROR banner
+in the log and `provenance_check` in `GET /health`). Without
+`TOOLS_PROVENANCE_STRICT=true` the server warns and still starts; with it
+(recommended, in `keys.env`) the server refuses to start. The full list of places a
+tool lives is **Adding, renaming or changing a tool** in
+[src/geo_oracle/tools/README.md](../../src/geo_oracle/tools/README.md).
+
 ### 4b. Some skills are written against tools this repo does not contain
 
 Not every tool a skill names lives in `src/geo_oracle/`. These are verified and
