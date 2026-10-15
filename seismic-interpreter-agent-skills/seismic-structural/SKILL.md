@@ -18,6 +18,7 @@ description: Structural interpretation from seismic - horizon tracking, faults a
 | Faults | `seismic_extract_faults` | faults found in 3D: id, extent, strike (grid and azimuth), apparent dip, z range; fault-set file |
 | Throw | `seismic_fault_throw` | throw along the fault, downthrown side, cycle-skip check, horizon offsets |
 | Binary or labelled fault volume | `seismic_binarize_volume` | 0/1 volume (or fault number per voxel), threshold used and its source, extent per fault |
+| Faults when likelihood is poor; channels, karst, geobodies | `seismic_segment_volume` (see `seismic-attribute-interpretation`) | labelled or binary volume, body catalogue, extraction figure |
 | 3D view of faults and horizons | `seismic_render_3d` | inline image plus interactive link (see `seismic-visualisation`) |
 | Closure | `seismic_closure` | crest, spill point and type, column height, area |
 | Depth | `seismic_time_to_depth` | depth map or depth volume with the stated velocity model |
@@ -36,6 +37,8 @@ description: Structural interpretation from seismic - horizon tracking, faults a
 ## Fault procedure
 
 1. `seismic_fault_likelihood` on the interval with reflectors (crop with z_range; quiet intervals carry no fault information).
+   - Read `result.qc` first. If it gives `suggested_max_dip_samples`, reflectors dip beyond the correlation's lag: rerun with that value.
+   - If likelihood still looks poor (low `measured_fraction`, low `separability.otsu_eta`, or no sensible faults where sections show sharp breaks), also run the `fault_attribute` recipe (`seismic-attribute-interpretation`) and compare the two. An approach the user asked for explicitly is run as asked.
 2. `seismic_extract_faults` (default `method: "3d"`) finds faults as steep planes in 3D. Dipping faults keep their dip, and channel edges and other stratigraphic discontinuities are rejected because they do not support one steep plane over a large depth range.
    - The fault-likelihood volume shows every lateral discontinuity (faults, channel edges, chaotic facies). The fault set holds only the faults: never call a discontinuity a fault just because it is bright in the likelihood.
    - Report each fault's `dip.lateral_shift_traces_per_sample` and direction as an **apparent** dip in index units (true dip needs velocity and trace spacing), and its z range.

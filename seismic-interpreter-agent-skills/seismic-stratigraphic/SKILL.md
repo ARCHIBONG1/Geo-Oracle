@@ -5,6 +5,8 @@ description: Seismic stratigraphy and seismic facies - termination detection and
 
 # Seismic stratigraphy and facies
 
+**Channels and other depositional bodies as volumes:** extract them with `seismic_segment_volume` (recipes `channel_meandering`, `channel_submarine`; skill `seismic-attribute-interpretation`) inside the interval between your key surfaces. It returns each channel's axis, sinuosity, width and thickness.
+
 ## Reading reflection character from describe_section
 
 Describe sections along and across the expected depositional dip. The tile grids translate into standard seismic-facies descriptors:
