@@ -99,3 +99,12 @@ An attribute anomaly is an **observation** or **measurement**. The geological me
 - Edge artefacts sit within half a kernel of window boundaries, so ignore those tiles.
 - Unknown params are ignored with a warning. Check `effective_params` to confirm what was used.
 - Time slices through dipping strata mix stratigraphic levels. Prefer sections, or a window around the target interval.
+
+## Dip-steered attributes (added 2026-10-16)
+
+Axis-aligned attributes read dipping but continuous reflectors as discontinuous and smear them when filtered. Two methods follow the local dip (estimated by the gradient structure tensor, `gst_2D_dips`, over `dip_kernel`, default 3 x 3 x 9) instead:
+
+- `seismic_noise_reduction_attribute` with `attribute: structure_oriented_filter` (`kernel: [3, 3, 1]`, `median: true`): the dip-steered median filter. Use it before fault likelihood, semblance or any edge attribute on noisy data; the median keeps faults sharp, the mean (`median: false`) does not. It is not a frequency filter.
+- `seismic_edge_detection_attribute` with `attribute: dip_steered_semblance` (`kernel: [3, 3, 9]`): semblance on dip-aligned traces. Prefer it over `semblance` wherever reflectors dip more than about one sample per trace (the fault-likelihood QC's `reflector_dip` tells you); on flat data the two agree. `max_shift` (samples) bounds the steering; a dip estimate beyond it is clipped.
+
+Both are computed from the same seismic as everything else: steering removes a false discontinuity, it does not add evidence.

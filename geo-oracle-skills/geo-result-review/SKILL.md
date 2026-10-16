@@ -66,6 +66,7 @@ Section 3 asks whether a claim follows from its evidence; these ask whether the 
    - *subset of faults kept*: read the stated reason. A subset chosen to match an expected count is rejected.
    - *skills not opened*: the specialist never read, in this session, a procedure its tools require (no failed read; it was simply never opened). Check its method against that skill; when the method matters, ask it (same session) to read the skill on its own and redo the work.
    - *qc suggestion not followed*: a tool's QC named a setting to rerun with and no later call used it. Ask for the rerun (same session), or accept with the reason written down.
+   - *typed channel recipe before the generic one*: the specialist assumed a channel type (meandering, submarine) without the user naming it, a well establishing it, or a generic `channel` run first. Ask it (same session) to run the generic recipe and report the measured planform and fill; a type the data were not asked to show is not a finding.
 
    Put what you did about each in the checkpoint record (`done[].process_audit`): the gateway refuses the next wave until every flag is addressed.
 2. **The method fits the deliverable.** The `m:` ids in `source_reference` name the methods used, and a deliverable must carry the method that makes it:
@@ -73,6 +74,7 @@ Section 3 asks whether a claim follows from its evidence; these ask whether the 
    | Deliverable | Must include |
    |---|---|
    | fault volume, fault set, fault count | `m:seis/interpret-faults`, or `m:seis/ransac-plane-fault-extraction` with `m:seis/fault-surface-sampling` |
+   | channel type (meandering, submarine, tidal, ...) | `m:seis/recipe-channel` with the measured `planform` and fill, or a typed recipe whose `type_basis` names the user or a well |
 
    A fault volume without its extraction method is a thresholded attribute, not faults: follow up. For other deliverables, ask the specialist which method produced it when the ids do not make it plain.
 3. **The input fits the method.** Read what each computation ran on (the evidence statements and `source_reference`). Fault likelihood, fault extraction and other trace-correlation methods run on seismic amplitudes; a result computed on an attribute (coherence, a likelihood, a mask) where seismic was expected is a method error unless the person asked for it.
