@@ -64,7 +64,7 @@ Fault likelihood (`seismic_fault_likelihood` -> `seismic_extract_faults`) stays 
 - **Bodies**: `shape_units` says whether shape is in metres or index units; never quote a dip or volume in index units. `fault.length_along_strike_m` / `height_along_dip_m`, `channel.sinuosity` (about +/- 1.5 %), `channel.mean_width` (about +/- one bin), `set.clark_evans_r` (karst spacing; no edge correction).
 - "No body found with this recipe and these thresholds" is not "no body".
 - **Resolution**: a body thinner than the tuning thickness (`seismic_resolution_limits`) has an unreliable thickness; one narrower than the Fresnel zone has an unreliable map width. Say so.
-- **Curvature**: `volume_curvature::KMNeg` (most-negative curvature, sense low) would strengthen paleokarst, but `gradient_dips` currently writes only the inline dip, so curvature cannot be computed correctly yet. Do not feed it curvature built from one dip component.
+- **Curvature for karst**: most-negative curvature marks sags and collapse. Compute `gradient_dips`, then `volume_curvature` with `darray_il: '<dips>::il_dip'` and `darray_xl: '<dips>::xl_dip'`, and add it to the paleokarst recipe through `overrides.inputs` as `{name: 'curvature', sense: 'low', weight: ...}` with `inputs.curvature = '<curvature>::KMNeg'`. Since `inputs` is a list, an override replaces it whole, so repeat chaos and semblance there.
 
 ## Classification
 

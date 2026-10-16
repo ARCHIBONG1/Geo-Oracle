@@ -30,7 +30,7 @@ Every result gives you:
 | Where are faults or fractures? | semblance, eig_complex (coherence) | chaos; volume_curvature (Kmax/Kmin) for flexures | B |
 | Fault vs chaotic facies vs noise? | coherence + chaos | describe_section breaks repeated over several z ranges | B |
 | Structural dip, strike, azimuth? | gradient_structure_tensor, gradient_dips | describe_section apparent dip | C |
-| Folds, flexures, subtle drape? | volume_curvature (needs inline and crossline dip) | gradient_dips first | B, C |
+| Folds, flexures, subtle drape? | volume_curvature (needs inline and crossline dip) | gradient_dips first: pass `<its output_path>::il_dip` as darray_il and `::xl_dip` as darray_xl | B, C |
 | Bright or dim amplitude, reflection strength? | envelope | rms, reflection_intensity, sweetness | A, F |
 | Lateral lithology or thickness change, thin beds? | instantaneous_frequency, dominant_frequency | cwt_ricker spectral components | A, D |
 | Channel edges, stratigraphic detail? | coherence on conditioned data | spectral components; instantaneous_phase for continuity | B, D, A |
@@ -57,7 +57,7 @@ Every result gives you:
 **C. Dip and azimuth** (`seismic_dip_azimuth_attribute`)
 - Methods: gradient_dips (dip_factor, kernel), gradient_structure_tensor (kernel required), plus 2D/3D dip and azimuth methods if the fork has them.
 - The structure tensor returns six components (gi2, gj2, gk2, gigj, gigk, gjgk).
-- Dips from `gradient_dips` and `gst_2D_dips` are apparent dips in **samples per trace, multiplied by `dip_factor`** (default 10): divide by `dip_factor` and multiply by the sample interval for ms per trace. Convert to degrees only with a velocity and the trace spacing, and state both.
+- `gradient_dips` and `gst_2D_dips` write two datasets, `il_dip` and `xl_dip`, in one file: address each as `<output_path>::il_dip` / `::xl_dip`. They are apparent dips in **samples per trace, multiplied by `dip_factor`** (default 10): divide by `dip_factor` and multiply by the sample interval for ms per trace. Convert to degrees only with a velocity and the trace spacing, and state both.
 - `gst_3D_dip` is the true dip in degrees **of the sample grid** (traces and samples as unit spacings), not of the physical geometry. `gst_3D_azm` is the **down-dip azimuth measured from the +crossline axis toward +inline**, 0–360°; add the survey azimuth to reach geographic north.
 
 **D. Frequency** (`seismic_frequency_attribute`)
