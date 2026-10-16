@@ -53,6 +53,20 @@ A specialist that ran out of its own turn budget returns `partially_completed` w
 
 A session runs one task at a time. The gateway refuses a follow-up while that session's previous job is still running or waiting for an action.
 
+## 2a. Relaying the person's reaction to a result
+
+When the person rejects or questions a result ("this is wrong", "coherence does a better job", "there are three faults"), the brief carries their words, not your theory of the fix. On 2026-10-15 a person's remark that coherence showed the faults better was briefed as "use coherence as the principal input rather than the dip-searched likelihood". Five runs followed on a volume that could not hold the answer, and the actual fault (a skipped extraction step) was never looked for.
+
+1. **Split the reaction into three parts**, each in its own field:
+   - what they saw, word for word, in `reason_for_reanalysis` (e.g. "The person: 'This tells me the binary fault interpretation was faulty.'");
+   - the outcome they want, in `objective` and `required_outputs` (e.g. "a fault volume, 0 = no fault, 1 = F1, ..., that captures the faults visible on the coherence slices");
+   - a method only if they named one, quoted in `known_constraints` as theirs ("The person asked: 'use the coherence attribute'"). Never add a method of your own, and never write "rather than <method>" unless they said it.
+2. **Ask when a reaction can be read two ways.** "Coherence does a better job" may describe what they see or tell you how to compute. Before spending a run, ask one question with both readings as options, e.g. "Find out why the fault volume misses what you see in coherence (Recommended), or build the fault volume from coherence instead?"
+3. **Diagnose before rerunning.** A rejected result goes back to the same session as a `follow_up` that asks why: "The person says <their words>. From your own tool calls and your skills' procedure, explain why the result misses it, then fix it." The specialist can read its own run; a fresh session cannot.
+4. **Carry what was done, not a method to keep using.** Earlier runs go in `upstream_findings` and `project_context` as what each did and produced, with `prov:` ids. Do not call an earlier run's approach "the workflow", "the guided volume" or the like unless the person approved it: a guess restated as context becomes a premise.
+5. **A number the person expects is a hypothesis to test, never a target.** "The person expects three faults: test whether the data support three and report what you find, with the persistence table." Never "can three be separated?", and never a count in `required_outputs`.
+6. **Keep corrections of the same question in the same session** (`specialist_session_id`). A new session is for validation, challenge or changed inputs (section 2).
+
 ## 3. Templates
 
 **Initial task**
@@ -92,6 +106,14 @@ A session runs one task at a time. The gateway refuses a follow-up while that se
 - `previous_task_id`: the superseded task
 - `reason_for_reanalysis`: what changed and why, e.g. "`T03-strat` revised: the Main Sand in W2 is two lobes (`T08-strat/C1`)"
 - `upstream_findings`: the changed findings
+
+**Correction from the person** (same session; section 2a)
+- `specialist_session_id`: from the result being corrected
+- `analysis_mode`: `follow_up`
+- `previous_task_id`: the corrected task
+- `reason_for_reanalysis`: the person's words, verbatim
+- `geological_question`: "Why does `T01-seis`'s fault volume miss what the person sees ('<their words>')? Check your tool calls against your skills' procedure, then fix it."
+- `known_constraints`: a method only if the person named one, quoted as theirs
 
 **Follow-up** (same session)
 - `specialist_session_id`: from the earlier result

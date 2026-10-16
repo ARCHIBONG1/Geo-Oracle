@@ -14,10 +14,9 @@ description: Structural interpretation from seismic - horizon tracking, faults a
 | Grid supplied picks | `seismic_horizon_map` operation `from_picks` | horizon map from a horizon_picks table |
 | Describe a structure map | `seismic_horizon_map` operation `structure` | shallowest and deepest points with locations, tile means, gradient |
 | Isochron | `seismic_horizon_map` operation `isochron` | thickness map (ms in time) |
-| Fault attribute | `seismic_fault_likelihood` (job) | discontinuity volume, measured only on reflectors |
-| Faults | `seismic_extract_faults` | faults found in 3D: id, extent, strike (grid and azimuth), apparent dip, z range; fault-set file |
+| Faults and the fault volume (the standard chain in one call) | `seismic_interpret_faults` (job) | labelled (0 = no fault, 1 = F1, 2 = F2, ...) or binary fault volume, fault set, likelihood volume, `qc`, per fault: extent, strike, apparent dip, `support`; figure |
+| The same chain step by step | `seismic_fault_likelihood` (job) -> `seismic_extract_faults` -> `seismic_binarize_volume` with the fault set | likelihood volume; fault set; 0/1 or labelled volume, threshold and its source |
 | Throw | `seismic_fault_throw` | throw along the fault, downthrown side, cycle-skip check, horizon offsets |
-| Binary or labelled fault volume | `seismic_binarize_volume` | 0/1 volume (or fault number per voxel), threshold used and its source, extent per fault |
 | Faults when likelihood is poor; channels, karst, geobodies | `seismic_segment_volume` (see `seismic-attribute-interpretation`) | labelled or binary volume, body catalogue, extraction figure |
 | 3D view of faults and horizons | `seismic_render_3d` | inline image plus interactive link (see `seismic-visualisation`) |
 | Closure | `seismic_closure` | crest, spill point and type, column height, area |
@@ -28,30 +27,27 @@ description: Structural interpretation from seismic - horizon tracking, faults a
 ## Horizon procedure
 
 1. Choose the event at a well, crest or clear location with `seismic_list_events`. Give the event kind (peak or trough) and z from its result; never pick z from memory or a description.
-2. Before tracking across a faulted area, extract the faults. Tracking does not jump faults: put at least one seed in each fault block.
+2. Before tracking across a faulted area, extract the faults (`seismic_interpret_faults`). Tracking does not jump faults: put at least one seed in each fault block.
 3. Run `seismic_track_horizon`. Check `coverage`, `correlation_p10` and `rejected_candidates`:
    - coverage below 1 is expected at faults, polarity changes and fading reflectors; say where the gaps are (`seismic_horizon_map` structure tile means show undefined tiles);
    - `low_correlation` stops mean the event changes character; do not lower `min_correlation` just to fill the map without saying so.
-4. A polarity change along a horizon (for example a soft gas sand becoming a weak hard brine sand) stops a peak or trough tracker. That is information: report it, and grid supplied picks or track a nearby continuous event instead.
+4. A polarity change along a horizon (for example a soft gas sand becoming a weak hard brine sand) stops a peak or trough tracker. That is i## Fault procedure
 
-## Fault procedure
-
-1. `seismic_fault_likelihood` on the interval with reflectors (crop with z_range; quiet intervals carry no fault information).
-   - Read `result.qc` first. If it gives `suggested_max_dip_samples`, reflectors dip beyond the correlation's lag: rerun with that value.
+1. `seismic_interpret_faults` on the seismic amplitude volume, cropped with `z_range` to the interval with reflectors (quiet intervals carry no fault information). It runs the whole chain in a fixed order: fault likelihood, its QC, 3D extraction of steep planes, and each fault drawn as a surface. Use it whenever faults or a fault volume are asked for. `output: "labels"` (default) gives 0 = no fault, 1 = F1, 2 = F2, ...; `output: "binary"` gives 1 = fault. It also writes the fault set (for `seismic_fault_throw`, `seismic_publish_structure` and `seismic_render_3d`) and the likelihood volume.
+   - Read `result.qc` first. If it gives `suggested_max_dip_samples`, reflectors dip beyond the correlation's lag: rerun with that `max_dip_samples`. If its notes say few measured voxels reach the threshold, the input may not be reflection amplitudes, or the interval holds no faults at this scale: check the input (`seismic_describe_volume` shows its lineage) before changing any threshold.
    - If likelihood still looks poor (low `measured_fraction`, low `separability.otsu_eta`, or no sensible faults where sections show sharp breaks), also run the `fault_attribute` recipe (`seismic-attribute-interpretation`) and compare the two. An approach the user asked for explicitly is run as asked.
-2. `seismic_extract_faults` (default `method: "3d"`) finds faults as steep planes in 3D. Dipping faults keep their dip, and channel edges and other stratigraphic discontinuities are rejected because they do not support one steep plane over a large depth range.
-   - The fault-likelihood volume shows every lateral discontinuity (faults, channel edges, chaotic facies). The fault set holds only the faults: never call a discontinuity a fault just because it is bright in the likelihood.
-   - Report each fault's `dip.lateral_shift_traces_per_sample` and direction as an **apparent** dip in index units (true dip needs velocity and trace spacing), and its z range.
-   - "No faults detected at this threshold" is not "no faults": report the threshold (default 0.3). If the likelihood clearly shows linear features, retry with `threshold: 0.2` or a smaller `min_z_extent` and say so.
-   - Positions are uncertain by about one trace. `method: "map"` (map-view traces) exists only for vertical faults in legacy workflows.
+   - The likelihood shows every lateral discontinuity (faults, channel edges, chaotic facies); the faults are only the steep planes it supports over a large depth range. Never call a discontinuity a fault just because it is bright in the likelihood.
+   - Each fault carries `support`: `measured`, or `mostly_interpolated` when under a fifth of its surface rests on measured likelihood. Report a mostly interpolated fault as weakly supported.
+   - **Persistence.** The tool also looks for the faults at the eight settings around the one asked for (threshold and `min_z_extent` each x0.8 and x1.25) and draws only those found at two thirds of them (`min_persistence`). Each fault carries `found_at` (e.g. `9/9`); `result.persistence` gives the count at every setting and lists the less persistent faults. Report the drawn faults with that table. A count that changes across settings is reported as unstable, with the table: **never change settings, or keep a subset of faults, to reach a number anyone expects**, the person included. Their expected count is a hypothesis you test and report on.
+   - Report each fault's `apparent_dip` (traces per sample, in index units: true dip needs velocity and trace spacing) and z range. Positions are uncertain by about one trace.
+   - "No faults found at this threshold" is not "no faults": report the threshold (default 0.3) and the qc notes. If sections show sharp breaks, retry once with `threshold: 0.2` or a smaller `min_z_extent` and report both runs.
+2. **Step by step**, only for a step the single tool does not expose (`method: "map"` for vertical faults in legacy workflows, keeping chosen faults with `fault_ids` and a stated `selection_reason`, `fault_geometry: "voxels"`): `seismic_fault_likelihood` on the seismic, then `seismic_extract_faults` on the likelihood, then `seismic_binarize_volume` on that likelihood with the fault set. The tools refuse any other order: likelihood on an attribute such as coherence, extraction from the seismic, thresholding likelihood without a fault set (that gives blobs, not faults), or a fault set drawn on a volume it was not extracted from. `override_reason` exists only for an input the user explicitly asked for; put the reason in `limitations`.
 3. Confirm each fault that matters on at least one section with `seismic_describe_section` (sharpest_lateral_breaks at the same position).
 4. `seismic_fault_throw` with horizons tracked on both sides where possible. Correlation throw and horizon throw should agree; if `possible_cycle_skip_fraction` is high, the correlation throw may be off by one period and only the horizon throw counts.
-5. **Binary fault volume**, when asked for one (or for a 3D view): `seismic_binarize_volume` on the fault-likelihood volume.
-   - **Threshold**: the user's value if they gave one; otherwise pass the fault set, and the tool uses the threshold `seismic_extract_faults` used (report it). Without a fault set it uses Otsu's threshold on the measured samples. The result always states the threshold and its source.
-   - **Geometry**: with a fault set, the default `fault_geometry: "surface"` writes each fault as one continuous sheet over its z range. It follows the fault's fitted plane with depth and the likelihood maximum near it, so a dipping fault stays dipping and channels are not included. The raw likelihood is measured only on reflectors, so thresholded voxels alone are patchy; use `"voxels"` only if the user wants exactly the thresholded samples.
-   - **Output**: `output: "labels"` numbers voxels by fault (F1 = 1, …). `fault_ids` keeps only chosen faults.
-   - **Delivery**: view it with `seismic_render_3d`, and give it to the user with `seismic_export_volume` (in their axis order if they supplied an array).
+5. **Delivery**: show `result.faults_figure_markdown`; give the volume to the user with `seismic_export_volume` (in their axis order if they supplied an array); view it with `seismic_render_slice` or `seismic_render_3d`.
 6. Alternatives to consider every time: channel edge, chaotic facies boundary, acquisition footprint (aligned with inline or crossline, regular spacing), migration artefact near steep dip, velocity pull-up or push-down.
+
+sline, regular spacing), migration artefact near steep dip, velocity pull-up or push-down.
 
 ## Closure and depth
 

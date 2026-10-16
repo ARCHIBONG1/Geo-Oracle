@@ -18,6 +18,7 @@ A specialist result is evidence to be evaluated, not a verdict. Detail, fluency 
   - Parse repairs mean the specialist did not follow the output contract; the content may be sloppy elsewhere too.
   - "Unresolved … reference" means a claim cites evidence that does not exist in the result, so treat that link as unsupported.
   - "Unrecognised keys" means some content is only in the raw reply.
+  - `Process audit:` lines are the gateway's own reading of the specialist's run. Address each before accepting (section 3a); the next wave is refused until the checkpoint says what you did about every one.
 - **`omitted`**: fetch the trimmed sections you need before judging the result. Do not judge from a partial digest.
 
 ## 2. What was actually established?
@@ -54,6 +55,29 @@ Red flags:
 
 A claim that fails a material check is not established evidence. Record it as unsupported, or send it for follow-up.
 
+## 3a. Method and process checks
+
+Section 3 asks whether a claim follows from its evidence; these ask whether the evidence was produced the right way. They are mechanical: do them every time.
+
+1. **Process-audit flags** (`warnings` starting `Process audit:`):
+   - *skills not read*: the specialist worked without those procedures. Check its method against them; when the method matters, ask it (same session) to read each skill on its own and redo the work.
+   - *tool calls refused*: the tools blocked something. Check that the delivered result does not rest on a workaround.
+   - *override in <tool>*: a tool ran on an input it does not normally accept. Accept only if the person asked for exactly that; otherwise follow up.
+   - *subset of faults kept*: read the stated reason. A subset chosen to match an expected count is rejected.
+
+   Put what you did about each in the checkpoint record (`done[].process_audit`): the gateway refuses the next wave until every flag is addressed.
+2. **The method fits the deliverable.** The `m:` ids in `source_reference` name the methods used, and a deliverable must carry the method that makes it:
+
+   | Deliverable | Must include |
+   |---|---|
+   | fault volume, fault set, fault count | `m:seis/interpret-faults`, or `m:seis/ransac-plane-fault-extraction` with `m:seis/fault-surface-sampling` |
+
+   A fault volume without its extraction method is a thresholded attribute, not faults: follow up. For other deliverables, ask the specialist which method produced it when the ids do not make it plain.
+3. **The input fits the method.** Read what each computation ran on (the evidence statements and `source_reference`). Fault likelihood, fault extraction and other trace-correlation methods run on seismic amplitudes; a result computed on an attribute (coherence, a likelihood, a mask) where seismic was expected is a method error unless the person asked for it.
+4. **Compare with earlier runs of the same question.** If a rerun changes a key number by a large factor (a likelihood percentile ten times smaller, a fault count from 3 to 9), find out why before accepting: the inputs or the method changed, not the earth.
+5. **Faults come with persistence.** `seismic_interpret_faults` reports how many of the nearby settings find each fault (`found_at`). Report the drawn faults with that table; a count that changes across settings is reported as unstable, never tuned.
+6. **After pushback, say what changed the method.** When a rerun follows the person's objection, tell them whether the evidence or their request changed the method, and what the specialist found about why the first result missed.
+
 ## 4. Independence and double counting
 
 Trace each supporting id back to its origin:
@@ -83,7 +107,7 @@ If no available evidence can discriminate, keep both interpretations. Do not pic
 
 | Disposition | When | Next step |
 |---|---|---|
-| Accept | Passes the checks; the classification is honest | Add to the ledger with its status |
+| Accept | Passes the checks (sections 3 and 3a); the classification is honest | Add to the ledger with its status |
 | Accept with qualification | Usable, but has stated limitations | Add to the ledger with the qualification attached |
 | Follow-up (same session) | A missing item, a clarification, or format problems | Brief it with `specialist_session_id` |
 | Validate (new session, or another specialist) | A load-bearing claim with a single line of evidence, where independent evidence exists | Validation task |
@@ -108,7 +132,7 @@ A result's `figures` entries (or its `Figure:` conclusion lines) are recorded in
 ## 8. Record the review
 
 Update the ledger:
-- the task's disposition;
+- the task's disposition, and the method and process checks done (section 3a) with what you did about each process-audit flag;
 - the claims you now rely on, with classes, sources, independent lines and status;
 - for each, the `prov:` and `m:` tokens from the specialist's `source_reference`, copied exactly. A result whose `source_reference` carries no `m:` id is one the specialist did not attribute to a method; note it as such rather than inferring one;
 - new contradictions and uncertainties;

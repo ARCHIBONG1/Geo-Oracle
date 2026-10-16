@@ -64,7 +64,7 @@ Five parts, short enough to read in a minute:
 
 | Part | Content | Checked |
 |---|---|---|
-| **Done** | which specialists ran, what each established, what it could not | the gateway refuses a record that misdescribes the wave |
+| **Done** | which specialists ran, what each established, what it could not, and for each run the gateway flagged, what you did about every `Process audit:` flag (`done[].process_audit`: followed up, accepted with the reason, or rejected) | the gateway refuses a record that misdescribes the wave or leaves a process-audit flag unaddressed |
 | **Why** | why those specialists, in that order | nothing — your reasoning, attested only |
 | **Contribution** | how this moves the objective, and what remains | nothing — attested only |
 | **Next** | the proposed next wave: specialists, inputs, what each settles | tool names must exist |

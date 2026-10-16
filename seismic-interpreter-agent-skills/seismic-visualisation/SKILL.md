@@ -70,13 +70,13 @@ The 3D tool drives [CIGVIS](https://github.com/JintaoLee-Roger/cigvis), a publis
 
 **Pre-check (enforced by the tool).** Every overlay must have the same shape as the seismic on the same IL,XL,T grid. Ingested volumes are always in IL,XL,T, which is also CIGVIS's own order (x = inline, y = crossline, z = time downwards), so no transposing is needed.
 - If a pre-check fails, the message gives both grids. Either compute the overlay on the whole volume, or window the seismic to the overlay's ranges with `seismic_extract_window`.
-- Plan ahead: to overlay faults in 3D, run `seismic_fault_likelihood` on the same volume or window you will display.
+- Plan ahead: to overlay faults in 3D, run `seismic_interpret_faults` (or `seismic_fault_likelihood`) on the same volume or window you will display.
 
 **Overlays** (`overlays: [{path, style, threshold, color, cmap, alpha, bodies}]`):
 
 | Overlay | Typical settings |
 |---|---|
-| Binary faults (`seismic_binarize_volume`, fault surfaces) | `style: "both"`: faults coloured on the slices and as 3D sheets; threshold default 0.5 |
+| Binary faults (`seismic_interpret_faults` with `output: "binary"`, or `seismic_binarize_volume` with a fault set) | `style: "both"`: faults coloured on the slices and as 3D sheets; threshold default 0.5 |
 | Geobody, channel or anomaly body (binary) | `style: "body"`, `bodies: "intersecting"` to show only bodies cut by the displayed slices (CIGVIS's "full" geobody perspective), or `"all"` |
 | Probability or likelihood volume, not binarized | `style: "mask"` with an explicit `threshold` (for example the fault-extraction threshold) |
 | Labelled faults (`output: "labels"`) | `threshold: 0.5` shows every labelled fault |

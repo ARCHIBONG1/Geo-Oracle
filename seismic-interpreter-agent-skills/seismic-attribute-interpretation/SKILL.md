@@ -5,7 +5,7 @@ description: Attribute-driven interpretation - faults when fault likelihood look
 
 # Attribute-driven interpretation
 
-Fault likelihood (`seismic_fault_likelihood` -> `seismic_extract_faults`) stays the primary fault method. The tools here are general: one engine, driven by recipes, for faults when likelihood is poor, channels, paleokarst and any body an attribute can outline.
+Fault likelihood (`seismic_interpret_faults`, or step by step `seismic_fault_likelihood` -> `seismic_extract_faults`) stays the primary fault method. The tools here are general: one engine, driven by recipes, for faults when likelihood is poor, channels, paleokarst and any body an attribute can outline.
 
 ## Tools
 
@@ -19,15 +19,15 @@ Fault likelihood (`seismic_fault_likelihood` -> `seismic_extract_faults`) stays 
 
 ## When fault likelihood looks poor (your judgement)
 
-`seismic_fault_likelihood` returns `result.qc`. Read it before `seismic_extract_faults`:
+`seismic_interpret_faults` and `seismic_fault_likelihood` return `result.qc`. Read it before trusting the faults:
 
-1. **Dip beyond the lag**: if `qc.suggested_max_dip_samples` is present, reflectors dip more than the likelihood's correlation follows (`reflector_dip.steepest_samples_per_trace_p90` > `max_dip_samples`). Rerun `seismic_fault_likelihood` with that `max_dip_samples` first.
+1. **Dip beyond the lag**: if `qc.suggested_max_dip_samples` is present, reflectors dip more than the likelihood's correlation follows (`reflector_dip.steepest_samples_per_trace_p90` > `max_dip_samples`). Rerun with that `max_dip_samples` first.
 2. **Then judge** from the evidence, and say which evidence you used:
    - `measured_fraction` low: much of the interval is too quiet to measure, and likelihood is blind there.
    - `separability.otsu_eta` low (no clear fault tail; values near 1 separate well), or null.
-   - `seismic_extract_faults` finds no fault, or faults that make no geological sense, although `seismic_describe_section` shows sharp lateral breaks.
-   These are judgements, not cut-offs. If likelihood looks poor, run the `fault_attribute` recipe, report both results, and give `seismic_compare_extractions` between the binary likelihood faults (`seismic_binarize_volume`) and the recipe's volume.
-3. **An explicit request wins.** If the user names an approach ("use fault likelihood only", "extract faults from coherence"), run exactly that. Report any QC concern, but do not switch methods.
+   - the extraction finds no fault, or faults that make no geological sense, although `seismic_describe_section` shows sharp lateral breaks.
+   These are judgements, not cut-offs. If likelihood looks poor, run the `fault_attribute` recipe, report both results, and give `seismic_compare_extractions` between the likelihood fault volume (`seismic_interpret_faults` with `output: "binary"`) and the recipe's volume.
+3. **An explicit request wins.** If the user names an approach ("use fault likelihood only", "extract faults from coherence"), run exactly that. Report any QC concern, but do not switch methods. "Extract faults from coherence" means the `fault_attribute` recipe, which reads coherence by design; fault likelihood itself needs the seismic and refuses a coherence volume unless you give `override_reason` because the user asked for exactly that.
 
 ## Procedure
 
