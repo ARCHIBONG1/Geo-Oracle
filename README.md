@@ -45,7 +45,7 @@ agents/skills/
    |
    |______ literature-review-agent-skills/       THE TEN SPECIALISTS (7)
    |______ regional-geology-agent-skills/        (9)
-   |______ seismic-interpreter-agent-skills/     (7)
+   |______ seismic-interpreter-agent-skills/     (8)
    |______ structural-geology-agent-skills/      (8)
    |______ stratigraphy-geology-agent-skills/    (8)
    |______ sedimentology-agent-skills/           (6)
@@ -346,13 +346,14 @@ See the table above.
 | `regional-seismicity` | catalogue summaries, magnitude of completeness, b-values and their limits |
 | `regional-visualisation` | maps, rose diagrams, profiles; describe-then-interpret |
 
-### `seismic-interpreter-agent-skills` (7)
+### `seismic-interpreter-agent-skills` (8)
 | Skill | Covers |
 | --- | --- |
 | `seismic-core` | the operating procedure and the findings contract |
 | `seismic-data-qc` | uploads, SEG-Y header scanning, ingest decisions, resolution |
 | `seismic-attributes` | choosing, parameterising, running and reading the attribute tools |
 | `seismic-structural` | horizon tracking, faults and throw, structure and isochron maps, closure and spill |
+| `seismic-attribute-interpretation` | attribute-driven bodies by recipe: faults when the likelihood QC looks poor, channels, paleokarst, any geobody; constraints, seeds from the strongest evidence, catalogue and comparison |
 | `seismic-stratigraphic` | termination detection, key surfaces, seismic facies, stratal slices |
 | `seismic-qi` | when amplitudes can be trusted; wavelet, synthetic and well tie, AVO |
 | `seismic-visualisation` | how the agent "sees" seismic — reading `seismic_describe_section` as its only view |

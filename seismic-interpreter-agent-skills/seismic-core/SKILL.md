@@ -105,6 +105,8 @@ method assumes, or how far it has been verified, call `seismic_method_provenance
 `method_id` from the result (or with a tool name for every method that tool implements),
 and report what it returns.
 
+Never write that a method's equation, parameters, sources or verification are "not recorded" or "not retained" unless you have read that method's record at `verbosity: "full"` by its `method_id`. A summary or tool-level lookup is not the record: its `full_record` line says where the record is, and "not retrieved" is never reported as "not recorded".
+
 Do not answer such a question from your own knowledge. An unverified reference presented
 as this system's provenance is worse than an admitted gap, and it is the one failure this
 mechanism exists to prevent. If the tool reports that no source has been recorded, say

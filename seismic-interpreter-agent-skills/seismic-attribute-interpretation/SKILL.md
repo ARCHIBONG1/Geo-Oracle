@@ -16,6 +16,8 @@ Fault likelihood (`seismic_interpret_faults`, or step by step `seismic_fault_lik
 | Describe or filter any body volume | `seismic_describe_bodies` | the same catalogue for any labelled or binary volume (e.g. from `seismic_binarize_volume`); optional shape filter writes a filtered volume |
 | Second opinion | `seismic_compare_extractions` | share of each extraction within a voxel tolerance of the other, F-measure |
 | Figure of any body volume | `seismic_render_extraction` | inline, crossline and z slices with each body coloured, map footprints |
+| Cross-check any structure against discontinuity attributes | `seismic_structure_qc` | per body its share in the attribute's anomalous tail; the share of the tail the structure captures; tall anomalies no body explains |
+| Hand bodies to other specialists | `seismic_publish_bodies` | a `body_set` product (footprints in X/Y, sizes, orientation, channel/karst/fault metrics, stability, resolution flags) for prospect_target, structural_geology and sedimentology |
 
 ## When fault likelihood looks poor (your judgement)
 
@@ -39,6 +41,12 @@ Fault likelihood (`seismic_interpret_faults`, or step by step `seismic_fault_lik
    | `channel_meandering` | sweetness (high) | hysteresis p95 / p85 | **interval required** | map elongation >= 3 |
    | `channel_submarine` | chaos (high), envelope (high) | hysteresis p93 / p80 | **interval required** | map elongation >= 2.5 |
    | `paleokarst` | chaos (high), semblance (low) | hysteresis p97 / p90 | interval suggested | vertical extent >= 8 samples, round in map view |
+   | `channel` (any type) | envelope (extreme: bright or dim), semblance (low), chaos (high) | hysteresis p94 / p84 | interval, z window or polygon suggested | map elongation >= 2 |
+   | `salt` | chaos (high), semblance (low), envelope (low) | hysteresis p95 / p85, heavy closing, 5 largest | z window, polygon suggested | vertical extent >= 30 % of the window, not elongate |
+   | `mtd` | chaos (high), semblance (low), envelope (low) | hysteresis p93 / p80 | **interval required** (basal surface to top) | thickness >= 4 samples, not elongate |
+   | `gas_chimney` | chaos (high), semblance (low), envelope (low) | hysteresis p97 / p90 | z window, polygon suggested | tall (>= 30 %), round (aspect >= 0.4, elongation <= 3) |
+
+   **Channels when the type is unknown** (the usual exploration case): start with `channel`. It does not assume bright or dim fill, and the catalogue reads the type from the body: `channel.planform` (straight < 1.05, sinuous, meandering >= 1.5 by sinuosity) and `input_percentiles` (envelope near 1 = bright fill, near 0 = dim fill). Use `channel_meandering` or `channel_submarine` only when that type is known or asked for. A valley is a wide channel body: report its width and planform, never a type it was not measured to have.
 
 2. Compute every input with its `compute_with` call (attribute tools), and pass the output path in `inputs` by the recipe's input names (`'path.h5::component'` for a multi-output attribute).
 3. **Constraints** do the geology the attribute cannot:
@@ -58,6 +66,15 @@ Fault likelihood (`seismic_interpret_faults`, or step by step `seismic_fault_lik
 8. For a 3D view, use `seismic_render_3d` with the output volume as a body overlay. To download, use `seismic_export_volume`.
 
 ## Reading the result
+
+**`result.qc` first, as for faults.** Four questions, each with a reading line:
+- *measured*: `valid_fraction`, the share of the volume the constraints and finite inputs left.
+- *signal*: `separability` per input (Otsu's eta; a constant input is flagged and carries nothing).
+- *stability*: the extraction repeated at the nine neighbouring threshold settings; each body's `found_at`, `stable` (two thirds) and `voxels_p10/p50/p90`. A body found at under two thirds is setting-dependent: report it as such, never retune to keep or lose it. Skipped above 60 million voxels (crop first).
+- *resolution*: `thickness_below_tuning`, `width_below_fresnel_diameter` per body, from the dominant frequency (measured on the source seismic for time volumes, or given in `resolution`) and the velocity (given, or a constant `velocity_model`). A flagged body is detected, not measured: never quote its thickness or width as resolved.
+- *truncation*: the share of a body on a constraint or data boundary; over a quarter means its size is a minimum.
+- *cross_check* (when `cross_check` names discontinuity volumes): each body's share in the attribute's anomalous tail and the tall anomalies no body explains. Same seismic, so consistency, not confirmation.
+
 
 - **Thresholds** are percentiles of the score inside the constraints. They assume the feature is a minority of the constrained volume, so constrain tightly. Report `thresholds` and their source.
 - **Seeds**: report each seed's status. Every entry in `conflicts` is evidence against the attribute's picture (for example a tied well that sees a channel where the score is low: a bed thinner than tuning, or an insensitive attribute). Put each conflict in `contradictions`; never drop one.

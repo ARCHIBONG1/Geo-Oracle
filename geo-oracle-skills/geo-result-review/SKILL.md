@@ -19,7 +19,7 @@ A specialist result is evidence to be evaluated, not a verdict. Detail, fluency 
   - "Unresolved … reference" means a claim cites evidence that does not exist in the result, so treat that link as unsupported.
   - "Unrecognised keys" means some content is only in the raw reply.
   - `Process audit:` lines are the gateway's own reading of the specialist's run. Address each before accepting (section 3a); the next wave is refused until the checkpoint says what you did about every one.
-- **`omitted`**: fetch the trimmed sections you need before judging the result. Do not judge from a partial digest.
+- **`omitted`**: fetch the trimmed sections you need before judging the result. Do not judge from a partial digest. `referenced_items` carries the statement of every item an included claim cites from an omitted section: such a reference is not unresolved, and is never the subject of a follow-up task.
 
 ## 2. What was actually established?
 
@@ -64,6 +64,8 @@ Section 3 asks whether a claim follows from its evidence; these ask whether the 
    - *tool calls refused*: the tools blocked something. Check that the delivered result does not rest on a workaround.
    - *override in <tool>*: a tool ran on an input it does not normally accept. Accept only if the person asked for exactly that; otherwise follow up.
    - *subset of faults kept*: read the stated reason. A subset chosen to match an expected count is rejected.
+   - *skills not opened*: the specialist never read, in this session, a procedure its tools require (no failed read; it was simply never opened). Check its method against that skill; when the method matters, ask it (same session) to read the skill on its own and redo the work.
+   - *qc suggestion not followed*: a tool's QC named a setting to rerun with and no later call used it. Ask for the rerun (same session), or accept with the reason written down.
 
    Put what you did about each in the checkpoint record (`done[].process_audit`): the gateway refuses the next wave until every flag is addressed.
 2. **The method fits the deliverable.** The `m:` ids in `source_reference` name the methods used, and a deliverable must carry the method that makes it:
