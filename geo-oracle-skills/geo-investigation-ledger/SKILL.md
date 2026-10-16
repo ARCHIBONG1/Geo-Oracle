@@ -41,8 +41,10 @@ Scope: screening | detailed
 |----|------|--------------------------|--------------|----------------|-------------|
 
 ## Tasks
-| Task ID | Tool | Question (short) | Mode | Depends on | Job ID | Session | Exec status | Sci status | Disposition |
-|---------|------|------------------|------|------------|--------|---------|-------------|------------|-------------|
+| Task ID | Tool | Question (short) | Mode | Depends on | Job ID | Session route | Exec status | Sci status | Disposition |
+|---------|------|------------------|------|------------|--------|---------------|-------------|------------|-------------|
+
+**Session route** is the result's `session_route` in a few words ("continued T01's", "fresh: validation", "queued behind T02"), never a session id. The gateway keeps each specialist's session and continues it itself; a session id copied into the ledger and back into a call is how one investigation came to hold two seismic sessions.
 
 ## Claims relied on
 | ID | Class | Statement (1 line) | Source | Supported by | Independent lines | Status |

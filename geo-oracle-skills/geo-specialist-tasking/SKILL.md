@@ -32,7 +32,7 @@ A specialist's answer can only be as good as its brief. A good brief gives the s
 | `downstream_use` | Which task or decision consumes the result | Leaving it out, so the specialist cannot judge the precision needed |
 | `previous_task_id`, `reason_for_reanalysis` | For every non-initial mode | Leaving them empty |
 | `instructions` | Leave empty: it replaces the default brief | Duplicating the output format, which the gateway already enforces |
-| `specialist_session_id` | Only to continue the same specialist's thread | Using it for validation or challenge |
+| `specialist_session_id` | Leave it empty: the gateway continues each specialist's session for the investigation itself (section 2). Name one only to continue a session from an earlier investigation | Copying an id from your notes or ledger; using it for validation or challenge (refused) |
 | `wait_seconds` | Omit it on a single call, so the gateway's default applies; `0` only for fan-outs of three or more; never above the gateway's cap (its description states it: the harness's per-call timeout minus a margin) | Very short waits that force extra polling; a wait that outlasts the harness, which returns a server-execution-timeout and nothing else |
 
 ## 1a. Caveats are ceilings, not prohibitions
@@ -43,15 +43,22 @@ Never invent a product reference. If a producer failed to publish a product, pas
 
 ## 1b. A specialist that returns partially_completed
 
-A specialist that ran out of its own turn budget returns `partially_completed` with the products it published listed in `conclusions` and the remaining work named in `recommended_followups`. Continue it as a `follow_up` in the same session (`specialist_session_id` from the result, `previous_task_id` the task), with the remaining items as the `geological_question`: its records, products and context are still there. Do not start a new session for this, and do not treat the partial result as a failure to retry from scratch.
+A specialist that ran out of its own turn budget returns `partially_completed` with the products it published listed in `conclusions` and the remaining work named in `recommended_followups`. Continue it as a `follow_up` with `previous_task_id` the task (the gateway continues its session), with the remaining items as the `geological_question`: its records, products and context are still there. Do not start a new session for this, and do not treat the partial result as a failure to retry from scratch.
 
 ## 2. Session choice
 
-- **Continue the session** (pass `specialist_session_id`) for clarifications, missing items, format repairs, or a narrow extension of the same analysis. The specialist keeps its context, which saves tokens and time.
-- **Start a new session** (omit `specialist_session_id`) for `validation` and `challenge`. A specialist re-examining its own reasoning in the same conversation is anchored by it; a fresh session gives a more independent test. Pass the claims under test as `upstream_findings`.
-- **Reanalysis after an upstream change** usually uses a new session with the changed inputs, plus `previous_task_id` pointing to the superseded run.
+The gateway keeps one session per specialist per investigation and chooses it from `analysis_mode`: you never pass or copy a session id. Each result's `session_route` says what it did.
 
-A session runs one task at a time. The gateway refuses a follow-up while that session's previous job is still running or waiting for an action.
+| `analysis_mode` | Session | What the brief carries |
+|---|---|---|
+| `initial`, `follow_up`, `reanalysis` | the investigation's session for that specialist, opened by its first task | as usual; `previous_task_id` for every non-initial mode |
+| `challenge` | a fresh session | the claims to test and how they were made (method, inputs, `prov:` ids) from the ledger, in `upstream_findings`; not the reasoning that led to them |
+| `validation` | a fresh session | blind: the question the claim answers and the data, not the earlier answer, and a different method, parameters or data from the run being checked |
+
+- **Why one session.** It keeps the specialist's context: the files it loaded, what it tried, what failed. A follow-up, a correction or a reanalysis needs exactly that.
+- **Why a check is fresh.** A model re-examining its own answer with that answer in its context tends to defend it, so a check in the same session is not independent. A fresh session is not independent on its own either: the specialist's tools return the earlier result for identical inputs and parameters, and a brief that states the earlier conclusion anchors the check. Independence comes from what the task sees and the method it uses.
+- **`previous_task_id`** naming an earlier task of the same specialist continues that task's session, so a follow-up on a challenge's result stays with the challenge.
+- **One task at a time.** A task for a busy session is queued (`session_route`: "queued behind task …") and starts when the turn ahead ends. Collect it with `get_specialist_result` as usual; do not resend it.
 
 ## 2a. Relaying the person's reaction to a result
 
@@ -65,7 +72,7 @@ When the person rejects or questions a result ("this is wrong", "coherence does 
 3. **Diagnose before rerunning.** A rejected result goes back to the same session as a `follow_up` that asks why: "The person says <their words>. From your own tool calls and your skills' procedure, explain why the result misses it, then fix it." The specialist can read its own run; a fresh session cannot.
 4. **Carry what was done, not a method to keep using.** Earlier runs go in `upstream_findings` and `project_context` as what each did and produced, with `prov:` ids. Do not call an earlier run's approach "the workflow", "the guided volume" or the like unless the person approved it: a guess restated as context becomes a premise.
 5. **A number the person expects is a hypothesis to test, never a target.** "The person expects three faults: test whether the data support three and report what you find, with the persistence table." Never "can three be separated?", and never a count in `required_outputs`.
-6. **Keep corrections of the same question in the same session** (`specialist_session_id`). A new session is for validation, challenge or changed inputs (section 2).
+6. **Corrections of the same question are `follow_up` tasks** with `previous_task_id`: they run in the specialist's session automatically. A fresh session is only for validation or challenge (section 2).
 
 ## 3. Templates
 
@@ -89,34 +96,34 @@ When the person rejects or questions a result ("this is wrong", "coherence does 
 }
 ```
 
-**Validation** (new session; test with independent evidence)
+**Validation** (fresh session, chosen by the gateway; blind)
 - `analysis_mode`: `validation`
-- `previous_task_id`: the task being validated
-- `geological_question`: "Does independent evidence (X) support or contradict claim `T04-seis/C2`?"
-- `upstream_findings`: the claim under test, plus the evidence it used
-- `known_constraints`: "Do not rely on `T04-seis/E1`–`E3`; they are the evidence being validated."
+- `previous_task_id`: the task being validated (for the record; it does not put the check in that task's session)
+- `geological_question`: the question the claim answers, asked afresh: "How many faults does the volume hold, and what are their strikes?", not "Is `T04-seis/C2` right?". You compare the two answers in review.
+- `upstream_findings`: nothing from the task being validated
+- `known_constraints`: "Use a method, parameters or data different from `T04-seis`'s (`m:` id from its `source_reference`); do not rely on `T04-seis/E1`–`E3`."
+- A check that repeats the same method on the same data gets the same numbers back from the tools' records. It is not a second line of evidence (`geo-result-review` section 4).
 
-**Challenge** (new session; the strongest alternative)
+**Challenge** (fresh session, chosen by the gateway; the strongest alternative)
 - `analysis_mode`: `challenge`
+- `upstream_findings`: the claim under challenge and how it was made (method, inputs, `prov:` ids), from the ledger; not the specialist's reasoning
 - `geological_question`: "What is the strongest alternative to `T05-struct/C1`, what observations would discriminate between them, and do the supplied data contain any of those observations?"
 - `known_constraints`: "Do not assume `T05-struct/C1` is correct."
 
-**Reanalysis** (upstream changed)
+**Reanalysis** (upstream changed; the investigation's session)
 - `analysis_mode`: `reanalysis`
 - `previous_task_id`: the superseded task
 - `reason_for_reanalysis`: what changed and why, e.g. "`T03-strat` revised: the Main Sand in W2 is two lobes (`T08-strat/C1`)"
 - `upstream_findings`: the changed findings
 
-**Correction from the person** (same session; section 2a)
-- `specialist_session_id`: from the result being corrected
+**Correction from the person** (the investigation's session; section 2a)
 - `analysis_mode`: `follow_up`
 - `previous_task_id`: the corrected task
 - `reason_for_reanalysis`: the person's words, verbatim
 - `geological_question`: "Why does `T01-seis`'s fault volume miss what the person sees ('<their words>')? Check your tool calls against your skills' procedure, then fix it."
 - `known_constraints`: a method only if the person named one, quoted as theirs
 
-**Follow-up** (same session)
-- `specialist_session_id`: from the earlier result
+**Follow-up** (the investigation's session)
 - `analysis_mode`: `follow_up`
 - `previous_task_id`: the earlier task
 - `geological_question`: the specific clarification or extension
@@ -152,8 +159,11 @@ Route by the method id's domain (`m:seis/` → `seismic_interpretation`, `m:petr
 |---|---|---|
 | "Arguments repaired by the gateway: …" | Your call shape was fixed | Use the canonical shape next time |
 | "task_id … was already used" | Duplicate id | Use a new id per run |
-| "Session … is still busy" | A follow-up to a running or paused session | Wait for, or cancel, the earlier job |
-| "belongs to …, not …" | Wrong `specialist_session_id` for this tool | Use a session from the same specialist, or none |
+| "Queued behind task …" | The specialist's session is busy with an earlier task | Nothing: it starts when that turn ends; collect it with `get_specialist_result` |
+| "Session … is still busy" | A session named from outside is running or paused | Wait for, or cancel, the earlier job |
+| "… is not a … session of investigation …" | A `specialist_session_id` that is not this investigation's session (usually a mistyped copy) | Call again without it: the gateway continues the right one |
+| "A validation/challenge task runs in a fresh … session" | A session id passed with an independent mode | Omit it, or use `follow_up` if you meant to continue that work |
+| "belongs to …, not …" | Wrong `specialist_session_id` for this tool | Omit it |
 | "No saved agent named …" | A configuration problem | Report it to the user; do not substitute your own analysis |
 | "… jobs are already running (limit …)" | The concurrency cap was reached | Collect or cancel jobs first |
 | "Unresolved evidence reference" | The specialist cited an id that does not exist | Treat that link as unsupported; see `geo-result-review` |

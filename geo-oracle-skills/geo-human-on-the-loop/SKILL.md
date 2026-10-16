@@ -54,7 +54,7 @@ Ask it with `ask_user_question` as section 0 shows, and carry on in the same tur
 
 **Mint a new `investigation_id` for a new investigation**, with the date and time in it: `INV-dome-co2-20261006T0504`. The same name twice makes the second investigation inherit the first's run count, approved plan and any checkpoint left due, so a rerun of yesterday's question would start two-thirds through its work ceiling. The gateway refuses activation on an id that already carries work, and the refusal tells you to pick a new one.
 
-Then call `set_hotl_mode(investigation_id, mode, verbatim)` with their reply **word for word**, not a paraphrase: the record holds what they said and the confirmation line quotes it back. Surface the returned `confirmation_line` unchanged. Ask once per objective; a follow-up message inside an investigation inherits the setting, and a user who asks to change it mid-flight is recorded as an intervention.
+Then call `set_hotl_mode(investigation_id, mode, verbatim)` with their reply **word for word**, not a paraphrase: the record holds what they said and the confirmation line quotes it back. Surface the returned `confirmation_line` unchanged, in the message that makes your next tool call (section 3c). Ask once per objective; a follow-up message inside an investigation inherits the setting, and a user who asks to change it mid-flight is recorded as an intervention.
 
 The gateway allows **one** specialist call before the mode is set, so a single lookup costs nobody a question. It refuses every call after that. **The refusal is the backstop, not the route.** If you reach it, you asked too late: ask now, and the work already done is kept, but the person should have been asked before the first specialist ran.
 
@@ -123,6 +123,8 @@ Wave 3: Stopped at your request — nothing further opened. 7 of 15 runs used.
 ```
 
 The second and third are the ones that matter most to read out. `automatic` is also the word the gateway refuses in every-wave mode, so a bare "Wave 2 automatic" reads, to someone who asked for key decisions, like you skipping them. The line says the setting instead.
+
+**Where it goes.** Put the line, unchanged, in the message that makes your next tool call (the next dispatch, or the next step of the investigation), or in your final answer when nothing else runs. Never send it as a reply on its own: a reply with no tool call ends your turn, and with the mode `off` or `key_decisions` nothing else will open the next wave, so the investigation stops with the person told it is running. This holds for the line `set_hotl_mode` returns as well.
 
 **Two of the four triggers are checked, not trusted.** If any specialist in the wave returned a contradiction, or published a `reduction_plan`, the gateway refuses a record filed as "no key decision here" and tells you to ask. A change of scope and some refusals it cannot see, so those remain your judgement: if the plan you had approved no longer fits what you found, that is a trigger whether or not anything flags it.
 

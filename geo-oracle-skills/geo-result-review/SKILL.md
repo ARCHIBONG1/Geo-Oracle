@@ -89,6 +89,7 @@ Trace each supporting id back to its origin:
 - Two specialists who both rely on `T03-seis/E2` provide one line of evidence, not two.
 - A local interpretation built on a literature analogue, plus that same analogue, is one line.
 - Log-derived facies and core-described facies from the same interval are independent only if the log interpretation was not calibrated to that core description.
+- A re-check by the same specialist is a second line only if it ran in a fresh session (`session_route` says so), was briefed blind (the question, not the earlier answer), and used a different method, parameters or data. A re-check in the investigation's session, or one that repeated the same method on the same data, is the same line: the specialist's tools return the earlier result for identical inputs.
 
 Record the number of independent lines for each load-bearing claim in the ledger.
 
@@ -113,9 +114,9 @@ If no available evidence can discriminate, keep both interpretations. Do not pic
 |---|---|---|
 | Accept | Passes the checks (sections 3 and 3a); the classification is honest | Add to the ledger with its status |
 | Accept with qualification | Usable, but has stated limitations | Add to the ledger with the qualification attached |
-| Follow-up (same session) | A missing item, a clarification, or format problems | Brief it with `specialist_session_id` |
-| Validate (new session, or another specialist) | A load-bearing claim with a single line of evidence, where independent evidence exists | Validation task |
-| Challenge (new session) | An interpretation that plays or prospects depend on, with under-explored alternatives | Challenge task |
+| Follow-up (the investigation's session) | A missing item, a clarification, or format problems | Brief it as a `follow_up` with `previous_task_id`; the gateway continues the session |
+| Validate (fresh session, or another specialist) | A load-bearing claim with a single line of evidence, where independent evidence exists | Validation task, briefed blind with a different method (`geo-specialist-tasking` section 2) |
+| Challenge (fresh session) | An interpretation that plays or prospects depend on, with under-explored alternatives | Challenge task, briefed with the claims and how they were made |
 | Reanalysis | An upstream input changed, or a QC failure | Reanalysis task with `previous_task_id` |
 | Reject | Fabricated, or unsupported on a material point | Record why; do not propagate |
 
