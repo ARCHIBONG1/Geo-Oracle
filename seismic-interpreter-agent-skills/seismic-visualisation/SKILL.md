@@ -51,7 +51,7 @@ Map tools (`seismic_track_horizon`, `seismic_horizon_map`, `seismic_time_to_dept
 ## Figures
 
 `seismic_render_section` (inline or crossline), `seismic_render_slice` (z-slice) and `seismic_render_map` (any map file: structure with contours, isochron, extraction, closure, facies or AVO classes, NRMS) write PNGs to fixed standards:
-- signed amplitude uses the RdBu_r colormap, clipped symmetrically at a percentile of |amplitude|;
+- signed amplitude uses the Petrel colormap (Petrel's seismic colour table: blue and cyan troughs, grey at zero, brown, red and yellow peaks), clipped symmetrically at a percentile of |amplitude|; `seismic_render_3d` uses the same by default;
 - unsigned attributes use cividis, clipped at percentiles;
 - axes are labelled inline/crossline and TWT or depth;
 - the clip, colormap and polarity are printed on the figure.
@@ -80,6 +80,8 @@ The 3D tool drives [CIGVIS](https://github.com/JintaoLee-Roger/cigvis), a publis
 | Geobody, channel or anomaly body (binary) | `style: "body"`, `bodies: "intersecting"` to show only bodies cut by the displayed slices (CIGVIS's "full" geobody perspective), or `"all"` |
 | Probability or likelihood volume, not binarized | `style: "mask"` with an explicit `threshold` (for example the fault-extraction threshold) |
 | Labelled faults (`output: "labels"`) | `threshold: 0.5` shows every labelled fault |
+
+Faults are drawn black and bodies yellow, so both stand out on the Petrel-coloured slices; the tool reads which an overlay is from its lineage. Set `color` (bodies) or `cmap` (masks) only when the person asks for other colours.
 
 **Horizons**: pass horizon maps in `horizons`; they are drawn as surfaces coloured by time or depth.
 
