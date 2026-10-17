@@ -18,7 +18,7 @@ The import returns a path such as `uploads/seismic.npy` (in your work folder); u
 
 ## Loading sequence
 
-1. `seismic_list_data` shows which SEG-Y files and volumes exist. Match them to the task's evidence paths. A path named in the task but absent from the list goes in `missing_data` as `data_provider: <file> — SEG-Y in operations/inputs — <why>`.
+1. `seismic_list_data` shows which SEG-Y files, arrays, volumes and tables exist, the tables already registered, and under `computed` every volume or map earlier calls wrote, with what each holds: reuse those by path rather than recomputing. A `truncated` entry means a group was cut; name the file you need. Match them to the task's evidence paths. A path named in the task but absent from the list goes in `missing_data` as `data_provider: <file> — SEG-Y in operations/inputs — <why>`.
 2. `seismic_scan_segy` reads headers only, so it is quick. Read:
    - `recommended_header_bytes` and `header_candidates`: which byte pair gives a regular inline/crossline grid. The standard pair is 189/193; older data often uses 9/21.
    - `segy_revision` and `trace_identification_codes`: from rev 2.0, code 1 is time-domain and 25 depth-domain data. Rev 0 and 1 do not record the domain.

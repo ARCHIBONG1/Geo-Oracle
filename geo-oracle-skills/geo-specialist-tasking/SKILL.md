@@ -100,7 +100,8 @@ When the person rejects or questions a result ("this is wrong", "coherence does 
 - `analysis_mode`: `validation`
 - `previous_task_id`: the task being validated (for the record; it does not put the check in that task's session)
 - `geological_question`: the question the claim answers, asked afresh: "How many faults does the volume hold, and what are their strikes?", not "Is `T04-seis/C2` right?". You compare the two answers in review.
-- `upstream_findings`: nothing from the task being validated
+- `upstream_findings`: nothing from the task being validated **when the same specialist validates** (it would anchor on its own answer).
+- **A different specialist validating** gets the products it must examine, without the conclusions drawn from them: the fault set or body set (`@seismic-interpreter-agent/products/...` from `seismic_publish_structure` / `seismic_publish_bodies`), the horizon maps, the well products. It has no seismic tools: a structural specialist handed only the SEG-Y path returns `insufficient_data` (2026-10-17, T05) and the validation is a wasted wave. Check `available_evidence` names the products before dispatching.
 - `known_constraints`: "Use a method, parameters or data different from `T04-seis`'s (`m:` id from its `source_reference`); do not rely on `T04-seis/E1`–`E3`."
 - A check that repeats the same method on the same data gets the same numbers back from the tools' records. It is not a second line of evidence (`geo-result-review` section 4).
 
