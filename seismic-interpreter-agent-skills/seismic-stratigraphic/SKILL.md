@@ -5,7 +5,7 @@ description: Seismic stratigraphy and seismic facies - termination detection and
 
 # Seismic stratigraphy and facies
 
-**Channels and other depositional bodies as volumes:** extract them with `seismic_segment_volume` (recipes `channel_meandering`, `channel_submarine`; skill `seismic-attribute-interpretation`) inside the interval between your key surfaces. It returns each channel's axis, sinuosity, width and thickness.
+**Channels and other depositional bodies as volumes:** a task that asks for stratigraphic features, bodies or channels is answered by running them, not by reading sections: `seismic_segment_volume` with the generic `channel` recipe (skill `seismic-attribute-interpretation`, section 1: compute envelope, semblance and chaos, give a `z_window` or the interval between your key surfaces, and the extracted faults as `faults`). It returns each body's axis, sinuosity, width and thickness, and a labelled volume. Terminations and reflection character describe the frame; they never substitute for the extraction, and "no channel" is said only from its result.
 
 ## Reading reflection character from describe_section
 
@@ -40,7 +40,7 @@ Use `seismic_detect_terminations` on sections along and across depositional dip 
 
 ## Channels and bodies
 
-- A laterally limited zone with sharp edges on coherence, a distinct amplitude or frequency, and often a concave-up base suggests a channel or body.
+- A laterally limited zone with sharp edges on coherence, a distinct amplitude or frequency, and often a concave-up base suggests a channel or body: run the generic `channel` recipe over that level (above) and read its QC (`fault_overlap`, `extent`, `stability.merges`) before deciding what the bodies are. The recipe's inputs mark the bodies' edges by design; a body in the low-semblance tail is not thereby "discontinuity-dominated"; a body outside the fault zones is not fault disruption.
 - Report its width in traces, converted to metres with the trace spacing from `seismic_convert_coordinates`, and its thickness in ms against the tuning thickness.
 - Bodies thinner than tuning show amplitude that changes with thickness (tuning). Their amplitude is not a lithology indicator.
 

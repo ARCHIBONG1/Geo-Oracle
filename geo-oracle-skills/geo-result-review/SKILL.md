@@ -80,7 +80,7 @@ Section 3 asks whether a claim follows from its evidence; these ask whether the 
 
    A fault volume without its extraction method is a thresholded attribute, not faults: follow up. "No channels" without `m:seis/segment-volume` means the channel workflow never ran (on 2026-10-17 a specialist concluded it from sections and terminations alone): send it back to run the generic recipe, over a `z_window` when there are no horizons.
 
-   **A channel result is read with its QC**, not its count. Refuse (send back) a body result when: a body's extents are the survey's (one channel does not span every inline and crossline); `qc.extent` flags a body, or `qc.stability.merged_bodies` is not empty, and the result reports those bodies as separate channels; faults were extracted in the same investigation and the recipe ran without `faults` (`qc.fault_overlap` absent); or `qc.selection.final_exceeds_cap` is true. "Found at 9/9 settings" is persistence, not identity: a merger of channels, sheets and fault zones is perfectly stable. On 2026-10-17 seven such "stable candidate channel bodies" were accepted; one of them held 29 % channel, 18 % fault zone and 53 % sheet. For other deliverables, ask the specialist which method produced it when the ids do not make it plain.
+   **A channel result is read with its QC**, not its count. Refuse (send back) a body result when: a body's extents are the survey's (one channel does not span every inline and crossline); `qc.extent` flags a body, or `qc.stability.merged_bodies` is not empty, and the result reports those bodies as separate channels; faults were extracted in the same investigation and the recipe ran without `faults` (`qc.fault_overlap` absent); or `qc.selection.final_exceeds_cap` is true. "Found at 9/9 settings" is persistence, not identity: a merger of channels, sheets and fault zones is perfectly stable. For other deliverables, ask the specialist which method produced it when the ids do not make it plain.
 3. **The input fits the method.** Read what each computation ran on (the evidence statements and `source_reference`). Fault likelihood, fault extraction and other trace-correlation methods run on seismic amplitudes; a result computed on an attribute (coherence, a likelihood, a mask) where seismic was expected is a method error unless the person asked for it.
 4. **Compare with earlier runs of the same question.** If a rerun changes a key number by a large factor (a likelihood percentile ten times smaller, a fault count from 3 to 9), find out why before accepting: the inputs or the method changed, not the earth.
 5. **Faults come with persistence.** `seismic_interpret_faults` reports how many of the nearby settings find each fault (`found_at`). Report the drawn faults with that table; a count that changes across settings is reported as unstable, never tuned.
@@ -111,6 +111,10 @@ Then classify the conflict as a data conflict, an interpretation conflict or a m
 - the task that could test it, if any.
 
 If no available evidence can discriminate, keep both interpretations. Do not pick one by majority, plausibility or convenience.
+
+## 5a. A deliverable is delivered with its uncertainty, not withheld
+
+A specialist that returns an argument in place of a product the person asked for ("a survey-wide depth map is not defensible because the single-well time-depth is not a validated lateral velocity model"; "the bodies are candidates, so no channel volume") has not answered. The product exists at a stated uncertainty: a depth map from one well's time-depth is the standard first depth map, with the lateral velocity unknown; a channel volume is the extraction with its QC. Send it back as a `follow_up` with the product in `required_outputs` and the uncertainty to state; never relay "not defensible" as the result. When the person challenges "X was not produced", the answer to the challenge is X.
 
 ## 6. Decide the disposition
 

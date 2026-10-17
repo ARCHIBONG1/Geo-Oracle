@@ -100,7 +100,7 @@ An attribute anomaly is an **observation** or **measurement**. The geological me
 - Unknown params are ignored with a warning. Check `effective_params` to confirm what was used.
 - Time slices through dipping strata mix stratigraphic levels. Prefer sections, or a window around the target interval.
 
-## Dip-steered attributes (added 2026-10-16)
+## Dip-steered attributes
 
 Axis-aligned attributes read dipping but continuous reflectors as discontinuous and smear them when filtered. Two methods follow the local dip (estimated by the gradient structure tensor, `gst_2D_dips`, over `dip_kernel`, default 3 x 3 x 9) instead:
 

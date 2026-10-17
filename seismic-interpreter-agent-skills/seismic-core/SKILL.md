@@ -21,9 +21,32 @@ What each mode asks of you:
 |---|---|
 | initial | Characterise the data and answer the question at the resolution the data allows. |
 | follow_up | Answer the narrower question. Reuse earlier results through `seismic_get_record` if their provenance ids are given. |
-| validation | Re-measure the specific claims named. Report agreement or disagreement per claim. |
+| validation | Answer the question afresh, with a method, parameters or data different from the run being checked when the brief names them; the brief may withhold the earlier answer on purpose. Report what you measured; Geo Oracle compares. |
 | challenge | Actively look for evidence against the named interpretation. Report what would falsify it. |
 | reanalysis | Redo the work with the changed inputs or parameters named. Set `supersedes_task_ids`. |
+
+## 1a. What each deliverable takes
+
+A `required_outputs` entry names a product; the product has a chain. Start the chain early (the attribute and tracking steps run as jobs), and export what the person is to receive.
+
+| Deliverable | Chain | Export / figure |
+|---|---|---|
+| Data QC | `seismic_scan_segy` → `seismic_ingest_array` → `seismic_describe_volume` → `seismic_qc` (interval of interest) → `seismic_resolution_limits` | — |
+| Fault volume, fault set, strikes and dips | `seismic_interpret_faults` on the seismic (z_range to the reflective interval) → read `qc` and persistence → `seismic_fault_throw` with a horizon where one exists → `seismic_publish_structure` | `seismic_export_volume` (labels); `faults_figure_markdown` |
+| Channel or body volume (any stratigraphic feature or geobody) | envelope, semblance and chaos attributes (jobs) → `seismic_segment_volume` with `recipe: "channel"`, a `z_window` or interval, and `faults` → read `qc` → `seismic_publish_bodies` | `seismic_export_volume` (labels); `extraction_figure_markdown` |
+| Horizon (time map) | `seismic_list_events` at the well or a clear location → `seismic_track_horizon` (a seed in each fault block; faults first) → `seismic_horizon_map` `structure` → check `coverage` and the cross-fault steps | `seismic_export_volume` on the map (csv); `seismic_render_map` |
+| Depth map | the horizon above → `seismic_time_to_depth` (`method: table` with the well's time-depth, or the stated model) → `seismic_horizon_map` `structure` | export and render as a map |
+| Well tie | `seismic_convert_coordinates(well_header)` → `seismic_trace_events` (seabed and markers) → `seismic_extract_wavelet` → `seismic_synthetic` (`elastic_logs` + `time_depth`) → `seismic_well_tie` → `seismic_depth_function_check` where a second well exists | all three `*_figure_markdown` lines, always |
+| Closure | the depth map above → `seismic_closure` → read `qc` (realisations) | `seismic_render_map` |
+| Attribute volume | window → the attribute tool → `seismic_describe_section` on it | `seismic_export_volume` |
+| Facies, key surfaces | `seismic_detect_terminations` on two orientations; `seismic_classify_facies` on an interval | `seismic_render_map` |
+| AVO, DHI, 4D, inversion | `seismic-qi` | per the tool |
+
+**An initial full interpretation runs in this order**: QC → faults → channels and bodies (with the faults) → horizons (seeds in each fault block) → tie, when well products exist → depth map → closure. Each step feeds the next; a horizon tracked before the faults, or channels extracted without them, has to be redone.
+
+**Under the turn budget, deliverables come first**: the labelled volumes, maps and tie, each exported, before QC commentary and figures beyond the one each product needs. A figure never substitutes for a product.
+
+**A deliverable is delivered at its status.** A fault volume, channel volume or depth map from seismic alone is `partially_supported`; a depth map from one well's time-depth carries the unknown lateral velocity as its uncertainty. Say so in the claim and the limitations, and deliver the product. The status is the answer: it is never a reason to withhold the product, to call bodies something other than what the recipe measured, or to replace a map with an argument that a better one would need more data.
 
 ## 2. Handle every tool result the same way
 
@@ -37,6 +60,8 @@ What each mode asks of you:
 4. Use `report_hint` to decide the section and classification. You may downgrade a hint (for example, treat an observation as unusable because of QC), but never upgrade it.
 
 Never paste raw tool output into findings. Summarise the value and cite the provenance id.
+
+A long result is shortened to fit the reply: the warning says which parts (`result.<key>: replaced by a note`), the note keeps the verdict lines (`notes`, flags, the short lists naming what was found), and `seismic_get_record` with the result's `provenance_id` returns it whole. Read the verdicts from the note; fetch the record when you need the numbers behind them.
 
 ## 3. Evidence items
 
