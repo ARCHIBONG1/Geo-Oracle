@@ -18,7 +18,7 @@ Dmax/L for the global population mostly lies between 10^-3 and 10^-1 (Kim & Sand
 
 ## Growth: `sg_growth_index` (V6)
 
-Expansion index = hanging-wall thickness / footwall thickness for an interval (Thorsen 1963). Growth is resolvable only when the thickness difference exceeds twice the pick uncertainty; otherwise V6 is not tested. Cite where the thicknesses come from (horizon pairs or wells).
+Expansion index = hanging-wall thickness / footwall thickness for an interval (Thorsen 1963; as defined by Eskens et al. 2025 and Lathrop et al. 2021). EI > 1 is across-fault thickening, deposition while the fault moved. Growth is resolvable only when the hanging wall is thicker by more than twice the pick uncertainty; only then does V6 pass. EI below 1 beyond the uncertainty is unusual, typically a thickness misread on one side (Eskens et al. 2025): it is not growth, V6 is not tested, and the picks on both sides should be checked. Cite where the thicknesses come from (horizon pairs or wells).
 
 ## Reporting
 

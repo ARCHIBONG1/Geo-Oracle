@@ -341,9 +341,9 @@ See the table above.
 | `regional-stratigraphy` | time-scale discipline, chronostratigraphic charts, hiatuses and overlaps |
 | `regional-structure-stress` | fault elements and trends, SHmax orientation, stress regime, domain boundaries |
 | `regional-thermal` | heat-flow statistics, conductive geotherms, calibration to corrected well temperatures |
-| `regional-basin` | backstripping and decompaction, McKenzie stretching fits, burial history |
-| `regional-potential-fields` | gravity and magnetic transforms, lineaments as observations, depth-to-source |
-| `regional-seismicity` | catalogue summaries, magnitude of completeness, b-values and their limits |
+| `regional-basin` | backstripping and decompaction, McKenzie stretching fits, burial history, the basin-evidence table and the basis of each expectation |
+| `regional-potential-fields` | gravity and magnetic transforms, lineaments as observations, depth-to-source (Euler index set by the field and source type; regional handling) |
+| `regional-seismicity` | catalogue summaries, magnitude of completeness, b-values (with Utsu's coarse-bin correction) and their limits |
 | `regional-visualisation` | maps, rose diagrams, profiles; describe-then-interpret |
 
 ### `seismic-interpreter-agent-skills` (8)
@@ -381,8 +381,8 @@ See the table above.
 | `structural-core` | task procedure, the never-invent rule, the validity ledger |
 | `structural-data-qc` | upstream products and sidecars — domain, pick uncertainty, scope, validity |
 | `structural-geometry` | orientation statistics, mean planes and sets, fold axes by the pi method |
-| `structural-displacement` | throw profiles, displacement-length against the global population, growth |
-| `structural-networks` | fault-network topology (I, Y, X nodes), connectivity, relative ages |
+| `structural-displacement` | throw profiles, displacement-length against the global population, growth (expansion index; V6 only for resolvable thickening) |
+| `structural-networks` | fault-network topology (I, Y, X nodes), connectivity (C_B and C_L after Sanderson & Nixon 2015), relative ages |
 | `structural-modelling` | fault planes and horizons per block, validity tests, seeded realizations |
 | `structural-geomechanics` | the stress tensor, slip and dilation tendency, critical pore pressure |
 | `structural-fault-seal` | juxtaposition, shale gouge ratio, shale smear factor, column heights |

@@ -8,7 +8,7 @@ description: Building the structural model (fault planes, horizons per fault blo
 ## `sg_build_model`
 
 - Fault planes through the traces at the fault_set's dips; the horizon interpolated per fault block by thin-plate RBF through the picks (depth only).
-- **V7 data honouring**: the maximum misfit to the picks against the pick uncertainty (interpolation through the picks gives zero; a smoothed model would not).
+- **V7 data honouring**: the spline passes through every pick, so the misfit at the picks is zero by construction and is not the test. V7 rebuilds the model without every tenth pick and passes when it predicts those held-out picks with an RMS within twice the pick uncertainty, and every pick lies in a modelled block (a fault block with fewer than 4 picks is not modelled and fails V7). Read `holdout` in the result.
 - **V1 geometric consistency**: cutoffs present on both sides along each fault with a consistent downthrown side; two horizons do not cross (give `second_horizon`).
 - `trace_vs_strike_misfit` flags a trace that is not perpendicular to the dip azimuth; the plane follows the trace and the misfit is reported.
 - The product `structural_model` carries the ledger (V1, V7 and the untested ones honestly "not tested") and the model grid file; later tools read the ledger and propagate failures.
@@ -26,6 +26,6 @@ Build one model per plausible interpretation (one fault or two segments; differe
 
 ## Reporting
 
-- `[interpretation, derived]`: "Model dome-v1: F1 planar, 2 blocks; V1 pass, V7 pass (max misfit 0 m, uncertainty 2.5 m), V2 pass, V3-V6 not tested", product `structural_model`.
+- `[interpretation, derived]`: "Model dome-v1: F1 planar, 2 blocks; V1 pass, V7 pass (holdout RMS 1.1 m against 2 x 2.5 m; every pick modelled), V2 pass, V3-V6 not tested", product `structural_model`.
 - `[measurement, derived]`: closure as ranges, product `trap_geometry`, for prospect_target and risk work; the ceiling: the horizon's pick uncertainty and the fault set it depends on.
 - Closure map with `sg_render(kind=closure, fault_set=...)`.

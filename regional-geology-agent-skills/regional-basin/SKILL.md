@@ -8,7 +8,7 @@ description: Backstripping and decompaction, McKenzie stretching fits, the basin
 ## Backstripping: `reg_backstrip`
 
 - The column (youngest first): present depths below the sediment surface, lithology (or compaction parameters), ages top and base, palaeo-water depth and eustatic sea level per unit. Ages come from the chart or the synthesis (cite), depths from a well or a pseudo-well (cite), palaeo-water depths from facies evidence (cite, or state the assumption).
-- Compaction: Sclater & Christie (1980) parameters per lithology (shale 0.63 / 0.51 per km, sandstone 0.49 / 0.27, limestone and chalk 0.70 / 0.71; salt does not compact). Give `phi0`, `c_per_km` and `rho_grain` when you have measured values.
+- Compaction: Sclater & Christie (1980) Table A1a per lithology (shale 0.63 / 0.51 per km, sandstone 0.49 / 0.27, shaly sandstone 0.56 / 0.39, chalk 0.70 / 0.71); salt does not compact. They give no limestone or basalt parameters (chalk is not limestone): for those, and whenever you have measured values, give `phi0`, `c_per_km` and `rho_grain` with `compaction_source`. Each unit's parameters come back with their basis.
 - The result's `history` gives, at each unit's top age, the decompacted thickness, the water depth, the total subsidence and the **tectonic (water-loaded) subsidence** by Airy isostasy.
 - **State the assumptions**: Airy (no flexure), the palaeo-water depths and sea levels, and the compaction parameters. A different water depth of 200 m moves tectonic subsidence by 200 m.
 
@@ -20,7 +20,7 @@ description: Backstripping and decompaction, McKenzie stretching fits, the basin
 
 ## Basin classification: `reg_basin_evidence`
 
-The table sets your measured values (sediment thickness from GlobSed, crustal thickness, heat flow, stress regime, the subsidence form from the burial history, seismicity) beside the published expectations for rift, passive margin, foreland, strike-slip and intracratonic basins. The class is your `interpretation`, with the alternatives that fit the same evidence carried in `competing_interpretations`; the table alone never decides.
+The table sets your measured values (sediment thickness from GlobSed, crustal thickness, heat flow, stress regime, the subsidence form from the burial history, seismicity) beside the expectations for rift, passive margin, foreland, strike-slip and intracratonic basins, each with its `basis`: a publication (McKenzie 1978, Steckler & Watts 1978, Allen & Allen 2005 with page) or "Geo Oracle summary; no source recorded"; cite the latter as such, never as a published classification. The class is your `interpretation`, with the alternatives that fit the same evidence carried in `competing_interpretations`; the table alone never decides.
 
 ## Products and transfer
 

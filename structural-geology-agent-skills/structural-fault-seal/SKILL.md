@@ -13,10 +13,10 @@ description: Juxtaposition, shale gouge ratio, shale smear factor and calibrated
 
 ## What `sg_fault_seal` computes
 
-- **Juxtaposition**: at each point on the fault, the footwall lithology against the hanging-wall lithology displaced by the throw, classed sand or shale by the Vsh cutoff (0.35 default; state it). Sand-sand windows are where juxtaposition alone does not seal.
-- **SGR** (Yielding et al. 1997): the Vsh-weighted thickness of the beds that slipped past each point, over the throw, in percent. The gouge is taken to seal above a threshold (15-20 % in published calibrations; `sgr_threshold_pct`, cite the calibration you use).
-- **SSF** (Lindsay et al. 1993): throw over shale-bed thickness per shale bed; smear is typically continuous below about 4-7.
-- **Column height** (Bretan et al. 2003): the across-fault pressure difference from the lowest SGR in a sand-sand window, converted to a column with the fluid densities you give (water and hydrocarbon or CO2, from wells_petrophysics or stated). Burial depth selects the calibration constant.
+- **Juxtaposition**: at each point on the fault, the footwall lithology against the hanging-wall lithology displaced by the throw, classed sand below the Vsh cutoff and shale at or above it (`vsh_cutoff`, default 0.5; state it). The same cutoff defines the shale beds of the SSF, so a bed is classed alike in both. Sand-sand windows are where juxtaposition alone does not seal.
+- **SGR** (Yielding et al. 1997): the Vsh-weighted thickness of the beds that slipped past each point, over the throw, in percent; undefined where the slipped interval leaves the log. The gouge is taken to seal above a threshold (15-20 % in mixed clastics, about 20 % for oil: Bretan et al. 2003; `sgr_threshold_pct`, default 20, cite the calibration you use).
+- **SSF** (Lindsay et al. 1993): throw over shale-bed thickness per shale bed, beds measured between the cutoff crossings, only the beds of the interval that slipped past the analysed part of the fault; smears may become incomplete above about 7 (Yielding et al. 1997 see no seal above about 6).
+- **Column height** (Bretan et al. 2003): the across-fault pressure difference from the lowest SGR in a sand-sand window, converted to a column with the fluid densities you give (water and hydrocarbon or CO2, from wells_petrophysics or stated). Burial depth selects the calibration constant; below `sgr_threshold_pct` the column is 0, so the column and the threshold test agree.
 
 ## Pitfalls
 

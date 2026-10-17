@@ -8,7 +8,7 @@ description: Time-scale discipline, chronostratigraphic charts from the literatu
 ## Time scale: `reg_time_scale`
 
 - The bundled chart is the ICS International Chronostratigraphic Chart v2023/09; every output names it. Ages from older scales (GTS2012, GTS2004) can differ by about a million years at some boundaries: say which scale each age uses, and never mix them silently.
-- Stage names resolve to ages (`name='Tithonian'`); ages resolve to stages. Approximate boundaries are flagged.
+- Stage names resolve to ages (`name='Tithonian'`); ages resolve to stages. Approximate boundaries are flagged and the chart's +/- comes with a base age where it gives one (`base_uncertainty_myr`); quote both.
 
 ## The chart: `reg_chronostrat_chart`
 

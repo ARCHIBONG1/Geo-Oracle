@@ -34,7 +34,7 @@ A `required_outputs` entry names a product; the product has a chain. Start the c
 | Data QC | `seismic_scan_segy` → `seismic_ingest_array` → `seismic_describe_volume` → `seismic_qc` (interval of interest) → `seismic_resolution_limits` | — |
 | Fault volume, fault set, strikes and dips | `seismic_interpret_faults` on the seismic (z_range to the reflective interval) → read `qc` and persistence → `seismic_fault_throw` with a horizon where one exists → `seismic_publish_structure` | `seismic_export_volume` (labels); `faults_figure_markdown` |
 | Channel or body volume (any stratigraphic feature or geobody) | envelope, semblance and chaos attributes (jobs) → `seismic_segment_volume` with `recipe: "channel"`, a `z_window` or interval, and `faults` → read `qc` → `seismic_publish_bodies` | `seismic_export_volume` (labels); `extraction_figure_markdown` |
-| Horizon (time map) | `seismic_list_events` at the well or a clear location → `seismic_track_horizon` (a seed in each fault block; faults first) → `seismic_horizon_map` `structure` → check `coverage` and the cross-fault steps | `seismic_export_volume` on the map (csv); `seismic_render_map` |
+| Horizon (time map) | `seismic_list_events` at the well → `seismic_fault_throw` for each fault between blocks → a seed per block at the throw-corrected time → `seismic_track_horizon` with `faults` (the fault set) → read `qc.faults` → `seismic_horizon_map` `structure` | `seismic_export_volume` on the map (csv); `seismic_render_map` |
 | Depth map | the horizon above → `seismic_time_to_depth` (`method: table` with the well's time-depth, or the stated model) → `seismic_horizon_map` `structure` | export and render as a map |
 | Well tie | `seismic_convert_coordinates(well_header)` → `seismic_trace_events` (seabed and markers) → `seismic_extract_wavelet` → `seismic_synthetic` (`elastic_logs` + `time_depth`) → `seismic_well_tie` → `seismic_depth_function_check` where a second well exists | all three `*_figure_markdown` lines, always |
 | Closure | the depth map above → `seismic_closure` → read `qc` (realisations) | `seismic_render_map` |
@@ -62,7 +62,7 @@ A `required_outputs` entry names a product; the product has a chain. Start the c
 
 Never paste raw tool output into findings. Summarise the value and cite the provenance id.
 
-A long result is shortened to fit the reply: the warning says which parts (`result.<key>: replaced by a note`), the note keeps the verdict lines (`notes`, flags, the short lists naming what was found), and `seismic_get_record` with the result's `provenance_id` returns it whole. Read the verdicts from the note; fetch the record when you need the numbers behind them.
+A long result is shortened to fit the reply: the warning says which parts (`result.<key>: replaced by a note`), and the note keeps the verdict lines (`notes`, flags, the short lists naming what was found). Read the verdicts from the note; for the numbers behind them call `seismic_get_record` with the result's `provenance_id` and `field` naming the part (`result.qc`, `result.qc.stability`, `result.bodies`): the part comes back whole and small. Never fetch the whole record of a large result, and never read a saved tool result with code in your sandbox.
 
 ## 3. Evidence items
 

@@ -20,8 +20,8 @@ The result lists the principal stresses for the regime (NF: Sv > SHmax > Shmin; 
 ## Stability: `sg_fault_stability`
 
 - Slip tendency Ts = tau / (sigma_n - Pp) (Morris et al. 1996); dilation tendency Td = (S1 - sigma_n)/(S1 - S3) (Ferrill et al. 1999); critical pressure increase dP = (sigma_n - Pp) - (tau - C)/mu, the pore-pressure rise to Mohr-Coulomb failure.
-- Ranges from a deterministic grid: friction 0.4, 0.6, 0.8 (Byerlee 1978) and the Shmin and SHmax ranges you give (from the bounds, or +/- the measurement uncertainty). The grid is reported; no random draws.
-- Give `planned_pressure_increase_mpa` for injection or production questions: the verdict per fault is stable in all cases, fails in some, or fails in all. "Fails in some" is `partially_supported` with the case counts.
+- Ranges from a deterministic grid: friction 0.4, 0.6, 0.85 by default and the Shmin and SHmax ranges you give (from the bounds, or +/- the measurement uncertainty). Byerlee (1978): 0.85 below 200 MPa normal stress, 0.6 above; 0.4 stands for weak clay-rich gouge below Byerlee's range. The base case uses the median of the list (`base_mu`). The grid and the true case count are reported; no random draws.
+- Give `planned_pressure_increase_mpa` for injection or production questions: the verdict per fault is stable in all cases, fails in some, or fails in all, with `fraction_of_cases_stable`. "Fails in some" is `partially_supported` with that fraction.
 - Vertical faults perpendicular to SHmax carry no shear stress (a principal plane): Ts near 0 is right, not an error.
 - Ts at or above 1 in some cases means that stress state is implausible for an existing fault, or the magnitudes are wrong: say which.
 
@@ -35,5 +35,5 @@ A stability claim depends on the stress field's transfer status (regional prior)
 
 ## Reporting
 
-- `[measurement, derived]`: "F1 critical pressure increase 4.1-6.8 MPa over friction 0.4-0.8 and Shmin +/-10 % (15 cases); planned 2.5 MPa: stable in all cases", `prov:` id, product `fault_stability`.
+- `[measurement, derived]`: "F1 critical pressure increase 4.1-6.8 MPa over friction 0.4-0.85 and Shmin +/-10 % (15 cases); planned 2.5 MPa: stable in all cases", `prov:` id, product `fault_stability`.
 - Mohr diagram with `sg_render(kind=mohr)`: planes drawn on the circles, failure line stated.

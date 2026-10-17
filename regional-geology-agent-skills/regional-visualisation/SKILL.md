@@ -26,7 +26,8 @@ You do not see the figures you render: the tool returns a URL, not an image. The
 - The projection is printed: a local azimuthal equal-area, so areas and distances read correctly.
 - Measurement points are drawn over any surface: a smooth grid looks like data everywhere; the points show where it is constrained.
 - Fields use a perceptually uniform colour map; anomalies (gravity, magnetics; `anomaly=true`) a diverging, zero-centred one.
-- Scale bar and graticule are drawn; the caption names datasets, versions and the extent.
+- Scale bar (true at the projection centre) and graticule are drawn; the caption names datasets, versions and the extent.
+- Rose diagrams are equal-area: a sector's radius goes as the square root of its count (Nemec 1988), so sector areas compare as counts do.
 
 ## Protocol
 

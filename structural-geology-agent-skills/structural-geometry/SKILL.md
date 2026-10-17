@@ -22,7 +22,7 @@ Bedding poles on a cylindrical fold lie on a great circle; its pole is the fold 
 
 ## `sg_surface_attributes`
 
-Dip, dip azimuth and mean curvature of a depth horizon grid (time-domain grids are refused). Curvature is a geometric proxy, not fracture intensity: say so if it is used that way. The steepest dips mark fault scarps or the limbs of folds; compare with the fault set before reading them as either.
+Dip, dip azimuth and mean curvature (Roberts 2001 eq. 15; positive over antiforms, negative over synforms, z down) of a depth horizon grid (time-domain grids are refused). Curvature is a geometric proxy, not fracture intensity: say so if it is used that way. The steepest dips mark fault scarps or the limbs of folds; compare with the fault set before reading them as either.
 
 ## Reporting
 

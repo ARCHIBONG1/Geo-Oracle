@@ -117,6 +117,8 @@ If no available evidence can discriminate, keep both interpretations. Do not pic
 
 ## 5a. A deliverable is delivered with its uncertainty, not withheld
 
+**A process-audit flag sends the procedure back, not the measurement.** When the gateway flags a skill not opened, a refused call or an override, the follow-up asks the specialist to read the procedure and check its method against it; a number measured with the right tool on the right inputs stands unless that check finds it wrong. A rerun that gives a different number is not "the audited one": report both with their inputs, and the difference is the finding (a well tie of 0.98 on the supplied checkshots against 0.85 on a derived time-depth product says the derived product is the weaker input, not that 0.85 is the tie).
+
 A specialist that returns an argument in place of a product the person asked for ("a survey-wide depth map is not defensible because the single-well time-depth is not a validated lateral velocity model"; "the bodies are candidates, so no channel volume") has not answered. The product exists at a stated uncertainty: a depth map from one well's time-depth is the standard first depth map, with the lateral velocity unknown; a channel volume is the extraction with its QC. Send it back as a `follow_up` with the product in `required_outputs` and the uncertainty to state; never relay "not defensible" as the result. When the person challenges "X was not produced", the answer to the challenge is X.
 
 ## 6. Decide the disposition
