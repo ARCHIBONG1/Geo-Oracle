@@ -65,6 +65,7 @@ Section 3 asks whether a claim follows from its evidence; these ask whether the 
    - *override in <tool>*: a tool ran on an input it does not normally accept. Accept only if the person asked for exactly that; otherwise follow up.
    - *subset of faults kept*: read the stated reason. A subset chosen to match an expected count is rejected.
    - *skills not opened*: the specialist never read, in this session, a procedure its tools require (no failed read; it was simply never opened). Check its method against that skill; when the method matters, ask it (same session) to read the skill on its own and redo the work.
+   - *refused call repeated*: the specialist resent a refused call unchanged (on 2026-10-17, 78 times) instead of changing it, and the turn it spent may have cost other parts of the task. Compare the result with what you asked for, and send the uncovered parts back (same session).
    - *qc suggestion not followed*: a tool's QC named a setting to rerun with and no later call used it. Ask for the rerun (same session), or accept with the reason written down.
    - *typed channel recipe before the generic one*: the specialist assumed a channel type (meandering, submarine) without the user naming it, a well establishing it, or a generic `channel` run first. Ask it (same session) to run the generic recipe and report the measured planform and fill; a type the data were not asked to show is not a finding.
 
@@ -74,9 +75,10 @@ Section 3 asks whether a claim follows from its evidence; these ask whether the 
    | Deliverable | Must include |
    |---|---|
    | fault volume, fault set, fault count | `m:seis/interpret-faults`, or `m:seis/ransac-plane-fault-extraction` with `m:seis/fault-surface-sampling` |
+   | channels or other stratigraphic bodies, **including "none found"** | `m:seis/segment-volume` (the generic `channel` recipe unless the person or a well named the type) |
    | channel type (meandering, submarine, tidal, ...) | `m:seis/recipe-channel` with the measured `planform` and fill, or a typed recipe whose `type_basis` names the user or a well |
 
-   A fault volume without its extraction method is a thresholded attribute, not faults: follow up. For other deliverables, ask the specialist which method produced it when the ids do not make it plain.
+   A fault volume without its extraction method is a thresholded attribute, not faults: follow up. "No channels" without `m:seis/segment-volume` means the channel workflow never ran (on 2026-10-17 a specialist concluded it from sections and terminations alone): send it back to run the generic recipe, over a `z_window` when there are no horizons. For other deliverables, ask the specialist which method produced it when the ids do not make it plain.
 3. **The input fits the method.** Read what each computation ran on (the evidence statements and `source_reference`). Fault likelihood, fault extraction and other trace-correlation methods run on seismic amplitudes; a result computed on an attribute (coherence, a likelihood, a mask) where seismic was expected is a method error unless the person asked for it.
 4. **Compare with earlier runs of the same question.** If a rerun changes a key number by a large factor (a likelihood percentile ten times smaller, a fault count from 3 to 9), find out why before accepting: the inputs or the method changed, not the earth.
 5. **Faults come with persistence.** `seismic_interpret_faults` reports how many of the nearby settings find each fault (`found_at`). Report the drawn faults with that table; a count that changes across settings is reported as unstable, never tuned.

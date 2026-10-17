@@ -53,6 +53,7 @@ Map tools (`seismic_track_horizon`, `seismic_horizon_map`, `seismic_time_to_dept
 `seismic_render_section` (inline or crossline), `seismic_render_slice` (z-slice) and `seismic_render_map` (any map file: structure with contours, isochron, extraction, closure, facies or AVO classes, NRMS) write PNGs to fixed standards:
 - signed amplitude uses the Petrel colormap (Petrel's seismic colour table: blue and cyan troughs, grey at zero, brown, red and yellow peaks), clipped symmetrically at a percentile of |amplitude|; `seismic_render_3d` uses the same by default;
 - unsigned attributes use cividis, clipped at percentiles;
+- interpretation figures over the seismic (`seismic_interpret_faults`' faults figure, `seismic_render_extraction` with the seismic as `background`) use the same Petrel table, with faults black and bodies yellow, each numbered; over a recipe score or an attribute the background stays grey with one colour per body;
 - axes are labelled inline/crossline and TWT or depth;
 - the clip, colormap and polarity are printed on the figure.
 
