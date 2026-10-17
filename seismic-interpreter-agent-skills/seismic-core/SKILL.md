@@ -38,11 +38,12 @@ A `required_outputs` entry names a product; the product has a chain. Start the c
 | Depth map | the horizon above → `seismic_time_to_depth` (`method: table` with the well's time-depth, or the stated model) → `seismic_horizon_map` `structure` | export and render as a map |
 | Well tie | `seismic_convert_coordinates(well_header)` → `seismic_trace_events` (seabed and markers) → `seismic_extract_wavelet` → `seismic_synthetic` (`elastic_logs` + `time_depth`) → `seismic_well_tie` → `seismic_depth_function_check` where a second well exists | all three `*_figure_markdown` lines, always |
 | Closure | the depth map above → `seismic_closure` → read `qc` (realisations) | `seismic_render_map` |
+| Distance from a well to each feature | `seismic_feature_distance` on the fault volume and the body volume, with the well header, its track and the time-depth table | — |
 | Attribute volume | window → the attribute tool → `seismic_describe_section` on it | `seismic_export_volume` |
 | Facies, key surfaces | `seismic_detect_terminations` on two orientations; `seismic_classify_facies` on an interval | `seismic_render_map` |
 | AVO, DHI, 4D, inversion | `seismic-qi` | per the tool |
 
-**An initial full interpretation runs in this order**: QC → faults → channels and bodies (with the faults) → horizons (seeds in each fault block) → tie, when well products exist → depth map → closure. Each step feeds the next; a horizon tracked before the faults, or channels extracted without them, has to be redone.
+**An initial full interpretation runs in this order**: QC → faults → channels and bodies (with the faults) → horizons (seeds in each fault block) → tie, when well products exist → depth map → closure → distances from each well to each feature. Each step feeds the next; a horizon tracked before the faults, or channels extracted without them, has to be redone.
 
 **Under the turn budget, deliverables come first**: the labelled volumes, maps and tie, each exported, before QC commentary and figures beyond the one each product needs. A figure never substitutes for a product.
 

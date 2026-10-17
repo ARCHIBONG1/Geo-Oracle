@@ -76,6 +76,9 @@ Section 3 asks whether a claim follows from its evidence; these ask whether the 
    |---|---|
    | fault volume, fault set, fault count | `m:seis/interpret-faults`, or `m:seis/ransac-plane-fault-extraction` with `m:seis/fault-surface-sampling` |
    | channels or other stratigraphic bodies, **including "none found"** | `m:seis/segment-volume` (the generic `channel` recipe unless the person or a well named the type) |
+   | a well tie (correlation, phase, shift) | `m:seis/well-tie-shift-phase-scan`; a petrophysics "tie-ready" product is the input to a tie, not a tie |
+   | a depth map | `m:seis/time-depth-conversion-laws` or a table conversion on a horizon map (`m:seis/correlation-horizon-autotracker` behind it); a converted volume is not a map |
+   | a distance from a well to a feature | `m:seis/feature-distance`; a bounding-box overlap is not a distance |
    | channel type (meandering, submarine, tidal, ...) | `m:seis/recipe-channel` with the measured `planform` and fill, or a typed recipe whose `type_basis` names the user or a well |
 
    A fault volume without its extraction method is a thresholded attribute, not faults: follow up. "No channels" without `m:seis/segment-volume` means the channel workflow never ran (on 2026-10-17 a specialist concluded it from sections and terminations alone): send it back to run the generic recipe, over a `z_window` when there are no horizons.

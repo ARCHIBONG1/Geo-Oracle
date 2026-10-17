@@ -28,7 +28,7 @@ A specialist's answer can only be as good as its brief. A good brief gives the s
 | `known_constraints` | Assumptions that must not be made; fixed facts; methods required or excluded | Leaving them unstated; turning an upstream caveat into a prohibition (see 1a) |
 | `known_unknowns` | Missing data and open questions | Hiding gaps |
 | `competing_interpretations` | Rival models the specialist must test | Only the favoured model |
-| `required_outputs` | Concrete deliverables | "A comprehensive analysis" |
+| `required_outputs` | Concrete deliverables, each unconditional: "a depth map of the horizon at CRV-1, converted with its time-depth table" | "A comprehensive analysis"; a conditional ("a depth map if a valid conversion exists; otherwise state cannot-determine"): the specialist takes the exit and tracks nothing. The chain behind a product is the specialist's job; the only acceptable "cannot" names a missing input. For a seismic volume with a well the standing set is: fault volume, body volume, a horizon at the well, the well tie, the depth map, and each feature's distance to the well |
 | `downstream_use` | Which task or decision consumes the result | Leaving it out, so the specialist cannot judge the precision needed |
 | `previous_task_id`, `reason_for_reanalysis` | For every non-initial mode | Leaving them empty |
 | `instructions` | Leave empty: it replaces the default brief | Duplicating the output format, which the gateway already enforces |
