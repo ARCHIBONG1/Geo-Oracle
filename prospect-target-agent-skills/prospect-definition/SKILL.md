@@ -15,7 +15,7 @@ One closure is one candidate. A closure cut by a fault the structural specialist
 |---|---|---|---|
 | R1 | — | — | no play matrix covers it: a concept, whatever the closure looks like |
 | R2 | the closure is in time, or not closed | the validity record does not show V1 and V7 passed | a lead; the request goes to structural_geology |
-| R3 | an element claim was refused by the ceiling | no elements inherited | lower the element or take the evidence to the play specialist |
+| R3 | an element claim was refused by the ceiling | no elements inherited, or an element has no row in the play matrix and no basis (listed as `elements_untraced`) | lower the element or take the evidence to the play specialist; for an untraced element, ask the play specialist to assess it |
 | R4 | an input has no product or source | the volume step has not run | leave unset before volumes; set it only once every input resolves |
 | R5 | a contact is outside the closure, a column exceeds the seal, or no reservoir is present | nothing was checked | the geological inconsistency is the finding, not an inconvenience |
 | R6 | no location satisfies the constraints | no location was derived | a prospect, not a target |

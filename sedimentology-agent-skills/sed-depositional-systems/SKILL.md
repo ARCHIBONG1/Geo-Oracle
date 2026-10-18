@@ -9,13 +9,13 @@ description: The diagnostic matrix per depositional environment, how an associat
 
 | Environment | Diagnostic | Suggestive only | Against |
 |---|---|---|---|
-| Fluvial channel | Roots or palaeosols in the overbank (Rt); lateral accretion with unidirectional currents | Cross-bedding, current ripples, grading, lags, fining upward | Mud drapes, tidal bundles, herringbone, marine traces |
-| Tidal channel | Mud drapes on foresets (Md), tidal bundles (Tb), bidirectional cross-bedding (Xbb) | Heterolithic bedding, cross-bedding, fining upward, brackish traces | Roots, hummocky |
-| Tidal flat | Md, Tb | Heterolithic, current ripples, bioturbation | Hummocky, roots |
+| Fluvial channel | Lateral accretion with unidirectional currents (accretion surfaces dipping at a high angle to flow: Miall 2010) | Roots or palaeosols in the overbank (Rt: subaerial exposure, found in many settings), cross-bedding, current ripples, grading, lags, fining upward | Mud drapes, tidal bundles, herringbone, marine traces |
+| Tidal channel | Mud drapes on foresets (Md), tidal bundles (Tb) | Bidirectional (herringbone) cross-bedding (Xbb, not unique to tides: Nio & Yang 1991), heterolithic bedding, cross-bedding, fining upward, brackish traces | Roots, hummocky |
+| Tidal flat | Md, Tb | Heterolithic, current ripples, bioturbation | Hummocky (roots are not against: the upper flats are vegetated, Fan 2013) |
 | Wave-dominated shoreface | Hummocky or swaley cross-stratification (Hcs), wave ripples (Wr) | Coarsening upward, planar lamination, marine traces, bioturbation | Roots, mud drapes, tidal bundles |
-| Deep-water turbidite system | Grading with sole marks; grading with planar lamination and hemipelagic mud | Grading, convolute lamination, massive sands | Roots, wave ripples, hummocky, herringbone |
+| Deep-water turbidite system | Grading with planar lamination and hemipelagic mud | Grading with sole marks (turbidity currents also build delta fronts: Bhattacharya 2010), grading, convolute lamination, massive sands | Roots, wave ripples, hummocky, herringbone |
 | Aeolian dune | Grainflow and pin-stripe lamination (Gf) | Large cross-sets, good sorting, red colour | Bioturbation, marine traces, mud drapes, hummocky |
-| Lacustrine | Varves; evaporites with lamination | Planar lamination, organic-rich mud | Marine traces, hummocky |
+| Lacustrine | Varves (annual laminae in a lake) | Evaporites with lamination (also in marine basins: Kendall 2010), planar lamination, organic-rich mud | Marine traces, hummocky |
 
 `sed_diagnostic_check` takes the features seen in the association (from the scheme) and the succession pattern (fining or coarsening upward; unidirectional palaeocurrents when known) and returns S2 with the lists.
 
@@ -25,7 +25,7 @@ description: The diagnostic matrix per depositional environment, how an associat
 2. The succession consistent with the environment (S3 from the pooled transitions).
 3. The framework and setting consistent (S4): a tidal channel below a flooding surface in a marine succession fits; one inside a red-bed alluvial unit does not.
 4. The biota consistent (S7): brackish traces in a tidal channel; marine traces in a shoreface; none in an aeolian dune.
-5. Palaeocurrents (S6, phase 1) and geometry (S5, phase 2) when their products exist.
+5. Palaeocurrents (S6) and geometry (S5) when evidence for them exists (no tool computes them yet: pass the booleans with their evidence cited, or leave them not tested).
 
 ## Competing models
 

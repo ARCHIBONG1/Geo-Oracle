@@ -48,7 +48,7 @@ agents/skills/
    |______ seismic-interpreter-agent-skills/     (8)
    |______ structural-geology-agent-skills/      (8)
    |______ stratigraphy-geology-agent-skills/    (8)
-   |______ sedimentology-agent-skills/           (6)
+   |______ sedimentology-agent-skills/           (7)
    |______ petrophysics-agent-skills/            (13)
    |______ subsurface-play-agent-skills/         (8)
    |______ prospect-target-agent-skills/         (7)
@@ -110,7 +110,7 @@ the name alone whether it needs a document.
 | `<tag>-core` | 9 | The pack's operating procedure. **Always loaded first.** Task reading, how to handle any tool result, evidence classification, claim status, the `missing_data` format, what must appear in `limitations`, and the shape of the findings to return. |
 | `<tag>-data-qc` | 8 | Getting data in and judging whether it can bear the question: uploads, loading, units and mnemonics, depth rules, reading upstream products and their sidecars. |
 | `<tag>-visualisation` | 7 | What the rendering tools enforce, the describe-then-interpret discipline, and — importantly — **what a figure may and may not be used to support.** |
-| Domain skills | 64 | One per body of method: attributes, saturation, fault seal, sequence stratigraphy, flip tests, and so on. |
+| Domain skills | 66 | One per body of method: attributes, saturation, fault seal, sequence stratigraphy, flip tests, and so on. |
 
 The `-core` / `-data-qc` / `-visualisation` triad is deliberate: it separates
 *how to behave*, *whether the data supports the question*, and *what a picture
@@ -393,13 +393,13 @@ See the table above.
 | `strat-core` | the two ledgers, the tie-point hierarchy, the consistency ledger |
 | `strat-data-qc` | correlation logs and well tops, sidecars, the depth rule for deviated wells |
 | `strat-log-correlation` | ranking tie points, dynamic time warping constrained to anchors |
-| `strat-sequence` | stacking patterns from GR, candidate flooding surfaces and sequence boundaries |
+| `strat-sequence` | stacking patterns from GR, candidate maximum flooding and maximum regressive surfaces |
 | `strat-chronostratigraphy` | age models from dated samples and datums, the seeded envelope, missing time |
 | `strat-biostratigraphy` | biostratigraphic events as tie points, event ordering, graphic correlation |
-| `strat-unconformities-thickness` | isopachs, eroded thickness, erosion versus fault cut-out |
+| `strat-unconformities-thickness` | isochores and isopachs, minimum eroded thickness, missing time at a hiatus, erosion versus fault cut-out |
 | `strat-visualisation` | correlation panels, the two-datum check, what a panel may support |
 
-### `sedimentology-agent-skills` (6)
+### `sedimentology-agent-skills` (7)
 | Skill | Covers |
 | --- | --- |
 | `sed-core` | the interpretation ladder, diagnostic before suggestive |
@@ -407,6 +407,7 @@ See the table above.
 | `sed-data-qc` | registering descriptions, analyses, analogue tables and photo indexes; the depth rule |
 | `sed-facies-analysis` | transitions, the embedded Markov test, Walther's law, the key-surface exclusion |
 | `sed-depositional-systems` | the diagnostic matrix per environment; how an association becomes an environment |
+| `sed-carbonates` | carbonate texture (Dunham, Embry and Klovan), grains and fabrics; the carbonate code; the facies belts |
 | `sed-visualisation` | graphic logs and transition diagrams; what a figure may support |
 
 ### `subsurface-play-agent-skills` (8)
@@ -414,8 +415,8 @@ See the table above.
 | --- | --- |
 | `play-core` | the ordinal status scale, the scope rule, the weakest link, dependencies |
 | `play-data-qc` | upstream products and claims, their ledgers, scope and transfer |
-| `play-petroleum-systems` | hydrocarbon elements and processes, the events chart, the critical moment |
-| `play-co2-storage` | CO2 elements with containment kept separate; the pressure limit; trapping |
+| `play-petroleum-systems` | hydrocarbon elements and processes, the events chart, the critical moment as you state it (Magoon and Dow) |
+| `play-co2-storage` | CO2 elements with containment kept separate; the pressure limit; trapping through time (IPCC 2005) |
 | `play-geothermal` | convection- and conduction-dominated types; heat, permeability, fluid, recharge |
 | `play-hydrogen` | natural hydrogen and underground storage; why timing differs |
 | `play-well-outcomes` | every well as a success, a failure on a named element, or undetermined |
@@ -428,7 +429,7 @@ See the table above.
 | `prospect-data-qc` | closures, play matrices, ledgers and companion tables; registering constraints |
 | `prospect-definition` | closures into candidates, what each readiness failure means, the maturation plan |
 | `prospect-scenarios` | trap, fill and contact alternatives; naming what would separate them |
-| `prospect-volumetrics` | gross rock volume from a closure's cells; sourced inputs |
+| `prospect-volumetrics` | gross rock volume from a closure's cells, cut at the reservoir base, and per realisation; sourced inputs, the CO2 displacement efficiency |
 | `prospect-target` | the well target under licence, keep-out and existing-well constraints |
 | `prospect-visualisation` | closure maps and maturity tables; what a figure may support |
 

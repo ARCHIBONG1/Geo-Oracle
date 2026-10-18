@@ -12,8 +12,8 @@ description: The stratigraphy specialist's working rules - the two ledgers, the 
 | Which surfaces correlate between wells? | Rank 1-3 tie points, then `stg_dtw_pair` constrained between them | Markers, stacking patterns | Lithology alone; unconstrained pattern matching |
 | Is the reported top right? | C1: the reported top beside the correlated surface, difference listed | Core, sidewall samples | Silent replacement of the reported pick |
 | How certain is the correlation? | The C1-C7 ledger; the alternative panel; `stg_compare_panels` | DTW support against rigid shifts (C6) | One panel presented as the only one |
-| How old is this surface? (phase 1) | Age model from dated samples and datums | Regional chart | Ages from recalled zonations |
-| Is there a gap here? (phase 1) | Age jump across the surface; truncation on tied seismic | Thickness trends; structural fault cut-outs | Calling a fault cut-out an unconformity |
+| How old is this surface? | Age model from dated samples and datums | Regional chart | Ages from recalled zonations |
+| Is there a gap here? | Age jump across the surface; truncation on tied seismic | Thickness trends; structural fault cut-outs | Calling a fault cut-out an unconformity |
 
 ## 2. The two ledgers
 

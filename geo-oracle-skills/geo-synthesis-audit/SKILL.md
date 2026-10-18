@@ -67,6 +67,7 @@ Run this audit before presenting a major synthesis. Fix every failure. If a fail
 **Evidence classes**
 - Did I present an interpretation, inference or analogue as an observation?
 - Did I treat dataset availability as evidence of a geological feature?
+- Did I call any data missing that the listing (`list_shared_inputs`) showed present? Present but unused data is "available, not used", with the reason.
 - Did any assumption become a fact along the way?
 
 **Provenance and independence**

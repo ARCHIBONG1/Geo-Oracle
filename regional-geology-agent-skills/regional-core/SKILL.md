@@ -57,7 +57,7 @@ What you recall about a basin is a hypothesis. It enters `hypotheses` with `sour
 
 ## 6. Products and requests
 
-- Products: `stress_field`, `seismicity_summary`, `thermal_model`, `structural_elements` (this phase). Copy `conclusion_line` into `conclusions`; complete the transfer record in findings; a consumer treats them as regional priors.
+- Products: `stress_field`, `seismicity_summary`, `thermal_model`, `structural_elements`, `chronostrat_chart`, `burial_history` and `regional_framework` (the last needs the literature specialist's `basin_synthesis`; without it the framework is findings, not a product). Copy `conclusion_line` into `conclusions`; complete the transfer record in findings; a consumer treats them as regional priors.
 - `missing_data` format: `<specialist>: <item> — <form> — <why>`, e.g. `literature_review: published subsidence histories for the Scotian Basin — figures or tables with ages — test the rift-phase timing`.
 - Inbound requests you serve: stress and regional fault trends for structural_geology; seismicity for risk_uncertainty; heat flow and geotherms for wells_petrophysics and subsurface_play; expected regional structural grain for seismic_interpretation.
 

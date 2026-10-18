@@ -10,7 +10,7 @@ description: Reading upstream products and their sidecars (domain, pick uncertai
 | Product | From | Sidecar facts to read | Use |
 |---|---|---|---|
 | `fault_set` | seismic_interpretation (`seismic_publish_structure`) | domain; `pick_uncertainty`; `depth_conversion`; each fault's dip, dip azimuth, strike, length, z range, confidence | Orientations, stability, Andersonian check; a time-domain set without a time-depth table has no dips: ask for a depth version |
-| `horizon` | seismic_interpretation | domain, z unit, grid decimation, `pick_uncertainty` | Surface attributes (depth only); closures (depth only, phase 1) |
+| `horizon` | seismic_interpretation | domain, z unit, grid decimation, `pick_uncertainty` | Surface attributes (depth only); closures (depth only) |
 | `vshale_log` | wells_petrophysics (`petro_vshale`) | method, endpoints, depth columns (md_m, tvdss_m) | Fault seal; use `tvdss_m` unless the well is vertical |
 | `pressure_profile`, `well_header` | wells_petrophysics | reference datum, method | Pp for the stress tensor; well positions |
 | `stress_field` | regional_geology | scope (regional), `resolution` (distance to the nearest indicator), the transfer template, `shmax.mean_azimuth_deg`, `circular_sd_deg`, `regime_counts` | SHmax azimuth and regime; the spread sets the azimuth range; the transfer status sets the ceiling |
@@ -32,4 +32,4 @@ description: Reading upstream products and their sidecars (domain, pick uncertai
 
 ## Pick uncertainty
 
-The seismic sidecar states it (one sample interval by default). Throw and closure ranges (phase 1) are run within it; a conclusion finer than the uncertainty is not supported.
+The seismic sidecar states it (one sample interval by default). Throw and closure ranges are run within it; a conclusion finer than the uncertainty is not supported.

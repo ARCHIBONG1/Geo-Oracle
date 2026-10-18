@@ -9,7 +9,7 @@ description: Reading upstream products (closures, play matrices, ledgers and com
 
 | Product | Owner | Read for | Watch |
 |---|---|---|---|
-| `trap_geometry` | structural_geology | domain (depth or time), closed area, crest, spill, relief, the validity record V1-V7, the realization count and ranges, the cell table | a closure in time is unusable; V1 and V7 untested means R2 is untested, not failed |
+| `trap_geometry` | structural_geology | domain (depth or time), closed area, crest, spill, relief, the validity record V1-V7, the realization count and ranges, the cell table, the realised cells (`realization_cells`) | a closure in time is unusable; V1 and V7 untested means R2 is untested, not failed |
 | `element_status_matrix`, `play_concepts` | subsurface_play | the element statuses to inherit, the weakest element, the play's own status | the candidate must sit in the play named in the matrix |
 | `fault_seal`, `fault_stability` | structural_geology | the column the seal holds; the critical pressure | both rest on bounded stress unless stress was measured: inferred at best |
 | `stratigraphic_framework`, `zonation` | stratigraphy | whether the reservoir is present at the closure, the seal's continuity | the C1-C7 ledger |

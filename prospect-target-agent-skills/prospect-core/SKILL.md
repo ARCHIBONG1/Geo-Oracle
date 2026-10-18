@@ -22,7 +22,7 @@ Five domains, read from `project_context`: hydrocarbon, CO2 storage, geothermal,
 |---|---|
 | R1 play basis | an `element_status_matrix` covers the candidate's play |
 | R2 trap in depth | the closure is in depth, closed, with V1 and V7 passed in the structural validity record |
-| R3 element tracing | every element has a status inherited from the play, with no refused claim |
+| R3 element tracing | every element has a row in the play matrix or a basis, with no refused claim |
 | R4 input provenance | every volume input resolves to a product or a stated range with its source |
 | R5 consistency | contact inside the closure and at or above spill, column within the seal capacity, reservoir present — `pt_consistency`, run per scenario before `pt_readiness` |
 | R6 derived location | a target location passes every constraint (phase 2) |

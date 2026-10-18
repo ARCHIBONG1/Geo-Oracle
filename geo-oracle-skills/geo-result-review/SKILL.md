@@ -51,6 +51,7 @@ Red flags:
 - claims about data the specialist never received;
 - "confirmed" or "demonstrated" resting on a single line of evidence;
 - an empty `missing_data` or `limitations` list despite obvious gaps;
+- a model, panel or depositional claim whose ledger (V1-V7, C1-C7, S1-S7) shows a failed test "explained" with no evidence cited, or a `[transfer]` statement without its T1-T5 record: the status is not earned;
 - a high-confidence conclusion with no stated uncertainty.
 
 A claim that fails a material check is not established evidence. Record it as unsupported, or send it for follow-up.
@@ -69,7 +70,14 @@ Section 3 asks whether a claim follows from its evidence; these ask whether the 
    - *qc suggestion not followed*: a tool's QC named a setting to rerun with and no later call used it. Ask for the rerun (same session), or accept with the reason written down.
    - *typed channel recipe before the generic one*: the specialist assumed a channel type (meandering, submarine) without the user naming it, a well establishing it, or a generic `channel` run first. Ask it (same session) to run the generic recipe and report the measured planform and fill; a type the data were not asked to show is not a finding.
 
+   - *no tool calls*: the specialist ran nothing in that turn; its result restates the brief. A validation that ran nothing has validated nothing: send it back, or keep only what the brief itself established.
+   - *sandbox unavailable*: the specialist's sandbox never started (on 2026-10-18 the sandbox service's disk limit), so it read no skill. The cause is the infrastructure: tell the person, and treat the method as unchecked.
+   - *tool calls failed*: a tool errored rather than refused. Find what the specialist did instead, in its assumptions and limitations; a substitute input (a guessed location, an assumed velocity) changes what the numbers mean.
+
    Put what you did about each in the checkpoint record (`done[].process_audit`): the gateway refuses the next wave until every flag is addressed.
+
+   **Read every result's assumptions** before relying on it (`get_specialist_result(job_id, sections=["assumptions"])` when the first view trimmed them): the checkpoint refuses a wave whose assumptions were never delivered to you. On 2026-10-18 the assumption "regional queries used an approximate point at -63.0, 43.8" sat unread while its stress and seismicity numbers went into the report.
+   **Check every location a specialist used** against the investigation's coordinates: the AOI centroid in a regional result, the well position in a seismic one. A location that differs is a method error, whatever the result says.
 2. **The method fits the deliverable.** The `m:` ids in `source_reference` name the methods used, and a deliverable must carry the method that makes it:
 
    | Deliverable | Must include |

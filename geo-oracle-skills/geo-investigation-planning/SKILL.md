@@ -145,6 +145,7 @@ Stop when all of the following are true:
 4. Material assumptions and uncertainties are recorded in the ledger.
 5. Downstream conclusions have been re-checked after every upstream change.
 6. Plays (if relevant) have been evaluated by `subsurface_play`; prospects (if justified) are traceable to the model; risk has been reviewed to the depth the decision needs.
-7. Further calls are unlikely to change the interpretation, or they would need evidence that does not exist.
+7. Further calls are unlikely to change the interpretation, or they would need evidence that does not exist: absent from the listing (`list_shared_inputs`), not merely named in a specialist's `missing_data`, which often describes a tool failure or a brief that asked for less.
+8. Every result the person asked for is delivered, not deliverable for an input that does not exist, or declined by the person; a requested result that a follow-up could still produce gets the follow-up first. The checkpoint that ends the work carries this as `deliverables` (see `geo-human-on-the-loop`).
 
 Then read `geo-synthesis-audit` and produce the synthesis.

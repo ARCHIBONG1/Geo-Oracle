@@ -54,7 +54,7 @@ Ask it with `ask_user_question` as section 0 shows, and carry on in the same tur
 
 **Mint a new `investigation_id` for a new investigation**, with the date and time in it: `INV-dome-co2-20261006T0504`. The same name twice makes the second investigation inherit the first's run count, approved plan and any checkpoint left due, so a rerun of yesterday's question would start two-thirds through its work ceiling. The gateway refuses activation on an id that already carries work, and the refusal tells you to pick a new one.
 
-Then call `set_hotl_mode(investigation_id, mode, verbatim)` with their reply **word for word**, not a paraphrase: the record holds what they said and the confirmation line quotes it back. Surface the returned `confirmation_line` unchanged, in the message that makes your next tool call (section 3c). Ask once per objective; a follow-up message inside an investigation inherits the setting, and a user who asks to change it mid-flight is recorded as an intervention.
+Then call `set_hotl_mode(investigation_id, mode, verbatim, deliverables=[...])` with their reply **word for word**, not a paraphrase, and the results they asked for, one per item in their words (the checkpoint that ends the work must give each a status: delivered, not_deliverable or declined): the record holds what they said and the confirmation line quotes it back. Surface the returned `confirmation_line` unchanged, in the message that makes your next tool call (section 3c). Ask once per objective; a follow-up message inside an investigation inherits the setting, and a user who asks to change it mid-flight is recorded as an intervention.
 
 The gateway allows **one** specialist call before the mode is set, so a single lookup costs nobody a question. It refuses every call after that. **The refusal is the backstop, not the route.** If you reach it, you asked too late: ask now, and the work already done is kept, but the person should have been asked before the first specialist ran.
 
@@ -74,7 +74,7 @@ Mark the two halves plainly, so the reader knows which parts the system can vouc
 
 ## 3. Filing it
 
-`hotl_checkpoint(investigation_id, record, decision, verbatim, approved_plan)`. The record is the five parts **and every figure any specialist in the wave returned** — url, caption and the claim it supports. The gateway refuses a record that drops one: the final answer is written from the ledger, and a result several waves back is no longer in front of you, so a figure left out of the record is a figure the answer will not have. Put it in the ledger's Figures table in the same breath. `decision` is what the person said; `approved_plan` is the specialists they approved, **and only those will run**. An edit is binding: a specialist struck from the plan is refused by the gateway, so do not re-propose it in the same wave.
+`hotl_checkpoint(investigation_id, record, decision, verbatim, approved_plan)`. The record is the five parts **and every figure any specialist in the wave returned** — url, caption and the claim it supports. The gateway refuses a record that drops one: the final answer is written from the ledger, and a result several waves back is no longer in front of you, so a figure left out of the record is a figure the answer will not have. Put it in the ledger's Figures table in the same breath. `decision` is what the person said; `approved_plan` is the specialists they approved, **and only those will run**. An edit is binding in every mode: a specialist struck from the plan is refused by the gateway, so do not re-propose it in the same wave. After the person refuses or stops, the gateway runs no specialist at all until you file their next decision.
 
 **A checkpoint record is filed after every wave in every mode**, and the next wave is refused until it is. Only the pause differs: in `every_wave` the record is filed **after** the person answers, carrying their words, and `automatic` is refused there; in `off` and `key_decisions` you file it with `decision: "automatic"` and carry straight on. That way an unattended run leaves exactly the same audit trail as a supervised one: the audit trail of an unattended run should be identical to a supervised one.
 
@@ -105,7 +105,7 @@ The last two can fire **mid-wave**, not only at a boundary. Ask when you reach t
 
 **Between triggers, waves open without waiting.** File the record with `decision: "automatic"` — the gateway still requires it, so the audit trail matches a supervised run — and carry straight on. Do not ask at a wave boundary in this mode: the person chose not to be asked there, and asking anyway is the same failure as not asking in every-wave mode, from the other side.
 
-**The plan trigger fires once.** Its answer approves the plan, not the whole investigation: a later change of scope is its own question.
+**The plan trigger fires once.** Its answer approves the plan, not the whole investigation: a later change of scope is its own question. File the answer with `hotl_checkpoint` (accept or edit, with their words and the specialists they approved): the gateway then holds you to it for the wave it opens, and a specialist outside it is refused until the person agrees to a change. A plan you file as `automatic` between triggers is not enforced.
 
 ## 3c. The confirmation line
 

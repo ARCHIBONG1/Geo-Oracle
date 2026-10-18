@@ -7,6 +7,7 @@ description: Backstripping and decompaction, McKenzie stretching fits, the basin
 
 ## Backstripping: `reg_backstrip`
 
+- **A supplied column is read by its path**: `units_table="<path in the shared inputs folder>"`, a CSV with the unit fields as headers (name, top_m, base_m, lithology, age_top_ma, age_base_ma, water_depth_m, sea_level_m). You cannot open the file yourself; the tool reads it. Type `units` only for a column built from the literature or a pseudo-well.
 - The column (youngest first): present depths below the sediment surface, lithology (or compaction parameters), ages top and base, palaeo-water depth and eustatic sea level per unit. Ages come from the chart or the synthesis (cite), depths from a well or a pseudo-well (cite), palaeo-water depths from facies evidence (cite, or state the assumption).
 - Compaction: Sclater & Christie (1980) Table A1a per lithology (shale 0.63 / 0.51 per km, sandstone 0.49 / 0.27, shaly sandstone 0.56 / 0.39, chalk 0.70 / 0.71); salt does not compact. They give no limestone or basalt parameters (chalk is not limestone): for those, and whenever you have measured values, give `phi0`, `c_per_km` and `rho_grain` with `compaction_source`. Each unit's parameters come back with their basis.
 - The result's `history` gives, at each unit's top age, the decompacted thickness, the water depth, the total subsidence and the **tectonic (water-loaded) subsidence** by Airy isostasy.

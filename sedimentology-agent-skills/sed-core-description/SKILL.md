@@ -7,11 +7,12 @@ description: The fixed description vocabulary (Wentworth grain-size classes, str
 
 ## The vocabulary (`sed_standardise`)
 
-- Grain size: Wentworth classes clay, silt, mud, very fine, fine, medium, coarse and very coarse sand, granule, pebble, cobble, with a phi midpoint; aliases (vf, med, sandstone, shale) are mapped; an interval without a recognisable grain size is coded `x` and cannot carry grain-size statements.
+- Grain size: Wentworth classes clay, silt, mud, very fine, fine, medium, coarse and very coarse sand, granule, pebble, cobble, with a phi midpoint and a grain code (cl, si, mu, vf, f, m, c, vc, gr, pb, cb: mud is mu, medium sand m); aliases (vf, med, sandstone, shale) are mapped; an interval without a recognisable grain size is coded `x` and cannot carry grain-size statements.
 - Structures: codes from keywords in the description: Xb cross-bedding, Xbb bidirectional (herringbone), Md mud drapes, Tb tidal bundles, Hcs hummocky, Wr wave ripples, Cr current ripples, Pl planar lamination, Ng normal grading, Sm sole marks, Ht heterolithic, Rt roots or palaeosol, Bi bioturbation, Tf trace fossils, Lac lateral accretion, Ms massive, Cv convolute, Gf grainflow and pin-stripe, Lg lag or intraclasts.
 - Fauna: Tf:marine (Ophiomorpha, Skolithos, Thalassinoides, Cruziana, foraminifera, ammonites), Tf:brackish (low diversity, Planolites, Teichichnus).
-- Contacts: sharp, erosive, gradational, loaded. Bioturbation index 0-6 (Taylor & Goldring 1993).
+- Contacts: sharp, erosive, gradational, loaded. Bioturbation index 0-6 (Taylor & Goldring 1993): any other value is set to none with the original kept (`bioturbation_index_rejected`) and the tool warns; a 7 is a typo or another scale, never clamped.
 - The describer's original words are kept beside the codes; a keyword the vocabulary misses is a limitation to report, not a feature to invent.
+- A grain size comes only from grain-size words: "sandstone" with no size stated is coded `S-x-…` (sand, size unknown), never medium sand, and "conglomerate" `G-x-…`, never pebble. Mud, clay and silt are grain sizes in themselves: "mud", "mudstone" and "shale" are mud, "clay" and "claystone" clay, "silt" and "siltstone" silt. The rock word that names the lithology is its last one: "silty sandstone" is a sandstone (size unknown), "sandy claystone" a claystone. The lithology class is decided per interval from the lithology noun: clastic intervals are coded as above; carbonates are coded texture-allochem-fabric by the `sed-carbonates` skill's rules (read it); evaporites `E` and coals `C`; a lithology no class recognises is `U` and listed in `lithologies_outside_the_vocabulary`.
 
 ## Coding (`sed_code_lithofacies`)
 

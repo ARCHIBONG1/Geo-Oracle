@@ -28,13 +28,13 @@ Every fault, fold, closure, relationship and orientation in your findings traces
 
 ## 3. The validity ledger
 
-| Test | Question | Tool (phase) |
+| Test | Question | Tool |
 |---|---|---|
 | V1 geometric | Consistent cutoffs, no crossing horizons | `sg_build_model` |
 | V2 displacement | Smooth throw, displacement-length within the global population | `sg_throw_profile`, `sg_dl_check` |
-| V3 restorability | Balances within tolerance | sg_balance_check (2) |
+| V3 restorability | Balances within tolerance | no tool yet (restoration): record `not tested` |
 | V4 kinematic | Slip senses and timing consistent with cross-cutting and the regional phases | `sg_fault_network` + regional framework |
-| V5 mechanical | Orientation compatible with the regime, or explained as reactivation | `sg_andersonian_check` (0) |
+| V5 mechanical | Orientation compatible with the regime, or explained as reactivation | `sg_andersonian_check` |
 | V6 timing | Growth strata and cross-cutting give one sequence | `sg_growth_index` |
 | V7 data honouring | Honours the picks within their uncertainty | `sg_build_model` |
 

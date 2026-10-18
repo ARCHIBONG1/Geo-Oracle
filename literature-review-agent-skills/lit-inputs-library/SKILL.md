@@ -30,12 +30,14 @@ So your listing is the only complete view of the folder anyone has. Be exact: pa
 | Type | Opened by | Tell Geo Oracle |
 |---|---|---|
 | document (PDF, Word, text) | you | read on request; cite pages |
-| table (CSV/TSV) | you (preview) and the specialist it concerns | e.g. tops, core, pressures → wells_petrophysics; horizon picks, time-depth → seismic_interpretation |
+| table (CSV/TSV) | you (preview) and the specialist it concerns | e.g. tops, core, pressures → wells_petrophysics; horizon picks, time-depth → seismic_interpretation; point layers with coordinates, temperatures, backstrip columns → regional_geology |
 | seismic (SEG-Y), array / volume | seismic_interpretation | pass the path as given |
 | well logs (LAS) | wells_petrophysics | pass the path as given |
 | well logs (DLIS/LIS) | not supported | ask for LAS |
+| GIS vector (GeoJSON, shapefile, KML/GML), GIS layers (GeoPackage), grid (netCDF, GRD, GeoTIFF) | regional_geology | pass the path as given; a shapefile needs its .shx, .dbf and .prj beside it (listed as "shapefile part"); a KMZ needs its .kml extracted |
+| JSON | regional_geology when it is GeoJSON; otherwise the specialist whose product it is | say which, from a preview if needed |
 | text (unrecognised extension) | you, as text | read it to identify the format; route its data to the specialist once converted to CSV or LAS |
-| spreadsheet, image, archive, legacy Office | nobody | say what would make it usable (export to CSV, save as PDF, unpack) |
+| spreadsheet, image, archive, legacy Office | nobody | say what would make it usable (export to CSV, save as PDF, unpack); a georeferenced TIFF is listed as "grid (GeoTIFF)", not as an image |
 
 ## Reading: `lit_read_document`
 

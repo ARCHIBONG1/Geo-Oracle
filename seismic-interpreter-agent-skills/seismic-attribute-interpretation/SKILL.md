@@ -59,7 +59,7 @@ Fault likelihood (`seismic_interpret_faults`, or step by step `seismic_fault_lik
    - else none: hysteresis needs no seed, and growing seeds itself at the strongest score peaks.
    The tool uses the strongest group present (`seed_policy: "all"` uses every valid seed).
 5. **Time volumes:** give `velocity_model` (as for `seismic_time_to_depth`) so thickness, volume, dip and plunge are in metres. Without it, those are index units, and shape rules that need metres are skipped (listed under `shape_filter.not_applied`).
-6. Run `seismic_segment_volume`. Change a threshold only through `overrides` (e.g. `{"method": {"strong": {"percentile": 99}}}`), and say why. The result records the effective recipe.
+6. Run `seismic_segment_volume` on attributes computed in this task from the volume you are interpreting. Files left in the work folder by earlier runs may come from an earlier version of the same file: the tool (and `seismic_structure_qc`) refuses volumes that derive from different loads of the seismic, and the fix is to recompute them, not to override. Change a threshold only through `overrides` (e.g. `{"method": {"strong": {"percentile": 99}}}`), and say why. The result records the effective recipe.
 7. **Always publish `result.extraction_figure_markdown`** for every extraction you report, as for well ties: an extraction is a judgement, and a wrong one is easiest to see. You cannot see it; the user can.
 8. For a 3D view, use `seismic_render_3d` with the output volume as a body overlay. To download, use `seismic_export_volume`.
 

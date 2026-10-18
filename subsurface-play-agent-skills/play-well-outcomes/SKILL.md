@@ -10,8 +10,9 @@ description: Classifying every well in a play area as a success, a failure on a 
 | Result | Class | Demonstrates | Failed element |
 |---|---|---|---|
 | discovery | success | every critical element of the play (hydrocarbon) | — |
-| shows | partial | source, maturation, migration | from the stated reason if any |
+| shows | partial | source, maturation, migration | from the stated reason, when it names one element |
 | dry with a stated reason | failure | — | the reason mapped: trap (closure, structure), reservoir (tight, absent, facies), seal (leak, caprock), preservation (breach, biodegradation, flushing), migration (no shows, charge), timing |
+| dry with a reason naming several elements | undetermined | — | listed as `candidate_elements`; you settle which failed through `explanations`, citing the evidence |
 | dry outside the mapped closure, no reason | failure | — | trap (from the closure outline) |
 | dry without a usable reason, inside the closure | undetermined | — | — |
 | not reached, mechanical | undetermined | — | the well did not test the play |

@@ -29,8 +29,8 @@ The matrix in `sed-depositional-systems` lists, per environment, the diagnostic 
 | S2 | At least one diagnostic feature | `sed_diagnostic_check` |
 | S3 | Transitions non-random with above-random links (pooled; fewer than 10 transitions: not tested) | pooled file from `sed_associations` |
 | S4 | Fits the key surfaces and the regional setting supplied | `stratigraphic_fit` |
-| S5 | Geobody or analogue geometry fits | phase 2 |
-| S6 | Palaeocurrent pattern fits | phase 1 |
+| S5 | Geobody or analogue geometry fits | no tool yet: pass `geometry` with its evidence, or leave it not tested |
+| S6 | Palaeocurrent pattern fits | no tool yet: pass `palaeocurrents` with its evidence, or leave it not tested |
 | S7 | Trace fossils and fauna fit the salinity and energy implied | `biota` |
 
 Status: `supported` with S1 and S2 passed, two of S3-S7 passed, none failed; `partially_supported` with S1 passed and S2 suggestive-only or few tests run; `contradicted` on an unexplained failure; `unresolved` when two models pass the same tests. The ledger goes into the depositional_model sidecar and into the statement of the interpretation.

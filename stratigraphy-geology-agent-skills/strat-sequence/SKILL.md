@@ -8,7 +8,7 @@ description: Stacking patterns from GR, candidate flooding surfaces and sequence
 ## `stg_stacking_patterns`
 
 - Windowed slopes of a GR (or Vsh) curve classify packages as coarsening-upward (progradational), fining-upward (retrogradational or channel fill) or aggradational, thicker than a minimum.
-- Candidate maximum flooding surfaces: the GR maximum where a fining-upward package below meets a coarsening-upward package above. Candidate sequence boundaries: sharp-based coarsening-upward packages.
+- Candidate surfaces from the grading trends (Catuneanu et al. 2009): maximum flooding surfaces at the top of fining-upward trends (the GR maximum where a fining-upward package below meets a coarsening-upward package above; Galloway 1989), maximum regressive surfaces at the top of coarsening-upward trends (the GR minimum where a coarsening-upward package below meets a fining-upward package above). A sequence boundary is not inferred from GR trends alone. Surfaces from grain size alone are uncertain: confirm them across the wells or with biostratigraphy.
 - The window sets the scale: 5-10 m for parasequences, 30-50 m for parasequence sets. Run both when the hierarchy matters.
 
 ## From candidate to surface

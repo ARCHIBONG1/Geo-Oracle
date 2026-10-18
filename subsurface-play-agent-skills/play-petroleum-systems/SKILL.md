@@ -22,7 +22,7 @@ A discovery in the play area proves source, maturation, migration and timing tog
 
 ## The events chart (`play_events_chart`)
 
-Deposition of source, reservoir, seal and overburden; trap formation; generation and expulsion; migration; preservation; each from a cited claim with a range. The critical moment is the end of expulsion: the trap and seal must exist by then (PT4). A trap formed during expulsion passes with partial charge noted; a trap formed after it fails.
+Deposition of source, reservoir, seal and overburden; trap formation; generation and expulsion; migration; preservation; each from a cited claim with a range. The critical moment is the point in time you select that best depicts the generation-migration-accumulation of most hydrocarbons (Magoon and Dow 1994, p. 11): read it from the burial history or maturity model and give it as `critical_moment: {age_ma, basis}`. It lies inside the generation-migration interval (in their example 250 Ma within 260-240 Ma); an age outside it is flagged. Without it the chart reports that interval and no single age; it is never derived from the end of expulsion. PT4 tests trap formation against expulsion: a trap complete before expulsion passes; one formed during expulsion passes with partial charge noted; one formed after it fails.
 
 ## Migration (phase 1 tool; reasoning now)
 

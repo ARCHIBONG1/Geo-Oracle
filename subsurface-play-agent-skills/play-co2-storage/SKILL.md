@@ -21,7 +21,7 @@ Containment is never one status: `play_containment` keeps caprock, faults and we
 
 ## Trapping by time
 
-Structural or stratigraphic from injection; residual over years to decades; dissolution over centuries; mineral over millennia. A screening play rests on the first; the others need rock and brine data and are reported as such.
+Structural or stratigraphic from injection; residual during migration, over years to decades; dissolution dominating from tens to hundreds of years; mineral over a thousand years or longer (IPCC 2005, Fig. 5.9 and Box 5.4). A screening play rests on the first; the others need rock and brine data and are reported as such.
 
 ## Pitfalls
 

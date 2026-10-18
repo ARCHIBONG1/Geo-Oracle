@@ -11,7 +11,7 @@ description: Assembling the stress tensor with sourced magnitudes, slip and dila
 |---|---|---|
 | Sv | integrated density log (layers) from wells_petrophysics | average density 2300-2500 kg/m3 |
 | Pp | pressure_profile product | hydrostatic (1030 x 9.81 x depth) |
-| Shmin | leak-off or minifrac from wells_petrophysics | frictional-equilibrium bound (the tool does this and warns) |
+| Shmin | the petrophysics `pressure_profile`: a LOT, XLOT or minifrac in it (status `stress test: ...`) is read as Shmin and carried to the tensor depth at a constant effective stress ratio K = (S - Pp)/(Sv - Pp); or `shmin_mpa` with its basis | NF: frictional-equilibrium bound; SS: midway between Pp and Sv; TF: midway between Sv and SHmax (the tool warns: run the range) |
 | SHmax | breakout and fracture analysis | bounded by frictional equilibrium; run a range |
 | Regime and SHmax azimuth | regional stress_field (regime counts, azimuth with its spread) | local breakouts when supplied |
 

@@ -11,6 +11,7 @@ description: Fault-network topology (I, Y, X nodes), connectivity, abutting rela
 - Read: node counts, branches, `connections_per_branch` (0 to 2; the measure Sanderson & Nixon 2015 prefer, almost independent of topology: their well-connected network 1.7, a network of local clusters 1.1), `connections_per_line` (depends on topology; 3.57 is the percolation value for random lines of fixed length), `connected_groups`, `isolated_lines`. Quote these values with the source, not a threshold of your own.
 - **Relative age** (`relative_age`): the abutting fault formed later than, or at the same time as, the one it abuts; mutual abutments mean a pick artefact or coeval faults and fail V4 until explained. Crossings are undated without offset relations.
 - **Hierarchy**: by length, throw (give `throws` from the throw profiles) and how many faults abut each one.
+- **The product carries the geometry**: each fault's trace, depth, dip and the throw you gave travel in `fault_network` (`faults`), which is what stratigraphy's gap-versus-fault check reads; publish it with `throws` so a cut-out can be matched.
 
 ## Pitfalls
 

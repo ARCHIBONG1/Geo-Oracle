@@ -11,9 +11,9 @@ description: Reading correlation_logs and well_tops products and their sidecars,
 |---|---|---|---|
 | `correlation_logs` | wells_petrophysics (`petro_publish_correlation_logs`) | well, curves and units, step, `deviated`, trajectory basis, datum and elevation, MD and TVDSS ranges, QC note | All correlation; depth conversion for every table |
 | `well_tops` | wells_petrophysics | `tag` reported, `source`, count | The reported ledger |
-| `horizon` and well ties | seismic_interpretation | domain, pick uncertainty | Rank-3 ties (phase 1) |
-| `chronostrat_chart` | regional_geology | time scale, sources, gaps | C7 (phase 1) |
-| `fault_network` | structural_geology | abutments, throws | Gap versus fault (phase 1) |
+| `horizon` and well ties | seismic_interpretation | domain, pick uncertainty | Rank-3 ties: give the depth horizon products to `stg_rank_ties(horizons=...)`, which samples them at the wells (a time-domain product is refused) |
+| `chronostrat_chart` | regional_geology | time scale, sources, gaps | C7 |
+| `fault_network` | structural_geology | abutments, throws | Gap versus fault (`stg_gap_vs_fault`): the product must carry the faults' traces and throws (one published before 2026-10-18 holds topology only and is refused) |
 
 `stg_read_product` returns the sidecar and a preview. A well file (LAS) listed by `stg_list_data` cannot be opened here: ask `wells_petrophysics: correlation_logs and well_tops for <well> — petro_publish_correlation_logs — correlation`.
 
