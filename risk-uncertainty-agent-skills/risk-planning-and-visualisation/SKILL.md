@@ -27,7 +27,7 @@ Geo Oracle runs the `actionable_now` items as one reduction wave in the modes na
 
 ## The follow-up (`ru_attempt_outcomes`)
 
-After the wave: the same flip tests rerun on the new products (an unchanged input answers from the record), a new `ru_materiality_report`, then `ru_attempt_outcomes` against the prior one with every attempt named: entry, task id, owner, mode, what was tried, why. Outcomes: settled, narrowed, unchanged, newly material. Every attempt is reported, succeeded or not; an unchanged outcome with a named attempt is a finding the user needs.
+After the wave: the same flip tests rerun on the new products (an unchanged input answers from the record), a new `ru_materiality_report`, then `ru_attempt_outcomes` against the prior one with every attempt named: entry, task id, owner, mode, what was tried, why. Outcomes: settled, settled as a failure, narrowed, unchanged, newly material, overturned (a settled failure no longer fails), newly a settled failure, changed. Every attempt is reported, succeeded or not; an unchanged outcome with a named attempt is a finding the user needs.
 
 ## Figures (`ru_render`)
 

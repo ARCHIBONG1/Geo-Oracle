@@ -108,6 +108,10 @@ Every result states the following:
 - the QC flags that bear on the question;
 - which required outputs were not produced, and why.
 
+## Evidence from the person
+
+Geo Oracle passes what the person said as items of `available_evidence`. An item of kind `expert_input` is a fact with its source: use it as far as that source allows, and cite it. An item of kind `expert_judgement` is the person's opinion: it can support an interpretation at most, never a measurement, a status, a class or a quantity on its own.
+
 ## Methodological provenance
 
 Every tool result carries `methods` — the ids of the published methods that computation

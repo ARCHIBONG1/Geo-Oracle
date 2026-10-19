@@ -165,7 +165,7 @@ again, because the gateway cannot see a compaction.
 ### Skills name the tools
 
 A skill is written against a particular set of tools (`seismic_describe_section`,
-`petro_vshale`, `pt_render_closure_map` and so on), and the two must change
+`petro_vshale`, `pt_render` and so on), and the two must change
 together: renaming a tool silently invalidates every skill that names it. Where
 no tool exists for an analysis, the skill says so, so the agent records the gap
 in its limitations instead of improvising.
@@ -346,7 +346,7 @@ gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 
 | Skill | Covers |
 | --- | --- |
-| `play-core` | the ordinal status scale, including disfavoured for evidence against; the scope rule; the weakest link; dependencies |
+| `play-core` | the ordinal status scale, including disfavoured for evidence against (a tie of grades stays disfavoured, and the evidence on the other side is listed as conflicting evidence, also after a lift); the scope rule; the weakest link; dependencies |
 | `play-data-qc` | other agents' products and claims, their ledgers, scope and transfer |
 | `play-petroleum-systems` | hydrocarbon elements and processes, the events chart, the critical moment as stated by the investigator |
 | `play-co2-storage` | CO2 storage elements with containment kept separate; the pressure limit; trapping through time |
@@ -377,7 +377,7 @@ gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 | `risk-materiality` | the four flip tests (play status, maturity, threshold straddle, scenario comparison) and the classes they give, including a settled failure |
 | `risk-failure-modes` | failure modes by domain from a fixed library: mechanism, elements, detection |
 | `risk-audit` | contradictions carried with both sides; load-bearing assumptions |
-| `risk-planning-and-visualisation` | the reduction plan: actions, owners, modes, neutral framing |
+| `risk-planning-and-visualisation` | the reduction plan: actions, owners, modes, neutral framing; after the wave, every attempt's outcome by name (settled, settled as a failure, narrowed, unchanged, newly material, overturned, newly a settled failure, changed) |
 
 ## Working on skills
 

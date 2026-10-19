@@ -28,7 +28,7 @@ A specialist's answer can only be as good as its brief. A good brief gives the s
 | `known_constraints` | Assumptions that must not be made; fixed facts; methods required or excluded | Leaving them unstated; turning an upstream caveat into a prohibition (see 1a) |
 | `known_unknowns` | Missing data and open questions | Hiding gaps |
 | `competing_interpretations` | Rival models the specialist must test | Only the favoured model |
-| `required_outputs` | Concrete deliverables, each unconditional: "a depth map of the horizon at CRV-1, converted with its time-depth table" | "A comprehensive analysis"; a conditional ("a depth map if a valid conversion exists; otherwise state cannot-determine"): the specialist takes the exit and tracks nothing. The chain behind a product is the specialist's job; the only acceptable "cannot" names a missing input. For a seismic volume with a well the standing set is: fault volume, body volume, a horizon at the well, the well tie, the depth map, and each feature's distance to the well |
+| `required_outputs` | Concrete deliverables, each unconditional: "a depth map of the horizon at W1, converted with its time-depth table" | "A comprehensive analysis"; a conditional ("a depth map if a valid conversion exists; otherwise state cannot-determine"): the specialist takes the exit and tracks nothing. The chain behind a product is the specialist's job; the only acceptable "cannot" names a missing input. For a seismic volume with a well the standing set is: fault volume, body volume, a horizon at the well, the well tie, the depth map, and each feature's distance to the well |
 | `downstream_use` | Which task or decision consumes the result | Leaving it out, so the specialist cannot judge the precision needed |
 | `previous_task_id`, `reason_for_reanalysis` | For every non-initial mode | Leaving them empty |
 | `instructions` | Leave empty: it replaces the default brief | Duplicating the output format, which the gateway already enforces |
@@ -62,7 +62,7 @@ The gateway keeps one session per specialist per investigation and chooses it fr
 
 ## 2a. Relaying the person's reaction to a result
 
-When the person rejects or questions a result ("this is wrong", "coherence does a better job", "there are three faults"), the brief carries their words, not your theory of the fix. On 2026-10-15 a person's remark that coherence showed the faults better was briefed as "use coherence as the principal input rather than the dip-searched likelihood". Five runs followed on a volume that could not hold the answer, and the actual fault (a skipped extraction step) was never looked for.
+When the person rejects or questions a result ("this is wrong", "coherence does a better job", "there are more faults than that"), the brief carries their words, not your theory of the fix. A remark that coherence shows the faults better, briefed as "use coherence as the principal input", can send run after run onto a volume that cannot hold the answer while the real fault (a skipped extraction step) is never looked for.
 
 1. **Split the reaction into three parts**, each in its own field:
    - what they saw, word for word, in `reason_for_reanalysis` (e.g. "The person: 'This tells me the binary fault interpretation was faulty.'");
@@ -71,7 +71,7 @@ When the person rejects or questions a result ("this is wrong", "coherence does 
 2. **Ask when a reaction can be read two ways.** "Coherence does a better job" may describe what they see or tell you how to compute. Before spending a run, ask one question with both readings as options, e.g. "Find out why the fault volume misses what you see in coherence (Recommended), or build the fault volume from coherence instead?"
 3. **Diagnose before rerunning.** A rejected result goes back to the same session as a `follow_up` that asks why: "The person says <their words>. From your own tool calls and your skills' procedure, explain why the result misses it, then fix it." The specialist can read its own run; a fresh session cannot.
 4. **Carry what was done, not a method to keep using.** Earlier runs go in `upstream_findings` and `project_context` as what each did and produced, with `prov:` ids. Do not call an earlier run's approach "the workflow", "the guided volume" or the like unless the person approved it: a guess restated as context becomes a premise.
-5. **A number the person expects is a hypothesis to test, never a target.** "The person expects three faults: test whether the data support three and report what you find, with the persistence table." Never "can three be separated?", and never a count in `required_outputs`.
+5. **A number the person expects is a hypothesis to test, never a target.** "The person expects four faults: test whether the data support four and report what you find, with the persistence table." Never "can three be separated?", and never a count in `required_outputs`.
 6. **Corrections of the same question are `follow_up` tasks** with `previous_task_id`: they run in the specialist's session automatically. A fresh session is only for validation or challenge (section 2).
 
 ## 3. Templates
@@ -101,7 +101,7 @@ When the person rejects or questions a result ("this is wrong", "coherence does 
 - `previous_task_id`: the task being validated (for the record; it does not put the check in that task's session)
 - `geological_question`: the question the claim answers, asked afresh: "How many faults does the volume hold, and what are their strikes?", not "Is `T04-seis/C2` right?". You compare the two answers in review.
 - `upstream_findings`: nothing from the task being validated **when the same specialist validates** (it would anchor on its own answer).
-- **A different specialist validating** gets the products it must examine, without the conclusions drawn from them: the fault set or body set (`@seismic-interpreter-agent/products/...` from `seismic_publish_structure` / `seismic_publish_bodies`), the horizon maps, the well products. It has no seismic tools: a structural specialist handed only the SEG-Y path returns `insufficient_data` (2026-10-17, T05) and the validation is a wasted wave. Check `available_evidence` names the products before dispatching.
+- **A different specialist validating** gets the products it must examine, without the conclusions drawn from them: the fault set or body set (`@seismic-interpreter-agent/products/...` from `seismic_publish_structure` / `seismic_publish_bodies`), the horizon maps, the well products. It has no seismic tools: a structural specialist handed only the SEG-Y path returns `insufficient_data` and the validation is a wasted wave. Check `available_evidence` names the products before dispatching.
 - `known_constraints`: "Use a method, parameters or data different from `T04-seis`'s (`m:` id from its `source_reference`); do not rely on `T04-seis/E1`–`E3`."
 - A check that repeats the same method on the same data gets the same numbers back from the tools' records. It is not a second line of evidence (`geo-result-review` section 4).
 

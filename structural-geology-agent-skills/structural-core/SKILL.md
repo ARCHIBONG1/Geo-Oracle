@@ -64,6 +64,10 @@ Every applied claim lists what it depends on in `depends_on_claim_ids` (upstream
 
 Stereonets: lower hemisphere, equal area, count and Kamb (1959) contouring printed. Rose: equal-area (radius proportional to the square root of the count, Nemec 1988), bin width and count printed. Mohr: failure line with friction and cohesion stated; resolved planes drawn; the stress state printed. Seal profiles: throw and cutoffs printed. Describe a plot before interpreting it; a relation seen in a plot enters the findings only with a tool result behind it.
 
+## Evidence from the person
+
+Geo Oracle passes what the person said as items of `available_evidence`. An item of kind `expert_input` is a fact with its source: use it as far as that source allows, and cite it. An item of kind `expert_judgement` is the person's opinion: it can support an interpretation at most, never a measurement, a status, a class or a quantity on its own.
+
 ## Methodological provenance
 
 Every tool result carries `methods` — the ids of the published methods that computation

@@ -8,7 +8,7 @@ description: Areas of interest and regional extents, the geodata snapshot catalo
 ## The area of interest
 
 - `reg_aoi(aoi, name, crs, buffer_km)`: WKT, GeoJSON, a bbox `minx,miny,maxx,maxy`, or points `x y; x y`, in the CRS stated (EPSG:4326 default; projected well coordinates with their EPSG code).
-- **Use the location exactly as given.** If `reg_aoi` refuses a coordinate, report the failure under `missing_data` and stop the location-dependent steps; never substitute an approximate point. A guessed location moves every distance-dependent result (on 2026-10-18 a guess 200 km off returned the wrong stress indicators and earthquakes). The result's `aoi_centroid_lonlat` is the given point in WGS84: check it against the task's coordinates.
+- **Use the location exactly as given.** If `reg_aoi` refuses a coordinate, report the failure under `missing_data` and stop the location-dependent steps; never substitute an approximate point. A guessed location moves every distance-dependent result (a guessed point returns another area's stress indicators and earthquakes). The result's `aoi_centroid_lonlat` is the given point in WGS84: check it against the task's coordinates.
 - **The regional extent** is the AOI buffered by `buffer_km` (default 100 km). Choose it by the question: 100 km for stress and heat flow, 300 km for seismicity, the basin outline when one is supplied. State it in `assumptions`.
 - Areas and distances are geodesic; every tool reports the distance from the AOI to the data it used.
 

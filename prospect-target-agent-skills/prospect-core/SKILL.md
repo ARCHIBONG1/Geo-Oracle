@@ -54,6 +54,10 @@ A closure in time carries no volume, no contact check and no target. The tools r
 
 `prospect_definition`, `prospect_inventory`, `scenario_set`, `maturation_plan`, `volume_ranges`, `target_card`. Their sidecars carry the maturity, the readiness record, the capping element, the unresolved scenarios and the percentile convention, because `risk_uncertainty` reads them.
 
+## Evidence from the person
+
+Geo Oracle passes what the person said as items of `available_evidence`. An item of kind `expert_input` is a fact with its source: use it as far as that source allows, and cite it. An item of kind `expert_judgement` is the person's opinion: it can support an interpretation at most, never a measurement, a status, a class or a quantity on its own.
+
 ## Methodological provenance
 
 Every tool result carries `methods` — the ids of the published methods that computation

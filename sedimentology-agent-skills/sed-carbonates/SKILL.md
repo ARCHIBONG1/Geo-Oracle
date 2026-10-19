@@ -60,6 +60,6 @@ The composites are formed by the tool from the features and your flags: an ooid 
 
 ## Methodological provenance
 
-The matrix and the vocabulary carry method ids (`m:sed/dunham-texture-classification`, `m:sed/carbonate-lithofacies-coding`, `m:sed/carbonate-environment-matrix`); carry them into `source_reference` as `sed-core` says. Their sources were read against the code on 2026-10-18 (Dunham 1962; Embry & Klovan 1971; Wright 1992; Wilson 1975; Flügel 2010; Tucker & Wright 1990): the registry holds the locators (`sed_method_provenance`).
+The matrix and the vocabulary carry method ids (`m:sed/dunham-texture-classification`, `m:sed/carbonate-lithofacies-coding`, `m:sed/carbonate-environment-matrix`); carry them into `source_reference` as `sed-core` says. Their sources were read against the code (Dunham 1962; Embry & Klovan 1971; Wright 1992; Wilson 1975; Flügel 2010; Tucker & Wright 1990): the registry holds the locators (`sed_method_provenance`).
 
 <!-- end of skill: sed-carbonates -->

@@ -114,7 +114,7 @@ Example entries:
     {
       "id": "W1-logs",
       "kind": "well_log",
-      "description": "LAS 2.0, 1800-2300 m MD, 0.1524 m step. Curves: GR (API), RHOB (g/cc), NPHI (v/v, limestone matrix). No resistivity. Readable by the petrophysics data tool as dataset W1-logs-v1.",
+      "description": "LAS 2.0, 1500-2100 m MD, 0.1524 m step. Curves: GR (API), RHOB (g/cc), NPHI (v/v, limestone matrix). No resistivity. Readable by the petrophysics data tool as dataset W1-logs-v1.",
       "excerpt": "Dataset reference: W1-logs-v1. Summary: GR 20-140 API; RHOB 2.18-2.62 g/cc in 2112-2178 m."
     }
   ],

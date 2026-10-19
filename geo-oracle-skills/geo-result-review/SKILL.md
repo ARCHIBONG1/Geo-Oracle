@@ -66,17 +66,17 @@ Section 3 asks whether a claim follows from its evidence; these ask whether the 
    - *override in <tool>*: a tool ran on an input it does not normally accept. Accept only if the person asked for exactly that; otherwise follow up.
    - *subset of faults kept*: read the stated reason. A subset chosen to match an expected count is rejected.
    - *skills not opened*: the specialist never read, in this session, a procedure its tools require (no failed read; it was simply never opened). Check its method against that skill; when the method matters, ask it (same session) to read the skill on its own and redo the work.
-   - *refused call repeated*: the specialist resent a refused call unchanged (on 2026-10-17, 78 times) instead of changing it, and the turn it spent may have cost other parts of the task. Compare the result with what you asked for, and send the uncovered parts back (same session).
+   - *refused call repeated*: the specialist resent a refused call unchanged instead of changing it, and the turn it spent may have cost other parts of the task. Compare the result with what you asked for, and send the uncovered parts back (same session).
    - *qc suggestion not followed*: a tool's QC named a setting to rerun with and no later call used it. Ask for the rerun (same session), or accept with the reason written down.
    - *typed channel recipe before the generic one*: the specialist assumed a channel type (meandering, submarine) without the user naming it, a well establishing it, or a generic `channel` run first. Ask it (same session) to run the generic recipe and report the measured planform and fill; a type the data were not asked to show is not a finding.
 
    - *no tool calls*: the specialist ran nothing in that turn; its result restates the brief. A validation that ran nothing has validated nothing: send it back, or keep only what the brief itself established.
-   - *sandbox unavailable*: the specialist's sandbox never started (on 2026-10-18 the sandbox service's disk limit), so it read no skill. The cause is the infrastructure: tell the person, and treat the method as unchecked.
+   - *sandbox unavailable*: the specialist's sandbox never started (for example, the sandbox service out of disk), so it read no skill. The cause is the infrastructure: tell the person, and treat the method as unchecked.
    - *tool calls failed*: a tool errored rather than refused. Find what the specialist did instead, in its assumptions and limitations; a substitute input (a guessed location, an assumed velocity) changes what the numbers mean.
 
    Put what you did about each in the checkpoint record (`done[].process_audit`): the gateway refuses the next wave until every flag is addressed.
 
-   **Read every result's assumptions** before relying on it (`get_specialist_result(job_id, sections=["assumptions"])` when the first view trimmed them): the checkpoint refuses a wave whose assumptions were never delivered to you. On 2026-10-18 the assumption "regional queries used an approximate point at -63.0, 43.8" sat unread while its stress and seismicity numbers went into the report.
+   **Read every result's assumptions** before relying on it (`get_specialist_result(job_id, sections=["assumptions"])` when the first view trimmed them): the checkpoint refuses a wave whose assumptions were never delivered to you. An unread assumption, such as "regional queries used an approximate point", stays under every number built on it.
    **Check every location a specialist used** against the investigation's coordinates: the AOI centroid in a regional result, the well position in a seismic one. A location that differs is a method error, whatever the result says.
 2. **The method fits the deliverable.** The `m:` ids in `source_reference` name the methods used, and a deliverable must carry the method that makes it:
 
@@ -89,7 +89,7 @@ Section 3 asks whether a claim follows from its evidence; these ask whether the 
    | a distance from a well to a feature | `m:seis/feature-distance`; a bounding-box overlap is not a distance |
    | channel type (meandering, submarine, tidal, ...) | `m:seis/recipe-channel` with the measured `planform` and fill, or a typed recipe whose `type_basis` names the user or a well |
 
-   A fault volume without its extraction method is a thresholded attribute, not faults: follow up. "No channels" without `m:seis/segment-volume` means the channel workflow never ran (on 2026-10-17 a specialist concluded it from sections and terminations alone): send it back to run the generic recipe, over a `z_window` when there are no horizons.
+   A fault volume without its extraction method is a thresholded attribute, not faults: follow up. "No channels" without `m:seis/segment-volume` means the channel workflow never ran: send it back to run the generic recipe, over a `z_window` when there are no horizons.
 
    **A channel result is read with its QC**, not its count. Refuse (send back) a body result when: a body's extents are the survey's (one channel does not span every inline and crossline); `qc.extent` flags a body, or `qc.stability.merged_bodies` is not empty, and the result reports those bodies as separate channels; faults were extracted in the same investigation and the recipe ran without `faults` (`qc.fault_overlap` absent); or `qc.selection.final_exceeds_cap` is true. "Found at 9/9 settings" is persistence, not identity: a merger of channels, sheets and fault zones is perfectly stable. For other deliverables, ask the specialist which method produced it when the ids do not make it plain.
 3. **The input fits the method.** Read what each computation ran on (the evidence statements and `source_reference`). Fault likelihood, fault extraction and other trace-correlation methods run on seismic amplitudes; a result computed on an attribute (coherence, a likelihood, a mask) where seismic was expected is a method error unless the person asked for it.

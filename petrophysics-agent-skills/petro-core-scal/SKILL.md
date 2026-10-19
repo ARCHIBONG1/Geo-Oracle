@@ -23,7 +23,7 @@ Core depths are driller's depths; logs are logger's depths. They routinely diffe
 7. **Pass the shift on.** `petro_publish_table(table=..., shift=<the core_depth_shift product>)` publishes a driller-depth table (core data, dip picks) in log depth, keeping the original as `md_m_driller` and recording the band in the sidecar. That is what the sedimentology specialist needs; publishing the table unshifted leaves it blocked.
 
 **Reading the result:**
-- **`depth_shift_m`**: added to core depths. A shift at the edge of the search, or a `second_best` almost as good (warned), makes the match ambiguous: report both, and do not over-interpret thin-bed comparisons. Expect a precision of about ±0.1-0.2 m.
+- **`depth_shift_m`**: added to core depths. A shift at the edge of the search, or a `rival` (a separate maximum, with its `shift_m` and `correlation`) almost as good (warned), makes the match ambiguous: report both, and do not over-interpret thin-bed comparisons. Expect a precision of about ±0.1-0.2 m.
 - **`log_vs_core_after_shift`**: the bias (log minus core) and the RMS.
   - A bias beyond about ±0.01 v/v points at matrix density, fluid density, shale correction or overburden.
   - An RMS near the plug-scale heterogeneity (about 0.01-0.02) is normal: plugs sample centimetres, logs decimetres.

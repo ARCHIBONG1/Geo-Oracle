@@ -20,7 +20,7 @@ To say which uncertainties change a conclusion, what would reduce them, and who 
 | Shared once | `ru_merge` links one entry to every objective it affects |
 | Contradictions open | both sides and a resolution path; a side is picked only by a cited result |
 | Actions with owners, neutral framing | `ru_reduction_plan` refuses "confirm", "prove", "verify that", and the `initial` mode |
-| Every attempt reported | `ru_attempt_outcomes` reruns the same tests and reports settled, settled as a failure, narrowed, unchanged or newly material |
+| Every attempt reported | `ru_attempt_outcomes` reruns the same tests and reports settled, settled as a failure, narrowed, unchanged, newly material, overturned (a settled failure no longer fails), newly a settled failure or changed |
 
 Counts are counts. "0 of 10 realizations cross" is a fact about the structural specialist's perturbations, not a frequency of nature, and it is never written as a percentage.
 
@@ -55,7 +55,7 @@ U1 coverage against the ledger; U2 every entry with a source and an owner; U3 ev
 
 - Entry: `U-<n> | <type>, <nature>, <scope> | <materiality>: <text>`
 - Materiality claim: `<entry> is material to <conclusion>` with `depends_on_claim_ids`
-- Attempt: `<entry>: tried <what> (<owner>, <mode>) because <why>; outcome <settled|settled as a failure|narrowed|unchanged|newly material>`
+- Attempt: `<entry>: tried <what> (<owner>, <mode>) because <why>; outcome <settled|settled as a failure|narrowed|unchanged|newly material|overturned|newly a settled failure|changed>`
 
 ## 7. Products
 
@@ -64,6 +64,10 @@ U1 coverage against the ledger; U2 every entry with a source and an owner; U3 ev
 ## 8. The refusals, in the words to use
 
 "No chance of success is stated: the system reports which uncertainties change a conclusion and what would settle them. For the dome: U-08 (well containment unknown) is material to the play and the site; the OLD-1 well file would settle it."
+
+## Evidence from the person
+
+Geo Oracle passes what the person said as items of `available_evidence`. An item of kind `expert_input` is a fact with its source: use it as far as that source allows, and cite it. An item of kind `expert_judgement` is the person's opinion: it can support an interpretation at most, never a measurement, a status, a class or a quantity on its own.
 
 ## Methodological provenance
 

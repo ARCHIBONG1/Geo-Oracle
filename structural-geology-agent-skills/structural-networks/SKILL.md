@@ -21,7 +21,7 @@ description: Fault-network topology (I, Y, X nodes), connectivity, abutting rela
 
 ## Reporting
 
-- `[measurement, derived]`: "Network at H1: 4 faults, nodes I 7, Y 1, X 1, 0.5 connections per line; F2 abuts F1 (F2 younger or coeval; V4 pass)", `prov:` id, product `fault_network`.
+- `[measurement, derived]`: "Network at Top Reservoir: 4 faults, nodes I 7, Y 1, X 1, 0.5 connections per line; F4 abuts F3 (F4 younger or coeval; V4 pass)", `prov:` id, product `fault_network`.
 - Compare the abutment order with the regional tectonic phases (regional_framework) for V4.
 
 <!-- end of skill: structural-networks -->

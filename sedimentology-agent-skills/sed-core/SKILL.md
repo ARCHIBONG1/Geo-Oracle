@@ -53,6 +53,10 @@ A provisional framework, an uncalibrated Vsh, a regional setting with unknown tr
 - `facies_scheme`, `facies_log`, `depositional_model` now; `palaeocurrents`, `reservoir_architecture`, `gde_maps`, `reservoir_quality_controls`, `provenance_summary` later.
 - `missing_data` names: `wells_petrophysics` (logs, core depth shift, dip picks, core analyses), `stratigraphy` (framework, surfaces), `seismic_interpretation` (stratal slices, geobodies), `regional_geology` (setting, palaeogeography), `literature_review` (facies models, analogue dimensions).
 
+## Evidence from the person
+
+Geo Oracle passes what the person said as items of `available_evidence`. An item of kind `expert_input` is a fact with its source: use it as far as that source allows, and cite it. An item of kind `expert_judgement` is the person's opinion: it can support an interpretation at most, never a measurement, a status, a class or a quantity on its own.
+
 ## Methodological provenance
 
 Every tool result carries `methods` — the ids of the published methods that computation

@@ -63,6 +63,10 @@ An uncalibrated Vsh, a provisional operator top, a regional chart with unknown t
 - `correlated_tops` (every pick with tag, rank, basis, source, and the ledger in the sidecar), `correlation_alternatives`, `age_model`, `zonation`, `isopach_trends` and `stratigraphic_framework`.
 - `missing_data` names: `wells_petrophysics` (logs, tops, zone averages), `seismic_interpretation` (horizons, ties, terminations), `structural_geology` (fault cut-outs), `regional_geology` (chart, nomenclature), `sedimentology` (facies), `literature_review` (zonations, calibrated ages).
 
+## Evidence from the person
+
+Geo Oracle passes what the person said as items of `available_evidence`. An item of kind `expert_input` is a fact with its source: use it as far as that source allows, and cite it. An item of kind `expert_judgement` is the person's opinion: it can support an interpretation at most, never a measurement, a status, a class or a quantity on its own.
+
 ## Methodological provenance
 
 Every tool result carries `methods` — the ids of the published methods that computation

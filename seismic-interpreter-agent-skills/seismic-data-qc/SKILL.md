@@ -62,9 +62,9 @@ Run it over the **interval of interest** (`z_range`), not the whole trace, becau
 | Check | Key outputs | Meaning for interpretation |
 |---|---|---|
 | amplitude | percentiles, max_abs, dead_trace_fraction, rms_bottom_to_top_ratio | Sets the scale for "bright". |
-| spectrum | peak and centroid frequency, band_minus20db_hz | Dominant frequency for resolution; usable band limits for frequency attributes. |
+| spectrum | peak and centroid frequency, band_minus20db_hz | The peak for `seismic_resolution_limits` (`peak_frequency_hz`) and the -20 dB band as its `band_hz`; usable band limits for frequency attributes. |
 | snr | snr_median, p10, p90 | Below about 2, continuity and attribute detail are unreliable. |
-| phase | apparent_phase_deg_mod180, confidence | Near 0° means peaks sit on interfaces; near ±90° means they don't. Phase is known only modulo 180°. |
+| phase | apparent_phase_deg_mod180, confidence, window_notes | Near 0° means peaks sit on interfaces; near ±90° means they don't. Phase is known only modulo 180°. A window under about 500 ms or fewer than 50 traces is noted (Levy & Oldenburg 1987): widen the window around the zone of interest. |
 
 What each flag means for you:
 - **CLIPPING**: the highest amplitudes are unreliable. No amplitude-strength claims for the brightest events.
@@ -78,7 +78,7 @@ Polarity is never determined by `seismic_qc`. The phase method cannot tell a pea
 
 ## Resolution limits
 
-Call `seismic_resolution_limits` with the dominant (peak) frequency from the spectrum of the target interval and an interval velocity. The velocity comes from the task, an upstream specialist, or a stated assumption (for example, "assumed 2,800 m/s for consolidated clastics at ~2 s"). Report the tuning thickness (λ/4), the Widess limit (λ/8) and the lateral resolution: the unmigrated Fresnel radius and the migrated Fresnel diameter (about λ/2). The interval velocity sets the wavelength; the Fresnel radius needs the **average** velocity from the surface to the target, so pass it as `average_velocity_m_s` when known (otherwise the tool uses the interval velocity and says so in `fresnel_velocity`; repeat that caveat). Any bed, throw or feature smaller than the tuning thickness is below resolution. Say so, and do not measure its thickness from the seismic.
+Call `seismic_resolution_limits` with the spectrum's peak frequency of the target interval as `peak_frequency_hz` and an interval velocity. The tuning thickness takes the **predominant** frequency, the reciprocal of the wavelet's breadth (Kallweit & Wood 1982), which for a Ricker wavelet is 1.283 times the peak: the tool converts and says so in `frequency`. Give `dominant_frequency_hz` instead only when you have the predominant frequency itself, such as one over the breadth of an extracted wavelet. Pass the spectrum's `band_minus20db_hz` as `band_hz`: when it spans two octaves or more the result adds Kallweit & Wood's broadband tuning, 1/(1.4 fu), as a cross-check (`broadband`). The velocity comes from the task, an upstream specialist, or a stated assumption (for example, "assumed 2,800 m/s for consolidated clastics at ~2 s"). Report the tuning thickness (λ/4), the Widess limit (λ/8) and the lateral resolution: the unmigrated Fresnel radius and the migrated Fresnel diameter (about λ/2). The interval velocity sets the wavelength; the Fresnel radius needs the **average** velocity from the surface to the target, so pass it as `average_velocity_m_s` when known (otherwise the tool uses the interval velocity and says so in `fresnel_velocity`; repeat that caveat). Any bed, throw or feature smaller than the tuning thickness is below resolution. Say so, and do not measure its thickness from the seismic.
 
 ## Delivering volumes to the user
 
