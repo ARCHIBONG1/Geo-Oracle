@@ -31,3 +31,5 @@ Without the ledger (a direct chat, a task that did not name it), coverage U1 is 
 ## Reporting
 
 The ledger as `[data, project_data]`; products as `[data, upstream_specialist]` by reference; claims cited by their full id.
+
+<!-- end of skill: risk-data-qc -->

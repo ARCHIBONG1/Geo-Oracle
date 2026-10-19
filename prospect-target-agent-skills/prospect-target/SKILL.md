@@ -28,3 +28,5 @@ Every coordinate carries its CRS, taken from the constraint tables; the closure'
 ## Reporting
 
 The target as a `measurement`: `<candidate>, <scenario>: target at X, Y (<CRS>), <depth> m TVDSS +/- <uncertainty>, <n> cells satisfy every constraint`. Then `pt_readiness` with the result as `target`, so R6 is recorded and the maturity set by the tool. The `target_card` product carries the trail of constraints.
+
+<!-- end of skill: prospect-target -->

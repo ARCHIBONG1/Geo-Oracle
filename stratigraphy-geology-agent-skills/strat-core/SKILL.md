@@ -105,3 +105,5 @@ demonstration that the implementation is correct.
 3. Depth reference stated (TVDSS); MD only for picks.
 4. The alternative panel built where possible, and compared.
 5. Products as `Product: …` lines; figures as `Figure: …` lines.
+
+<!-- end of skill: strat-core -->

@@ -95,3 +95,5 @@ Run this audit before presenting a major synthesis. Fix every failure. If a fail
 ## 4. After presenting
 
 Update the ledger with a summary of the synthesis, the open questions and the next steps, so that the investigation can continue from exactly this state.
+
+<!-- end of skill: geo-synthesis-audit -->

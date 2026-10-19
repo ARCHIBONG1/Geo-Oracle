@@ -32,3 +32,5 @@ Structural or stratigraphic from injection; residual during migration, over year
 ## Reporting
 
 `containment_assessment` with the four statuses; the storage play's matrix with the weakest link; discriminating evidence usually names capillary data, well integrity and measured stress first.
+
+<!-- end of skill: play-co2-storage -->

@@ -24,7 +24,7 @@ The methods are Batzle-Wang (1992) for brine, oil and gas, and Span-Wagner for C
   - Set `matrix` (sandstone, limestone, dolomite) from lithology.
 - **In-situ fluid**: `in_situ_hydrocarbon` (gas, oil, CO2) fills 1 - SW. Getting it wrong corrupts every substitution.
 - **Substitution** (`substitution`: brine, gas, oil, CO2; `target_saturation`; `md_range` for the reservoir only):
-  - Gassmann with the shear modulus unchanged, and the mineral modulus from matrix and VSH (Voigt-Reuss-Hill).
+  - Gassmann with the shear modulus unchanged, and the mineral modulus from matrix and VSH (Voigt-Reuss-Hill). The clay in that mix is by default the Gulf-clay effective value (K 20.9, mu 6.85 GPa, 2.58 g/cm3: Han, Nur & Morgan 1986, extrapolated to pure clay), not a measured mineral value; published clay moduli differ widely, so pass `clay_moduli` [K, mu, density] when the clay's mineralogy is known, and say which clay was used.
   - **Uniform** mixes fluids first (Wood): a little gas softens the rock almost as much as a lot. **Patchy** averages fully saturated patches (Hill), which is stiffer.
   - **For CO2 storage, always run both**: they bound the seismic response monitoring must expect.
   - Tight or very shaly samples (porosity below 0.03) are left unchanged.
@@ -38,3 +38,5 @@ The methods are Batzle-Wang (1992) for brine, oil and gas, and Span-Wagner for C
 - **Measurements** (derived): Vp and Vs ranges per zone and the change on substitution, e.g. "SAND_B gas to brine: Vp +3.6%, Vs -3.6%".
 - **Assumptions**: fluid descriptors, P and T, matrix, SRD.
 - **Limitations**: predicted Vs, Gassmann's assumptions (connected porosity, low frequency, homogeneous mineral); anisotropy is reported only when Backus averaging was applied (the layering-induced VTI), intrinsic anisotropy is not modelled.
+
+<!-- end of skill: petro-rock-physics -->

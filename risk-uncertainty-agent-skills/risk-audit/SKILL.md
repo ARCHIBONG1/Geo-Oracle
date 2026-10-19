@@ -27,3 +27,5 @@ Each finding names the owner and the evidence. A bias finding is not an accusati
 ## Reporting
 
 Contradictions in `contradictions` with both claim ids; load-bearing assumptions in `assumptions` with what rests on them; bias findings as `interpretations` naming the owner.
+
+<!-- end of skill: risk-audit -->

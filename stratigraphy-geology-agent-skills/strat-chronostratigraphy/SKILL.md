@@ -25,3 +25,5 @@ Every age states its time scale; the regional chart's scale is named in its side
 ## Reporting
 
 Dated samples as `[measurement, project_data]`; modelled ages, rates and missing time as `[measurement, derived]` with the seed and `prov:` id; ages assigned to surfaces as `[inference, derived]`; product `age_model` per well.
+
+<!-- end of skill: strat-chronostratigraphy -->

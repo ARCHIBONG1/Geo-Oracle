@@ -113,3 +113,5 @@ Stop when any of the following holds:
 - **Access:** the remaining gaps need sources you cannot access.
 
 State which condition ended the search. A search that ended on budget with gaps remaining should report `partially_completed`, not `completed`.
+
+<!-- end of skill: lit-search-protocol -->

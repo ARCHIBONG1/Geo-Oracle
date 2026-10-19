@@ -35,3 +35,5 @@ Uplift after charge (burial history), breach by faulting (fault stability, struc
 ## Reporting
 
 The chart as `[interpretation]` with its events' sources; each element in the fixed claim form; the play claim capped by the weakest.
+
+<!-- end of skill: play-petroleum-systems -->

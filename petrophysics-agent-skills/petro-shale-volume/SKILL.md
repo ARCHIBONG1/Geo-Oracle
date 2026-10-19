@@ -46,3 +46,5 @@ Run at least a gamma-ray method and neutron-density (or SP) together, as `method
 - `measurements`: "VSH (gamma-ray linear, GR 20-120 API from the task) median 0.05 in SAND_B (10th-90th percentile 0.02-0.08)", with `source_type` `derived` and the provenance id.
 - `assumptions`: the endpoints with their sources.
 - `interpretations`: the reason for the chosen method, and what any disagreement between methods means.
+
+<!-- end of skill: petro-shale-volume -->

@@ -32,3 +32,5 @@ The `stratigraphic_framework` product: the admitted panel with its ledger, the a
 ## Reporting
 
 Thicknesses, eroded thickness and missing time as `[measurement, derived]`; the erosion-versus-fault reading as `[interpretation]` with the structural product cited; the framework as `[interpretation]` with its ledger.
+
+<!-- end of skill: strat-unconformities-thickness -->

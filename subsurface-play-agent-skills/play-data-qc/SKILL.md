@@ -34,3 +34,5 @@ Geo Oracle's `upstream_findings` carry the id, classification, status and scope 
 ## Reporting
 
 Tables as `[data, project_data]`; products as `[data, upstream_specialist]` by reference; claims cited by their full id.
+
+<!-- end of skill: play-data-qc -->

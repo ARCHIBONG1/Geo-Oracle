@@ -28,3 +28,5 @@ One closure is one candidate. A closure cut by a fault the structural specialist
 ## Reporting
 
 The maturity claim carries the tests. The inventory product carries every candidate with its rung and capping element, which is what Geo Oracle plans the next wave from.
+
+<!-- end of skill: prospect-definition -->

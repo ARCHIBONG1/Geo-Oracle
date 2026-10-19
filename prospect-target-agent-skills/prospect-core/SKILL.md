@@ -97,3 +97,5 @@ demonstration that the implementation is correct.
 4. Every scenario separate, each with its own volume and its discriminating evidence.
 5. The maturity as the tool set it, with the reason.
 6. Products as `Product:` lines; figures as `Figure:` lines.
+
+<!-- end of skill: prospect-core -->

@@ -33,7 +33,7 @@ A specialist's answer can only be as good as its brief. A good brief gives the s
 | `previous_task_id`, `reason_for_reanalysis` | For every non-initial mode | Leaving them empty |
 | `instructions` | Leave empty: it replaces the default brief | Duplicating the output format, which the gateway already enforces |
 | `specialist_session_id` | Leave it empty: the gateway continues each specialist's session for the investigation itself (section 2). Name one only to continue a session from an earlier investigation | Copying an id from your notes or ledger; using it for validation or challenge (refused) |
-| `wait_seconds` | Omit it on a single call, so the gateway's default applies; `0` only for fan-outs of three or more; never above the gateway's cap (its description states it: the harness's per-call timeout minus a margin) | Very short waits that force extra polling; a wait that outlasts the harness, which returns a server-execution-timeout and nothing else |
+| `wait_seconds` | Omit it on a single call, so the gateway's default applies; `0` whenever another specialist starts in the same wave (this chat makes one tool call per step, so a call that waits holds back every call after it); never above the gateway's cap (its description states it: the harness's per-call timeout minus a margin) | Very short waits that force extra polling; a wait that outlasts the harness, which returns a server-execution-timeout and nothing else |
 
 ## 1a. Caveats are ceilings, not prohibitions
 
@@ -145,11 +145,11 @@ Route by the method id's domain (`m:seis/` → `seismic_interpretation`, `m:petr
 
 ## 4. Running jobs
 
-- **Parallel calls.** Put independent calls in one step. TrueForge runs them concurrently, and each waits up to `wait_seconds` (default the gateway's cap).
+- **Starting several specialists.** This chat makes one tool call per step, and a call waits up to `wait_seconds` (default the gateway's cap) before the next can start: start independent specialists with `wait_seconds: 0`, one after another, so they run in parallel, then collect each result with `get_specialist_result`.
 - **No result at all** (your call or poll errors out: "other side closed", "read ECONNRESET", "Failed to process successful response", a timeout) is the connection, not the specialist: the job runs on its own thread and the job id stays valid. Poll it again; never re-dispatch and never record it as a failed specialist, which is how a finished wave gets thrown away.
 - **A result reporting `execution_status: error`** ("the specialist's turn failed") is a dead turn. Retry with a new task id as the `next_action` says, narrowing the scope if the turn had run long, and record it as an execution failure rather than a scientific one.
 - **Jobs still running.** If a result says `running`, call `get_specialist_result(job_id=...)` with `wait_seconds = min(cap, remaining turn time - 120)` (see `geo-investigation-planning`, section 7). The call returns as soon as the specialist finishes, so a long wait costs nothing; a wait that outlasts the turn costs the checkpoint. If a poll returns `running` again, poll again; update the ledger between polls. A poll that fails with a timeout or a transport error has not lost the job: the specialist is still running; poll again with the same job id in the next turn.
-- **Wide fan-outs.** For more than about three jobs in a step, start them with `wait_seconds: 0`, then collect each with `get_specialist_result`. This keeps each step's combined tool output within TrueForge's size limits.
+- **Collecting a wave.** Each `get_specialist_result` returns one result in a step of its own, so no step combines several results: TrueForge's limit for a single result (about 6,000 tokens) is the one that applies, and **Trimmed results** below covers what exceeds it.
 - **Trimmed results.** Results are size-limited. When `omitted` lists sections you need, call `get_specialist_result(job_id=..., sections=["claims"], offset=N)` as `next_action` suggests. If TrueForge replaced a result with a "too big" preview, re-fetch it the same way.
 - **Unneeded work.** Cancel jobs you no longer need with `cancel_specialist_job`.
 - **Lost ids.** `list_specialist_jobs` recovers job ids, e.g. after context compaction.
@@ -172,3 +172,5 @@ Route by the method id's domain (`m:seis/` → `seismic_interpretation`, `m:petr
 ## 6. Retries
 
 Retry an execution failure (`error`, `timeout`, `protocol_error`) at most once, with a new `task_id` and a stated reason. Where time was the problem, narrow the scope. If it fails again, record the analysis as not executed and tell the user. Never fill the gap yourself.
+
+<!-- end of skill: geo-specialist-tasking -->

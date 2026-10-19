@@ -61,3 +61,5 @@ Saturation from logs is a `measurement` (`derived`). The fluid (gas, oil, water)
 - `measurements`: "Sw (Simandoux; Rw 0.0755 ohm.m at 25 degC from the DST-1 water sample, corrected to 48-49 degC; a = 1, m = 2, n = 2 assumed) median 0.25 in SAND_B above 1142 m MD", with the provenance id.
 - `assumptions`: every parameter with its source.
 - `limitations`: e.g. "m and n not measured".
+
+<!-- end of skill: petro-saturation -->

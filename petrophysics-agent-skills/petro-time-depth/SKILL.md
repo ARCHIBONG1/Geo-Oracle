@@ -64,3 +64,5 @@ A large bulk shift points at the SRD or checkshot reference. A shift growing wit
 
 - **Conclusions**: `Product: time_depth — <ref>`, `Product: elastic_logs — <ref>` and `Product: well_header — <ref>`, each from `result.products[].conclusion_line`.
 - **Measurements**: the SRD, checkshot count and depth range, the maximum drift corrected, and interval velocities where relevant.
+
+<!-- end of skill: petro-time-depth -->

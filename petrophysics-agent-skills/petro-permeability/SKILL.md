@@ -40,3 +40,5 @@ k = 0.136 phi^4.4 / Swirr^2 (percent units). Valid only above the transition zon
 
 - **Measurements**: e.g. "Permeability (core transform on 118 calibrated plugs, R2 0.97) median 290 md in SAND_B (10th-90th percentile band 200-460 md)", with the provenance id.
 - **Limitations**: extrapolated intervals, transform scope, and plug-scale versus log-scale support.
+
+<!-- end of skill: petro-permeability -->

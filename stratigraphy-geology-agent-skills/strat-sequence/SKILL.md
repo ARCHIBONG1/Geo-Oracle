@@ -24,3 +24,5 @@ A candidate from one well is a hypothesis. It becomes a key surface on the panel
 ## Reporting
 
 Packages and candidates as `[observation, derived]`; a key surface on the panel as `[interpretation]` with its tie rank; systems tracts as `[interpretation]` only on an admitted panel, otherwise `[hypothesis]`.
+
+<!-- end of skill: strat-sequence -->

@@ -22,3 +22,5 @@ Caprock, faults and wells are separate modes in storage domains because they fai
 ## Reporting
 
 Modes as `interpretations` with the elements' statuses; the product `failure_modes`.
+
+<!-- end of skill: risk-failure-modes -->

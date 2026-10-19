@@ -145,3 +145,5 @@ demonstration that the implementation is correct.
 6. Every `required_outputs` item is produced, or listed in `limitations` with the reason.
 7. Figures and downloads the user asked for appear in `conclusions` as `Figure: …` / `Download: …` lines, and every product another specialist needs appears as a `Product: …` line.
 8. The object is under about 10,000 characters, with no curves or tables in statements.
+
+<!-- end of skill: petro-core -->

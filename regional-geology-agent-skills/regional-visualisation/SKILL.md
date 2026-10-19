@@ -39,3 +39,5 @@ You do not see the figures you render: the tool returns a URL, not an image. The
 ## Reporting
 
 `Figure: <caption> — <url>` in `conclusions`, with the caption the tool returned (datasets, versions, extent).
+
+<!-- end of skill: regional-visualisation -->

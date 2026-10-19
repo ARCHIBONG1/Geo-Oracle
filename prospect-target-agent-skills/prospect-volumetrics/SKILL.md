@@ -45,3 +45,5 @@ The tornado centre is the formula at every p50; each input swings between its p1
 ## Reporting
 
 A quantity is a `measurement` with `source_type` derived and the tool's `prov:` id; the `volume_ranges` product carries the input table with every source, the seed, the shape and the caveat for the domain.
+
+<!-- end of skill: prospect-volumetrics -->

@@ -62,9 +62,9 @@ Before the second specialist call of any new objective, ask the activation quest
 
 Risk runs after the play and prospect waves, and the investigation does not end at its first answer:
 
-1. **Gate.** Task `risk_uncertainty` with the ledger's sandbox path (`/investigation/ledger.md`, kind `investigation_ledger`), every finding relied on as `upstream_findings` with ids, statuses, scope tags and `depends_on`, every product by reference, the objectives in scope and the decision context. It returns the register, the materiality report and a `reduction_plan` whose items are split into `actionable_now` and `needs_acquisition`, each with an owner, an `analysis_mode` and a `task_framing`.
+1. **Gate.** Task `risk_uncertainty` with the ledger's sandbox path (`/investigation/ledger.md`, kind `investigation_ledger`), every finding relied on as `upstream_findings` with ids, statuses, scope tags and `depends_on`, every product by reference, the objectives in scope and the decision context. It returns the register, the materiality report and a `reduction_plan` whose items are split into `actionable_now` and `needs_acquisition`, each with an owner, an `analysis_mode` and a `task_framing`; the plan also lists `irreducible` entries (with the reason) and `settled_failures`, conclusions decided against in every case, which no reduction can change: they are not sent for reduction, only their threshold's source and the basis of their inputs are checked.
 2. **Reduction wave.** Run every `actionable_now` item as one wave, each as a task to the named owner in the named mode (`challenge` or `validation`, never `initial`) with the item's `task_framing` as the geological question, unchanged: it is framed as a test, and reframing it as a confirmation is the one thing that would make the loop harmful. Record each task in the ledger as an attempt: entry, task id, owner, mode, what is being tried, why. When a human-on-the-loop setting is on, present the plan first and run only what the human approves; when it is off, run the wave automatically. The `needs_acquisition` items are not tasks; they go to the user in the final answer.
-3. **Follow-up.** Task `risk_uncertainty` again in `follow_up` mode with the new products, the prior materiality file and every attempt. It reruns the same flip tests and returns `reduction_outcomes`: per attempt, what was tried, why, and whether the uncertainty was settled, narrowed, unchanged or newly material.
+3. **Follow-up.** Task `risk_uncertainty` again in `follow_up` mode with the new products, the prior materiality file and every attempt. It reruns the same flip tests and returns `reduction_outcomes`: per attempt, what was tried, why, and whether the uncertainty was settled, settled as a failure (every case now fails), narrowed, unchanged or newly material.
 4. **One wave by default.** A second reduction wave only when the user asks. An attempt already recorded in the ledger is never reissued; an unchanged outcome is reported, not retried.
 5. **Report every attempt.** The final answer says what was tried, why, and what happened, whichever way it went. A reduction that did not settle its uncertainty is one of the more useful things the investigation can report, and the acquisition items are its recommendations.
 
@@ -72,8 +72,7 @@ Risk runs after the play and prospect waves, and the investigation does not end 
 
 - **Wave 1:** tasks whose inputs exist now. These are often literature, regional context, well-data QC and seismic data characterisation.
 - **Later waves:** tasks that need earlier outputs.
-- **Parallelism:** run the independent tasks of a wave in one step so they execute in parallel.
-- **Result size:** about three full results fit in one step. For wider waves, start the jobs with `wait_seconds: 0` and collect them one by one.
+- **Parallelism:** Geo Oracle makes one tool call per step, so start the independent tasks of a wave one after another with `wait_seconds: 0` (each returns its job id at once and the specialists run in parallel), then collect them one by one.
 
 Write the plan into the ledger's *Tasks* table before running it. For a large investigation, show the user the plan in a few lines first.
 
@@ -146,6 +145,8 @@ Stop when all of the following are true:
 5. Downstream conclusions have been re-checked after every upstream change.
 6. Plays (if relevant) have been evaluated by `subsurface_play`; prospects (if justified) are traceable to the model; risk has been reviewed to the depth the decision needs.
 7. Further calls are unlikely to change the interpretation, or they would need evidence that does not exist: absent from the listing (`list_shared_inputs`), not merely named in a specialist's `missing_data`, which often describes a tool failure or a brief that asked for less.
-8. Every result the person asked for is delivered, not deliverable for an input that does not exist, or declined by the person; a requested result that a follow-up could still produce gets the follow-up first. The checkpoint that ends the work carries this as `deliverables` (see `geo-human-on-the-loop`).
+8. Every result the person asked for is delivered, not deliverable for an input that does not exist, or declined by the person; a requested result that a follow-up could still produce gets the follow-up first. A result that came back in part (H1 closures but not H2) is `partial`, and its missing part gets the follow-up. The checkpoint that ends the work carries this as `deliverables` (see `geo-human-on-the-loop`).
 
 Then read `geo-synthesis-audit` and produce the synthesis.
+
+<!-- end of skill: geo-investigation-planning -->

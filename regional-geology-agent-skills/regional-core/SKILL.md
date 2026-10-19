@@ -104,3 +104,5 @@ demonstration that the implementation is correct.
 4. `limitations` state resolution and distance to the nearest data.
 5. Competing models are carried, with discriminating evidence.
 6. Products listed as `Product: …` lines; figures as `Figure: …` lines.
+
+<!-- end of skill: regional-core -->

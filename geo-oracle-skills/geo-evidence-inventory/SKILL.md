@@ -131,3 +131,5 @@ Write the inventory into the ledger's *Evidence inventory* section. When new dat
 1. Update the inventory.
 2. Re-check tasks that were blocked by missing data.
 3. Flag conclusions that the new data could change.
+
+<!-- end of skill: geo-evidence-inventory -->

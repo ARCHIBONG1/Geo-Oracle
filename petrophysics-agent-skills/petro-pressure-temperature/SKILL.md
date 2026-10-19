@@ -35,3 +35,5 @@ description: Formation pressure and temperature - pretest QC, gradient legs and 
 - **`temperature_profile`** (CSV: tvdss_m, temp_c, method), from `petro_temperature`.
 
 List each in `conclusions` exactly as `Product: <kind> — <ref>` from `result.products[].conclusion_line`.
+
+<!-- end of skill: petro-pressure-temperature -->

@@ -33,3 +33,5 @@ description: Lithology and mineralogy from logs - matrix identification (quartz/
 - **Measurements**: mineral volumes and porosity per zone (`derived`), with the mineral list, the endpoints and the median residual.
 - **Interpretations**: lithology names, and what the facies represent, with alternatives.
 - **Limitations**: minerals assumed absent, water-filled flushed zone assumed, bad-hole intervals.
+
+<!-- end of skill: petro-lithology -->

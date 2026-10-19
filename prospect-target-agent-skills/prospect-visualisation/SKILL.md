@@ -29,3 +29,5 @@ Discrete classes with their words; never a colour alone. A closure is drawn from
 ## Reporting
 
 `Figure: <caption> — <url>` in `conclusions`.
+
+<!-- end of skill: prospect-visualisation -->

@@ -77,3 +77,5 @@ Research in this order, and stop at the level the task needs:
 3. Evidence of timing and preservation.
 4. Major competing interpretations.
 5. Background context, only as much as the elements above require.
+
+<!-- end of skill: lit-geoscience-question-bank -->

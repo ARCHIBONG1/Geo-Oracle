@@ -54,3 +54,5 @@ Wheeler (chronostratigraphic) transforms and automatic sequence-stratigraphic in
 - Time-domain thickness is not true thickness.
 - Section selection bias.
 - Stratigraphic interpretations are one seismic line of evidence. Well ties, biostratigraphy and regional frameworks from the stratigraphy and regional_geology specialists are the independent lines.
+
+<!-- end of skill: seismic-stratigraphic -->

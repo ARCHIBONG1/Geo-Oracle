@@ -30,3 +30,5 @@ Discrete classes only; no continuous ramp, because a ramp reads as a probability
 ## Reporting
 
 `Figure: <caption> — <url>` in `conclusions`.
+
+<!-- end of skill: play-visualisation -->

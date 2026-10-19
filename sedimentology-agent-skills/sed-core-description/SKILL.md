@@ -29,3 +29,5 @@ From cuttings the structures are unreliable and the lithology proportions are sm
 ## Reporting
 
 Codes as `[observation, derived]` with the scheme version; the scheme's features as the basis of every later step.
+
+<!-- end of skill: sed-core-description -->

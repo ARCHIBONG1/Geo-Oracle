@@ -28,3 +28,5 @@ Dip, dip azimuth and mean curvature (Roberts 2001 eq. 15; positive over antiform
 
 - `[measurement, derived]`: "Fault set: mean plane 085/88, k 120, alpha95 3 deg, n 6; two sets at 085 and 160 (threshold 25 deg)", with the `prov:` id and the product reference in `depends_on`.
 - Stereonet with `sg_render(kind=stereonet)` and the mean plane drawn; rose of strikes with `kind=rose`.
+
+<!-- end of skill: structural-geometry -->

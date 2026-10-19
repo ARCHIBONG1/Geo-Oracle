@@ -21,3 +21,5 @@ description: Time-scale discipline, chronostratigraphic charts from the literatu
 - Assembles `regional_framework` from the synthesis (settings, dated phases, events), the chart (units per phase), and the measured products you attach (stress_field, seismicity_summary, thermal_model, structural_elements, burial_history).
 - **Competing models**: where sources give different phases or ages for the same interval, carry each as a model with the evidence for and against and the test that would discriminate them. Never resolve by majority.
 - Every statement in the framework carries its source: a phase is the cited author's interpretation; a measured product is this agent's measurement.
+
+<!-- end of skill: regional-stratigraphy -->

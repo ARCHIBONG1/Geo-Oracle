@@ -40,3 +40,5 @@ No likelihood-impact grid and no heat map exist in this agent, because a coloure
 ## Reporting
 
 The plan's items as `recommended_followups` in order, each with its mode and whether it is actionable now; the acquisition items also as `missing_data` in the shared format; attempts as `claims` in the statement form. `Figure: <caption> — <url>` in `conclusions`.
+
+<!-- end of skill: risk-planning-and-visualisation -->

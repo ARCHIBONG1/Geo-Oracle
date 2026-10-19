@@ -82,3 +82,5 @@ Cite verified sources inline as (Author et al. year, DOI), with the access level
 - For gateway tasks: is the output a single JSON object that matches the contract, with no extra keys?
 
 Fix every failure before returning. If a failure cannot be fixed, disclose it.
+
+<!-- end of skill: lit-synthesis-report -->

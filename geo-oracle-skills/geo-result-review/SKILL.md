@@ -163,3 +163,5 @@ Update the ledger:
 - for each, the `prov:` and `m:` tokens from the specialist's `source_reference`, copied exactly. A result whose `source_reference` carries no `m:` id is one the specialist did not attribute to a method; note it as such rather than inferring one;
 - new contradictions and uncertainties;
 - anything that must be re-checked downstream.
+
+<!-- end of skill: geo-result-review -->

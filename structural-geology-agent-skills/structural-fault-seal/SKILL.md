@@ -28,3 +28,5 @@ description: Juxtaposition, shale gouge ratio, shale smear factor and calibrated
 
 - `[measurement, derived]`: "F1 at 1200-1500 m, throw 30 m: SGR 18-91 % (median 40); sand-sand windows 22 % of the interval; lowest SGR in sand-sand 18 % (below the 20 % threshold); supportable column 0 m by Bretan et al. (2003)", `prov:` id, product `fault_seal`, depends on the vshale_log and the throw's source.
 - Seal profile with `sg_render(kind=seal)`.
+
+<!-- end of skill: structural-fault-seal -->

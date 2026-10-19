@@ -108,3 +108,5 @@ Axis-aligned attributes read dipping but continuous reflectors as discontinuous 
 - `seismic_edge_detection_attribute` with `attribute: dip_steered_semblance` (`kernel: [3, 3, 9]`): semblance on dip-aligned traces. Prefer it over `semblance` wherever reflectors dip more than about one sample per trace (the fault-likelihood QC's `reflector_dip` tells you); on flat data the two agree. `max_shift` (samples) bounds the steering; a dip estimate beyond it is clipped.
 
 Both are computed from the same seismic as everything else: steering removes a false discontinuity, it does not add evidence.
+
+<!-- end of skill: seismic-attributes -->

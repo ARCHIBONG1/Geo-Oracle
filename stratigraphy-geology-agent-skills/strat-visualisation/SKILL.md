@@ -33,3 +33,5 @@ Inputs: the panel file, the wells' `correlation_logs` in panel order, the curve,
 ## Reporting
 
 `Figure: <caption> — <url>` in `conclusions`, with the datum and the panel's status named.
+
+<!-- end of skill: strat-visualisation -->

@@ -150,3 +150,5 @@ demonstration that the implementation is correct.
 - [ ] Every interpretation has an alternative or a stated reason for excluding one.
 - [ ] Claim statuses obey the independence rule.
 - [ ] The output is one JSON object with no prose around it, under about 10,000 characters.
+
+<!-- end of skill: seismic-core -->

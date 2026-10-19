@@ -26,3 +26,5 @@ description: Heat-flow statistics, conductive geotherms with sourced conductivit
 
 - `[regional] heat flow median 61 mW/m2 (p10-p90 55-68, n=102 within 100 km, nearest 12 km)` as a measurement, `literature`, with the database release.
 - `[transfer] … applies to the study area; T1 met, T2 n/a, T3 met (12 km), T4 unknown, T5 met (calibrated 60 mW/m2 at W1)` as an inference.
+
+<!-- end of skill: regional-thermal -->

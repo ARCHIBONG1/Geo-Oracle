@@ -25,3 +25,5 @@ Expansion index = hanging-wall thickness / footwall thickness for an interval (T
 
 - `[measurement, derived]`: "F1: maximum throw 32 m (+/-3.5) at 1080 m along the trace, median 30 m, downthrown to the NE consistently; D/L 0.021 within the population (V2 pass); no relay candidates", `prov:` id, product `displacement_analysis`, depends on the horizon and fault_set references.
 - Throw profile with `sg_render(kind=throw)`.
+
+<!-- end of skill: structural-displacement -->

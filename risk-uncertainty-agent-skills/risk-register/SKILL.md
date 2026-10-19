@@ -29,3 +29,5 @@ From `depends_on_claim_ids` in the findings and `depends_on` in the sidecars: de
 ## Reporting
 
 Entries as `interpretations` in the statement form; the graph's load-bearing and shared claims as `interpretations` with their counts.
+
+<!-- end of skill: risk-register -->

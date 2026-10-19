@@ -34,3 +34,5 @@ A closure names its cell table in the sidecar (`closure_cells`). It is read thro
 ## Claims as inputs
 
 An upstream finding becomes an input as `{range: [p10, p50, p90], source: '<its full id>'}`, never as a bare number, and never with its classification or status upgraded. Where a finding gives one value and no range, say so: a single value is a p50 with no spread, and that is a limitation worth reporting.
+
+<!-- end of skill: prospect-data-qc -->

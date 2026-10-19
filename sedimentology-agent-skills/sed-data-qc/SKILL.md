@@ -39,3 +39,5 @@ Describe in `description` who described or analysed the rock and how; it travels
 ## Reporting
 
 Descriptions as `[observation, project_data]` with the table's provenance id; analyses as `[measurement, project_data]`; products read as `[data, upstream_specialist]`.
+
+<!-- end of skill: sed-data-qc -->

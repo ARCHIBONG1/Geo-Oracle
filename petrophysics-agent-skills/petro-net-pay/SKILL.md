@@ -52,3 +52,5 @@ description: Net reservoir, net pay and zone summaries - sourcing cutoffs, runni
 - **Cutoffs**: in `assumptions`, with their sources.
 - **Conclusions**: `Product: zone_summary — <path>` so Geo Oracle can forward it to prospect, play or risk work.
 - **Downstream consumers need ranges, not single numbers**: give the percentiles.
+
+<!-- end of skill: petro-net-pay -->

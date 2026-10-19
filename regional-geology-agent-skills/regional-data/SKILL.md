@@ -38,3 +38,5 @@ description: Areas of interest and regional extents, the geodata snapshot catalo
 - State in `limitations` the cell size of every grid and the distance to the nearest point of every point dataset. A regional value with no data within 50 km of the AOI does not meet T3 at study-area scale.
 - Kilometre-scale grids never support prospect-scale statements.
 - A tool warning that a dataset has no points in the radius means unconstrained, not zero.
+
+<!-- end of skill: regional-data -->

@@ -75,3 +75,5 @@ Count independent lines, not papers, and state that count when you report suppor
 For each important source, give a short grade for **this research question**: `high`, `moderate` or `low`, with a one-line reason. For example: "moderate: basin-scale Rock-Eval data (n = 42) but no samples within 50 km of the study area."
 
 Do not give numeric scores. Keep the grades in your working notes. Where they matter, put the reasons into the `limitations` field of the evidence items, and into `limitations` and `claims`.
+
+<!-- end of skill: lit-source-appraisal -->

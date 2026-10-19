@@ -21,7 +21,7 @@ Every test takes the entry id it is for, and returns a `test_record` with its pr
 
 - A flip is a change in a categorical conclusion: the play's status or its capping element; the maturity; both sides of a threshold occupied; a different maturity or status between scenarios.
 - A range that changes with nothing categorical is contributing. A volume without a geological threshold is contributing at most: there is no commercial threshold in this system.
-- Every case on the failing side of a threshold is not a straddle: it is a settled failure, reported as such.
+- Every case on the failing side of a threshold is not a straddle: it is a settled failure, class `settled_failure`, reported beside the material entries as decisive. It takes no reduction action on its range, because no narrowing can change it; `ru_reduction_plan` lists it with its open questions, the threshold's source and the basis of the inputs, and those are what to check.
 - The flip tools run the owners' rules; the base case they compute is the owner's own result, and a mismatch there is a fault to report.
 
 ## Plausible alternatives
@@ -35,3 +35,5 @@ Every entry's class from its tests. An entry with no test is undetermined and ne
 ## Reporting
 
 Flip results as `measurements` with the tool's `prov:` id; materiality as `claims` of classification inference, supported when computed.
+
+<!-- end of skill: risk-materiality -->

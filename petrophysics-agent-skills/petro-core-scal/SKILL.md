@@ -43,3 +43,5 @@ Register the returned `register_as` values (source `scal`) and add `low`/`high` 
 
 - **Measurements**: the depth shift, correlation before and after, bias and RMS after calibration, grain density per zone, and SCAL a/m/n with sample counts and residuals.
 - **Claims**: a porosity model is "calibrated to core" (`supported`) only when the bias is within about ±0.01 v/v after calibration.
+
+<!-- end of skill: petro-core-scal -->

@@ -33,3 +33,5 @@ description: Reading upstream products and their sidecars (domain, pick uncertai
 ## Pick uncertainty
 
 The seismic sidecar states it (one sample interval by default). Throw and closure ranges are run within it; a conclusion finer than the uncertainty is not supported.
+
+<!-- end of skill: structural-data-qc -->

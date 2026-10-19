@@ -34,3 +34,5 @@ Axial statistics (0-180 degrees): mean direction, concentration R (1 = all paral
 - `[regional] SHmax N150E +/- 8 (n=197 A-C indicators within 150 km; nearest 5 km; regime SS 70 %, NF 30 %)` as a measurement, `literature`, `prov:…; World Stress Map 2016 release`.
 - `[transfer] …` as an inference with T1-T5.
 - Rose diagram with `reg_render(kind=rose)`: count and quality filter are printed.
+
+<!-- end of skill: regional-structure-stress -->

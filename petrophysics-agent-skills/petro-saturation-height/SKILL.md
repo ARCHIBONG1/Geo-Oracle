@@ -39,3 +39,5 @@ The result gives `SW_SHF` and log `SW` per zone:
 - **Measurements**: the J fit (Swirr, a, b, points, RMS), and SW_SHF against log SW per zone.
 - **Assumptions**: FWL, densities, sigma cos theta values with sources.
 - **Claims**: the FWL is `supported` only with pressure data.
+
+<!-- end of skill: petro-saturation-height -->

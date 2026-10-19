@@ -27,3 +27,5 @@ The table sets your measured values (sediment thickness from GlobSed, crustal th
 
 - `burial_history` is a regional prior for subsurface_play (maturity timing). The sidecar carries the compaction and stretching parameters.
 - T2 matters here: a burial history at a well 60 km away transfers only if the units are equivalent and no local event (salt, inversion) intervenes.
+
+<!-- end of skill: regional-basin -->

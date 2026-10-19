@@ -26,3 +26,5 @@ A biostratigraphic datum carries no age by itself. Its calibrated age comes from
 ## Reporting
 
 Events as `[observation, project_data]`; the composite order and the graphic-correlation line as `[measurement, derived]` with `prov:` ids; a reworking or diachroneity reading as `[interpretation]`.
+
+<!-- end of skill: strat-biostratigraphy -->

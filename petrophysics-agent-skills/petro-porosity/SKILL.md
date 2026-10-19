@@ -50,3 +50,5 @@ If core porosity is supplied, calibrate with `petro_core_calibrate` (skill `petr
 
 - `measurements`: "Effective porosity (gas-corrected neutron-density, rho_ma 2.65 from core grain density) median 0.25 in SAND_B (10th-90th percentile 0.24-0.26)", with `source_type` `derived` and the provenance id.
 - `assumptions`: every matrix, fluid and shale point, with its source.
+
+<!-- end of skill: petro-porosity -->

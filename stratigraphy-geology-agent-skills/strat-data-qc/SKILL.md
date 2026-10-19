@@ -39,3 +39,5 @@ Describe in `description` who produced the data and how; it travels into the pro
 ## Reporting
 
 Reported tops: `[data, upstream_specialist or project_data]` with the product reference. Events and markers: `[observation, project_data]`. Ages: `[measurement, project_data]`.
+
+<!-- end of skill: strat-data-qc -->

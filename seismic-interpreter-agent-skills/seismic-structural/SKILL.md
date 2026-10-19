@@ -28,6 +28,7 @@ description: Structural interpretation from seismic - horizon tracking, faults a
 ## Horizon procedure
 
 1. Choose the event at a well, crest or clear location with `seismic_list_events`. Give the event kind (peak or trough) and z from its result; never pick z from memory or a description.
+   **At a tied well, the synthetic chooses the event.** Run `seismic_trace_events` at the well with the synthetic and the tie's shift and phase (`synthetic`, `tie_shift_ms`, `tie_phase_deg`) and the horizon's marker (`markers`: its top, or the synthetic's reflection at the target level; without markers, `synthetic_reflections` matches each strong reflection). Seed on `markers[].seed`, the seismic event of the polarity the synthetic shows at the marker, not on the nearest event and never on `first_strong_event` (the seabed criterion). If you seed on another event, say why in assumptions. On 2026-10-19 H1 was seeded on the first strong event, a peak at 1900 ms, while the synthetic's strongest reflection there (-0.154) predicts the trough at 1912 ms that the answer key gives as H1: every depth read 17 m shallow.
 2. Before tracking across a faulted area, extract the faults (`seismic_interpret_faults`). Tracking does not jump faults: put at least one seed in each fault block, and **each block's seed takes its time from that block**, never the well's time copied across: run `seismic_fault_throw` for the fault between the well's block and the next, add the throw to the event's time on the far side (sign from `downthrown_side`), and confirm with `seismic_list_events` at the far seed. The same event at the same time on both sides of a fault with 30 ms of throw is a different loop. Pass the fault set to the tracker as `faults`: it then compares the horizon's step across every fault with the seismic's own offset and flags a cycle skip (`result.qc.faults`).
 3. Run `seismic_track_horizon`. Check `coverage`, `correlation_p10` and `rejected_candidates`:
    - `result.qc`: `measured.coverage`, `signal.correlation_p10`, and `stability` (the same tracking with the stopping threshold x0.9 and x1.1: the share of cells within one sample). Cells that move with the setting are uncertain picks: report the share.
@@ -89,3 +90,5 @@ When another specialist needs your faults and horizons — structural_geology ab
 ## Closure uncertainty
 
 `result.qc` of `seismic_closure`: each closure recomputed on five realisations of the map perturbed by its pick uncertainty (default: the map's measured pick noise), with `found_in` and the range of its cells and column. A closure not found in every realisation is a pick-noise candidate until a denser pick or a well confirms it; report the column range, not one number.
+
+<!-- end of skill: seismic-structural -->

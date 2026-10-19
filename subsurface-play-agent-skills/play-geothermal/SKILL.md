@@ -33,3 +33,5 @@ Heat and recharge must be sustained over the project life: give `heat` and `rech
 ## Reporting
 
 As for the other domains: the matrix, the weakest link, the discriminating evidence (usually permeability and recharge data).
+
+<!-- end of skill: play-geothermal -->

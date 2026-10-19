@@ -1,49 +1,33 @@
-# Skills: The Agents' Operating Procedures
+# Skills: the agents' operating procedures
 
-**88 procedure documents in 11 packs: one pack per agent.**
+This folder holds 90 skills in 11 packs, one pack per agent. A skill is a
+Markdown document that an agent reads during a task. It says what to do and in
+what order, which tool to use, what may not be assumed, and in what form to
+report. Nothing here executes.
 
-A skill is not code and nothing here executes. Each skill is a markdown
-document the agent *reads* mid-task, telling it what to do, in what order,
-with which tool, what it may not assume, and in what form to report. The
-system prompt makes an agent competent in general; its skills make it
-competent at a particular job, and they carry the rules that would otherwise
-have to be repeated in every prompt.
+The system prompt makes an agent competent in general; its skills make it
+competent at a particular job, and they hold the rules that would otherwise have
+to be repeated in every prompt. A skill never computes a number: it names the
+tool that computes it, how to set its parameters, how to read what comes back,
+and what may legitimately be concluded.
 
-The division of labour across the system is:
-
-| Layer | Holds | Lives in |
+| Layer | Holds | Location |
 | --- | --- | --- |
-| System prompt | who the agent is, its ceilings, which skill to load when | `../system_instructions/` |
-| **Skill** | **how to do one kind of work, and what to report** | **`agents/skills/` (here)** |
-| Tool | the deterministic computation itself, with provenance | `src/geo_oracle/` |
-| Gateway | routing, jobs, gates, result parsing | `geological_mcp.py` |
+| System prompt | who the agent is, its limits, which skill to read when | `agents/system_instructions/` |
+| Skill | how to do one kind of work, and what to report | `agents/skills/` (this folder) |
+| Tool | the computation itself, with provenance | `src/geo_oracle/tools/` |
+| Gateway | routing, jobs, supervision gates, parsing of replies | `src/geo_oracle/geological_mcp.py` |
 
-A skill never computes a number. It says which tool computes it, how to
-parameterise it, how to read what comes back, and what may legitimately be
-concluded from it.
+## Layout
 
----
-
-## Schematic
-
-Every skill is a directory containing exactly one `SKILL.md`. There are no
-other file types anywhere in this tree.
+Every skill is a directory holding a single `SKILL.md`.
 
 ```
 agents/skills/
    |______ README.md                             this file
    |
-   |______ geo-oracle-skills/                    THE ORCHESTRATOR (8)
-   |          |______ geo-investigation-planning/SKILL.md
-   |          |______ geo-evidence-inventory/SKILL.md
-   |          |______ geo-specialist-tasking/SKILL.md
-   |          |______ geo-result-review/SKILL.md
-   |          |______ geo-investigation-ledger/SKILL.md
-   |          |______ geo-play-prospect-evaluation/SKILL.md
-   |          |______ geo-synthesis-audit/SKILL.md
-   |          |______ geo-human-on-the-loop/SKILL.md
-   |
-   |______ literature-review-agent-skills/       THE TEN SPECIALISTS (7)
+   |______ geo-oracle-skills/                    the orchestrator (8)
+   |______ literature-review-agent-skills/       (7)
    |______ regional-geology-agent-skills/        (9)
    |______ seismic-interpreter-agent-skills/     (8)
    |______ structural-geology-agent-skills/      (8)
@@ -55,18 +39,15 @@ agents/skills/
    |______ risk-uncertainty-agent-skills/        (7)
               |
               |______ <skill-name>/
-                         |______ SKILL.md        name + description, then the procedure
+                         |______ SKILL.md
 ```
 
-Pack names match the saved TrueForge agent names with `-skills` appended, and
-every skill inside a pack is prefixed with that agent's short tag (`seismic-`,
-`petro-`, `strat-`, `sg-`…). Nothing is shared between packs: an agent sees
-only its own pack, which is why the same rule sometimes appears in two packs
-in two different wordings.
+A pack is named after its TrueForge agent with `-skills` appended, and each skill
+in it starts with the agent's short tag (`seismic-`, `petro-`, `strat-`,
+`structural-` and so on). An agent sees only its own pack, which is why the same
+rule sometimes appears in two packs in different words.
 
----
-
-## Anatomy of a `SKILL.md`
+## How a skill is written
 
 ```markdown
 ---
@@ -81,93 +62,64 @@ description: Core operating procedure for every seismic interpretation task -
 
 ## 1. Read the task before touching a tool
 ...
+
+<!-- end of skill: seismic-core -->
 ```
 
-Exactly two frontmatter keys, and all 88 files carry both:
+- **`name`** must match the directory name, because the system prompt refers to
+  the skill by it.
+- **`description`** is the only part an agent sees before deciding whether to read
+  the skill, so it says *when* to read it rather than summarising it. Several end
+  with an explicit instruction, such as "Load at the start of every task".
+- **The body** is ordinary Markdown: numbered procedures, decision tables,
+  vocabularies and worked examples of good and bad statements. Tables carry most
+  of it, because most of what a skill enforces is a mapping: this analysis mode
+  asks for that, this kind of evidence gets that classification, this failure
+  means that status.
+- **The last line** is `<!-- end of skill: <name> -->`. TrueForge replaces a tool
+  result of more than about 6,000 tokens with a short preview, and a skill read
+  that is cut off fails without any other error. An agent that does not see the
+  end marker knows its read was incomplete, and the gateway does not count such
+  a read as done. `tests/test_live_run_1019_fixes.py` checks that every skill
+  ends with its marker. Keep each skill well under that size; the longest are
+  about 3,500 words.
 
-- **`name`** — the skill's identifier. The system prompt refers to a skill by
-  this name, so it must match the directory name.
-- **`description`** — **the trigger.** It is the only part the agent sees
-  before deciding whether to load the document, so it is written as *when to
-  load this*, not as a summary. Several end with a literal instruction —
-  "Load at the start of every task", "Load before `pt_render_closure_map`".
+## The four kinds of skill
 
-The body is ordinary markdown: numbered procedures, decision tables,
-vocabularies, worked examples of good and bad statements. Tables carry most of
-the weight, because most of what a skill enforces is a mapping — this
-`analysis_mode` asks for that; this evidence kind gets that classification;
-this failure means that status.
+Within each pack the names follow a pattern, so an agent can tell from the name
+alone whether it needs a document.
 
----
-
-## The four roles a skill plays
-
-Within every pack the names follow a fixed pattern, so an agent can tell from
-the name alone whether it needs a document.
-
-| Role | Count | What it holds |
+| Kind | Count | Holds |
 | --- | --- | --- |
-| `<tag>-core` | 9 | The pack's operating procedure. **Always loaded first.** Task reading, how to handle any tool result, evidence classification, claim status, the `missing_data` format, what must appear in `limitations`, and the shape of the findings to return. |
-| `<tag>-data-qc` | 8 | Getting data in and judging whether it can bear the question: uploads, loading, units and mnemonics, depth rules, reading upstream products and their sidecars. |
-| `<tag>-visualisation` | 7 | What the rendering tools enforce, the describe-then-interpret discipline, and — importantly — **what a figure may and may not be used to support.** |
-| Domain skills | 66 | One per body of method: attributes, saturation, fault seal, sequence stratigraphy, flip tests, and so on. |
+| `<tag>-core` | 9 | The pack's operating procedure, read first: how to read a task, handle a tool result, classify evidence, set claim status, report missing data, and shape the findings. |
+| `<tag>-data-qc` | 8 | Getting data in and judging whether it can bear the question: uploads, units, depth conventions, reading other agents' products. |
+| `<tag>-visualisation` | 7 | What the figure tools enforce, describing before interpreting, and what a figure may and may not support. |
+| Domain skills | 66 | One per body of method: attributes, saturation, fault seal, sequence stratigraphy, flip tests and so on. |
 
-The `-core` / `-data-qc` / `-visualisation` triad is deliberate: it separates
-*how to behave*, *whether the data supports the question*, and *what a picture
-proves* from the geology itself.
+Not every pack has all three of the first kinds. Geo Oracle's procedure is spread
+across planning, tasking and review, and the literature specialist's sits in
+`lit-search-protocol` and `lit-evidence-extraction`, so neither has a `-core`
+skill. Data admission is part of `regional-data` for the regional specialist.
+Petrophysics and structural geology keep their figure rules inside the domain
+skills, and the risk specialist combines planning and figures in
+`risk-planning-and-visualisation`. Two names look like core skills but are not:
+`petro-core-scal` concerns core samples, and `sed-core-description` the
+vocabulary for describing drill core.
 
-The triad is not universal, and the gaps are informative:
+## How skills work with the rest of the system
 
-- **No `-core`** in `geo-oracle-skills` or `literature-review-agent-skills`.
-  The orchestrator's procedure is spread across planning, tasking and review
-  rather than concentrated in one document; the literature specialist's sits
-  in `lit-search-protocol` and `lit-evidence-extraction`.
-- **No `-data-qc`** in those same two packs, nor in
-  `regional-geology-agent-skills`, where data admission is part of
-  `regional-data`.
-- **No `-visualisation`** in `petrophysics-agent-skills` or
-  `structural-geology-agent-skills` — both have figure tools, so the
-  rendering rules live inside the relevant domain skills instead. In
-  `risk-uncertainty-agent-skills` the role is combined into
-  `risk-planning-and-visualisation`.
+### The system prompt indexes the skills
 
-Two names look like the triad but are domain skills: `petro-core-scal` (core
-*samples*, not core *procedure*) and `sed-core-description` (the description
-vocabulary for drill core).
+Each system prompt in `agents/system_instructions/` ends with a table of every
+skill in the agent's pack and when to read it. The prompt holds the index and
+the skills hold the content. A skill without a row in that table is rarely read,
+and a skill renamed without editing the table sends the agent looking for a
+document that does not exist. Nothing checks the table.
 
----
+### Skills are read from GitHub, not from this folder
 
-## How the packs integrate into the agentic system
-
-### 1. The system prompt names the skill, the agent loads it
-
-Each `agents/system_instructions/<agent>_system_prompt.md` ends with a
-`## Skills` table of every skill in its pack and when to read it. The seismic
-interpreter's begins:
-
-| Skill | Read it when |
-| --- | --- |
-| `seismic-core` | At the start of every task |
-| `seismic-data-qc` | Before ingesting data or interpreting amplitudes, frequencies or thin beds |
-| `seismic-attributes` | Before any seismic_*_attribute call |
-
-So the prompt holds the index and the skills hold the content. Adding a skill
-without adding a row means it will rarely be read, and **renaming a skill
-without editing the table sends the agent after a document that does not
-exist** — it spends an iteration failing to find it. Nothing checks this: the
-table is prose to everything but the model reading it.
-
-### 2. The pack is mounted in the agent's TrueForge sandbox
-
-The agent reads its skills from its own sandbox — the same system prompt says
-plainly that *"your sandbox is only for reading your skills and seeing which
-files were uploaded"*, and forbids computing there, because anything computed
-outside the tools has no provenance.
-
-**This folder is not uploaded to TrueForge. It is cloned from GitHub.** That is
-why the packs are published ahead of the rest of the project, and it is the
-most surprising thing about them. TrueForge stores a skill as a *git pointer*,
-not as text:
+Each agent reads its skills in its own TrueForge sandbox. TrueForge stores a
+skill as a reference to a Git repository, not as text:
 
 ```json
 {"type": "git", "name": "seismic-core",
@@ -177,313 +129,287 @@ not as text:
  "description": "..."}
 ```
 
-Three consequences worth holding onto:
+This has three consequences.
 
-- **An edited `SKILL.md` changes nothing until it is committed and pushed to
-  `ref`.** The agent reads `main` on GitHub, never your working copy. A local
-  edit you have not pushed is invisible to every agent.
-- **`ref` is `main`, so it floats.** A push changes how the agents reason, with
-  no deployment step and nothing recorded. That is convenient while the skills
-  are still being written, and it is a deliberate choice rather than an
-  oversight — `ref` also accepts a tag or a commit SHA if a release ever needs
+- An edited `SKILL.md` has no effect until it is committed and pushed to the
+  branch in `ref`. The agents read GitHub, never the working copy.
+- `ref` is `main`, so a push changes how the agents work immediately, with no
+  deployment step. A tag or commit can be used instead if a release needs
   pinning.
-- **The stored `description` is a separate copy** of the frontmatter, used for
-  listing. It does not update when the clone does, so it can go stale while the
-  body is current.
+- The stored `description` is a separate copy of the front matter, used for
+  listing. `ops/provision_trueforge.py` refreshes it from the local file.
 
-`ops/agents.toml [skills]` declares the `url`, the `ref`, and a `root` prefix,
-with `[skills.packs]` listing the directory names; `ops/provision_trueforge.py`
-registers them with `PUT /api/v1/settings/skills` and refreshes each
-description from the local frontmatter. Because the registered path is
-`<root>/<pack>/<name>`, moving these packs inside the repository — which is
-what will happen when the whole project becomes one repository — is a one-line
-change to `root` followed by `--apply`, not 88 edits. The local layout here
-never changes.
+`ops/agents.toml` declares the repository URL, the branch and a path prefix in
+`[skills]`, and lists each pack's directories in `[skills.packs]`. The
+provisioner registers them with TrueForge and refuses to run if the listing and
+the directories disagree. Because the registered path is
+`<root>/<pack>/<name>`, moving the packs within the repository needs only a
+change to `root` and a re-provision.
 
-### 3. Loading costs budget, which is why the split exists
+### Reading costs budget
 
-Every skill read is one iteration against the agent's iteration limit, and a
-run that hits the limit returns nothing to the orchestrator. That is the whole
-reason the packs are split into many small documents rather than one long one:
-an agent answering a porosity question should pay for `petro-core` and
-`petro-porosity`, not for saturation-height and rock physics as well.
+Every skill read counts against the agent's iteration limit, and a run that
+reaches the limit returns nothing. That is why procedures are split into many
+short documents: an agent answering a porosity question reads `petro-core` and
+`petro-porosity`, not saturation height and rock physics as well. Geo Oracle
+makes one tool call per step, so each of its skill reads is alone in its step.
 
-### 4. Skills name the tools in `src/geo_oracle/`
+### The gateway checks two of Geo Oracle's reads
 
-A skill is written against a specific tool surface — `seismic_describe_section`,
-`petro_vshale`, `pt_render_closure_map`, `seismic_get_record`. The two must
-move together: **renaming a tool in `src/geo_oracle/tools/tool_suites/` silently invalidates
-every skill that names it**, and the agent will go looking for something that
-is not in its tool list. Each skill also carries a "Not available" note where
-no tool exists for an analysis, so the agent records the gap in `limitations`
-instead of improvising.
+The gateway refuses a specialist call until Geo Oracle's chat has read
+`geo-specialist-tasking`, and refuses a checkpoint until it has read
+`geo-result-review`. A read that came back as a truncated preview, without its
+end marker, does not count. After a context compaction Geo Oracle reads both
+again, because the gateway cannot see a compaction.
 
-Since the provenance registry (`src/geo_oracle/tools/tool_suites/provenance/`)
-was wired in, skills also carry **method ids** (`m:seis/edge-semblance`) and
-name each pack's **lookup tool** (`seismic_method_provenance`). Each
-`<tag>-core` skill's *Methodological provenance* section tells the specialist
-to carry a result's `m:` ids into `source_reference` next to the `prov:` id,
-and to answer any "which equation / which paper" question from the lookup tool
-rather than from its own knowledge. The `geo-oracle` pack does the mirror
-image: Geo Oracle has no lookup tool, quotes ids out of the ledger as names
-only, and routes anything deeper to the owning specialist
-(`geo-synthesis-audit` §1, `geo-investigation-ledger`, `geo-specialist-tasking`
-§3). `tests/test_provenance_registry.py` checks that every quoted method id
-exists and that every pack names its lookup tool, so this coupling, unlike the
-tool-name one, is enforced offline.
+### Skills name the tools
 
-A renamed tool must also be renamed in the provenance registry's `used_by`
-entries, or the specialist's lookup tool and the method ids in its results go
-wrong. That side is checked by every tool server as it starts (an ERROR banner
-in the log and `provenance_check` in `GET /health`). Without
-`TOOLS_PROVENANCE_STRICT=true` the server warns and still starts; with it
-(recommended, in `keys.env`) the server refuses to start. The full list of places a
-tool lives is **Adding, renaming or changing a tool** in
+A skill is written against a particular set of tools (`seismic_describe_section`,
+`petro_vshale`, `pt_render_closure_map` and so on), and the two must change
+together: renaming a tool silently invalidates every skill that names it. Where
+no tool exists for an analysis, the skill says so, so the agent records the gap
+in its limitations instead of improvising.
+
+Skills also carry method identifiers from the provenance registry
+(`m:seis/edge-semblance`) and name the pack's method lookup tool
+(`seismic_method_provenance`). Each core skill tells the specialist to carry a
+result's method identifiers into its findings next to the provenance identifier,
+and to answer any question about an equation or a source from the lookup tool
+rather than from memory. Geo Oracle's pack does the reverse: it has no lookup
+tool, quotes identifiers from the ledger as names only, and refers deeper
+questions to the specialist that owns the method.
+`tests/test_provenance_registry.py` checks offline that every identifier a skill
+quotes exists and that every pack names its lookup tool.
+
+A renamed tool must also be renamed in the provenance registry, which every tool
+server checks as it starts. The full list of places a tool appears is the
+checklist "Adding, renaming or changing a tool" in
 [src/geo_oracle/tools/README.md](../../src/geo_oracle/tools/README.md).
 
-### 4b. Some skills are written against tools this repo does not contain
+### Some skills depend on tools outside this repository
 
-Not every tool a skill names lives in `src/geo_oracle/`. These are verified and
-working, but no test here can check them:
+The literature pack is written for the OpenAlex index (`search_works`,
+`get_work`, `resolve_references`, `list_citations`, `search_entities`,
+`get_entity`, `find_candidate_works`) and the Exa and Tavily search services;
+`lit-search-protocol` and `lit-source-verification` are largely procedures for
+using them correctly. Geo Oracle's pack relies on two TrueForge built-in tools:
+`get_current_datetime`, the clock behind the time budget in
+`geo-investigation-planning`, and `ask_user_question`, the only channel to the
+person, on which the supervision gates depend. No test here can check these.
 
-- **`literature-review-agent-skills`** is written against the **OpenAlex** MCP
-  server (`search_works`, `get_work`, `resolve_references`, `list_citations`,
-  `search_entities`, `get_entity`, `find_candidate_works`), **Exa** and
-  **Tavily**. `lit-search-protocol` and `lit-source-verification` are largely
-  procedures for using them correctly — checking the echoed `oql`, matching
-  authorship, resolving every hit before citing it.
-- **`geo-oracle-skills`** relies on two TrueForge built-ins:
-  `get_current_datetime` (the turn clock behind
-  `geo-investigation-planning`'s time budget) and `ask_user_question` (the
-  only channel to the person, which every gate in `geo-human-on-the-loop`
-  depends on).
+The principle matches the rest of the system: a number must come from a tool in
+this repository, which carries provenance; a citation must be resolved through
+the external index.
 
-The rule of thumb matches the one in `src/geo_oracle/README.md`: a **number** must
-come from a tool in `src/geo_oracle/`, which carries provenance; a **citation** must be
-resolved through the external index. A skill should never have an agent
-compute a value with a retrieval tool, or cite a source it only found.
+### The core skills define what the gateway parses
 
-### 5. The `-core` skills define the contract the gateway parses
-
-This is where the loop closes. `seismic-core` §3–§5 fix the evidence
-classifications (`observation`, `measurement`, `interpretation`, `inference`,
-`hypothesis`), require every interpretation to list its
-`supporting_evidence_ids`, `assumptions` and `limitations`, set the claim
-status rules, and fix the `missing_data` format. Those are **exactly** the
-fields `SpecialistFindings` validates in `geological_mcp.py`, and
-`parse_findings()` is what turns the agent's reply into them.
+The core skills fix the evidence classes (`observation`, `measurement`,
+`interpretation`, `inference`, `hypothesis`), require each interpretation to
+list its supporting evidence, assumptions and limitations, set the rules for
+claim status, and fix the format of missing data. These are exactly the fields
+of the `SpecialistFindings` model that `parse_findings()` in `geological_mcp.py`
+builds from a specialist's reply.
 
 ```
-skill tells the agent what to emit
+the skill says what to return
         │
         ▼
-specialist returns one JSON object
+the specialist returns one JSON object
         │
         ▼
-geological_mcp.parse_findings()  ──▶  SpecialistFindings  ──▶  globalize_ids()
-                                                                    │
-                                              ids namespaced <task_id>/E1 …
-                                                                    ▼
-                                                        Geo Oracle reasons on it
+parse_findings()  ──▶  SpecialistFindings  ──▶  identifiers scoped as <task_id>/E1 ...  ──▶  Geo Oracle
 ```
 
-A skill that drifts from the model does not raise an error. The reply simply
-fails to parse, and the gateway returns the text in `raw_output` with a
-warning — the content survives, but it is no longer structured evidence. **So
-the `-core` skills and the output models in `geological_mcp.py` must be
-changed together.**
+A skill that drifts from the model raises no error: the reply fails to parse and
+reaches Geo Oracle as raw text with a warning. The content survives, but it is
+no longer structured evidence. The core skills and the reply models in
+`geological_mcp.py` must therefore be changed together.
 
-### 6. `geo-oracle-skills` is a different kind of pack
+## The packs
 
-The ten specialist packs govern *doing* geology. The orchestrator's pack
-governs *running an investigation*, and each of its skills maps onto gateway
-machinery rather than onto a compute tool:
+### `geo-oracle-skills` (8): the orchestrator
+
+The specialist packs govern doing geology; this pack governs running an
+investigation, and each skill corresponds to gateway machinery rather than to a
+compute tool.
 
 | Skill | Governs |
 | --- | --- |
-| `geo-investigation-planning` | turning an objective into testable questions, specialist tasks and a dependency graph |
-| `geo-evidence-inventory` | characterising available evidence and packaging it for specialists that cannot open files |
-| `geo-specialist-tasking` | the brief templates for the ten specialist tools and the three job tools — field by field, with the common mistakes |
+| `geo-investigation-planning` | turning an objective into testable questions, tasks and a dependency graph; waves of tasks started one call at a time; the time budget; the risk gate and the reduction loop, including settled failures |
+| `geo-evidence-inventory` | characterising the available evidence and packaging it for specialists |
+| `geo-specialist-tasking` | the brief for each specialist tool and the job tools, field by field, with common mistakes; starting several specialists one call at a time |
 | `geo-result-review` | the checklist for judging a specialist result before relying on it |
 | `geo-investigation-ledger` | the format of `investigation/ledger.md`, the running record the synthesis is written from |
-| `geo-play-prospect-evaluation` | gates, element checklists, support labels and maturity rules for the play / prospect / risk stages |
-| `geo-synthesis-audit` | structure, citation rules and the mandatory scientific audit of any synthesis |
-| `geo-human-on-the-loop` | the activation question, the five-part checkpoint, accept / refuse / edit, and the work gate |
+| `geo-play-prospect-evaluation` | the gates before the play, prospect and risk stages; the five domains' elements; the element status scale; the maturity ladder; materiality classes in place of a chance of success |
+| `geo-synthesis-audit` | the structure and citation rules of a synthesis, and its scientific audit |
+| `geo-human-on-the-loop` | the supervision question, the objective and deliverables recorded at activation (one result per deliverable), the checkpoint, accept, refuse and edit, partial deliveries, changing mode mid-investigation, and the work gate |
 
-`geo-human-on-the-loop` is the counterpart of `hotl.py`: the gateway *enforces*
-those gates by refusing calls, and this skill tells Geo Oracle how to satisfy
-them — what to ask the user, and what to put in a checkpoint record so it
-passes the checks against the job registry.
-
----
-
-## What each pack contains
-
-### `geo-oracle-skills` (8) — the orchestrator
-See the table above.
+`geo-human-on-the-loop` is the counterpart of `hotl.py`: the gateway enforces the
+gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 
 ### `literature-review-agent-skills` (7)
+
 | Skill | Covers |
 | --- | --- |
-| `lit-search-protocol` | search planning: term expansion across formation, historical and stratigraphic names |
-| `lit-inputs-library` | librarian of the shared inputs folder — complete listings, confirming what is actually there |
-| `lit-source-appraisal` | authority, evidence basis, geographic relevance and independence of a source |
-| `lit-source-verification` | resolving works to DOIs or OpenAlex IDs; every citation verified |
-| `lit-evidence-extraction` | mapping extracted geological evidence onto the gateway's JSON output |
+| `lit-search-protocol` | search planning: expanding terms across formation, historical and stratigraphic names |
+| `lit-inputs-library` | listing the shared inputs folder completely and confirming what is there |
+| `lit-source-appraisal` | the authority, evidence basis, geographic relevance and independence of a source |
+| `lit-source-verification` | resolving works to DOIs or OpenAlex identifiers; verifying every citation |
+| `lit-evidence-extraction` | mapping extracted evidence onto the findings structure |
 | `lit-geoscience-question-bank` | question sets and evidence checklists for decomposing a request |
-| `lit-synthesis-report` | synthesis across sources, conflicting literature, careful consensus language |
+| `lit-synthesis-report` | synthesis across sources, conflicting literature, careful language for consensus |
 
 ### `regional-geology-agent-skills` (9)
+
 | Skill | Covers |
 | --- | --- |
-| `regional-core` | task procedure, scope tags, the transfer checklist, the memo |
-| `regional-data` | areas of interest, the geodata snapshot catalogue, supplied GIS files, grid sampling |
+| `regional-core` | the task procedure, scope tags, the transfer checklist, the memo |
+| `regional-data` | areas of interest, the reference-data catalogue, supplied GIS files, grid sampling |
 | `regional-stratigraphy` | time-scale discipline, chronostratigraphic charts, hiatuses and overlaps |
-| `regional-structure-stress` | fault elements and trends, SHmax orientation, stress regime, domain boundaries |
+| `regional-structure-stress` | fault trends, the orientation of maximum horizontal stress, stress regime, domain boundaries |
 | `regional-thermal` | heat-flow statistics, conductive geotherms, calibration to corrected well temperatures |
-| `regional-basin` | backstripping and decompaction, McKenzie stretching fits, burial history, the basin-evidence table and the basis of each expectation |
-| `regional-potential-fields` | gravity and magnetic transforms, lineaments as observations, depth-to-source (Euler index set by the field and source type; regional handling) |
-| `regional-seismicity` | catalogue summaries, magnitude of completeness, b-values (with Utsu's coarse-bin correction) and their limits |
-| `regional-visualisation` | maps, rose diagrams, profiles; describe-then-interpret |
+| `regional-basin` | backstripping and decompaction, stretching fits, burial history, the basis of each expectation |
+| `regional-potential-fields` | gravity and magnetic transforms, lineaments as observations, depth to source |
+| `regional-seismicity` | catalogue summaries, magnitude of completeness, b-values and their limits |
+| `regional-visualisation` | maps, rose diagrams and profiles; describing before interpreting |
 
 ### `seismic-interpreter-agent-skills` (8)
+
 | Skill | Covers |
 | --- | --- |
 | `seismic-core` | the operating procedure and the findings contract |
 | `seismic-data-qc` | uploads, SEG-Y header scanning, ingest decisions, resolution |
-| `seismic-attributes` | choosing, parameterising, running and reading the attribute tools |
-| `seismic-structural` | horizon tracking, faults and throw, structure and isochron maps, closure and spill |
-| `seismic-attribute-interpretation` | attribute-driven bodies by recipe: faults when the likelihood QC looks poor, channels, paleokarst, any geobody; constraints, seeds from the strongest evidence, catalogue and comparison |
-| `seismic-stratigraphic` | termination detection, key surfaces, seismic facies, stratal slices |
-| `seismic-qi` | when amplitudes can be trusted; wavelet, synthetic and well tie, AVO |
-| `seismic-visualisation` | how the agent "sees" seismic — reading `seismic_describe_section` as its only view |
+| `seismic-attributes` | choosing, setting up, running and reading the attribute tools |
+| `seismic-structural` | horizon tracking with seeds guided by the synthetic, faults and throw, structure and isochron maps, closure and spill |
+| `seismic-attribute-interpretation` | bodies by recipe: channels by stratal slices first and per sample second, in a window hung on a horizon, with wells; faults when the fault-likelihood check looks poor; karst and other bodies; constraints, seeds and the catalogue |
+| `seismic-stratigraphic` | terminations, key surfaces, seismic facies, stratal slices |
+| `seismic-qi` | when amplitudes can be trusted; wavelet, synthetic and well tie, including the range of phase the tie searches; AVO |
+| `seismic-visualisation` | reading `seismic_describe_section`, the agent's only view of a section |
 
 ### `petrophysics-agent-skills` (13)
+
 | Skill | Covers |
 | --- | --- |
-| `petro-core` | task procedure, analysis mode, domain emphasis |
-| `petro-data-qc` | imports, LAS/CSV loading, mnemonics, units and unit conflicts, headers |
-| `petro-shale-volume` | VSH method choice, endpoints, comparing at least two methods |
-| `petro-porosity` | density / neutron-density / sonic by lithology, fluid and hole condition |
-| `petro-saturation` | the Rw hierarchy, temperature correction, Archie versus shaly-sand |
-| `petro-saturation-height` | Leverett J and Brooks-Corey fits, lab-to-reservoir conversion |
-| `petro-permeability` | core transforms with 10th–90th percentile bands, flow units, Timur |
-| `petro-net-pay` | cutoffs, integrated evaluation with bad-hole exclusion, zone summaries |
-| `petro-lithology` | matrix identification, multimineral solves with a reconstruction check |
-| `petro-core-scal` | core-to-log depth shift, overburden correction, log-versus-core statistics |
-| `petro-rock-physics` | fluid properties incl. CO2, Vs measured or predicted, Gassmann substitution |
-| `petro-pressure-temperature` | pretest QC, gradient legs, contacts from gradient intersections |
+| `petro-core` | the task procedure, analysis mode, domain emphasis |
+| `petro-data-qc` | imports, LAS and CSV loading, mnemonics, units and their conflicts, headers |
+| `petro-shale-volume` | choosing a shale-volume method and endpoints; comparing at least two methods |
+| `petro-porosity` | density, neutron-density and sonic porosity by lithology, fluid and hole condition |
+| `petro-saturation` | the order of preference for water resistivity, temperature correction, Archie against shaly-sand models |
+| `petro-saturation-height` | Leverett J and Brooks–Corey fits, laboratory-to-reservoir conversion |
+| `petro-permeability` | core transforms with 10th to 90th percentile bands, flow units, Timur |
+| `petro-net-pay` | cut-offs, evaluation with bad hole excluded, zone summaries |
+| `petro-lithology` | matrix identification, multimineral solutions checked by reconstruction |
+| `petro-core-scal` | core-to-log depth shift, overburden correction, log against core statistics |
+| `petro-rock-physics` | fluid properties including CO2, measured or predicted shear velocity, Gassmann substitution and the clay moduli in the mineral mix |
+| `petro-pressure-temperature` | pretest quality control, gradient legs, contacts from gradient intersections |
 | `petro-time-depth` | checkshots, datums, offset correction, sonic integration with drift |
 
 ### `structural-geology-agent-skills` (8)
+
 | Skill | Covers |
 | --- | --- |
-| `structural-core` | task procedure, the never-invent rule, the validity ledger |
-| `structural-data-qc` | upstream products and sidecars — domain, pick uncertainty, scope, validity |
+| `structural-core` | the task procedure, the rule against inventing structure, the validity record |
+| `structural-data-qc` | other agents' products and sidecars: domain, pick uncertainty, scope, validity |
 | `structural-geometry` | orientation statistics, mean planes and sets, fold axes by the pi method |
-| `structural-displacement` | throw profiles, displacement-length against the global population, growth (expansion index; V6 only for resolvable thickening) |
-| `structural-networks` | fault-network topology (I, Y, X nodes), connectivity (C_B and C_L after Sanderson & Nixon 2015), relative ages |
-| `structural-modelling` | fault planes and horizons per block, validity tests, seeded realizations |
-| `structural-geomechanics` | the stress tensor, slip and dilation tendency, critical pore pressure |
+| `structural-displacement` | throw profiles, displacement against length, growth by expansion index |
+| `structural-networks` | fault-network topology, connectivity, relative ages |
+| `structural-modelling` | fault planes and horizons per block, every horizon asked for, the rule for closure size, validity tests, realisations |
+| `structural-geomechanics` | the stress tensor with depths by datum, slip and dilation tendency, critical pore pressure |
 | `structural-fault-seal` | juxtaposition, shale gouge ratio, shale smear factor, column heights |
 
 ### `stratigraphy-geology-agent-skills` (8)
+
 | Skill | Covers |
 | --- | --- |
-| `strat-core` | the two ledgers, the tie-point hierarchy, the consistency ledger |
+| `strat-core` | the two ledgers, the order of preference for tie points, the consistency record |
 | `strat-data-qc` | correlation logs and well tops, sidecars, the depth rule for deviated wells |
 | `strat-log-correlation` | ranking tie points, dynamic time warping constrained to anchors |
-| `strat-sequence` | stacking patterns from GR, candidate maximum flooding and maximum regressive surfaces |
+| `strat-sequence` | stacking patterns from gamma ray, candidate maximum flooding and maximum regressive surfaces |
 | `strat-chronostratigraphy` | age models from dated samples and datums, the seeded envelope, missing time |
 | `strat-biostratigraphy` | biostratigraphic events as tie points, event ordering, graphic correlation |
-| `strat-unconformities-thickness` | isochores and isopachs, minimum eroded thickness, missing time at a hiatus, erosion versus fault cut-out |
+| `strat-unconformities-thickness` | isochores and isopachs, minimum eroded thickness, missing time at a hiatus, erosion against fault cut-out |
 | `strat-visualisation` | correlation panels, the two-datum check, what a panel may support |
 
 ### `sedimentology-agent-skills` (7)
+
 | Skill | Covers |
 | --- | --- |
-| `sed-core` | the interpretation ladder, diagnostic before suggestive |
-| `sed-core-description` | the fixed vocabulary — Wentworth classes, structure and contact codes, bioturbation index |
+| `sed-core` | the interpretation ladder; diagnostic evidence before suggestive |
+| `sed-core-description` | the fixed vocabulary: Wentworth classes, structure and contact codes, bioturbation index |
 | `sed-data-qc` | registering descriptions, analyses, analogue tables and photo indexes; the depth rule |
-| `sed-facies-analysis` | transitions, the embedded Markov test, Walther's law, the key-surface exclusion |
-| `sed-depositional-systems` | the diagnostic matrix per environment; how an association becomes an environment |
-| `sed-carbonates` | carbonate texture (Dunham, Embry and Klovan), grains and fabrics; the carbonate code; the facies belts |
+| `sed-facies-analysis` | transitions, the embedded Markov test, Walther's law, excluding key surfaces |
+| `sed-depositional-systems` | the diagnostic matrix for each environment; how an association becomes an environment |
+| `sed-carbonates` | carbonate texture (Dunham; Embry and Klovan), grains and fabrics, the carbonate code, the facies belts |
 | `sed-visualisation` | graphic logs and transition diagrams; what a figure may support |
 
 ### `subsurface-play-agent-skills` (8)
+
 | Skill | Covers |
 | --- | --- |
-| `play-core` | the ordinal status scale, the scope rule, the weakest link, dependencies |
-| `play-data-qc` | upstream products and claims, their ledgers, scope and transfer |
-| `play-petroleum-systems` | hydrocarbon elements and processes, the events chart, the critical moment as you state it (Magoon and Dow) |
-| `play-co2-storage` | CO2 elements with containment kept separate; the pressure limit; trapping through time (IPCC 2005) |
-| `play-geothermal` | convection- and conduction-dominated types; heat, permeability, fluid, recharge |
-| `play-hydrogen` | natural hydrogen and underground storage; why timing differs |
+| `play-core` | the ordinal status scale, including disfavoured for evidence against; the scope rule; the weakest link; dependencies |
+| `play-data-qc` | other agents' products and claims, their ledgers, scope and transfer |
+| `play-petroleum-systems` | hydrocarbon elements and processes, the events chart, the critical moment as stated by the investigator |
+| `play-co2-storage` | CO2 storage elements with containment kept separate; the pressure limit; trapping through time |
+| `play-geothermal` | convection- and conduction-dominated plays; heat, permeability, fluid, recharge |
+| `play-hydrogen` | natural hydrogen and underground hydrogen storage; why timing differs |
 | `play-well-outcomes` | every well as a success, a failure on a named element, or undetermined |
-| `play-visualisation` | status matrices, events charts, dependency graphs; discrete classes |
+| `play-visualisation` | status matrices, events charts, dependency graphs |
 
 ### `prospect-target-agent-skills` (7)
+
 | Skill | Covers |
 | --- | --- |
-| `prospect-core` | the maturity ladder, readiness tests R1–R7, the refusal rules |
+| `prospect-core` | the maturity ladder, readiness tests R1 to R7, the refusal rules |
 | `prospect-data-qc` | closures, play matrices, ledgers and companion tables; registering constraints |
 | `prospect-definition` | closures into candidates, what each readiness failure means, the maturation plan |
-| `prospect-scenarios` | trap, fill and contact alternatives; naming what would separate them |
-| `prospect-volumetrics` | gross rock volume from a closure's cells, cut at the reservoir base, and per realisation; sourced inputs, the CO2 displacement efficiency |
+| `prospect-scenarios` | trap, fill and contact alternatives, and what would separate them |
+| `prospect-volumetrics` | gross rock volume from a closure's cells, cut at the reservoir base and computed per realisation; sourced inputs; the CO2 displacement efficiency |
 | `prospect-target` | the well target under licence, keep-out and existing-well constraints |
 | `prospect-visualisation` | closure maps and maturity tables; what a figure may support |
 
 ### `risk-uncertainty-agent-skills` (7)
+
 | Skill | Covers |
 | --- | --- |
-| `risk-core` | no scores; materiality by flip test with its provenance id; nothing new |
+| `risk-core` | no scores; materiality by flip test, carrying the test's provenance identifier; no new geology |
 | `risk-data-qc` | importing Geo Oracle's ledger and reading it as data; product sidecars |
-| `risk-register` | collecting every uncertainty from the ledger, findings and sidecars; typing it |
-| `risk-materiality` | the four flip tests — play status, maturity, threshold straddle, scenario comparison |
-| `risk-failure-modes` | per-domain failure modes from a fixed library: mechanism, elements, detection |
+| `risk-register` | collecting every uncertainty from the ledger, findings and sidecars, and typing it |
+| `risk-materiality` | the four flip tests (play status, maturity, threshold straddle, scenario comparison) and the classes they give, including a settled failure |
+| `risk-failure-modes` | failure modes by domain from a fixed library: mechanism, elements, detection |
 | `risk-audit` | contradictions carried with both sides; load-bearing assumptions |
-| `risk-planning-and-visualisation` | the reduction plan — actions, owners, modes, neutral framing |
-
----
+| `risk-planning-and-visualisation` | the reduction plan: actions, owners, modes, neutral framing |
 
 ## Working on skills
 
-**Adding one.** Four steps, and the skill does not exist for an agent until all
-four are done:
+**Adding a skill.** The skill does not exist for an agent until all four steps
+are done.
 
 1. Create `<pack>/<tag>-<subject>/SKILL.md` with `name` matching the directory
-   and a `description` written as *when to load this*. If it governs a tool,
-   name that tool explicitly.
-2. Add a row to the `## Skills` table in
+   and a `description` that says when to read it, naming any tool it governs. End
+   it with `<!-- end of skill: <name> -->`.
+2. Add a row to the skills table at the end of
    `agents/system_instructions/<agent>_system_prompt.md`, or it will not be read.
-3. Add the directory name to its pack in `ops/agents.toml` `[skills.packs]`,
-   then `python ops/provision_trueforge.py --apply` to register and attach it.
-   The script refuses to run while the TOML and this folder disagree, so a
-   missed entry is loud rather than silent.
-4. **Commit and push.** TrueForge clones the body from `main` (see §2), so
-   until the push the skill is registered but empty.
+3. Add the directory name to the agent's pack in `[skills.packs]` in
+   `ops/agents.toml`, then run `python ops/provision_trueforge.py --apply`.
+4. Commit and push. TrueForge reads the skill from GitHub, so until it is pushed
+   the skill is registered but empty.
 
-**Changing one.** Four couplings to check:
+**Changing a skill.** Check four links: the tool names it mentions; anything a
+core skill says about evidence classes, claim status, scientific status or
+missing data, which must match the models in `geological_mcp.py`; the skills
+table in the system prompt, which nothing checks; and the pack listing in
+`ops/agents.toml`, which the provisioner checks. Renaming a skill touches three
+of these at once. Editing only the body touches none of them, but still needs a
+push, and the end marker must stay the last line.
 
-1. **Tool names.** A skill that names a tool no longer in the suite sends the
-   agent after something that is not there.
-2. **The findings contract.** Anything a `-core` skill says about evidence
-   classes, claim status, `scientific_status` or `missing_data` must match the
-   models in `geological_mcp.py`. They are not validated against each other.
-3. **The `## Skills` table** in the system prompt. Nothing checks it.
-4. **The pack listing** in `ops/agents.toml`. The provisioner checks this one.
+**Deleting a skill.** Remove its row from the system prompt first, because a
+prompt that names a missing skill makes the agent spend an iteration looking for
+it. Then remove it from `[skills.packs]` and re-provision. The provisioner never
+deletes a registration, so the old entry stays in TrueForge's settings until it
+is removed there by hand; it is harmless unless an agent is attached to it.
 
-Renaming a skill touches 1, 3 and 4 at once, which is why it is worth doing
-deliberately. Editing the body touches none of them — but still needs a push.
-
-**Deleting one.** Remove the table row first; a prompt that names a missing
-skill makes the agent spend an iteration failing to find it. Then remove it
-from `[skills.packs]` and re-apply. The provisioner never deletes a
-registration, so the orphan stays in TrueForge Settings as a `NOTE` until it is
-removed there by hand — harmless unless an agent attaches it.
-
-**Conventions that hold throughout.** Describe before interpreting. Never
-upgrade a classification, only downgrade it. Cite the provenance id of every
-number. Record a capability gap in `limitations` rather than improvising
-around it. State what a figure may *not* be used to support. None of these are
-enforced by software — they hold because every `-core` skill repeats them.
+**Conventions throughout.** Describe before interpreting. Never upgrade a
+classification, only downgrade it. Cite the provenance identifier of every
+number. Record a missing capability in the limitations rather than working
+around it. State what a figure may not be used to support. Software enforces
+none of these; they hold because every core skill repeats them.

@@ -107,3 +107,5 @@ demonstration that the implementation is correct.
 4. Every parameter sourced or flagged as an assumption with its range.
 5. Alternatives stated where the data permit.
 6. Products as `Product: …` lines; figures as `Figure: …` lines.
+
+<!-- end of skill: structural-core -->

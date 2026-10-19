@@ -83,3 +83,5 @@ Call `seismic_resolution_limits` with the dominant (peak) frequency from the spe
 ## Delivering volumes to the user
 
 `seismic_export_volume` writes any volume (ingested or computed) as SEG-Y (inline/crossline in bytes 189/193, coordinates when known) or `.npy` in a stated axis order, and returns a `download_url`. Use the user's own format and axis order when they supplied one (a `T,XL,IL` `.npy` in, a `T,XL,IL` `.npy` out). Put the URL in `conclusions`. The URL opens on the machine running the seismic tools. Never use a `sandbox_artifacts` block.
+
+<!-- end of skill: seismic-data-qc -->

@@ -46,3 +46,5 @@ Containment is kept separate as for CO2; the microbial and geochemical element i
 ## Reporting
 
 As for the other domains: the matrix, the weakest link, the discriminating evidence (usually seal entry pressure, preservation data and, for storage, brine chemistry and well integrity first).
+
+<!-- end of skill: play-hydrogen -->

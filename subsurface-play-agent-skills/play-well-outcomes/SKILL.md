@@ -28,3 +28,5 @@ Give `closures` from `trap_geometry` in the wells' CRS; give `explanations` with
 ## Reporting
 
 The classification as `[interpretation, derived]` with the tool's provenance id; the outcome table as `[data, project_data]`; the product `well_outcome_analysis`.
+
+<!-- end of skill: play-well-outcomes -->

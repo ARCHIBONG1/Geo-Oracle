@@ -76,3 +76,5 @@ Format (placeholders shown; always fill them from the resolved record):
 R4 | doi:<DOI> | openalex:<W-id> | <First author> et al. <year>, <venue> |
      peer-reviewed article | access: full-text | retraction: none | relevance: basin-scale
 ```
+
+<!-- end of skill: lit-source-verification -->

@@ -26,3 +26,5 @@ You do not see the figures you render: the tool returns a URL, not an image. The
 ## Reporting
 
 `Figure: <caption> — <url>` in `conclusions`, with the depth reference and the shift named.
+
+<!-- end of skill: sed-visualisation -->

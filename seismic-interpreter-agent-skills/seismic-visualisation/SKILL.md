@@ -97,3 +97,5 @@ Faults are drawn black and bodies yellow, so both stand out on the Petrel-colour
 
 - Time slices cut across dipping strata. Label any time-slice pattern as mixed-level unless the strata are flat.
 - Never describe what a figure "shows". Describe the measurements behind it.
+
+<!-- end of skill: seismic-visualisation -->

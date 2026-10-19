@@ -37,3 +37,5 @@ A lithostratigraphic correlation (the operator's tops joined as surfaces) tested
 - `[measurement, derived]`: "DTW W1-W3 (GR, anchored on LO Globotruncana and LO Nannoconus): cost 0.05, best quarter of rigid shifts (C6 pass)", `prov:` id.
 - `[interpretation, derived]`: "FS2 correlates to 1280.0 m TVDSS (1320.7 m MD) in W3, rank 2; panel chrono-v1: C1 pass, C2 pass, C3 not tested, C4 pass, C5 not tested, C6 pass, C7 not tested", product `correlated_tops`.
 - `[hypothesis]`: the alternative, with its failing test.
+
+<!-- end of skill: strat-log-correlation -->

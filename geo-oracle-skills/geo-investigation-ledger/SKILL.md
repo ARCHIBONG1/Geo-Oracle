@@ -132,3 +132,5 @@ At the end of a turn, or when stopping, make sure *Next steps* contains:
 - anything waiting on the user.
 
 Then give the user a short summary drawn from the ledger.
+
+<!-- end of skill: geo-investigation-ledger -->

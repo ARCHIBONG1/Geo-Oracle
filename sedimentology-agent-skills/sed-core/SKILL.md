@@ -95,3 +95,5 @@ demonstration that the implementation is correct.
 3. Every model with its ledger; the alternative built and tested where possible.
 4. Core depths shifted to log depth before any comparison; the depth reference stated.
 5. Image readings flagged; analogues tagged; products as `Product:` lines; figures as `Figure:` lines.
+
+<!-- end of skill: sed-core -->

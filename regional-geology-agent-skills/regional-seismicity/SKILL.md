@@ -26,3 +26,5 @@ description: Earthquake catalogue summaries, magnitude of completeness, b-values
 
 - `[regional] 6,727 events M>=1.5 within 300 km (1970-2026); Mc 2.5; b 0.99 +/- 0.01; largest M 4.8 at 120 km` as measurements with `prov:` ids and the catalogue name and snapshot version.
 - Limitations: catalogue window and bounds, network changes, depth artefacts.
+
+<!-- end of skill: regional-seismicity -->

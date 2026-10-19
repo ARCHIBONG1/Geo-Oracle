@@ -154,3 +154,5 @@ Register every interpretation parameter before it is used, one set per zone or c
 
 - **Formats**: a loaded well as LAS or CSV (MD, plus TVDSS when a trajectory exists, and the chosen curves).
 - **Delivery**: give the user `download_url` in `conclusions` as `Download: <file> — <url>`.
+
+<!-- end of skill: petro-data-qc -->

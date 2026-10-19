@@ -34,3 +34,5 @@ Whenever the features admit two environments, run `sed_diagnostic_check` for bot
 ## Reporting
 
 The environment as `[interpretation]` with the ledger and rung in the statement; the product `depositional_model` with its tests, rung, status and `depends_on`; the alternative as `[hypothesis]`.
+
+<!-- end of skill: sed-depositional-systems -->

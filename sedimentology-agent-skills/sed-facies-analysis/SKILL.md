@@ -25,3 +25,5 @@ description: Facies transitions, the embedded Markov test, Walther's law and the
 ## Reporting
 
 Counts, chi-square and above-random links as `[measurement, derived]`; the association and its succession as `[interpretation]` at the association rung.
+
+<!-- end of skill: sed-facies-analysis -->

@@ -29,3 +29,5 @@ Volumes are reported per scenario. Combining them into one distribution needs we
 ## Reporting
 
 Scenarios are `hypotheses` with `source_type` derived. The `scenario_set` product carries them with their bases and discriminating evidence.
+
+<!-- end of skill: prospect-scenarios -->

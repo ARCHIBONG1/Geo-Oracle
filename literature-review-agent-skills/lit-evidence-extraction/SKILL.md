@@ -125,3 +125,5 @@ Return the most material findings: typically 15–30 evidence items and 5–10 c
 | `insufficient_data` | The literature is too thin to answer the main question |
 | `cannot_determine` | The sources conflict and cannot be discriminated |
 | `requires_clarification` | The request is ambiguous, e.g. two basins share the name, and you could not resolve it |
+
+<!-- end of skill: lit-evidence-extraction -->

@@ -20,7 +20,7 @@ To say which uncertainties change a conclusion, what would reduce them, and who 
 | Shared once | `ru_merge` links one entry to every objective it affects |
 | Contradictions open | both sides and a resolution path; a side is picked only by a cited result |
 | Actions with owners, neutral framing | `ru_reduction_plan` refuses "confirm", "prove", "verify that", and the `initial` mode |
-| Every attempt reported | `ru_attempt_outcomes` reruns the same tests and reports settled, narrowed, unchanged or newly material |
+| Every attempt reported | `ru_attempt_outcomes` reruns the same tests and reports settled, settled as a failure, narrowed, unchanged or newly material |
 
 Counts are counts. "0 of 10 realizations cross" is a fact about the structural specialist's perturbations, not a frequency of nature, and it is never written as a percentage.
 
@@ -42,6 +42,7 @@ Each entry is epistemic unless marked aleatory with a reason (natural variabilit
 | Class | Meaning |
 |---|---|
 | material | a flip test changed a categorical conclusion (play status or capping element, maturity, a threshold straddled) |
+| settled_failure | every case lies on the failing side of a threshold: the conclusion is decided against, so narrowing the range cannot change it; only the threshold's source or the basis of the inputs can (Rose 2001, p. 34: one failing factor fails the prospect; information has value only if it can change the decision) |
 | contributing | a range or an intermediate value changed; no categorical conclusion did |
 | immaterial | tested; nothing changed |
 | undetermined | not tested, with the reason |
@@ -54,7 +55,7 @@ U1 coverage against the ledger; U2 every entry with a source and an owner; U3 ev
 
 - Entry: `U-<n> | <type>, <nature>, <scope> | <materiality>: <text>`
 - Materiality claim: `<entry> is material to <conclusion>` with `depends_on_claim_ids`
-- Attempt: `<entry>: tried <what> (<owner>, <mode>) because <why>; outcome <settled|narrowed|unchanged|newly material>`
+- Attempt: `<entry>: tried <what> (<owner>, <mode>) because <why>; outcome <settled|settled as a failure|narrowed|unchanged|newly material>`
 
 ## 7. Products
 
@@ -106,3 +107,5 @@ demonstration that the implementation is correct.
 3. No new geology; every request addressed to its owner with a mode and a neutral framing.
 4. Every shared entry once; every contradiction with both sides.
 5. In follow-up: every attempt reported, succeeded or not.
+
+<!-- end of skill: risk-core -->
