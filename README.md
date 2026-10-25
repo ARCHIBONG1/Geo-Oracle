@@ -1,6 +1,6 @@
 # Skills: the agents' operating procedures
 
-This folder holds 90 skills in 11 packs, one pack per agent. A skill is a
+This folder holds 92 skills in 11 packs, one pack per agent. A skill is a
 Markdown document that an agent reads during a task. It says what to do and in
 what order, which tool to use, what may not be assumed, and in what form to
 report. Nothing here executes.
@@ -227,7 +227,7 @@ no longer structured evidence. The core skills and the reply models in
 
 ## The packs
 
-### `geo-oracle-skills` (8): the orchestrator
+### `geo-oracle-skills` (9): the orchestrator
 
 The specialist packs govern doing geology; this pack governs running an
 investigation, and each skill corresponds to gateway machinery rather than to a
@@ -238,16 +238,17 @@ compute tool.
 | `geo-investigation-planning` | turning an objective into testable questions, tasks and a dependency graph; waves of tasks started one call at a time; the time budget; the risk gate and the reduction loop, including settled failures |
 | `geo-evidence-inventory` | characterising the available evidence and packaging it for specialists |
 | `geo-specialist-tasking` | the brief for each specialist tool and the job tools, field by field, with common mistakes; starting several specialists one call at a time |
-| `geo-result-review` | the checklist for judging a specialist result before relying on it |
+| `geo-result-review` | the checklist for judging a specialist result before relying on it, including evidence the id check set aside and `record.set_aside` |
 | `geo-investigation-ledger` | the format of `investigation/ledger.md`, the running record the synthesis is written from |
 | `geo-play-prospect-evaluation` | the gates before the play, prospect and risk stages; the five domains' elements; the element status scale; the maturity ladder; materiality classes in place of a chance of success |
 | `geo-synthesis-audit` | the structure and citation rules of a synthesis, and its scientific audit |
+| `geo-investigation-report` | the close (the ledger's Final status block, the ledger as a download, one closing sentence that offers the report, no question); on the person's request, `request_report`, the review of the draft with `report_draft`, three rounds at most, and the delivery |
 | `geo-human-on-the-loop` | the supervision question, the objective and deliverables recorded at activation (one result per deliverable), the checkpoint, accept, refuse and edit, partial deliveries, changing mode mid-investigation, and the work gate |
 
 `geo-human-on-the-loop` is the counterpart of `hotl.py`: the gateway enforces the
 gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 
-### `literature-review-agent-skills` (7)
+### `literature-review-agent-skills` (8)
 
 | Skill | Covers |
 | --- | --- |
@@ -257,13 +258,14 @@ gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 | `lit-source-verification` | resolving works to DOIs or OpenAlex identifiers; verifying every citation |
 | `lit-evidence-extraction` | mapping extracted evidence onto the findings structure |
 | `lit-geoscience-question-bank` | question sets and evidence checklists for decomposing a request |
-| `lit-synthesis-report` | synthesis across sources, conflicting literature, careful language for consensus |
+| `lit-synthesis-report` | synthesis across sources, conflicting literature, careful language for consensus; methods statements for the investigation report |
+| `lit-investigation-report` | writing the formal investigation report from the frozen bundle (`lit_read_bundle`): the draft JSON, hidden ledger tags and citation markers, the section contents, the narrow rule for conclusions (restate, never raise, lower or add), ASD-STE100, rendering with `lit_render_report`, and revisions |
 
 ### `regional-geology-agent-skills` (9)
 
 | Skill | Covers |
 | --- | --- |
-| `regional-core` | the task procedure, scope tags, the transfer checklist, the memo |
+| `regional-core` | the task procedure, scope tags, the transfer checklist, the memo; methods statements for the investigation report |
 | `regional-data` | areas of interest, the reference-data catalogue, supplied GIS files, grid sampling |
 | `regional-stratigraphy` | time-scale discipline, chronostratigraphic charts, hiatuses and overlaps |
 | `regional-structure-stress` | fault trends, the orientation of maximum horizontal stress, stress regime, domain boundaries |
@@ -277,7 +279,7 @@ gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 
 | Skill | Covers |
 | --- | --- |
-| `seismic-core` | the operating procedure and the findings contract |
+| `seismic-core` | the operating procedure and the findings contract; methods statements for the investigation report |
 | `seismic-data-qc` | uploads, SEG-Y header scanning, ingest decisions, resolution |
 | `seismic-attributes` | choosing, setting up, running and reading the attribute tools |
 | `seismic-structural` | horizon tracking with seeds guided by the synthetic, faults and throw, structure and isochron maps, closure and spill |
@@ -290,7 +292,7 @@ gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 
 | Skill | Covers |
 | --- | --- |
-| `petro-core` | the task procedure, analysis mode, domain emphasis |
+| `petro-core` | the task procedure, analysis mode, domain emphasis; methods statements for the investigation report |
 | `petro-data-qc` | imports, LAS and CSV loading, mnemonics, units and their conflicts, headers |
 | `petro-shale-volume` | choosing a shale-volume method and endpoints; comparing at least two methods |
 | `petro-porosity` | density, neutron-density and sonic porosity by lithology, fluid and hole condition |
@@ -308,7 +310,7 @@ gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 
 | Skill | Covers |
 | --- | --- |
-| `structural-core` | the task procedure, the rule against inventing structure, the validity record |
+| `structural-core` | the task procedure, the rule against inventing structure, the validity record; methods statements for the investigation report |
 | `structural-data-qc` | other agents' products and sidecars: domain, pick uncertainty, scope, validity |
 | `structural-geometry` | orientation statistics, mean planes and sets, fold axes by the pi method |
 | `structural-displacement` | throw profiles, displacement against length, growth by expansion index |
@@ -321,7 +323,7 @@ gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 
 | Skill | Covers |
 | --- | --- |
-| `strat-core` | the two ledgers, the order of preference for tie points, the consistency record |
+| `strat-core` | the two ledgers, the order of preference for tie points, the consistency record; methods statements for the investigation report |
 | `strat-data-qc` | correlation logs and well tops, sidecars, the depth rule for deviated wells |
 | `strat-log-correlation` | ranking tie points, dynamic time warping constrained to anchors |
 | `strat-sequence` | stacking patterns from gamma ray, candidate maximum flooding and maximum regressive surfaces |
@@ -334,7 +336,7 @@ gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 
 | Skill | Covers |
 | --- | --- |
-| `sed-core` | the interpretation ladder; diagnostic evidence before suggestive |
+| `sed-core` | the interpretation ladder; diagnostic evidence before suggestive; methods statements for the investigation report |
 | `sed-core-description` | the fixed vocabulary: Wentworth classes, structure and contact codes, bioturbation index |
 | `sed-data-qc` | registering descriptions, analyses, analogue tables and photo indexes; the depth rule |
 | `sed-facies-analysis` | transitions, the embedded Markov test, Walther's law, excluding key surfaces |
@@ -346,7 +348,7 @@ gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 
 | Skill | Covers |
 | --- | --- |
-| `play-core` | the ordinal status scale, including disfavoured for evidence against (a tie of grades stays disfavoured, and the evidence on the other side is listed as conflicting evidence, also after a lift); the scope rule; the weakest link; dependencies |
+| `play-core` | the ordinal status scale, including disfavoured for evidence against (a tie of grades stays disfavoured, and the evidence on the other side is listed as conflicting evidence, also after a lift); the scope rule; the weakest link; dependencies; methods statements for the investigation report |
 | `play-data-qc` | other agents' products and claims, their ledgers, scope and transfer |
 | `play-petroleum-systems` | hydrocarbon elements and processes, the events chart, the critical moment as stated by the investigator |
 | `play-co2-storage` | CO2 storage elements with containment kept separate; the pressure limit; trapping through time |
@@ -359,7 +361,7 @@ gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 
 | Skill | Covers |
 | --- | --- |
-| `prospect-core` | the maturity ladder, readiness tests R1 to R7, the refusal rules |
+| `prospect-core` | the maturity ladder, readiness tests R1 to R7, the refusal rules; methods statements for the investigation report |
 | `prospect-data-qc` | closures, play matrices, ledgers and companion tables; registering constraints |
 | `prospect-definition` | closures into candidates, what each readiness failure means, the maturation plan |
 | `prospect-scenarios` | trap, fill and contact alternatives, and what would separate them |
@@ -371,7 +373,7 @@ gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 
 | Skill | Covers |
 | --- | --- |
-| `risk-core` | no scores; materiality by flip test, carrying the test's provenance identifier; no new geology |
+| `risk-core` | no scores; materiality by flip test, carrying the test's provenance identifier; no new geology; methods statements for the investigation report |
 | `risk-data-qc` | importing Geo Oracle's ledger and reading it as data; product sidecars |
 | `risk-register` | collecting every uncertainty from the ledger, findings and sidecars, and typing it |
 | `risk-materiality` | the four flip tests (play status, maturity, threshold straddle, scenario comparison) and the classes they give, including a settled failure |

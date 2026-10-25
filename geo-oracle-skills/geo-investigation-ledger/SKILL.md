@@ -18,6 +18,7 @@ Long investigations outgrow the context window. Compaction summarises away ids a
 - **Figures.** Record every figure a specialist returns (its `figures` entries, or its `Figure:` conclusion lines) with the claims it supports. URLs do not survive compaction otherwise, and the final answer places figures by these rows.
 - **Size.** Keep it compact: one-line statements, referenced by id. Do not paste specialist output; the gateway can re-fetch any result by `job_id`.
 - **History.** Mark items as superseded; do not delete them. The history is part of the audit trail.
+- **The close.** At the close, add the *Final status* block at the end (format in skill `geo-investigation-report`), save, and give the ledger as a download. After that the ledger is frozen: the formal report prints it unchanged as its appendix, with its hash. Edit it again only when the person asks for more work and the investigation opens again.
 - **Resuming.** When resuming after a new turn or compaction:
   1. Read the ledger.
   2. For any task marked `running`, call `get_specialist_result(job_id)`.

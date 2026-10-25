@@ -112,4 +112,13 @@ demonstration that the implementation is correct.
 5. Alternatives stated where the data permit.
 6. Products as `Product: …` lines; figures as `Figure: …` lines.
 
+## Methods statements
+
+Every result that ran a computation carries `methods_statements`: one entry for each method, or group of methods used together. The `text` goes into the investigation report as you write it, so write it for the reader of a field report:
+- 1 to 3 sentences, one fact each, at most 25 words each, active voice;
+- what you did, to which data, the key choices and parameter values, any deviation from the published method, and any limitation that affected this result;
+- no ids and no textbook account of the method: copy the method ids and provenance ids from your tool results into `method_ids` and `provenance_ids`.
+
+The gateway checks every id against the stored computations and sets aside a statement whose ids do not resolve.
+
 <!-- end of skill: structural-core -->

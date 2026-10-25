@@ -38,7 +38,7 @@ Every well in the play area: success (what it demonstrates), failure on a named 
 |---|---|---|
 | PT1 | every critical element has a status (unknown allowed, named) | `play_tests` |
 | PT2 | no element demonstrated on regional or analogue evidence | the matrix's refusals |
-| PT3 | no dependency flag, or each explained | the matrix's flags |
+| PT3 | no dependency flag: clear a flag by revising the matrix (lower the element or support its prerequisite); an explained flag keeps the play below supported | the matrix's flags |
 | PT4 | trap and seal before charge; containment through time; heat and recharge sustained | `play_events_chart`, `play_timing_check` |
 | PT5 | every well explained | `play_classify_outcomes` |
 | PT6 | no post-charge uplift, breach or cool exposure (phase 1 tool; your reasoned judgement with cited evidence meanwhile) | `preservation` |
@@ -104,5 +104,14 @@ demonstration that the implementation is correct.
 3. No probability, percentage or score anywhere near an element or a play.
 4. Every play with its PT1-PT7; the alternative concept assessed where named.
 5. Products as `Product:` lines; figures as `Figure:` lines.
+
+## Methods statements
+
+Every result that ran a computation carries `methods_statements`: one entry for each method, or group of methods used together. The `text` goes into the investigation report as you write it, so write it for the reader of a field report:
+- 1 to 3 sentences, one fact each, at most 25 words each, active voice;
+- what you did, to which data, the key choices and parameter values, any deviation from the published method, and any limitation that affected this result;
+- no ids and no textbook account of the method: copy the method ids and provenance ids from your tool results into `method_ids` and `provenance_ids`.
+
+The gateway checks every id against the stored computations and sets aside a statement whose ids do not resolve.
 
 <!-- end of skill: play-core -->

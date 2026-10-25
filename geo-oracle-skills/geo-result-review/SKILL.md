@@ -19,6 +19,8 @@ A specialist result is evidence to be evaluated, not a verdict. Detail, fluency 
   - "Unresolved … reference" means a claim cites evidence that does not exist in the result, so treat that link as unsupported.
   - "Unrecognised keys" means some content is only in the raw reply.
   - `Process audit:` lines are the gateway's own reading of the specialist's run. Address each before accepting (section 3a); the next wave is refused until the checkpoint says what you did about every one.
+  - `Id check:` lines name an evidence item or methods statement whose provenance or method id does not resolve to a stored computation. The item is set aside: do not rely on it. Ask the specialist to correct it in a follow-up of the same task. A checkpoint that approves no further work is refused while any stays uncorrected; one you will not rely on goes in the record as `set_aside: [{evidence_id, reason}]`.
+  - A methods statement that writes ids in its text, or states numbers the cited computations do not hold, is flagged only: check it against the tool results, and ask for a correction when it is wrong. Methods statements go into the investigation report.
 - **`omitted`**: fetch the trimmed sections you need before judging the result. Do not judge from a partial digest. `referenced_items` carries the statement of every item an included claim cites from an omitted section: such a reference is not unresolved, and is never the subject of a follow-up task.
 
 ## 2. What was actually established?
@@ -161,6 +163,7 @@ Update the ledger:
 - the task's disposition, and the method and process checks done (section 3a) with what you did about each process-audit flag;
 - the claims you now rely on, with classes, sources, independent lines and status;
 - for each, the `prov:` and `m:` tokens from the specialist's `source_reference`, copied exactly. A result whose `source_reference` carries no `m:` id is one the specialist did not attribute to a method; note it as such rather than inferring one;
+- any item the id check set aside, and whether it was corrected or declared not relied on;
 - new contradictions and uncertainties;
 - anything that must be re-checked downstream.
 
