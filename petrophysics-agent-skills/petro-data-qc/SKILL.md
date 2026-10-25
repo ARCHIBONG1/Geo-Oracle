@@ -1,6 +1,6 @@
 ---
 name: petro-data-qc
-description: Getting well data in and checking it - importing uploads, loading LAS/CSV logs (mnemonics, units, unit conflicts, header facts, datums), registering tables (tops, deviation survey, checkshots, core, pressures, water analyses, temperatures), trajectories and TVDSS, log QC, reading interval descriptions, zones from tops, registering parameters with sources, and figures. Load before loading or quality-controlling any well data.
+description: Getting well data in and checking it. It covers importing uploads, loading LAS/CSV logs (mnemonics, units, unit conflicts, header facts, datums) and registering tables (tops, deviation survey, checkshots, core, pressures, water analyses, temperatures). It also covers trajectories and TVDSS, log QC, reading interval descriptions, zones from tops, registering parameters with sources, and figures. Load before loading or quality-controlling any well data.
 ---
 
 # Well data and quality control
@@ -13,16 +13,16 @@ description: Getting well data in and checking it - importing uploads, loading L
 | Uploaded in your chat (you see it under `/opt/tf/uploads/`) | `petro_import_upload(sandbox_path="/opt/tf/uploads/W1.las")` |
 | Uploaded in Geo Oracle's chat (the task says so) | `petro_import_upload(sandbox_path=..., source_agent="geo-oracle")` |
 
-The import returns a path such as `uploads/W1.las`; use it from then on. If the import is refused because the file is not in any recent sandbox, ask for the file to be uploaded again or copied into `operations/inputs`, via `missing_data`.
+The import returns a path such as `uploads/W1.las`. Use it from then on. The import refuses a file that is not in any recent sandbox. Then ask, via `missing_data`, for the file to be uploaded again or copied into `operations/inputs`.
 
 ## 2. Loading logs: `petro_load_well`
 
-For several wells at once, `petro_prepare_wells` loads, locates (a survey, a track, or `vertical: true` where the task says so) and publishes `correlation_logs` and `well_tops` in one call. Use it first for any multi-well task, then QC each well as below.
+`petro_prepare_wells` handles several wells in one call: it loads and locates them, and publishes `correlation_logs` and `well_tops`. It locates each well by a survey, a track, or `vertical: true` where the task says so. Use it first for any multi-well task, then QC each well as below.
 
-It loads LAS 2.0/3.0 or CSV logs. DLIS is not supported; ask for LAS.
+The loader reads LAS 2.0/3.0 or CSV logs. It does not support DLIS: ask for LAS.
 
 **What it does:**
-- **Depth**: converted to metres MD (feet are detected from the header). The index must be MD; a file indexed in TVD or TVDSS is refused.
+- **Depth**: converted to metres MD (the loader detects feet from the header). The index must be MD. The loader refuses a file indexed in TVD or TVDSS.
 - **Mnemonics**: mapped to canonical curves, first match in priority order. Other curves are kept under their own names.
 
   | Canonical | Common source mnemonics |
@@ -42,10 +42,10 @@ It loads LAS 2.0/3.0 or CSV logs. DLIS is not supported; ask for LAS.
   | BS | BS, BIT (or bit size from the header) |
   | SP | SP |
 
-- **Units**: normalised to API, mV, in, g/cm3, v/v, b/e, us/ft and ohm.m (e.g. neutron in percent to v/v, density in kg/m3 to g/cm3, slowness in us/m to us/ft).
-- **Repeated mnemonics**: when a file lists a curve twice (e.g. two `DEPTH` curves), the loader recognises the base name, drops a repeat of the depth index, and says so in `warnings`.
-- **Neutron scale**: limestone-scale neutron (`NPHI`, `TNPH`, `NPHILS`) is preferred. If only a sandstone-scale neutron (`NPHISS`) exists, it becomes NPHI with a warning: set `nphi_ma` for that scale (0 for quartz), and read crossover displays, which are drawn on the limestone scale, with care.
-- **Unit conflicts are refused, never guessed.** If a header unit disagrees with the data, e.g. density labelled g/cm3 but reading 2300, nothing loads and the message names the curve. Pass `unit_overrides={"RHOB": "kg/m3"}` only with evidence (the report, the task, a vendor convention stated in the file). Record the override in `assumptions`.
+- **Units**: normalised to API, mV, in, g/cm3, v/v, b/e, us/ft and ohm.m. For example: neutron in percent to v/v, density in kg/m3 to g/cm3, slowness in us/m to us/ft.
+- **Repeated mnemonics**: if a file lists a curve twice (for example two `DEPTH` curves), the loader recognises the base name. It drops a repeat of the depth index, and says so in `warnings`.
+- **Neutron scale**: limestone-scale neutron (`NPHI`, `TNPH`, `NPHILS`) is preferred. If only a sandstone-scale neutron (`NPHISS`) exists, it becomes NPHI with a warning. Then set `nphi_ma` for that scale (0 for quartz). Read crossover displays with care, because they are drawn on the limestone scale.
+- **Unit conflicts are refused, never guessed.** If a header unit disagrees with the data (for example, density labelled g/cm3 but reading 2300), nothing loads, and the message names the curve. Pass `unit_overrides={"RHOB": "kg/m3"}` only with evidence (the report, the task, a vendor convention stated in the file). Record the override in `assumptions`.
 - **A curve with no unit** is read in its canonical unit only if its values are plausible. A unitless neutron with values above 1 is read as percent. Each such reading is reported in `warnings`: carry those into `limitations`.
 - **Header facts kept**: well name, UWI, datum (from `LMF`) and elevations (`EKB`, `EDF`, `EGL`, converted to m), X/Y and CRS, mud type, Rm, Rmf and Rmc with their temperatures, BHT, bit size.
 
@@ -62,7 +62,7 @@ It loads LAS 2.0/3.0 or CSV logs. DLIS is not supported; ask for LAS.
 
 ## 3. Tables: `petro_register_table`
 
-Give a CSV file path, or `csv_text` for small tables from the task. Column names carry units; other units are converted.
+Give a CSV file path, or `csv_text` for small tables from the task. Column names carry units. The tool converts other units.
 
 | kind | Required columns | Optional |
 |---|---|---|
@@ -78,21 +78,21 @@ Give a CSV file path, or `csv_text` for small tables from the task. Column names
 | scal_resistivity_index | sw, ri | sample, well |
 | capillary_pressure | sample, porosity (or porosity_pct), permeability_md, pc_psi (or pc_bar, pc_kpa), sw | system, well |
 
-- **Layout**: comma, tab, semicolon or whitespace delimiters are detected, and lines starting with `#` are comments.
-- **Vendor column names**: map them with `columns`, where the unit in the canonical name drives the conversion, e.g. `{"MD (ft)": "md_ft", "TVDSS (ft)": "tvdss_ft"}`. Report the mapping in `assumptions`.
-  - **Times must be in milliseconds**: `twt_ms` (two-way) or `owt_ms` (one-way, doubled on registration). A mapping cannot convert seconds: ask for milliseconds (the OpendTect converter already writes them).
-- **Refusals**: malformed tables are refused (a non-increasing survey, core porosity above 0.6, which is probably percent).
+- **Layout**: the tool detects comma, tab, semicolon or whitespace delimiters. Lines that start with `#` are comments.
+- **Vendor column names**: map them with `columns`. The unit in the canonical name drives the conversion, for example `{"MD (ft)": "md_ft", "TVDSS (ft)": "tvdss_ft"}`. Report the mapping in `assumptions`.
+  - **Times must be in milliseconds**: `twt_ms` (two-way) or `owt_ms` (one-way, doubled on registration). A mapping cannot convert seconds: ask for milliseconds.
+- **Refusals**: the tool refuses malformed tables (a non-increasing survey, core porosity above 0.6, which is probably percent).
 - **Multi-well tables**: tools use only the rows whose `well` matches the loaded well's name. If names differ ("W-1" versus "W1"), reload the well with `well_name` set to match.
 
 ## 4. Trajectory and TVDSS: `petro_trajectory`
 
 - **With a track** (`track`, a registered `well_track` table: MD with TVDSS or TVD, optional X/Y, as most interpretation software exports):
   - TVDSS and X/Y are interpolated along the track.
-  - If the track gives TVDSS and its first leg is vertical, the datum elevation is **derived** from the data (MD - TVDSS at the top point) and reported. Otherwise supply it.
+  - If the track gives TVDSS and its first leg is vertical, the tool **derives** the datum elevation from the data (MD - TVDSS at the top point). The result gives it. Otherwise supply it.
   - If the header's datum elevation disagrees with the track's, the tool warns: report the disagreement.
-- **With a survey**: pass the registered `deviation_survey` table. The tool uses minimum curvature, following each leg's arc between stations. A survey that starts below the datum gets a vertical segment above its first station (warned). A log below the last station is extended along the last leg (warned; report it).
+- **With a survey**: pass the registered `deviation_survey` table. The tool uses minimum curvature, and follows each leg's arc between stations. If a survey starts below the datum, the tool adds a vertical segment above its first station (warned). If a log runs below the last station, the tool extends it along the last leg (warned; report it).
 - **Without a survey**: use `vertical: true` only when the task or data say the well is vertical. Otherwise list the survey in `missing_data`.
-- **TVDSS** = TVD - datum elevation: metres below mean sea level, positive down. With no datum elevation the tool refuses: supply it or report it missing. It is never assumed.
+- **TVDSS** = TVD - datum elevation: metres below mean sea level, positive down. If there is no datum elevation, the tool refuses: supply it or report it missing. It is never assumed.
 - **The result is a new well file**, with a trajectory. Use its path for all later tools.
 
 ## 5. Log QC: `petro_qc_logs`
@@ -116,18 +116,18 @@ Call it per zone (`zone` + `tops`) or per MD range. It returns statistics (10th,
 - **`neutron_above_density`**: wide separation (shale, bound water).
 - **`resistivity_separation`**: deep/shallow ratio beyond 1.5 in either direction.
 - **`high_resistivity`**: more than 5 times the interval's 25th percentile.
-- **`gamma_ray`**: cleanest and shaliest intervals, *relative to this interval*: these are not clean and shale lines.
+- **`gamma_ray`**: cleanest and shaliest intervals, *relative to this interval*. These are not clean and shale lines.
 
 Features are observations. Their meaning is an interpretation with alternatives (see `petro-core`, section 5).
 
 ## 7. Zones: `petro_zones`
 
 - **Tops**: zones run from each supplied top to the next (tops in MD, or in TVDSS with a trajectory). With a trajectory, zones get TVDSS and true vertical thickness.
-- **Tops with no log step** (gamma ray, else density, within ±2 m) are flagged `TOP_WITHOUT_LOG_EXPRESSION`. Report the flag as a contradiction or limitation, citing the top's source. Never move a top: tops belong to stratigraphy.
+- **Tops with no log step** (gamma ray, else density, within ±2 m): the tool flags them `TOP_WITHOUT_LOG_EXPRESSION`. Report the flag as a contradiction or limitation, and cite the top's source. Never move a top: tops belong to stratigraphy.
 
 ## 8. Parameters: `petro_parameters`
 
-Register every interpretation parameter before it is used, one set per zone or case:
+Register every interpretation parameter before you use it, one set per zone or case:
 
 ```json
 {"name": "SAND_B base case", "parameters": {
@@ -139,16 +139,20 @@ Register every interpretation parameter before it is used, one set per zone or c
 
 - **Sources**: core, scal, water_sample, log_crossplot, log_sp, log_percentile, pressure_data, test, analogue, regional, task, assumption.
 - **Parameter names** also include `nphi_ma`, `rmf`, `rmf_temp_c`, `ssp_mv`, `qv`, `m_star`, `n_star`, `rwb`, `nd_gas_tolerance`, `sonic_c`, `pef_sh`, `overburden_porosity_factor`, `overburden_perm_factor`, `swirr`, `sigma_cos_lab`, `sigma_cos_res`, `brine_density`, `fwl_tvdss_m`, `srd_elevation_m`, `source_offset_m`, `salinity_ppm`, `oil_api`, `gor_l_per_l`, `gas_gravity`, `reservoir_pressure_mpa`, `reservoir_temp_c` and `circulation_hours` (see the property, rock and physics skills for when each is needed).
-- **What is refused**: a value with no source, or outside physical ranges. Every assumption is returned in `assumed`, with a request for `low`/`high` if missing.
-- **Report the set** in `assumptions`, citing its provenance id. Rw is never a textbook default: without a sample, SP-derived value or proven water zone, it goes to `missing_data`.
+- **What is refused**: a value with no source, or a value outside physical ranges. The result lists every assumption in `assumed`, and asks for `low`/`high` where they are missing.
+- **Report the set** in `assumptions`, and cite its provenance id. Rw is never a textbook default. Without a sample, an SP-derived value or a proven water zone, put Rw in `missing_data`.
 
 ## 9. Figures: `petro_render`
 
 - **Kinds**:
   - `composite`: gamma ray and caliper against bit size, resistivity (log scale), density-neutron with crossover shaded, sonic/PEF, tops, MD with TVDSS;
-  - `nd_crossplot`: neutron against density with sandstone, limestone and dolomite lines, coloured by gamma ray.
+  - `nd_crossplot`: neutron against density with sandstone, limestone and dolomite lines, coloured by gamma ray;
+  - `pickett` and `poro_perm`: see `petro-saturation` and `petro-permeability`;
+  - `pressure_depth`: pressures, fitted gradients, contacts and hydrostatic from a `pressure_profile` product (see `petro-pressure-temperature`).
+- **Tools that draw their own figure** return it in `result.figures`: `petro_porosity`, `petro_saturation`, `petro_net_pay`, `petro_rw` (pickett), `petro_permeability` (core_transform) and `petro_pressure`.
 - **You cannot see the image.** Read numbers from the describe tools.
-- **When the user wants to see logs**, put `result.markdown` at the top of your final message (it shows inline), with a one-line caption. Always also list it in `conclusions` as `Figure: <caption> — <url>`.
+- **Publish a composite log of each well a claim rests on**, and at least of the most representative well. A user request can add figures (other wells, intervals, crossplots). It is never the condition for the standard ones.
+- **For each figure**, put its `markdown` line and a one-line caption at the top of your final message. The chat shows it inline. Also add it to `figures` and list it in `conclusions` as `Figure: <caption> — <url> — supports <claim ids>`.
 
 ## 10. Exports: `petro_export`
 

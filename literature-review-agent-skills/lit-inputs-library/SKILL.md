@@ -1,29 +1,29 @@
 ---
 name: lit-inputs-library
-description: How the literature review specialist serves as librarian of the shared inputs folder - complete listings, confirming what files contain, reading and searching documents with page citations, previewing tables, importing chat uploads, and routing each file to the specialist that opens it. Load before any lit_* tool.
+description: How the literature review specialist serves as librarian of the shared inputs folder. It covers complete listings and how to confirm what files contain. It also covers how to read and search documents with page citations, and how to preview tables. Then it covers how to import chat uploads, and how to route each file to the specialist that opens it. Load before any lit_* tool.
 ---
 
 # The shared inputs folder
 
 ## Who can do what
 
-The routing tables in this skill refer to specialists by their gateway tool names (seismic_interpretation, wells_petrophysics); Geo Oracle uses the same names.
+The routing tables in this skill refer to specialists by their gateway tool names (seismic_interpretation, wells_petrophysics). Geo Oracle uses the same names.
 
 | Agent | In `operations/inputs` it can |
 |---|---|
-| Geo Oracle | nothing: it asks you |
+| Geo Oracle | list file names, types and sizes (`list_shared_inputs`); it opens nothing |
 | seismic_interpretation | read SEG-Y, arrays and tables it is given by path; list SEG-Y and arrays |
 | wells_petrophysics | read LAS and CSV well data it is given by path; list LAS/CSV |
-| **you** | list **everything**; read documents; preview tables |
+| **you** | list everything, with your chat uploads; read documents; preview tables |
 
-So your listing is the only complete view of the folder anyone has. Be exact: paths as listed, nothing inferred from names.
+Only you can confirm what a file contains. Be exact: give paths as listed, and infer nothing from names.
 
 ## Listing: `lit_list_inputs`
 
-- **Scope**: the whole folder by default. Use `subfolder` (e.g. `wells`) or `types` (`document`, `table`, `seismic`, `well logs`, `array`, `image`, `spreadsheet`, `archive`, `other`) for narrow questions.
+- **Scope**: the whole folder by default. For narrow questions, use `subfolder` (e.g. `wells`) or `types` (`document`, `table`, `seismic`, `well logs`, `array`, `image`, `spreadsheet`, `archive`, `other`).
 - **What each file gets**: `path`, `type`, `size_mb`, `modified` and `opened_by`.
 - **Totals** per type and subfolder cover everything, even when `truncated` is true.
-- **Hidden files are skipped.** Your own chat uploads appear under `chat_uploads`.
+- **The listing skips hidden files.** Your own chat uploads appear under `chat_uploads`.
 
 **Routing by `opened_by`:**
 
@@ -42,19 +42,19 @@ So your listing is the only complete view of the folder anyone has. Be exact: pa
 ## Reading: `lit_read_document`
 
 - **Pages**: `first_page`/`last_page` select pages, and `max_chars` caps a call; continue from `next_page`.
-- **Page numbers**: PDF pages are real pages. Word, text, Markdown and HTML have no pages, so the tool uses fixed-length pages: cite them as "page n of the tool's paging".
+- **Page numbers**: PDF pages are real pages. Word, text, Markdown and HTML have no pages. For them, the tool uses fixed-length pages. Cite them as "page n of the tool's paging".
 - **Metadata** (title, author) comes with the first read.
 - **Empty text** means a scanned document without a text layer. Say so: OCR is not available.
 
 ## Searching: `lit_search_documents`
 
-- **Modes**: `all_words` finds pages holding every word; `mode: "phrase"` finds an exact phrase.
-- **Hits** give the document, the page and a short snippet. Read the page before relying on it: a snippet is context, not proof.
+- **Modes**: `all_words` finds pages that hold every word. `mode: "phrase"` finds an exact phrase.
+- **Hits** give the document, the page and a short snippet. Read the page before you rely on it: a snippet is context, not proof.
 - **Scope**: search everything first, then read the hits.
 
 ## Tables: `lit_preview_table`
 
-Columns, row count and first rows. It is enough to describe a table and route it, never to analyse it. The specialist the table concerns registers and validates it.
+The tool shows the columns, the row count and the first rows. That is enough to describe a table and route it, but never to analyse it. The specialist that the table concerns registers and validates it.
 
 ## Uploads: `lit_import_upload`
 
@@ -64,14 +64,14 @@ Columns, row count and first rows. It is enough to describe a table and route it
 
 ## Retrieved documents: `lit_fetch_document`
 
-- Give the open-access URL (from OpenAlex's `best_oa_location`, Unpaywall, a repository, or a survey's own site) and a label (author, year, venue). The file lands in `retrieved/` with a sidecar: URL, final URL, date, content type, checksum.
-- **A landing page is not the paper**: the tool refuses a URL that returns HTML when a PDF was expected; find the PDF link. HTML pages are fetched as text when that is what you want (a survey web page, a report in HTML).
-- Then `lit_read_document(path='retrieved/…')` and `lit_search_documents(paths=[…])` as for any document. `lit_list_inputs` lists what you have retrieved.
-- Paywalled content is never fetched or bypassed; report it as a limitation with the citation.
+- Give the open-access URL and a label (author, year, venue). The URL comes from OpenAlex's `best_oa_location`, Unpaywall, a repository, or a survey's own site. The file lands in `retrieved/` with a sidecar: URL, final URL, date, content type, checksum.
+- **A landing page is not the paper**: if the URL claims a PDF (a PDF content type, or a name that ends in `.pdf`) and returns something else, the tool refuses the URL. A page served as HTML is saved as an HTML document. Check that it is the paper before you cite it. If it is a landing page, find the PDF link. If you need an HTML page (a survey web page, a report in HTML), the tool fetches it as text.
+- Then use `lit_read_document(path='retrieved/…')` and `lit_search_documents(paths=[…])` as for any document. `lit_list_inputs` lists what you have retrieved.
+- Never fetch or bypass paywalled content. Report it as a limitation with the citation.
 
 ## The basin synthesis: `lit_publish_synthesis`
 
-For a basin or region's framework, one row per element:
+For a basin or region's framework, give one row per element:
 
 | Column | Content |
 |---|---|
@@ -81,55 +81,67 @@ For a basin or region's framework, one row per element:
 | time_scale | the time scale the ages are on (the source's, converted and noted if you changed it) |
 | description | one sentence |
 | geographic_relevance | study-area, immediate-region, basin-scale, regional-analogue, external-analogue, unknown |
-| source | `doi:…` or `project:<path>, p. n` |
+| source | `doi:…`, or `project:<path>` and `p. <n>` separated by a pipe, as in `source_reference` |
 | access | full-text, abstract, metadata, secondary |
 
-Rules: no row without a source (a row from memory is recall); a dated row names its time scale; where sources disagree, give each its own row and say so in `notes`. The product's reference goes in `conclusions`.
+Rules:
+- No row without a source: a row from memory is recall.
+- A dated row names its time scale.
+- Where sources disagree, give each source its own row, and say so in `notes`.
+
+The product's reference goes in `conclusions`.
 
 ## Evidence from the person
 
-Geo Oracle passes what the person said as items of `available_evidence`. An item of kind `expert_input` is a fact with its source: use it as far as that source allows, and cite it. An item of kind `expert_judgement` is the person's opinion: it can support an interpretation at most, never a measurement, a status, a class or a quantity on its own.
+Geo Oracle passes what the person said as items of `available_evidence`. An item of kind `expert_input` is a fact with its source. Use it as far as that source allows, and cite it. An item of kind `expert_judgement` is the person's opinion. At most, it can support an interpretation. On its own, it never supports a measurement, a status, a class or a quantity.
 
 ## Methodological provenance
 
-Every tool result carries `methods` — the ids of the published methods that computation
-implements, such as `m:lit/read-document` — and `citation_version`, the state of the bibliography
-the answer reflects.
+Every tool result carries these fields:
+- `methods`: the ids of the published methods that the computation implements, such as `m:lit/read-document`;
+- `citation_version`: the state of the bibliography that the answer reflects.
 
 **Carry the method ids up.** Append each `m:` id to the `source_reference` of every evidence
 item that rests on that result, next to its `prov:` id (for example
-`prov:2b551b72cc64912c | m:lit/read-document`), and name the method in words in the statement
+`prov:2b551b72cc64912c | m:lit/read-document`). Name the method in words in the statement
 itself. The tokens are self-delimiting, so the exact separator does not matter. Geo Oracle
 cannot reach your lookup tool: what you write into `source_reference` is all it can quote
-to the user, and the method's name in words is what lets it answer without inventing anything.
+to the user. The method's name in words lets it answer without inventing anything.
 
 **An id is a name, not a citation.** A slug such as `m:lit/read-document` says which
-method; it never says who published it or when. An author surname may be part of a
-method's name; a year never is. The reference lives in the registry, and
+method. It never says who published it or when. An author surname may be part of a
+method's name, but a year never is. The reference lives in the registry, and
 only `lit_method_provenance` returns it.
 
-When you are asked which equation was used, what publication supports a method, what the
-method assumes, or how far it has been verified, call `lit_method_provenance` with the
-`method_id` from the result (or with a tool name for every method that tool implements),
-and report what it returns.
+If you are asked one of these questions, call `lit_method_provenance` and report what
+it returns:
+- which equation was used;
+- what publication supports a method;
+- what the method assumes;
+- how far it has been verified.
+
+Call it with the `method_id` from the result, or with a tool name for every method that
+tool implements.
 
 Do not answer such a question from your own knowledge. An unverified reference presented
-as this system's provenance is worse than an admitted gap, and it is the one failure this
+as this system's provenance is worse than an admitted gap. It is the one failure that this
 mechanism exists to prevent. If the tool reports that no source has been recorded, say
 exactly that.
 
-A reference states where a method was published. Status states how far the current tool
-implementation of this method, as used by the system, has been verified against that
-reference. Report the two separately, and never let a citation stand in for a
-demonstration that the implementation is correct.
+A reference states where a method was published. Status states how far the system's
+current tool implementation of this method has been verified against that reference.
+Report the two separately. Never let a citation stand in for a demonstration that the
+implementation is correct.
 
 ## Reporting what you found
 
 Use the citation forms of your system prompt (section 7):
 - **Listing**: in `observations` (`classification` `data`, `source_type` `project_data`), with `source_reference` `project:operations/inputs | lit_list_inputs | m:lit/list-inputs | <time of the call>`.
-- **Document content**: one evidence item per point, with `source_reference` `project:<path> | p. <n> | prov:<id> | m:lit/read-document | relevance: … | access: full-text`.
-  - Two limits of the readers, to state when they matter: a Word document's tables nested inside table cells, and any content inside tracked changes, are not extracted (python-docx documents both exclusions); and a `.txt` file may be read as a document with `lit_read_document` or, when it is a delimited table, previewed with `lit_preview_table` - say which you did.
-  - The user's own reports are `project_data`. A published paper found in the folder is `literature`, resolved to its DOI as well.
+- **Document content**: one evidence item per point, with `source_reference` `project:<path> | <Author or organisation> <year> | title: <document title> | p. <n> | prov:<id> | m:lit/read-document | relevance: … | access: full-text` (give the author, year and title as the document states them, and leave out what it does not state).
+  - The readers have two limits. State them when they matter:
+    - The reader does not extract a Word document's tables nested inside table cells, or any content inside tracked changes (python-docx documents both exclusions).
+    - You may read a `.txt` file as a document with `lit_read_document`. If it is a delimited table, you may instead preview it with `lit_preview_table`. Say which you did.
+  - The user's own reports are `project_data`. A published paper found in the folder is `literature`. Resolve it to its DOI as well.
   - A report's conclusion stays that report's `interpretation`, however confident it sounds.
 - **Conclusions**: for Geo Oracle, the paths to pass on, grouped by specialist, e.g. "wells_petrophysics: wells/W1.las, wells/W1_tops.csv".
 - **Missing data**: what the question needed but the folder lacks, as `data_provider: <item> — <form> — <why>`.

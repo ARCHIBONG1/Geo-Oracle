@@ -1,11 +1,11 @@
 ---
 name: geo-evidence-inventory
-description: How Geo Oracle characterises the evidence available to a geological investigation and packages it for specialist agents. Use at the start of every investigation; whenever the user supplies or mentions data (files, well logs, LAS, seismic, core, tops, maps, reports, tables); before briefing any specialist with project evidence; and whenever you are unsure whether a dataset or measurement actually exists.
+description: How Geo Oracle characterises the evidence available to a geological investigation, and packages it for specialist agents. Use at the start of every investigation. Also load it in these cases — whenever the user supplies or mentions data (files, well logs, LAS, seismic, core, tops, maps, reports, tables); before you brief any specialist with project evidence; and whenever you are unsure whether a dataset or measurement actually exists.
 ---
 
 # Evidence inventory and packaging
 
-Specialists analyse only what you hand them, and a conclusion is never better than the evidence under it. Before anything is interpreted, establish what actually exists, what is merely named, and what is missing.
+Specialists analyse only what you hand them. A conclusion is never better than the evidence under it. Before anyone interprets anything, establish what actually exists, what is only named, and what is missing.
 
 ## 1. Build the inventory
 
@@ -48,32 +48,32 @@ For each item the user supplies or mentions, record the following:
 | Other specialists' products | the specialists | the producing specialist's `Product: …` conclusions |
 
 **Listing and documents**:
-- **`list_shared_inputs` and `literature_review` see the whole shared folder.** The listing is yours, at no run; `literature_review` reads documents and previews tables. The seismic and petrophysics specialists list only their own file types.
-- **A named file is never the whole inventory.** List its dataset folder before the first brief; data beside it that a requested deliverable normally uses, and that needs another specialist, is a question for the person (include it?), never a silent widening or narrowing.
-- **Missing means absent**: only what the listing shows absent, or a specialist found unusable after opening it. Present but unused data is "available, not used", with the reason.
+- **`list_shared_inputs` and `literature_review` see the whole shared folder.** The listing is yours and uses no run. `literature_review` reads documents and previews tables. The seismic and petrophysics specialists list only their own file types.
+- **A named file is never the whole inventory.** List its dataset folder before the first brief. If data beside it is what a requested deliverable normally uses, and it needs another specialist, ask the person (include it?). Never include or leave out that data silently.
+- **Missing means absent**: data is missing only if the listing shows it absent, or if a specialist opened it and found it unusable. Data that is present but unused is "available, not used", with the reason.
 - **Documents there** (reports, papers, notes): ask `literature_review` to read or search them. It cites pages.
 - **Once listed**, a file's availability class is `named` until a specialist has opened it and confirmed its content (`verified`).
-- **List the whole dataset folder**, not only the subfolders the user named: a well's LAS file may sit beside its converted tables, not with them.
+- **List the whole dataset folder**, not only the subfolders the user named. A well's LAS file may sit beside its converted tables, not with them.
 
-**The files in your own sandbox** (chat uploads) you may handle yourself, as follows. In your sandbox you may:
+**The files in your own sandbox** (chat uploads): you may handle these yourself. In your sandbox you may:
 - open files;
 - read headers and metadata;
 - list curves, columns and extents;
 - extract the rows or excerpts a question needs;
 - convert formats so a specialist can use them;
-- unpack an uploaded archive (`.zip`, `.tar`, `.gz`) into a folder named after it, in one command, and inventory what came out, file by file, as if each had been uploaded on its own (keep the extracted paths: they are what the owner imports).
+- unpack an uploaded archive (`.zip`, `.tar`, `.gz`) into a folder named after it, in one command. Then inventory what came out, file by file, as if each file had been uploaded on its own. Keep the extracted paths: the owner imports the files by those paths.
 
-Never put a seismic file through your own tools other than to unpack the archive that holds it, and never copy anything from your sandbox into the shared inputs folder.
+Never put a seismic file through your own tools, except to unpack the archive that holds it. Never copy anything from your sandbox into the shared inputs folder.
 
-**Sizes before briefs.** `ls -l` every upload; for an archive, `unzip -l` or `tar -tvf` for the unpacked total and largest member, and `df -h .` for free disk, before unpacking. Refuse to unpack when the unpacked total exceeds the free disk or is more than fifty times the archive (an archive bomb), and say so. Each specialist's tool description gives the largest file it can import; a file over that is not briefed but reported to the user with the cap and the ways forward (shared inputs folder, crop or decimate, split), grouped with any other gaps as in section 4. The per-message limit is in your instructions: a message over it never reaches you, so state the limit when the user asks what fits.
+**Sizes before briefs.** Run `ls -l` on every upload. Before you unpack an archive, run `unzip -l` or `tar -tvf` for the unpacked total and the largest member, and `df -h .` for the free disk. If the unpacked total exceeds the free disk or is more than fifty times the archive (an archive bomb), refuse to unpack, and say so. Each specialist's tool description gives the largest file it can import. Do not brief a file over that size. Report it to the user with the cap and the ways forward (shared inputs folder, crop or decimate, split). Group it with any other gaps, as in section 4. The per-message limit is in your instructions. A message over it never reaches you, so state the limit when the user asks what fits.
 
-You may not interpret. Computing properties, picking horizons, correlating wells and interpreting facies all belong to the specialists.
+You may not interpret. Only the specialists compute properties, pick horizons, correlate wells and interpret facies.
 
 ## 4. Ask for what matters, once
 
 If a planned question depends on evidence that is named, unknown or missing, ask the user in one grouped message. Say which question each item would unblock, for example "The density log for W2 would let the petrophysics specialist estimate porosity in the target interval."
 
-If the user cannot provide the item, proceed with what exists. Record the gap in the ledger and pass it to specialists in `known_unknowns`.
+If the user cannot provide the item, proceed with what exists. Record the gap in the ledger, and pass it to the specialists in `known_unknowns`.
 
 ## 5. Package evidence for a specialist
 
@@ -84,20 +84,73 @@ If the user cannot provide the item, proceed with what exists. Record the gap in
   - `description`: the source, reference frames, units, and QC caveats.
   - `excerpt`: the content itself.
 - **Tables** keep their header row with units. If you send a subset, say so, e.g. "rows for W1–W3 only; the full table has 40 wells".
-- **Bulk data** (full-resolution curves, seismic volumes, grids) goes by the identifier the specialists' own data tools can resolve, such as a project data-store URI or dataset ID, plus a short summary. Never retype large numeric arrays: a single transcription error silently corrupts an analysis.
-- **Seismic data** goes by its path relative to the shared inputs folder (`operations/inputs`), e.g. `{"id": "S1", "kind": "seismic_volume", "description": "survey_a/pstm_full.sgy", "excerpt": "3D PSTM, time, 2 ms; polarity and CRS not stated"}`. Only `seismic_interpretation` can open that folder. A seismic file the user uploaded to this chat is in your sandbox, not in the folder: pass it as `{"id": "S1", "kind": "seismic_volume", "description": "uploaded to Geo Oracle chat: /opt/tf/uploads/seismic.npy", "excerpt": "3D volume, axes T,XL,IL, 4 ms"}` using its real sandbox path, and the seismic specialist imports it. Include an array's axis order when the user states one other than the default IL,XL,T (inline, crossline, time). If no file name is known, ask `seismic_interpretation` to list the available seismic data.
-- **Well data** goes the same way: LAS and CSV files by their path relative to `operations/inputs` (e.g. `wells/W1.las`) or as a Geo Oracle upload. Only `wells_petrophysics` can open them.
-- **Regional tables go by path too**: a stratigraphic column for backstripping as `{"kind": "stratigraphic_table", "description": "<path>"}`; `regional_geology` reads it with `reg_backstrip(units_table=...)` and cannot open it any other way. A gravity or magnetic grid goes the same way, with its coverage if known: the grid's analysis extent is set to what it covers, not to the stress radius.
-- **Every other upload goes to its owner the same way**, as `{"id": ..., "kind": ..., "description": "uploaded to Geo Oracle chat: <absolute sandbox path>", "excerpt": "<what is known: columns, units, CRS, source>"}`; the specialist imports it with its own import tool. Owners by type: grids (netCDF, GeoTIFF), GIS layers (GeoJSON, GeoPackage, shapefile, KML) and regional tables → `regional_geology`; structural measurements, fracture picks, section lines → `structural_geology`; tops, biostratigraphic and dated-sample tables → `stratigraphy`; core and cuttings descriptions, photo indexes and photographs → `sedimentology`; well-outcome, show, seep and geochemistry tables → `subsurface_play`; documents (PDF, Word, text, Markdown, HTML) → `literature_review`. `risk_uncertainty` takes no uploads. For a table whose owner is not obvious from its name, read the header row in your sandbox and decide from the columns; say in `known_unknowns` when it could belong to two.
-- **Regional tasks need an area of interest.** Give `regional_geology` an item `{"id": "aoi:<name>", "kind": "aoi", "description": "<EPSG code of the coordinates; what the outline is>", "excerpt": "<WKT, GeoJSON, a bbox minx,miny,maxx,maxy, or points x y; x y>"}`. Well positions from a petrophysics `well_header` serve as an AOI (give X, Y and the CRS). It fetches the global datasets it needs itself (nothing has to be placed in the inputs folder) and uses supplied regional GIS files when they exist; publications go to it as upstream findings from `literature_review`. Its products (`stress_field`, `seismicity_summary`, `thermal_model`, `structural_elements`) are regional priors: forward them by reference with the transfer record from its conclusions in the `excerpt`.
-- **Structural tasks are built from products.** Give `structural_geology` the seismic `fault_set` and `horizon` products (ask `seismic_interpretation` to publish them with `seismic_publish_structure`; depth versions for closures and stability), the petrophysics `vshale_log` (from `petro_vshale`) and `pressure_profile`, and the regional `stress_field`, each as an evidence item with the product name as `kind` and the sidecar's domain, uncertainty and transfer status in the `excerpt`. Its `fault_stability` and `fault_seal` products are forwarded to `risk_uncertainty` and `prospect_target` with the dependency ceiling from its claims.
-- **Stratigraphic tasks are built from products too.** Give `stratigraphy` each well's `correlation_logs` and `well_tops` (ask `wells_petrophysics` to publish them with `petro_publish_correlation_logs`, after `petro_trajectory` for deviated wells), seismic `horizon` products with their well ties, the regional `chronostrat_chart`, the structural `fault_network` where faults cut wells, and the supplied stratigraphic tables (biostratigraphic events with sample types, dated samples, operator tops from reports, markers) by their paths. It keeps reported tops and its correlations in separate ledgers; its `correlated_tops` carry a tag per top and the C1-C7 record, and its `correlation_alternatives` go to `risk_uncertainty` and `prospect_target`.
-- **Rock data have two owners.** Core and cuttings *descriptions* (interval tables: top, base, lithology, structures) and photo indexes go to `sedimentology` only; `wells_petrophysics` cannot register them and will refuse. Core *measurements* (porosity, permeability against depth) go to `wells_petrophysics`, which calibrates them against a computed porosity log and publishes `core_depth_shift`; image-log dip picks go to `wells_petrophysics` to register and publish as `dip_picks`.
-- **Sedimentological tasks read rock.** Give `sedimentology` the core and cuttings descriptions, analyses and photo index by their paths under `operations/inputs` (as `core_description`, `photo_index` and so on), plus by reference the petrophysics `correlation_logs`, `core_depth_shift` (ask `wells_petrophysics` to run `petro_core_calibrate` on the core porosity against a computed porosity log) and `dip_picks` (image-log picks registered and published with `petro_publish_table`), the stratigraphy `stratigraphic_framework` or `correlated_tops` for the key surfaces, and the regional setting. Its `facies_log` goes to `stratigraphy` and `wells_petrophysics`; its `depositional_model` and `reservoir_architecture` go to `subsurface_play`, `prospect_target` and `risk_uncertainty` with every `[analogue]` tag preserved.
-- **Play tasks are built from claims.** Give `subsurface_play` every upstream finding that bears on an element in `upstream_findings` (full ids, classification, status, and the `[regional]` or `[analogue]` tag where the producer gave one), the products where geometry matters by reference (`trap_geometry`, `fault_seal`, `fault_stability`, `stratigraphic_framework`, `depositional_model`, `facies_log`, `burial_history`, `thermal_model`, `pressure_profile`), the supplied play tables by path (well outcomes with the operator's stated reasons, shows, seeps, geochemistry, legacy wells), and the domain in `project_context`. Its `element_status_matrix`, `play_concepts` and `containment_assessment` go to `prospect_target` and `risk_uncertainty`; its `discriminating_evidence` is the list to plan the next wave from.
-- **Risk tasks carry the whole investigation.** Find the ledger's absolute path once per investigation by running `pwd` in your sandbox (it is `<that>/investigation/ledger.md`) and give it to `risk_uncertainty` as `available_evidence` of kind `investigation_ledger`, every finding relied on as `upstream_findings` with full ids, classification, status, `[regional]`/`[analogue]` tags and `depends_on`, every product by reference, the objectives by name and the decision context. It reads Geo Oracle's ledger directly from the sandbox, so the ledger must be current before the call. In `follow_up` mode after a reduction wave, add the prior materiality file and every attempt (entry, task id, owner, mode, what was tried, why).
-- **Products of one specialist for another** go by their reference, exactly as it appeared in the producer's conclusions, e.g. `{"id": "T02-petro/P1", "kind": "time_depth", "description": "@petrophysics-agent/products/W1-time_depth-5cff9900cf.csv", "excerpt": "TWT from SRD at MSL; drift-corrected sonic; checkshots 300-1560 m"}`. The receiving specialist copies it into its own area. For a `well_header`, put the well's X, Y, CRS and datum elevation from the producer's conclusions in the `excerpt` as well; the seismic specialist locates the well from the product with `seismic_convert_coordinates`.
-- **Never pass a sandbox path.** Specialists run in their own environments and cannot read your sandbox.
+- **Bulk data** (full-resolution curves, seismic volumes, grids) goes by an identifier, plus a short summary. Use an identifier that the specialists' own data tools can resolve, such as a project data-store URI or dataset ID. Never retype large numeric arrays: a single transcription error silently corrupts an analysis.
+- **Seismic data** goes by its path relative to the shared inputs folder (`operations/inputs`), e.g. `{"id": "S1", "kind": "seismic_volume", "description": "survey_a/pstm_full.sgy", "excerpt": "3D PSTM, time, 2 ms; polarity and CRS not stated"}`. Only `seismic_interpretation` can open that folder.
+  - A seismic file that the user uploaded to this chat is in your sandbox, not in the folder. Pass it as `{"id": "S1", "kind": "seismic_volume", "description": "uploaded to Geo Oracle chat: /opt/tf/uploads/seismic.npy", "excerpt": "3D volume, axes T,XL,IL, 4 ms"}`, with its real sandbox path. The seismic specialist imports it.
+  - If the user states an array axis order other than the default IL,XL,T (inline, crossline, time), include it.
+  - If no file name is known, ask `seismic_interpretation` to list the available seismic data.
+- **Well data** goes the same way: LAS and CSV files by their path relative to `operations/inputs` (e.g. `wells/W1.las`), or as a Geo Oracle upload. Only `wells_petrophysics` can open them.
+- **Regional tables go by path too**: a stratigraphic column for backstripping goes as `{"kind": "stratigraphic_table", "description": "<path>"}`. `regional_geology` reads it with `reg_backstrip(units_table=...)` and cannot open it any other way. A gravity or magnetic grid goes the same way, with its coverage if known. The grid's analysis extent is what the grid covers, not the stress radius.
+- **Every other upload goes to its owner the same way**, as `{"id": ..., "kind": ..., "description": "uploaded to Geo Oracle chat: <absolute sandbox path>", "excerpt": "<what is known: columns, units, CRS, source>"}`. The specialist imports it with its own import tool. Owners by type:
+  - grids (netCDF, GeoTIFF), GIS layers (GeoJSON, GeoPackage, shapefile, KML) and regional tables → `regional_geology`;
+  - structural measurements, fracture picks, section lines → `structural_geology`;
+  - tops, biostratigraphic and dated-sample tables → `stratigraphy`;
+  - core and cuttings descriptions, photo indexes and photographs → `sedimentology`;
+  - well-outcome, show, seep and geochemistry tables → `subsurface_play`;
+  - documents (PDF, Word, text, Markdown, HTML) → `literature_review`.
+
+  `risk_uncertainty` takes no uploads. If a table's owner is not obvious from its name, read the header row in your sandbox and decide from the columns. If it could belong to two owners, say so in `known_unknowns`.
+- **Regional tasks need an area of interest.** Give `regional_geology` an item `{"id": "aoi:<name>", "kind": "aoi", "description": "<EPSG code of the coordinates; what the outline is>", "excerpt": "<WKT, GeoJSON, a bbox minx,miny,maxx,maxy, or points x y; x y>"}`. For well positions, put each well's X and Y from a petrophysics `well_header` in the `excerpt`, as points (`x y; x y`). Put its CRS in the `description`.
+  - The regional specialist fetches the global datasets it needs itself: nothing has to go in the inputs folder. It also uses supplied regional GIS files when they exist.
+  - Publications go to it as upstream findings from `literature_review`.
+  - Its products (`stress_field`, `seismicity_summary`, `thermal_model`, `structural_elements`) are regional priors. Forward them by reference, with the transfer record from its conclusions in the `excerpt`.
+- **Structural tasks are built from products.** Give `structural_geology` these products:
+  - the seismic `fault_set` and `horizon` products, with depth versions for closures and stability. Ask `seismic_interpretation` to publish them with `seismic_publish_structure`;
+  - the petrophysics `vshale_log` (from `petro_vshale`) and `pressure_profile`;
+  - the regional `stress_field`.
+
+  Give each one as an evidence item, with the product name as `kind` and the sidecar's domain, uncertainty and transfer status in the `excerpt`. Forward the structural `fault_stability` and `fault_seal` products to `risk_uncertainty` and `prospect_target`, with the dependency ceiling from the structural claims.
+- **Stratigraphic tasks are built from products too.** Give `stratigraphy`:
+  - each well's `correlation_logs` and `well_tops`. Ask `wells_petrophysics` to publish them with `petro_publish_correlation_logs`, after `petro_trajectory` for deviated wells;
+  - seismic `horizon` products, with their well ties;
+  - the regional `chronostrat_chart`;
+  - the structural `fault_network`, where faults cut wells;
+  - the supplied stratigraphic tables, by their paths (biostratigraphic events with sample types, dated samples, operator tops from reports, markers).
+
+  It keeps reported tops and its correlations in separate ledgers. Its `correlated_tops` carry a tag per top and the C1-C7 record. Its `correlation_alternatives` go to `risk_uncertainty` and `prospect_target`.
+- **Rock data have two owners.**
+  - Core and cuttings *descriptions* (interval tables: top, base, lithology, structures) and photo indexes go to `sedimentology` only. `wells_petrophysics` cannot register them and will refuse them.
+  - Core *measurements* (porosity, permeability against depth) go to `wells_petrophysics`. It calibrates them against a computed porosity log and publishes `core_depth_shift`.
+  - Image-log dip picks go to `wells_petrophysics`, which registers them and publishes them as `dip_picks`.
+- **Sedimentological tasks read rock.** Give `sedimentology`:
+  - by their paths under `operations/inputs`: the core and cuttings descriptions, analyses and photo index (as `core_description`, `photo_index` and so on);
+  - by reference:
+    - the petrophysics `correlation_logs`;
+    - the petrophysics `core_depth_shift`: ask `wells_petrophysics` to run `petro_core_calibrate` on the core porosity against a computed porosity log;
+    - the petrophysics `dip_picks`: image-log picks registered and published with `petro_publish_table`;
+    - the stratigraphy `stratigraphic_framework` or `correlated_tops`, for the key surfaces;
+    - the regional setting.
+
+  Its `facies_log` and `depositional_model` go to `subsurface_play`, `prospect_target` and `risk_uncertainty`, with every `[analogue]` tag preserved.
+- **Play tasks are built from claims.** Give `subsurface_play`:
+  - in `upstream_findings`: every upstream finding that bears on an element, with full ids, classification, status, and the `[regional]` or `[analogue]` tag where the producer gave one;
+  - by reference: the products where geometry matters (`trap_geometry`, `fault_seal`, `fault_stability`, `stratigraphic_framework`, `depositional_model`, `facies_log`, `burial_history`, `thermal_model`, `pressure_profile`);
+  - by path: the supplied play tables (well outcomes with the operator's stated reasons, shows, seeps, geochemistry, legacy wells);
+  - in `project_context`: the domain.
+
+  The play specialist's `element_status_matrix`, `play_concepts` and `containment_assessment` go to `prospect_target` and `risk_uncertainty`. Its `discriminating_evidence` is the list to plan the next wave from.
+- **Risk tasks carry the whole investigation.** Once per investigation, find the ledger's absolute path: run `pwd` in your sandbox. The path is `<that>/investigation/ledger.md`, or `<that>/investigation/<investigation id>/ledger.md` when the chat holds several investigations. Give `risk_uncertainty`:
+  - the ledger path, as `available_evidence` of kind `investigation_ledger`;
+  - every finding relied on, as `upstream_findings` with full ids, classification, status, `[regional]`/`[analogue]` tags and `depends_on`;
+  - every product, by reference;
+  - the objectives, by name;
+  - the decision context.
+
+  The risk specialist reads Geo Oracle's ledger directly from the sandbox, so the ledger must be current before the call. In `follow_up` mode after a reduction wave, add the prior materiality file and every attempt (entry, task id, owner, mode, what was tried, why).
+- **Products of one specialist for another** go by their reference, exactly as it appeared in the producer's conclusions, e.g. `{"id": "T02-petro/P1", "kind": "time_depth", "description": "@petrophysics-agent/products/W1-time_depth-5cff9900cf.csv", "excerpt": "TWT from SRD at MSL; drift-corrected sonic; checkshots 300-1560 m"}`. The receiving specialist copies it into its own area. For a `well_header`, also put the well's X, Y, CRS and datum elevation from the producer's conclusions in the `excerpt`. The seismic specialist locates the well from the product with `seismic_convert_coordinates`.
+- **Pass a sandbox path in two forms only.** Specialists run in their own environments and cannot read your sandbox. The two forms are the ones above:
+  - an upload, as `uploaded to Geo Oracle chat: <absolute sandbox path>`, which its owner imports;
+  - the ledger's absolute path, for `risk_uncertainty`.
 - **State what is uncertain about each item** in its `description`, and list missing items in `known_unknowns`.
 
 Example entries:

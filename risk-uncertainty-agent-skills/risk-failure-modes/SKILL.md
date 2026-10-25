@@ -1,11 +1,16 @@
 ---
 name: risk-failure-modes
-description: Failure modes per domain from a fixed library - the mechanism, the elements, their statuses, what would detect each mode, and the register entries bearing on it - without numeric ratings. Load before ru_failure_modes.
+description: Failure modes per domain from a fixed library, without numeric ratings. Each mode has the mechanism, the elements, their statuses, what would detect each mode, and the register entries bearing on it. Load before ru_failure_modes.
 ---
 
 # Failure modes
 
-`ru_failure_modes` lists, for the domain and the objective, every mode in a fixed library (hydrocarbon, CO2 storage, geothermal, natural hydrogen, hydrogen storage): the mechanism, the elements involved, each element's status from the play matrix, the weakest of them, what would detect the mode, and the register entries that bear on it.
+For the domain and the objective, `ru_failure_modes` lists every mode in a fixed library (hydrocarbon, CO2 storage, geothermal, natural hydrogen, hydrogen storage). For each mode, it gives:
+- the mechanism;
+- the elements involved, and each element's status from the play matrix;
+- the weakest of them;
+- what would detect the mode;
+- the register entries that bear on it.
 
 | Domain | Modes |
 |---|---|
@@ -15,12 +20,12 @@ description: Failure modes per domain from a fixed library - the mechanism, the 
 | natural hydrogen | no generation, not retained, consumed |
 | hydrogen storage | containment, conversion, cycling damage |
 
-A mode is never rated. What is said about it is which elements it involves, where they stand, and which entries bear on it; a mode whose elements stand at unknown with several entries bearing on it is where the register's attention goes, and that is a count, not a score.
+A mode is never rated. You say which elements it involves, where they stand, and which entries bear on it. The register's attention goes to a mode whose elements stand at unknown with several entries bearing on it. That is a count, not a score.
 
-Caprock, faults and wells are separate modes in storage domains because they fail and are monitored differently; folding them into one "seal" hides the one that matters.
+In storage domains, caprock, faults and wells are separate modes, because they fail and are monitored differently. If you fold them into one "seal", you hide the one that matters.
 
 ## Reporting
 
-Modes as `interpretations` with the elements' statuses; the product `failure_modes`.
+Give modes as `interpretations` with the elements' statuses, and the product `failure_modes`.
 
 <!-- end of skill: risk-failure-modes -->

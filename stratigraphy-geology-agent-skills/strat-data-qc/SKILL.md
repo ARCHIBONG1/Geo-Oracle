@@ -1,6 +1,6 @@
 ---
 name: strat-data-qc
-description: Reading correlation_logs and well_tops products and their sidecars, the depth rule (TVDSS, deviated wells), registering biostratigraphic events, dated samples, operator tops, markers and chemostratigraphy, and the sample-type rules for biostratigraphy. Load before reading any product or table.
+description: How to read correlation_logs and well_tops products and their sidecars, and the depth rule (TVDSS, deviated wells). It also covers how to register biostratigraphic events, dated samples, operator tops, markers and chemostratigraphy, and the sample-type rules for biostratigraphy. Load before reading any product or table.
 ---
 
 # Stratigraphic data QC
@@ -15,14 +15,14 @@ description: Reading correlation_logs and well_tops products and their sidecars,
 | `chronostrat_chart` | regional_geology | time scale, sources, gaps | C7 |
 | `fault_network` | structural_geology | abutments, throws | Gap versus fault (`stg_gap_vs_fault`): the product must carry the faults' traces and throws (one with topology only is refused) |
 
-`stg_read_product` returns the sidecar and a preview. A well file (LAS) listed by `stg_list_data` cannot be opened here: ask `wells_petrophysics: correlation_logs and well_tops for <well> — petro_publish_correlation_logs — correlation`.
+`stg_read_product` returns the sidecar and a preview. If `stg_list_data` lists a well file (LAS), you cannot open it here. Ask `wells_petrophysics: correlation_logs and well_tops for <well> — petro_publish_correlation_logs — correlation`.
 
 ## Depth
 
-- Correlate in TVDSS. A deviated well without a trajectory-based TVDSS (sidecar `trajectory` "vertical (datum offset only)" with `deviated` true) needs `wells_petrophysics` to run `petro_trajectory` first; say so.
-- `stg_register_table` converts every table's MD to TVDSS with the wells' logs (`logs=`). A row for a well without logs stays MD-only and is flagged.
-- `stg_convert_depth` is the same MD-to-TVDSS conversion for a depth that reaches you outside a registered table — a quoted top, a core depth, a sample. Never convert by hand.
-- Report picks with both MD and TVDSS; the products carry both.
+- Correlate in TVDSS. A deviated well can lack a trajectory-based TVDSS (sidecar `trajectory` "vertical (datum offset only)" with `deviated` true). Then `wells_petrophysics` must run `petro_trajectory` first. Say so.
+- `stg_register_table` converts every table's MD to TVDSS with the wells' logs (`logs=`). A row for a well without logs stays MD-only, and the tool flags it.
+- `stg_convert_depth` does the same MD-to-TVDSS conversion for a depth that reaches you outside a registered table: a quoted top, a core depth, a sample. Never convert by hand.
+- Report picks with both MD and TVDSS. The products carry both.
 
 ## Tables (`stg_register_table`)
 
@@ -32,12 +32,14 @@ description: Reading correlation_logs and well_tops products and their sidecars,
 | `age_dates` | well, md_m, method, age_ma, error_ma, time_scale | Rank 1; the time scale must be stated |
 | `reported_tops` | well, top, md_m, source | Reported ledger (a report's tops when no well_tops product exists) |
 | `marker_table` | well, md_m, marker | Rank 4 |
-| `chemostrat_data` | well, md_m, variable, value | Phase 2 |
+| `chemostrat_data` | well, md_m, variable, value | Registered and converted to TVDSS only: no tool reads it yet. Cite it as an observation |
 
-Describe in `description` who produced the data and how; it travels into the products.
+In `description`, say who produced the data and how. It travels into the products.
 
 ## Reporting
 
-Reported tops: `[data, upstream_specialist or project_data]` with the product reference. Events and markers: `[observation, project_data]`. Ages: `[measurement, project_data]`.
+- Reported tops: `[data, upstream_specialist or project_data]`, with the product reference.
+- Events and markers: `[observation, project_data]`.
+- Ages: `[measurement, project_data]`.
 
 <!-- end of skill: strat-data-qc -->

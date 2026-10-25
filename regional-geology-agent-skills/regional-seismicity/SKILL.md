@@ -8,14 +8,21 @@ description: Earthquake catalogue summaries, magnitude of completeness, b-values
 ## Order of work
 
 1. `reg_catalogue_summary(source, aoi, radius_km)`: counts, largest events with distance and depth, depth distribution, time window. Radius 300 km for a regional view, 50-100 km for local hazard.
-2. `reg_completeness`: Mc by maximum curvature and the goodness-of-fit test (Wiemer & Wyss 2000); the recommended Mc is the largest of Mc(MAXC) + 0.2 and the goodness-of-fit values reached with at least 200 events (both methods underestimate Mc: Woessner & Wiemer 2005); `mc_recommended_basis` says which. **Always before a b-value.**
-3. `reg_b_value(mc=…, bin_width=…)`: maximum likelihood (Aki 1965) with the Shi & Bolt (1982) uncertainty. Give the catalogue's real magnitude bin: when b times the bin exceeds 1/4 the estimate runs low, and the tool raises it by Utsu's (1966) Table I factor (`bin_correction` says whether and by how much; `b_value_uncorrected` keeps the raw value). Beyond the table (b times the bin above 1.0) it is left uncorrected and flagged: use finer bins. **Refused below 50 events above Mc**: then report counts and the largest events only, and say a b-value is not supported.
+2. `reg_completeness`: Mc by maximum curvature and the goodness-of-fit test (Wiemer & Wyss 2000).
+   - The recommended Mc is the largest of Mc(MAXC) + 0.2 and the goodness-of-fit values reached with at least 200 events. Both methods underestimate Mc (Woessner & Wiemer 2005).
+   - `mc_recommended_basis` says which.
+   - **Always before a b-value.**
+3. `reg_b_value(mc=…, bin_width=…)`: maximum likelihood (Aki 1965) with the Shi & Bolt (1982) uncertainty.
+   - Give the catalogue's real magnitude bin. If b times the bin exceeds 1/4, the estimate runs low, and the tool raises it by Utsu's (1966) Table I factor. `bin_correction` says whether and by how much. `b_value_uncorrected` keeps the raw value.
+   - Beyond the table (b times the bin above 1.0), the tool leaves the value uncorrected and flags it: use finer bins.
+   - **Refused below 50 events above Mc**: then report counts and the largest events only, and say that a b-value is not supported.
 
 ## Reading the result
 
-- The catalogue snapshot's own limits come from the catalogue entry: its bounding box, minimum magnitude and start date (e.g. `usgs_comcat_<region>`, "M>=2.0 since 1970 in bbox …"). Completeness varies in time: a regional network improves; say which window the b-value uses.
-- Few events within 50 km of the AOI can mean quiescence or poor detection: report both possibilities unless the catalogue's completeness settles it.
-- Depth percentiles: fixed default depths (e.g. 10 km) in a catalogue are a reporting artefact, not a measurement; say so when depths cluster at one value.
+- The catalogue snapshot's own limits come from the catalogue entry: its bounding box, minimum magnitude and start date (e.g. `usgs_comcat_<region>`, "M>=2.0 since 1970 in bbox …").
+- Completeness varies in time: a regional network improves. Say which window the b-value uses.
+- Few events within 50 km of the AOI can mean quiescence or poor detection. Report both possibilities, unless the catalogue's completeness settles it.
+- Depth percentiles: fixed default depths (e.g. 10 km) in a catalogue are a reporting artefact, not a measurement. Say so when depths cluster at one value.
 
 ## Transfer and consumers
 

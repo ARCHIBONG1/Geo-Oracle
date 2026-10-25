@@ -18,10 +18,10 @@ A specialist result is evidence to be evaluated, not a verdict. Detail, fluency 
   - Parse repairs mean the specialist did not follow the output contract; the content may be sloppy elsewhere too.
   - "Unresolved … reference" means a claim cites evidence that does not exist in the result, so treat that link as unsupported.
   - "Unrecognised keys" means some content is only in the raw reply.
-  - `Process audit:` lines are the gateway's own reading of the specialist's run. Address each before accepting (section 3a); the next wave is refused until the checkpoint says what you did about every one.
-  - `Id check:` lines name an evidence item or methods statement whose provenance or method id does not resolve to a stored computation. The item is set aside: do not rely on it. Ask the specialist to correct it in a follow-up of the same task. A checkpoint that approves no further work is refused while any stays uncorrected; one you will not rely on goes in the record as `set_aside: [{evidence_id, reason}]`.
-  - A methods statement that writes ids in its text, or states numbers the cited computations do not hold, is flagged only: check it against the tool results, and ask for a correction when it is wrong. Methods statements go into the investigation report.
-- **`omitted`**: fetch the trimmed sections you need before judging the result. Do not judge from a partial digest. `referenced_items` carries the statement of every item an included claim cites from an omitted section: such a reference is not unresolved, and is never the subject of a follow-up task.
+  - `Process audit:` lines are the gateway's own reading of the specialist's run. Address each before you accept the result (section 3a).
+  - `Id check:` lines name an evidence item or methods statement whose provenance or method id does not resolve to a stored computation. The gateway sets the item aside: do not rely on it. Ask the specialist to correct it in a follow-up of the same task. While any item stays uncorrected, the gateway refuses a checkpoint that approves no further work. Put an item you will not rely on in the record as `set_aside: [{evidence_id, reason}]`.
+  - The gateway only flags a methods statement that writes ids in its text, or states numbers the cited computations do not hold. Check it against the tool results. If it is wrong, ask for a correction. Methods statements go into the investigation report.
+- **`omitted`**: fetch the trimmed sections you need before judging the result. Do not judge from a partial digest. `referenced_items` carries the statement of every item an included claim cites from an omitted section. Such a reference is not unresolved. Never make it the subject of a follow-up task.
 
 ## 2. What was actually established?
 
@@ -58,29 +58,36 @@ Red flags:
 
 A claim that fails a material check is not established evidence. Record it as unsupported, or send it for follow-up.
 
+## 2a. Plan, rivals and history
+
+- **The plan.** Each numbered required output has a `plan` row. The gateway warns about a missing row, a delivered row with no receipt it can find, and each output left open, by its token (`T05-struct#2`). At the checkpoint, carry each open token forward or dismiss it.
+- **Rivals.** An interpretation comes with `alternatives`, each with a test and its result. Never drop a rival: record it in the ledger beside its claim until a test or a checkpoint resolves it. An interpretation without rivals, or a rival without a test, is a question for the specialist.
+- **History.** A structural or stratigraphic interpretation comes with its `evolution`, oldest event first. Ask for it when it is missing.
+- **Cautions.** `method_cautions` gives what the methods behind each claim mean for its numbers. A caution not reflected in the limitations is a question for the specialist.
+
 ## 3a. Method and process checks
 
-Section 3 asks whether a claim follows from its evidence; these ask whether the evidence was produced the right way. They are mechanical: do them every time.
+Section 3 asks whether a claim follows from its evidence. These checks ask whether the specialist produced the evidence the right way. They are mechanical: do them every time.
 
 1. **Process-audit flags** (`warnings` starting `Process audit:`):
-   - *skills not read*: the specialist worked without those procedures. Check its method against them; when the method matters, ask it (same session) to read each skill on its own and redo the work.
+   - *skills not read*: the specialist worked without those procedures. Check its method against them. When the method matters, ask it (same session) to read each skill on its own and redo the work.
    - *tool calls refused*: the tools blocked something. Check that the delivered result does not rest on a workaround.
-   - *override in <tool>*: a tool ran on an input it does not normally accept. Accept only if the person asked for exactly that; otherwise follow up.
-   - *subset of faults kept*: read the stated reason. A subset chosen to match an expected count is rejected.
-   - *skills not opened*: the specialist never read, in this session, a procedure its tools require (no failed read; it was simply never opened). Check its method against that skill; when the method matters, ask it (same session) to read the skill on its own and redo the work.
-   - *refused call repeated*: the specialist resent a refused call unchanged instead of changing it, and the turn it spent may have cost other parts of the task. Compare the result with what you asked for, and send the uncovered parts back (same session).
-   - *qc suggestion not followed*: a tool's QC named a setting to rerun with and no later call used it. Ask for the rerun (same session), or accept with the reason written down.
-   - *typed channel recipe before the generic one*: the specialist assumed a channel type (meandering, submarine) without the user naming it, a well establishing it, or a generic `channel` run first. Ask it (same session) to run the generic recipe and report the measured planform and fill; a type the data were not asked to show is not a finding.
+   - *override in <tool>*: a tool ran on an input it does not normally accept. Accept it only if the person asked for exactly that. Otherwise, follow up.
+   - *subset of faults kept*: read the stated reason. Reject a subset chosen to match an expected count.
+   - *skills not opened*: in this session, the specialist never read a procedure its tools require (no failed read; it was simply never opened). Handle it as for *skills not read*.
+   - *refused call repeated*: the specialist resent a refused call unchanged, instead of changing it. The turn it spent may have cost other parts of the task. Compare the result with what you asked for, and send the uncovered parts back (same session).
+   - *qc suggestion not followed*: a tool's QC named a setting to rerun with, and no later call used it. Ask for the rerun (same session), or accept with the reason written down.
+   - *qc fix not acted on*: an error flag named its fix (tool and change), and the run neither called it nor said why. Ask for the fix (same session), or accept with the reason.
+   - *typed channel recipe before the generic one*: the specialist assumed a channel type (meandering, submarine) without the user naming it, a well establishing it, or a generic `channel` run first. Ask it (same session) to run the generic recipe and report the measured planform and fill. A type the data were not asked to show is not a finding.
+   - *no tool calls*: the specialist ran nothing in that turn, and its result restates the brief. A validation that ran nothing has validated nothing. Send it back, or keep only what the brief itself established.
+   - *sandbox unavailable*: the specialist's sandbox never started (for example, the sandbox service out of disk), so it read no skill. The cause is the infrastructure. Tell the person, and treat the method as unchecked.
+   - *tool calls failed*: a tool errored, not refused. Find what the specialist did instead, in its assumptions and limitations. A substitute input (a guessed location, an assumed velocity) changes what the numbers mean.
 
-   - *no tool calls*: the specialist ran nothing in that turn; its result restates the brief. A validation that ran nothing has validated nothing: send it back, or keep only what the brief itself established.
-   - *sandbox unavailable*: the specialist's sandbox never started (for example, the sandbox service out of disk), so it read no skill. The cause is the infrastructure: tell the person, and treat the method as unchecked.
-   - *tool calls failed*: a tool errored rather than refused. Find what the specialist did instead, in its assumptions and limitations; a substitute input (a guessed location, an assumed velocity) changes what the numbers mean.
+   Put what you did about each in the checkpoint record (`done[].process_audit`). The gateway refuses the next wave until every flag is addressed.
 
-   Put what you did about each in the checkpoint record (`done[].process_audit`): the gateway refuses the next wave until every flag is addressed.
-
-   **Read every result's assumptions** before relying on it (`get_specialist_result(job_id, sections=["assumptions"])` when the first view trimmed them): the checkpoint refuses a wave whose assumptions were never delivered to you. An unread assumption, such as "regional queries used an approximate point", stays under every number built on it.
+   **Read every result's assumptions** before you rely on it. If the first view trimmed them, call `get_specialist_result(job_id, sections=["assumptions"])`. The checkpoint refuses a wave whose assumptions were never delivered to you. An unread assumption, such as "regional queries used an approximate point", stays under every number built on it.
    **Check every location a specialist used** against the investigation's coordinates: the AOI centroid in a regional result, the well position in a seismic one. A location that differs is a method error, whatever the result says.
-2. **The method fits the deliverable.** The `m:` ids in `source_reference` name the methods used, and a deliverable must carry the method that makes it:
+2. **The method fits the deliverable.** The `m:` ids in `source_reference` name the methods used. A deliverable must carry the method that makes it:
 
    | Deliverable | Must include |
    |---|---|
@@ -91,13 +98,19 @@ Section 3 asks whether a claim follows from its evidence; these ask whether the 
    | a distance from a well to a feature | `m:seis/feature-distance`; a bounding-box overlap is not a distance |
    | channel type (meandering, submarine, tidal, ...) | `m:seis/recipe-channel` with the measured `planform` and fill, or a typed recipe whose `type_basis` names the user or a well |
 
-   A fault volume without its extraction method is a thresholded attribute, not faults: follow up. "No channels" without `m:seis/segment-volume` means the channel workflow never ran: send it back to run the generic recipe, over a `z_window` when there are no horizons.
+   A fault volume without its extraction method is a thresholded attribute, not faults: follow up. "No channels" without `m:seis/segment-volume` means the channel workflow never ran. Send it back to run the generic recipe, over a `z_window` when there are no horizons.
 
-   **A channel result is read with its QC**, not its count. Refuse (send back) a body result when: a body's extents are the survey's (one channel does not span every inline and crossline); `qc.extent` flags a body, or `qc.stability.merged_bodies` is not empty, and the result reports those bodies as separate channels; faults were extracted in the same investigation and the recipe ran without `faults` (`qc.fault_overlap` absent); or `qc.selection.final_exceeds_cap` is true. "Found at 9/9 settings" is persistence, not identity: a merger of channels, sheets and fault zones is perfectly stable. For other deliverables, ask the specialist which method produced it when the ids do not make it plain.
-3. **The input fits the method.** Read what each computation ran on (the evidence statements and `source_reference`). Fault likelihood, fault extraction and other trace-correlation methods run on seismic amplitudes; a result computed on an attribute (coherence, a likelihood, a mask) where seismic was expected is a method error unless the person asked for it.
-4. **Compare with earlier runs of the same question.** If a rerun changes a key number by a large factor (a likelihood percentile ten times smaller, a fault count from 3 to 9), find out why before accepting: the inputs or the method changed, not the earth.
-5. **Faults come with persistence.** `seismic_interpret_faults` reports how many of the nearby settings find each fault (`found_at`). Report the drawn faults with that table; a count that changes across settings is reported as unstable, never tuned.
-6. **After pushback, say what changed the method.** When a rerun follows the person's objection, tell them whether the evidence or their request changed the method, and what the specialist found about why the first result missed.
+   **A channel result is read with its QC**, not its count. Refuse (send back) a body result when:
+   - a body's extents are the survey's (one channel does not span every inline and crossline);
+   - `qc.extent` flags a body, or `qc.stability.merged_bodies` is not empty, and the result reports those bodies as separate channels;
+   - faults were extracted in the same investigation, and the recipe ran without `faults` (`qc.fault_overlap` absent);
+   - or `qc.selection.final_exceeds_cap` is true.
+
+   "Found at 9/9 settings" is persistence, not identity: a merger of channels, sheets and fault zones is perfectly stable. For other deliverables, if the ids do not make the method plain, ask the specialist which method produced it.
+3. **The input fits the method.** Read what each computation ran on (the evidence statements and `source_reference`). Fault likelihood, fault extraction and other trace-correlation methods run on seismic amplitudes. A result computed on an attribute (coherence, a likelihood, a mask) where seismic was expected is a method error, unless the person asked for it.
+4. **Compare with earlier runs of the same question.** If a rerun changes a key number by a large factor (a likelihood percentile ten times smaller, a fault count from 3 to 9), find out why before you accept it. The inputs or the method changed, not the earth.
+5. **Faults come with persistence.** `seismic_interpret_faults` reports how many of the nearby settings find each fault (`found_at`). Report the drawn faults with that table. Report a count that changes across settings as unstable; never tune it.
+6. **After pushback, say what changed the method.** When a rerun follows the person's objection, tell them whether the evidence or their request changed the method. Also tell them what the specialist found about why the first result missed.
 
 ## 4. Independence and double counting
 
@@ -106,7 +119,11 @@ Trace each supporting id back to its origin:
 - Two specialists who both rely on `T03-seis/E2` provide one line of evidence, not two.
 - A local interpretation built on a literature analogue, plus that same analogue, is one line.
 - Log-derived facies and core-described facies from the same interval are independent only if the log interpretation was not calibrated to that core description.
-- A re-check by the same specialist is a second line only if it ran in a fresh session (`session_route` says so), was briefed blind (the question, not the earlier answer), and used a different method, parameters or data. A re-check in the investigation's session, or one that repeated the same method on the same data, is the same line: the specialist's tools return the earlier result for identical inputs.
+- A re-check by the same specialist is a second line only if it ran in a fresh session (`session_route` says so), was briefed blind (the question, not the earlier answer), and used a different method, parameters or data. A re-check in the investigation's session, or one that repeated the same method on the same data, is the same line. The specialist's tools return the earlier result for identical inputs.
+
+- A validation or challenge result carries the gateway's `independence` class, read from the computations it cites. Count lines from the class, not from the result's prose:
+  - validation: `same computation`, `same method and data, other parameters` and `no computation cited` are the same line. `new evidence` is a second line. `earlier computations of other tasks` re-uses other tasks' results, so it adds only the lines those tasks hold. `not classified` means the checked task is not stored: judge it from `session_route`, the brief and the `m:` ids;
+  - challenge: `tested with new computation` ran a new test. `argued from existing results` ran no new computation and tested the claim by argument only.
 
 Record the number of independent lines for each load-bearing claim in the ledger.
 
@@ -127,9 +144,9 @@ If no available evidence can discriminate, keep both interpretations. Do not pic
 
 ## 5a. A deliverable is delivered with its uncertainty, not withheld
 
-**A process-audit flag sends the procedure back, not the measurement.** When the gateway flags a skill not opened, a refused call or an override, the follow-up asks the specialist to read the procedure and check its method against it; a number measured with the right tool on the right inputs stands unless that check finds it wrong. A rerun that gives a different number is not "the audited one": report both with their inputs, and the difference is the finding (a well tie of 0.98 on the supplied checkshots against 0.85 on a derived time-depth product says the derived product is the weaker input, not that 0.85 is the tie).
+**A process-audit flag sends the procedure back, not the measurement.** When the gateway flags a skill not opened, a refused call or an override, the follow-up asks the specialist to read the procedure and check its method against it. A number measured with the right tool on the right inputs stands, unless that check finds it wrong. A rerun that gives a different number is not "the audited one". Report both with their inputs: the difference is the finding. For example, a well tie of 0.98 on the supplied checkshots against 0.85 on a derived time-depth product says the derived product is the weaker input, not that 0.85 is the tie.
 
-A specialist that returns an argument in place of a product the person asked for ("a survey-wide depth map is not defensible because the single-well time-depth is not a validated lateral velocity model"; "the bodies are candidates, so no channel volume") has not answered. The product exists at a stated uncertainty: a depth map from one well's time-depth is the standard first depth map, with the lateral velocity unknown; a channel volume is the extraction with its QC. Send it back as a `follow_up` with the product in `required_outputs` and the uncertainty to state; never relay "not defensible" as the result. When the person challenges "X was not produced", the answer to the challenge is X.
+A specialist that returns an argument in place of a product the person asked for ("a survey-wide depth map is not defensible because the single-well time-depth is not a validated lateral velocity model"; "the bodies are candidates, so no channel volume") has not answered. The product exists at a stated uncertainty. A depth map from one well's time-depth is the standard first depth map, with the lateral velocity unknown. A channel volume is the extraction with its QC. Send it back as a `follow_up`, with the product in `required_outputs` and the uncertainty to state. Never relay "not defensible" as the result. When the person challenges "X was not produced", the answer to the challenge is X.
 
 ## 6. Decide the disposition
 
@@ -155,14 +172,16 @@ A claim is **load-bearing** if reservoir, seal, trap, charge, timing, prospect g
 
 ## 7a. Figures
 
-A result's `figures` entries (or its `Figure:` conclusion lines) are recorded in the ledger with the claims each supports, and the claims are checked the usual way: a figure changes nothing about a claim's status, and a claim you would not have accepted without the picture is not accepted with it. A figure whose `supports` claim you reject or lower is kept in the ledger and not shown in the answer.
+Record a result's `figures` entries (or its `Figure:` conclusion lines) in the ledger, with the claims each supports. Check the claims the usual way: a figure changes nothing about a claim's status. A claim you would not have accepted without the picture is not accepted with it. If you reject or lower a figure's `supports` claim, keep the figure in the ledger and do not show it in the answer.
+
+Send a render-only follow-up in the same session for a result whose claims rest on a product with a renderer and that returned no figure for it, or for a `Process audit: figures not carried` flag: "Render the figures for <products>, and return each in `figures` with the claim ids it supports." Accept a result without them only with the reason (for example, the product has no renderer).
 
 ## 8. Record the review
 
 Update the ledger:
 - the task's disposition, and the method and process checks done (section 3a) with what you did about each process-audit flag;
 - the claims you now rely on, with classes, sources, independent lines and status;
-- for each, the `prov:` and `m:` tokens from the specialist's `source_reference`, copied exactly. A result whose `source_reference` carries no `m:` id is one the specialist did not attribute to a method; note it as such rather than inferring one;
+- for each, the `prov:` and `m:` tokens from the specialist's `source_reference`, copied exactly. If a result's `source_reference` carries no `m:` id, the specialist did not attribute it to a method. Note it as such; do not infer one;
 - any item the id check set aside, and whether it was corrected or declared not relied on;
 - new contradictions and uncertainties;
 - anything that must be re-checked downstream.

@@ -1,6 +1,6 @@
 ---
 name: petro-lithology
-description: Lithology and mineralogy from logs - matrix identification (quartz/calcite/dolomite), multimineral solves with a reconstruction residual, and electrofacies; their validity limits and how to name and report the results. Load before petro_lithology.
+description: Lithology and mineralogy from logs. It covers matrix identification (quartz/calcite/dolomite), multimineral solves with a reconstruction residual, and electrofacies. It also covers their validity limits, and how to name and report the results. Load before petro_lithology.
 ---
 
 # Lithology and mineralogy
@@ -17,16 +17,16 @@ description: Lithology and mineralogy from logs - matrix identification (quartz/
 
 ## Choosing and checking
 
-- **Matrix identification**: shale and gas distort the apparent matrix values. Use it in clean, water-bearing intervals, and treat results in shaly or gas-bearing beds as unreliable.
+- **Matrix identification**: shale and gas distort the apparent matrix values. Use it in clean, water-bearing intervals. Treat results in shaly or gas-bearing beds as unreliable.
 - **Multimineral**:
   - **Unknowns**: at most one more than the number of logs (the unity constraint supplies the extra equation). With RHOB, NPHI and PEF, that is three minerals plus porosity.
-  - **Mineral list**: choose it from the geology (the task, cuttings, core, regional context), never by trying lists until the residual is small.
-  - **`MM_RESID`** is the misfit in units of tool precision. A median below about 1 means the model explains the logs. Where it is high, the model does not fit: another mineral, hydrocarbons in the flushed zone (the fluid point assumes water), or bad hole. Report those intervals.
-  - **Reference values**: mineral properties are standard chart values, listed in the result; state them. The shale point is a parameter with a source.
+  - **Mineral list**: choose it from the geology (the task, cuttings, core, regional context). Never choose it by trying lists until the residual is small.
+  - **`MM_RESID`** is the misfit in units of tool precision. A median below about 1 means that the model explains the logs. Where it is high, the model does not fit. The possible causes are another mineral, hydrocarbons in the flushed zone (the fluid point assumes water), or bad hole. Report those intervals.
+  - **Reference values**: mineral properties are standard chart values, listed in the result. State them. The shale point is a parameter with a source.
 - **Electrofacies**:
-  - **Clusters**: groups of similar log response, from seeded k-means keeping the best of 10 starts, so results are reproducible. The number of facies is your choice: try 2-3 values and report the one whose facies are geologically distinct and stable.
-  - **Bad hole forms its own facies**: a washout is a distinct log signature. Check facies against `petro_qc_logs` before naming them.
-  - **Naming**: name facies by their log character (e.g. "low GR, high resistivity, crossover") and by the lithology tools. They are not depositional facies: those belong to sedimentology, and core or cuttings calibrate them. Say so, and recommend it.
+  - **Clusters**: groups of similar log response, from seeded k-means that keeps the best of 10 starts, so results are reproducible. You choose the number of facies. Try 2-3 values, and report the one whose facies are geologically distinct and stable.
+  - **Bad hole forms its own facies**: a washout is a distinct log signature. Check facies against `petro_qc_logs` before you name them.
+  - **Naming**: name facies by their log character (e.g. "low GR, high resistivity, crossover") and by the lithology tools. They are not depositional facies. Depositional facies belong to sedimentology, and core or cuttings calibrate them. Say so, and recommend it.
 
 ## Reporting
 

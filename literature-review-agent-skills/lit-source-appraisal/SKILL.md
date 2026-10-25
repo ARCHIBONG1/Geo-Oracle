@@ -1,6 +1,6 @@
 ---
 name: lit-source-appraisal
-description: How the literature specialist judges the authority, evidence basis, geographic relevance and independence of geological sources. Covers peer-reviewed papers, reviews, geological-survey reports, regional syntheses, conference papers, theses and industry documents. Use when deciding which sources to rely on, when sources disagree, when classifying a finding as study-area, basin-scale or analogue evidence, and when checking whether supporting sources are really independent.
+description: How the literature specialist judges the authority, evidence basis, geographic relevance and independence of geological sources. It covers peer-reviewed papers, reviews, geological-survey reports, regional syntheses, conference papers, theses and industry documents. Use when deciding which sources to rely on, when sources disagree, when classifying a finding as study-area, basin-scale or analogue evidence, and when checking whether supporting sources are really independent.
 ---
 
 # Source appraisal
@@ -9,7 +9,7 @@ Search rank, citation count, recency and confident prose are not evidence qualit
 
 ## 1. Default priority by source type
 
-Use this order when sources conflict or time is short. A source's data basis (section 2) can move it up or down.
+If sources conflict or time is short, use this order. A source's data basis (section 2) can move it up or down.
 
 1. Peer-reviewed primary research with original data.
 2. Peer-reviewed reviews and syntheses.
@@ -57,8 +57,8 @@ Decide the class from coordinates, well names, maps and figure locations, not fr
 ## 5. Age, nomenclature and time scales
 
 - **Superseded frameworks:** older work may use superseded formation names, ages or structural frameworks. Map old names to current usage and state the mapping.
-- **Stage ages:** stage boundaries and absolute ages have been revised over time. When comparing ages across papers, check which time scale each paper used.
-- **Newer is not truer:** a newer paper may reinterpret older data, while an older paper may hold the only direct observations. Judge the evidence, not the date.
+- **Stage ages:** stage boundaries and absolute ages have been revised over time. When you compare ages across papers, check which time scale each paper used.
+- **Newer is not truer:** a newer paper may reinterpret older data. But an older paper may hold the only direct observations. Judge the evidence, not the date.
 
 ## 6. Independence
 

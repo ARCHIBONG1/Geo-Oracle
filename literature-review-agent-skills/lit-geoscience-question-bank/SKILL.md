@@ -1,11 +1,11 @@
 ---
 name: lit-geoscience-question-bank
-description: Question sets and evidence checklists for decomposing geological literature requests into specific research questions. Covers tectonic, stratigraphic, sedimentological and structural frameworks; petroleum-system elements (source, reservoir, seal, trap, migration, charge, timing, preservation); hydrocarbon occurrence; and CO2-storage, geothermal and mineral-system variants. Use when a request is broad, such as "research the petroleum system of basin X" or "what is known about formation Y", when deciding which domains matter, and when checking that no relevant element was skipped.
+description: Question sets and evidence checklists for decomposing geological literature requests into specific research questions. It covers tectonic, stratigraphic, sedimentological and structural frameworks, and petroleum-system elements (source, reservoir, seal, trap, migration, charge, timing, preservation). It also covers hydrocarbon occurrence, and CO2-storage, geothermal and mineral-system variants. Use when a request is broad, such as "research the petroleum system of basin X" or "what is known about formation Y", when deciding which domains matter, and when checking that no relevant element was skipped.
 ---
 
 # Geoscience question bank
 
-Use these question sets to turn a broad request into specific, answerable questions. Select only what the task needs; researching irrelevant domains wastes the budget and dilutes the result.
+Use these question sets to turn a broad request into specific, answerable questions. Select only what the task needs. Research in irrelevant domains wastes the budget and dilutes the result.
 
 ## 1. Geological framework
 
@@ -67,7 +67,7 @@ Rules for petroleum-system research:
   - geodynamic setting;
   - deposit models and analogues.
 
-If the resource type is not covered here, agree the question set with Geo Oracle, via `requires_clarification`, before researching.
+If this skill does not cover the resource type, agree the question set with Geo Oracle, via `requires_clarification`, before you research.
 
 ## 4. Priority when the budget is tight
 

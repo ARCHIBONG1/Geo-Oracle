@@ -1,21 +1,27 @@
 ---
 name: geo-synthesis-audit
-description: Structure, citation rules and the mandatory scientific audit for Geo Oracle's syntheses, from interim model summaries to final investigation reports and prospectivity conclusions. Use before presenting any major synthesis, final report or conclusion about geology, plays, prospects or risk, and whenever the user asks "what do we know", "summarise the findings", "what's your conclusion" or "is this prospective".
+description: Structure, citation rules and the mandatory scientific audit for Geo Oracle's syntheses, from interim model summaries to final investigation reports and prospectivity conclusions. Use before you present any major synthesis, final report or conclusion about geology, plays, prospects or risk. Also load it in this case — whenever the user asks "what do we know", "summarise the findings", "what's your conclusion" or "is this prospective".
 ---
 
 # Synthesis and final audit
 
-A synthesis is not a concatenation of specialist reports. It integrates their findings into one model, shows how the conclusions depend on the evidence, and is never stronger than its weakest essential link. A competent geoscientist should be able to reproduce the reasoning from the stated evidence and ids.
+A synthesis is not a concatenation of specialist reports. It integrates their findings into one model, and shows how the conclusions depend on the evidence. It is never stronger than its weakest essential link. A competent geoscientist should be able to reproduce the reasoning from the stated evidence and ids.
 
 ## 0. The reduction loop, if it ran
 
-If the investigation ran a reduction wave, the final answer must contain, for every attempt: what was tried, why (the material uncertainty and the conclusions at stake), who tried it and in what mode, and the outcome in the risk specialist's words (settled, settled as a failure, narrowed, unchanged, newly material, overturned, newly a settled failure, changed). An attempt that did not settle its uncertainty is reported as prominently as one that did. A material uncertainty without a flip test behind it is not a finding; a chance of success, a likelihood or a severity anywhere in the answer is a defect to remove.
+If the investigation ran a reduction wave, the final answer must contain these items for every attempt:
+- what was tried;
+- why (the material uncertainty and the conclusions at stake);
+- who tried it, and in what mode;
+- the outcome in the risk specialist's words (settled, settled as a failure, narrowed, unchanged, newly material, overturned, newly a settled failure, changed, entry withdrawn).
+
+Report an attempt that did not settle its uncertainty as prominently as one that did. A material uncertainty without a flip test behind it is not a finding. A chance of success, a likelihood or a severity anywhere in the answer is a defect: remove it.
 
 ## 0a. Figures in the answer
 
-Specialists render; you place. Choose three to six figures for the answer, the ones that carry the conclusions a reader must see, and put each immediately beside the conclusion it supports, with that conclusion's evidence ids and source as usual: the markdown image line, then a one-line caption naming the specialist and the product it came from. List the remaining figures at the end as captions with links. You render nothing yourself: a figure illustrates a claim, and the claims are the specialists'.
+Specialists render; you place. Choose three to six figures for the answer: the ones that carry the conclusions a reader must see. Put each figure immediately beside the conclusion it supports, with that conclusion's evidence ids and source as usual. Give the markdown image line, then a one-line caption that names the specialist and the product it came from. List the remaining figures at the end, as captions with links. You render nothing yourself: a figure illustrates a claim, and the claims are the specialists'.
 
-A figure never stands in for evidence. If the conclusion beside it is not cited and traced, the figure does not make it so, and a figure whose claim did not reach the answer is not shown. An interactive link (a seismic 3D view) is passed on as a link with its note; the chat cannot show it, and neither can you.
+A figure never stands in for evidence. If the conclusion beside it is not cited and traced, the figure does not make it so. Do not show a figure whose claim did not reach the answer. Pass on an interactive link (a seismic 3D view) as a link with its note. The chat cannot show it, and neither can you.
 
 ## 1. Citations
 
@@ -32,11 +38,11 @@ Attach a source to every material statement:
 
 Do not use material statements without a source. If you cannot cite something, it does not belong in the conclusions.
 
-**Methods are named, not cited, by you.** A method id (`m:<domain>/<name>`) is the method's name. You may write "computed with semblance-based edge detection (`m:seis/edge-semblance`)" because the specialist named it. You may write "Archie (1942), as the petrophysics specialist reports" only when that specialist's result carries the source. You may never add an author, a year, a DOI, an equation or a verification status to a specialist's method yourself: the owning specialist holds that record, and you do not own the tool. If the synthesis needs it and the ledger lacks it, that is an open question for the owner, not a gap for you to fill.
+**Methods are named, not cited, by you.** A method id (`m:<domain>/<name>`) is the method's name. You may write "computed with semblance-based edge detection (`m:seis/edge-semblance`)" because the specialist named it. You may write "Archie (1942), as the petrophysics specialist reports" only when that specialist's result carries the source. You may never add an author, a year, a DOI, an equation or a verification status to a specialist's method yourself. The owning specialist holds that record, and you do not own the tool. If the synthesis needs it and the ledger lacks it, that is an open question for the owner. It is not a gap for you to fill.
 
 ## 2. Structure of a full report
 
-Scale this down for interim summaries, but always keep the citations, the uncertainties and the gaps.
+Scale this down for interim summaries. But always keep the citations, the uncertainties and the gaps.
 
 1. **Objective and scope.** Include what was run: task, tool, status and disposition, including tasks that failed or were not executed.
 2. **Evidence base.** The inventory summary, and the key data gaps.
@@ -94,8 +100,8 @@ Run this audit before presenting a major synthesis. Fix every failure. If a fail
 
 ## 4. After presenting
 
-Update the ledger with a summary of the synthesis, the open questions and the next steps, so that the investigation can continue from exactly this state.
+Update the ledger with a summary of the synthesis, the open questions and the next steps. Then the investigation can continue from exactly this state.
 
-At the close of the investigation (the final synthesis, with the closing checkpoint filed), follow `geo-investigation-report`: the Final status block, the ledger as a download, and one closing sentence that offers the formal report.
+At the close of the investigation (the final synthesis, with the closing checkpoint filed), follow `geo-investigation-report`: write the Final status block, give the ledger as a download, and end with one closing sentence that offers the formal report.
 
 <!-- end of skill: geo-synthesis-audit -->

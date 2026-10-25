@@ -1,6 +1,6 @@
 ---
 name: play-petroleum-systems
-description: Hydrocarbon play elements and processes, what evidence lifts each, the events chart and the critical moment, timing, migration and preservation reasoning, and the common errors. Load before linking the elements of a hydrocarbon play.
+description: Hydrocarbon play elements and processes, and what evidence lifts each. Also the events chart and the critical moment, the reasoning on timing, migration and preservation, and the common errors. Load before linking the elements of a hydrocarbon play.
 ---
 
 # Petroleum systems
@@ -18,22 +18,31 @@ description: Hydrocarbon play elements and processes, what evidence lifts each, 
 | timing | trap age and expulsion both dated, trap first | one side dated | one side undated and assumed |
 | preservation | no post-charge uplift, breach or cool exposure in the burial history | nothing later known (then unknown, not safe) | preservation assumed |
 
-A discovery in the play area proves source, maturation, migration and timing together (the chain), lifting them to inferred where they stood lower.
+A discovery in the play area proves source, maturation, migration and timing together (the chain). Where they stood lower, it lifts them to inferred.
 
 ## The events chart (`play_events_chart`)
 
-Deposition of source, reservoir, seal and overburden; trap formation; generation and expulsion; migration; preservation; each from a cited claim with a range. The critical moment is the point in time you select that best depicts the generation-migration-accumulation of most hydrocarbons (Magoon and Dow 1994, p. 11): read it from the burial history or maturity model and give it as `critical_moment: {age_ma, basis}`. It lies inside the generation-migration interval (in their example 250 Ma within 260-240 Ma); an age outside it is flagged. Without it the chart reports that interval and no single age; it is never derived from the end of expulsion. PT4 tests trap formation against expulsion: a trap complete before expulsion passes; one formed during expulsion passes with partial charge noted; one formed after it fails.
+The chart holds these events, each from a cited claim with a range: deposition of source, reservoir, seal and overburden; trap formation; generation and expulsion; migration; preservation.
 
-## Migration (phase 1 tool; reasoning now)
+The critical moment is the point in time you select that best depicts the generation-migration-accumulation of most hydrocarbons (Magoon and Dow 1994, p. 11). Read it from the burial history or maturity model, and give it as `critical_moment: {age_ma, basis}`. It lies inside the generation-migration interval (in their example 250 Ma within 260-240 Ma). The tool flags an age outside it. Without it, the chart reports that interval and no single age. It is never derived from the end of expulsion.
 
-The fetch area of a closure is what drains into it on the depth surface; faults the structural agent found sealing are barriers, leaking ones are conduits. Shows along the path are the study-area evidence.
+PT4 tests trap formation against expulsion:
+- a trap complete before expulsion passes;
+- one formed during expulsion passes, with partial charge noted;
+- one formed after it fails.
+
+The tool draws the events chart in `result.figures`. Publish it.
+
+## Migration (no tool yet: your reasoning, with cited evidence)
+
+The fetch area of a closure is what drains into it on the depth surface. Faults that the structural agent found sealing are barriers, and leaking ones are conduits. Shows along the path are the study-area evidence.
 
 ## Preservation
 
-Uplift after charge (burial history), breach by faulting (fault stability, structural timing), biodegradation at cool shallow depths (temperature history), flushing. Unknown is reported as unknown.
+The threats are uplift after charge (burial history), breach by faulting (fault stability, structural timing), biodegradation at cool shallow depths (temperature history) and flushing. State an unknown as unknown.
 
 ## Reporting
 
-The chart as `[interpretation]` with its events' sources; each element in the fixed claim form; the play claim capped by the weakest.
+Give the chart as `[interpretation]` with its events' sources, and each element in the fixed claim form. Give the play claim capped by the weakest.
 
 <!-- end of skill: play-petroleum-systems -->

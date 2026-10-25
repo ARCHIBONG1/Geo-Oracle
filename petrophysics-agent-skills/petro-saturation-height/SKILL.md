@@ -1,18 +1,18 @@
 ---
 name: petro-saturation-height
-description: Saturation-height functions - Leverett J and Brooks-Corey fits of capillary pressure, lab-to-reservoir conversion, the free-water level, Sw from height and its comparison with log saturation. Load before petro_saturation_height.
+description: Saturation-height functions. It covers Leverett J and Brooks-Corey fits of capillary pressure, lab-to-reservoir conversion and the free-water level. It also covers Sw from height, and its comparison with log saturation. Load before petro_saturation_height.
 ---
 
 # Saturation-height
 
 ## Data and fit
 
-`petro_saturation_height` does the fits, the conversion and the comparison described here; what follows is how to choose its inputs and read its result.
+`petro_saturation_height` does the fits, the conversion and the comparison described here. What follows is how to choose its inputs and read its result.
 
 - **Register the data**: capillary-pressure data (`capillary_pressure`: sample, porosity, permeability_md, pc_psi / pc_bar / pc_kpa, sw, system) from mercury, porous-plate or centrifuge tests.
-- **Leverett J** (`method: "leverett_j"`): J = 0.21645 Pc(psi) / (sigma cos theta) x sqrt(k/phi) normalises plugs of different quality. One curve, Sw = Swirr + a J^-b (capped at 1), is fitted to all plugs.
-  - Needs `sigma_cos_lab`, the interfacial tension times the cosine of the contact angle of the lab system (e.g. air-brine about 72 dyne/cm, mercury-air about 367 dyne/cm), with source.
-  - Check `rms_sw`. Above about 0.05 the plugs do not share one J curve: several rock types. Fit per rock type.
+- **Leverett J** (`method: "leverett_j"`): J = 0.21645 Pc(psi) / (sigma cos theta) x sqrt(k/phi) normalises plugs of different quality. The tool fits one curve, Sw = Swirr + a J^-b (capped at 1), to all plugs.
+  - Needs `sigma_cos_lab`, with source: the interfacial tension times the cosine of the contact angle of the lab system. For example, air-brine about 72 dyne/cm, mercury-air about 367 dyne/cm.
+  - Check `rms_sw`. If it is above about 0.05, the plugs do not share one J curve: there are several rock types. Fit per rock type.
 - **Brooks-Corey** (`method: "brooks_corey"`) fits each plug separately (Swirr, entry pressure, lambda). Use it to compare plugs, not to predict along a well.
 
 ## From lab to reservoir
@@ -22,9 +22,9 @@ With a well (PHIE, PERM, trajectory), the tool predicts `SW_SHF` from height abo
 - **J**: computed with the reservoir sigma cos theta and the log PHIE and PERM, then the fitted curve applied.
 
 Parameters, each with a source:
-- **`sigma_cos_res`**: reservoir interfacial tension x cos theta, e.g. gas-brine about 50, oil-brine about 26 dyne/cm, or from PVT or a report.
+- **`sigma_cos_res`**: reservoir interfacial tension x cos theta. For example, gas-brine about 50 and oil-brine about 26 dyne/cm. Or take it from PVT or a report.
 - **`brine_density`** and **`hydrocarbon_density`**: from pressure gradients or PVT.
-- **`fwl_tvdss_m`**: the free-water level, where capillary pressure is zero, in m TVDSS. It lies below the water-saturation contact by the entry height, and often comes from pressure gradients. If unknown, run cases, and report it as the main uncertainty.
+- **`fwl_tvdss_m`**: the free-water level, where capillary pressure is zero, in m TVDSS. It lies below the water-saturation contact by the entry height, and often comes from pressure gradients. If it is unknown, run cases, and report it as the main uncertainty.
 
 ## Reading the comparison
 

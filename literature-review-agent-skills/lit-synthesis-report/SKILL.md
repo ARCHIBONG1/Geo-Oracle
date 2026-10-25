@@ -1,6 +1,6 @@
 ---
 name: lit-synthesis-report
-description: How the literature specialist synthesises findings across sources. Covers handling conflicting literature, careful consensus language, the standalone literature report for direct conversations, and the final self-check before returning any result. Use when combining evidence from several sources into conclusions, when sources disagree, before returning any result to Geo Oracle, and when a person asks for a literature report directly.
+description: How the literature specialist synthesises findings across sources. It covers conflicting literature, careful consensus language, the standalone literature report for direct conversations, and the final self-check before you return any result. Use when combining evidence from several sources into conclusions, when sources disagree, before returning any result to Geo Oracle, and when a person asks for a literature report directly.
 ---
 
 # Synthesis and report
@@ -28,7 +28,7 @@ When sources disagree materially:
 4. Find later work that supports or challenges the earlier interpretations.
 5. State what remains unresolved, and what new data would discriminate between the interpretations.
 
-Record each material disagreement as a `contradiction`. Do not average interpretations into a false consensus, and do not dismiss a minority view without examining its evidence.
+Record each material disagreement as a `contradiction`. Do not average interpretations into a false consensus. Do not dismiss a minority view if you have not examined its evidence.
 
 ## 3. Consensus language
 
@@ -40,11 +40,11 @@ Record each material disagreement as a `contradiction`. Do not average interpret
 | "The reviewed sources disagree regarding…" | There is a material conflict |
 | "The literature does not establish…" | The evidence is absent or insufficient |
 
-Never write "the scientific community agrees" unless the search was broad enough to justify it, which is rare. The number of papers is not a measure of correctness.
+Never write "the scientific community agrees" unless the search was broad enough to justify it. Such a search is rare. The number of papers is not a measure of correctness.
 
 ## 4. Standalone report (direct conversations only)
 
-When a person asks directly and there is no output contract, write:
+If a person asks directly and there is no output contract, write:
 
 1. **Research question(s)**
 2. **Search scope:** the geographic and geological scope, the date range, the tools and databases searched (from the search log), the key terms, and what could not be searched or accessed.
@@ -75,17 +75,17 @@ Cite verified sources inline as (Author et al. year, DOI), with the access level
 **Search**
 - Did I search specifically for disagreement on the important interpretations?
 - Are the searches I report exactly those in my search log?
-- Are what I could not search or access, and why the search stopped, stated in `limitations`?
+- Does `limitations` state what I could not search or access, and why the search stopped?
 
 **Scope and format**
-- Did I avoid prospectivity rankings and recommendations?
+- Did I avoid prospectivity rankings and recommendations? (A report task, R1-lit-report to R3-lit-report, restates Geo Oracle's conclusions as `lit-investigation-report` says. It adds none of its own.)
 - For gateway tasks: is the output a single JSON object that matches the contract, with no extra keys?
 
-Fix every failure before returning. If a failure cannot be fixed, disclose it.
+Fix every failure before you return the result. If you cannot fix a failure, disclose it.
 
 ## Methods statements
 
-Every result that ran a computation carries `methods_statements`: one entry for each method, or group of methods used together. The `text` goes into the investigation report as you write it, so write it for the reader of a field report:
+Every result that ran a computation carries `methods_statements`: one entry for each method, or group of methods used together. The `text` goes into the investigation report as you write it. So write it for the reader of a field report:
 - 1 to 3 sentences, one fact each, at most 25 words each, active voice;
 - what you did, to which data, the key choices and parameter values, any deviation from the published method, and any limitation that affected this result;
 - no ids and no textbook account of the method: copy the method ids and provenance ids from your tool results into `method_ids` and `provenance_ids`.

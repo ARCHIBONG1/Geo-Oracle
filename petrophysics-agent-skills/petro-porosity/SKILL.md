@@ -1,6 +1,6 @@
 ---
 name: petro-porosity
-description: Porosity - choosing density, neutron-density or sonic methods by lithology, fluid and hole condition, sourcing matrix/fluid/shale points, the gas correction, total versus effective porosity, and checks against core. Load before petro_porosity or petro_net_pay.
+description: Porosity. It covers choosing density, neutron-density or sonic methods by lithology, fluid and hole condition, and sourcing matrix/fluid/shale points. It also covers the gas correction, total versus effective porosity, and checks against core. Load before petro_porosity or petro_net_pay.
 ---
 
 # Porosity
@@ -10,6 +10,7 @@ description: Porosity - choosing density, neutron-density or sonic methods by li
 `petro_porosity(well, method, parameter_set, shale_correction=True, tops)`:
 - **Output**: writes `PHIT` (total) and `PHIE` (effective = total minus the shale's apparent porosity, using `VSH`) into a new well file. Run `petro_vshale` first.
 - **Gas correction**: with `neutron_density`, the result lists `gas_corrected_intervals`, where the correction acted.
+- **Figure**: with `neutron_density`, the tool draws the neutron-density crossplot into `result.figures`.
 
 ## Methods
 
@@ -37,18 +38,18 @@ A wrong matrix density is the commonest porosity error: 0.05 g/cm3 in rho_ma mov
 
 ## Traps
 
-- **Gas**: density porosity alone reads too high. The neutron-density gas correction brings it back. Report the gas-corrected intervals as observations supporting a gas interpretation, alongside the crossover.
-- **Washouts**: density and neutron read porous (a washout mimics gas). Gas-corrected intervals inside washouts (`petro_qc_logs`) are artefacts, and `petro_net_pay` excludes bad hole by default.
-- **Shale correction** needs `VSH`. Without it, PHIE = PHIT and shaly intervals are overstated. Every method, sonic included, removes Vsh times the shale point's apparent porosity by the same transform (so the sonic methods need dt_sh).
-- **Carbonates**: sonic porosity misses vugs and fractures. A difference between neutron-density and sonic porosity is secondary porosity; report it as an interpretation.
+- **Gas**: density porosity alone reads too high. The neutron-density gas correction brings it back. Report the gas-corrected intervals as observations that support a gas interpretation, together with the crossover.
+- **Washouts**: density and neutron read porous (a washout mimics gas). Gas-corrected intervals inside washouts (`petro_qc_logs`) are artefacts. `petro_net_pay` excludes bad hole by default.
+- **Shale correction** needs `VSH`. Without it, PHIE = PHIT, and shaly intervals are overstated. Every method, sonic included, removes Vsh times the shale point's apparent porosity by the same transform. So the sonic methods need dt_sh.
+- **Carbonates**: sonic porosity misses vugs and fractures. A difference between neutron-density and sonic porosity is secondary porosity. Report it as an interpretation.
 
 ## Calibration
 
-If core porosity is supplied, calibrate with `petro_core_calibrate` (skill `petro-core-scal`): depth shift, overburden correction, then log-versus-core bias and scatter. Take the grain density as `rho_ma` and rerun. Porosity is "calibrated to core" only when the bias is within about ±0.01 v/v. Without core, state that it is not calibrated.
+If core porosity is supplied, calibrate with `petro_core_calibrate` (skill `petro-core-scal`): depth shift, overburden correction, then log-versus-core bias and scatter. Take the grain density as `rho_ma`, and rerun. Porosity is "calibrated to core" only when the bias is within about ±0.01 v/v. Without core, state that it is not calibrated.
 
 ## Reporting
 
-- `measurements`: "Effective porosity (gas-corrected neutron-density, rho_ma 2.65 from core grain density) median 0.25 in SAND_B (10th-90th percentile 0.24-0.26)", with `source_type` `derived` and the provenance id.
+- `measurements`: give each with `source_type` `derived` and the provenance id. For example: "Effective porosity (gas-corrected neutron-density, rho_ma 2.65 from core grain density) median 0.25 in SAND_B (10th-90th percentile 0.24-0.26)".
 - `assumptions`: every matrix, fluid and shale point, with its source.
 
 <!-- end of skill: petro-porosity -->

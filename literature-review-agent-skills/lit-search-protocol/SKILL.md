@@ -1,15 +1,21 @@
 ---
 name: lit-search-protocol
-description: Search planning and execution for the geological literature specialist. Covers term expansion (formation, historical and local names, translations), which tool to use for what (OpenAlex, Exa publication search, Tavily), iterative narrowing, citation chaining, challenge searches, author disambiguation, the search log, and when to stop. Use at the start of every literature task, when searching for papers by a named author, when results are thin, noisy or all from one group, and when deciding whether to keep searching.
+description: Search planning and execution for the geological literature specialist. It covers term expansion (formation, historical and local names, translations) and which tool to use for what (OpenAlex, Exa publication search, Tavily). It also covers iterative narrowing, citation chaining, challenge searches, author disambiguation, the search log, and when to stop. Use at the start of every literature task, when searching for papers by a named author, when results are thin, noisy or all from one group, and when deciding whether to keep searching.
 ---
 
 # Search protocol
 
-A literature search is only as good as its coverage, and coverage fails quietly. The usual causes are a wrong formation name, a sub-basin nobody searched, a disagreement published as a "Discussion", or a key regional report that no journal index holds. This protocol guards against each of these.
+A literature search is only as good as its coverage, and coverage fails quietly. The usual causes are:
+- a wrong formation name;
+- a sub-basin that nobody searched;
+- a disagreement published as a "Discussion";
+- a key regional report that no journal index holds.
+
+This protocol guards against each of these.
 
 ## 1. Plan before searching
 
-For each research question, write down the following before running any search:
+Before you run any search, write down the following for each research question:
 
 - **Concepts and their variants:**
   - current, historical and local names;
@@ -48,7 +54,7 @@ Regional literature is often published in French, Portuguese, Spanish, Russian, 
 | Grey literature: geological surveys, government and operator reports, society pages, theses | Tavily, or Exa without a category | Restrict by domain where possible, e.g. the national survey's site |
 | Legal full text | The open-access location in the OpenAlex record, then the publisher's open-access page or a repository copy | Then fetch or extract the page |
 
-OpenAlex search calls cost credits against the daily budget; record lookups by DOI or ID are free. Use `preview` to size a query before pulling many pages.
+OpenAlex search calls cost credits against the daily budget. Record lookups by DOI or ID are free. Use `preview` to size a query before you pull many pages.
 
 ## 3. Iterate: broad, then narrow
 
@@ -58,7 +64,7 @@ OpenAlex search calls cost credits against the daily budget; record lookups by D
 
 ## 4. Citation chaining
 
-For each key paper, meaning one that a conclusion depends on:
+For each key paper (a paper that a conclusion depends on):
 - **Backward:** scan its references for the primary data sources behind its interpretations.
 - **Forward:** scan the works that cite it, especially later ones, which may refine or challenge it.
 - **Stop** when chaining mostly returns works you already have.
@@ -74,7 +80,7 @@ Published discussions are among the most useful sources: they set out the disagr
 
 ## 6. Author requests
 
-An author's publication list is judged by its completeness and its accuracy, and author profiles are often split or merged. Use this exact sequence, with the official OpenAlex tools:
+The quality of an author's publication list is its completeness and its accuracy. Author profiles are often split or merged. Use this exact sequence, with the official OpenAlex tools:
 
 1. **Find the candidates.** `search_entities` `{"entity_type": "authors", "query": "<full name>"}`. If several people share the name, tell them apart by affiliation, topics, co-authors and ORCID, and say how you did.
 2. **Read the profile.** `get_entity` `{"entity_type": "authors", "id": "A…"}`. Note the affiliation history, the alternate names, the ORCID and `works_count`.
@@ -82,20 +88,20 @@ An author's publication list is judged by its completeness and its accuracy, and
    - The echoed `oql` must contain the author filter.
    - `total_results` should be close to `works_count`.
    - Each result carries `this_authorship`, which gives the author's position in the byline and the affiliation printed on the paper.
-   - If the echo shows no author filter, or the totals are in the millions, the call was malformed: discard the results.
-4. **Find works missing from the profile.** `find_candidate_works` `{"author_id": "A…", "orcid": "<ORCID if known>"}`. This covers works under name variants, works listed on the public ORCID record, and possible duplicate profiles. Run it again with `"name"` set to each alternate name, and with earlier affiliations if the results are noisy. Include only candidates whose byline, affiliation and co-authors match; list them separately as "found outside the main profile".
-5. **Check status and details.** Use `get_work` where the type, venue or DOI is unclear. For a preprint, check its current status on its own page (arXiv marks withdrawn versions) using a web extract tool.
+   - If the echo shows no author filter, or the totals are in the millions, the call was malformed. Discard the results.
+4. **Find works missing from the profile.** `find_candidate_works` `{"author_id": "A…", "orcid": "<ORCID if known>"}`. This covers works under name variants, works listed on the public ORCID record, and possible duplicate profiles. Run it again with `"name"` set to each alternate name, and with earlier affiliations if the results are noisy. Include only candidates whose byline, affiliation and co-authors match. List them separately as "found outside the main profile".
+5. **Check status and details.** Use `get_work` where the type, venue or DOI is unclear. For a preprint, use a web extract tool to check its current status on its own page (arXiv marks withdrawn versions).
 6. **Present a table:** year, title, all authors (with this author's position), venue or publisher, type, DOI, status.
    - **Type:** journal article, conference paper or extended abstract, preprint, thesis, book chapter, or other.
    - **Status:** published, preprint, withdrawn, retracted or corrected.
-   - Merge a preprint into its published version. Flag records that look like duplicates, such as the same title under two DOIs, rather than listing them twice.
-7. **State the coverage:** the total number of works, the sources and tools used, and whether the list is complete as far as they show. Never call a list "all papers" unless steps 3 and 4 support it; say "works found in OpenAlex and ORCID".
+   - Merge a preprint into its published version. Flag records that look like duplicates, such as the same title under two DOIs, rather than list them twice.
+7. **State the coverage:** the total number of works, the sources and tools used, and whether the list is complete as far as they show. Never call a list "all papers" unless steps 3 and 4 support it. Say "works found in OpenAlex and ORCID".
 
 A request to list works must return the list itself. A count without the items is incomplete: report `partially_completed` and explain why.
 
 ## 7. Keep a search log
 
-Record, for every search:
+For every search, record:
 - the tool;
 - the query or OQL and the filters;
 - the date;
@@ -109,7 +115,7 @@ Report only searches in the log.
 
 Stop when any of the following holds:
 - **Saturation:** two consecutive rounds, including chaining, add no new relevant sources or claims for any research question.
-- **Budget:** the budget is reached. The default is about 40 tool calls; about 10 for a narrow lookup; up to about 80 for `critical` priority.
+- **Budget:** the budget is reached. The default is about 40 tool calls. A narrow lookup gets about 10, and `critical` priority gets up to about 80.
 - **Access:** the remaining gaps need sources you cannot access.
 
 State which condition ended the search. A search that ended on budget with gaps remaining should report `partially_completed`, not `completed`.

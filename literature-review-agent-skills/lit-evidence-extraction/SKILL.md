@@ -1,11 +1,11 @@
 ---
 name: lit-evidence-extraction
-description: How the literature specialist extracts geological evidence from sources and maps it onto the Geo Oracle gateway's JSON output contract. Covers separating observations, measurements and author interpretations; recording quantitative values with units, method, sample and location; labelling geographic relevance and access level; and the source_reference format. Use whenever you turn what you read into findings, and always before writing the final JSON for a task that came with an OUTPUT CONTRACT.
+description: How the literature specialist extracts geological evidence from sources and maps it onto the Geo Oracle gateway's JSON output contract. It covers how to separate observations, measurements and author interpretations, and how to record quantitative values with units, method, sample and location. It also covers the labels for geographic relevance and access level, and the source_reference format. Use whenever you turn what you read into findings, and always before writing the final JSON for a task that came with an OUTPUT CONTRACT.
 ---
 
 # Evidence extraction and output mapping
 
-The output is a geological evidence base organised by research question, not a set of paper summaries. Every finding must be traceable to where it came from and labelled with how local and how direct it is.
+The output is a geological evidence base organised by research question, not a set of paper summaries. Every finding must be traceable to where it came from. It must also carry a label for how local and how direct it is.
 
 ## 1. What to record for each finding
 
@@ -29,10 +29,10 @@ For every value, record:
 - where in the source the value appears, e.g. "Table 2, p. 14".
 
 Rules for values:
-- **No merging.** Do not average values across sources or methods; report each source's range separately.
+- **No merging.** Do not average values across sources or methods. Report each source's range separately.
 - **No silent conversion.** If you convert units, give both the original and the converted value.
 - **Figures.** Mark values read from a figure as "read from Fig. X; approximate".
-- **Access.** Values need `full-text` or `partial` access to the part that contains them. Values quoted in an abstract are marked "per abstract".
+- **Access.** Values need `full-text` access to the part that contains them. Values quoted in an abstract are marked "per abstract".
 
 ## 3. Mapping to the gateway JSON
 
@@ -55,18 +55,18 @@ Use this mapping when the task includes an OUTPUT CONTRACT:
 **`source_reference` format** (pipe-separated, one source per item):
 
 ```
-doi:<DOI> | openalex:<W-id> | <First author> et al. <year>, <venue> | relevance: <class> | access: <level> | loc: <page/figure/table>
+doi:<DOI> | openalex:<W-id> | <First author> et al. <year>, <venue> | title: <title> | relevance: <class> | access: <level> | loc: <page/figure/table>
 ```
 
-An unresolved source starts with `UNVERIFIED |`. A source without a DOI uses `url:<stable institutional URL>` in its place.
+An unresolved source starts with `UNVERIFIED |`. A source without a DOI uses `url:<stable institutional URL>` in its place. Copy the author, year and title from the resolved record: the investigation report prints its references from these fields.
 
-**Statements.** When the evidence is not from the study area, begin the statement with its relevance, e.g. "Basin-scale: …" or "Regional analogue: …". The qualifier then survives even when the statement is quoted without its metadata.
+**Statements.** If the evidence is not from the study area, begin the statement with its relevance, e.g. "Basin-scale: …" or "Regional analogue: …". The qualifier then survives, even if someone quotes the statement without its metadata.
 
-**Ids.** Use the local ids E1…, C1… and X1…; the gateway namespaces them. Reference upstream findings by the full ids you were given.
+**Ids.** Use the local ids E1…, C1… and X1…. The gateway namespaces them. Reference upstream findings by the full ids you were given.
 
 ## 4. Example
 
-Placeholders are shown in angle brackets. Real items carry resolved identifiers.
+Angle brackets show placeholders. Real items carry resolved identifiers.
 
 ```json
 {
@@ -78,7 +78,7 @@ Placeholders are shown in angle brackets. Real items carry resolved identifiers.
       "statement": "Basin-scale: Lower Shale TOC 1.8–6.2 wt% (n = 38 cuttings samples, wells B-2 and B-5).",
       "classification": "measurement",
       "source_type": "literature",
-      "source_reference": "doi:<DOI> | openalex:<W-id> | <Author> et al. <year>, <venue> | relevance: basin-scale | access: full-text | loc: Table 2",
+      "source_reference": "doi:<DOI> | openalex:<W-id> | <Author> et al. <year>, <venue> | title: <title> | relevance: basin-scale | access: full-text | loc: Table 2",
       "limitations": ["Wells B-2 and B-5 lie about 60 km from the study area"]
     }
   ],
@@ -88,7 +88,7 @@ Placeholders are shown in angle brackets. Real items carry resolved identifiers.
       "statement": "Basin-scale: the authors interpret the Lower Shale as a Type II marine source rock.",
       "classification": "interpretation",
       "source_type": "literature",
-      "source_reference": "doi:<DOI> | openalex:<W-id> | <Author> et al. <year>, <venue> | relevance: basin-scale | access: full-text | loc: p. 9",
+      "source_reference": "doi:<DOI> | openalex:<W-id> | <Author> et al. <year>, <venue> | title: <title> | relevance: basin-scale | access: full-text | loc: p. 9",
       "supporting_evidence_ids": ["E1"]
     }
   ],
@@ -110,7 +110,7 @@ Placeholders are shown in angle brackets. Real items carry resolved identifiers.
 
 ## 5. Size and priority
 
-Return the most material findings: typically 15–30 evidence items and 5–10 claims, unless `required_outputs` asks for more. The gateway trims long results, and Geo Oracle can page through them, but a focused evidence base is worth more than an exhaustive one. Prioritise evidence that:
+Return the most material findings: typically 15–30 evidence items and 5–10 claims, unless `required_outputs` asks for more. The gateway trims long results, and Geo Oracle can page through them. But a focused evidence base is worth more than an exhaustive one. Prioritise evidence that:
 1. bears directly on the research questions;
 2. is more local;
 3. is data-backed;

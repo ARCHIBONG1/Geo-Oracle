@@ -1,6 +1,6 @@
 ---
 name: play-co2-storage
-description: CO2 storage play elements, containment kept separate (caprock, faults, wells), the pressure limit, trapping mechanisms by time, and how the upstream products map to each. Load before linking the elements of a CO2 storage play and before play_containment.
+description: CO2 storage play elements, with containment kept separate (caprock, faults, wells). Also the pressure limit, trapping mechanisms by time, and how the upstream products map to each. Load before linking the elements of a CO2 storage play and before play_containment.
 ---
 
 # CO2 storage plays
@@ -17,20 +17,26 @@ description: CO2 storage play elements, containment kept separate (caprock, faul
 | well_containment | legacy-well inventory with integrity records | an inventory without records: unknown | supplied legacy_wells; literature_review |
 | pressure_limit | critical pressure of faults and caprock fracture pressure against the planned increase | fault stability alone | structural_geology, wells_petrophysics |
 
-Containment is never one status: `play_containment` keeps caprock, faults and wells apart because each fails and is monitored differently, and reports the pressure margin per fault from `fault_stability` against the planned increase.
+Containment is never one status. `play_containment` keeps caprock, faults and wells apart, because each fails and is monitored differently. It reports the pressure margin per fault from `fault_stability` against the planned increase.
 
 ## Trapping by time
 
-Structural or stratigraphic from injection; residual during migration, over years to decades; dissolution dominating from tens to hundreds of years; mineral over a thousand years or longer (IPCC 2005, Fig. 5.9 and Box 5.4). A screening play rests on the first; the others need rock and brine data and are reported as such.
+Each trapping mechanism acts over its own time (IPCC 2005, Fig. 5.9 and Box 5.4):
+- structural or stratigraphic, from injection;
+- residual, during migration, over years to decades;
+- dissolution, dominating from tens to hundreds of years;
+- mineral, over a thousand years or longer.
+
+A screening play rests on the first. The others need rock and brine data, and you present them as such.
 
 ## Pitfalls
 
 - Capacity discussed without containment.
-- Legacy wells in a depleted field overlooked: a well that penetrates the caprock without an integrity record leaves well containment unknown and caps the play.
-- A fault-stability verdict on bounded stress reported as demonstrated: it is inferred until stress is measured.
+- Legacy wells in a depleted field overlooked. A well that penetrates the caprock without an integrity record leaves well containment unknown, and it caps the play.
+- A fault-stability verdict on bounded stress reported as demonstrated. Until stress is measured, the verdict is inferred.
 
 ## Reporting
 
-`containment_assessment` with the four statuses; the storage play's matrix with the weakest link; discriminating evidence usually names capillary data, well integrity and measured stress first.
+Give `containment_assessment` with the four statuses, and the storage play's matrix with the weakest link. The discriminating evidence usually names capillary data, well integrity and measured stress first.
 
 <!-- end of skill: play-co2-storage -->

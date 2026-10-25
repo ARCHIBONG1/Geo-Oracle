@@ -1,6 +1,6 @@
 ---
 name: structural-data-qc
-description: Reading upstream products and their sidecars (domain, pick uncertainty, scope, validity, provenance), the time-versus-depth rule, supplied structural tables and their conventions. Load before reading any product or table.
+description: How to read upstream products and their sidecars (domain, pick uncertainty, scope, validity, provenance), the time-versus-depth rule, supplied structural tables and their conventions. Load before reading any product or table.
 ---
 
 # Structural data QC
@@ -16,22 +16,22 @@ description: Reading upstream products and their sidecars (domain, pick uncertai
 | `stress_field` | regional_geology | scope (regional), `resolution` (distance to the nearest indicator), the transfer template, `shmax.mean_azimuth_deg`, `circular_sd_deg`, `regime_counts` | SHmax azimuth and regime; the spread sets the azimuth range; the transfer status sets the ceiling |
 | `structural_elements` | regional_geology | scope, dataset | Expected regional structural grain, not mapped faults in the study area |
 
-`sg_read_product` returns the sidecar and a preview. Read it before every use; the domain and the uncertainty decide what you may conclude. A product with no stated domain is flagged and cannot feed closures or stress analyses.
+`sg_read_product` returns the sidecar and a preview. Read it before every use: the domain and the uncertainty decide what you may conclude. A product with no stated domain is flagged, and cannot feed closures or stress analyses.
 
 ## Time and depth
 
-- Dips, closures, spill points, stresses and seal need depth. A time-domain horizon or fault set is refused by those tools; report the refusal and request `seismic_interpretation: depth versions of H1 and the fault set — seismic_time_to_depth then seismic_publish_structure — closures and stability need depth`.
-- Apparent geometry in time is still evidence of relationships (which fault offsets which horizon) and may be stated as such, labelled time-domain.
+- Dips, closures, spill points, stresses and seal need depth. Those tools refuse a time-domain horizon or fault set. Report the refusal, and request `seismic_interpretation: depth versions of H1 and the fault set — seismic_time_to_depth then seismic_publish_structure — closures and stability need depth`.
+- Apparent geometry in time is still evidence of relationships (which fault offsets which horizon). You may state it as such, labelled time-domain.
 
 ## Supplied tables (`sg_register_table`)
 
-- `structural_measurements`: `dip_deg`, `dip_azimuth_deg` (the direction of dip, degrees from north; strike + 90), optional type, x, y, z_m, location, source. Column aliases (dip, dipdir, azimuth) are recognised; otherwise give a `columns` mapping.
+- `structural_measurements`: `dip_deg`, `dip_azimuth_deg` (the direction of dip, degrees from north; strike + 90), optional type, x, y, z_m, location, source. The tool recognises column aliases (dip, dipdir, azimuth). Otherwise, give a `columns` mapping.
 - `fracture_picks`: `depth_m`, `dip_deg`, `dip_azimuth_deg`, optional set, aperture, type, well.
 - `section_line`: x, y points.
-- Record in `description` what the measurements are and how they were taken; outcrop, core and image-log measurements carry different biases, and sets from one domain are not averaged with another's.
+- Record in `description` what the measurements are and how they were taken. Outcrop, core and image-log measurements carry different biases. Do not average sets from one domain with another's.
 
 ## Pick uncertainty
 
-The seismic sidecar states it (one sample interval by default). Throw and closure ranges are run within it; a conclusion finer than the uncertainty is not supported.
+The seismic sidecar states it (one sample interval by default). The tools run throw and closure ranges within it. A conclusion finer than the uncertainty is not supported.
 
 <!-- end of skill: structural-data-qc -->

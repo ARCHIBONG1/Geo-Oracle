@@ -1,6 +1,6 @@
 ---
 name: petro-saturation
-description: Water saturation - the Rw hierarchy (water sample, SP, Pickett), temperature correction, choosing Archie or a shaly-sand model (Simandoux, Indonesia, Waxman-Smits, dual water), sourcing a, m, n, Rsh, Qv, Rwb, and reporting saturations and fluid claims. Load before petro_rw, petro_saturation or petro_net_pay.
+description: Water saturation. It covers the Rw hierarchy (water sample, SP, Pickett), temperature correction, and choosing Archie or a shaly-sand model (Simandoux, Indonesia, Waxman-Smits, dual water). It also covers sourcing a, m, n, Rsh, Qv, Rwb, and reporting saturations and fluid claims. Load before petro_rw, petro_saturation or petro_net_pay.
 ---
 
 # Water saturation
@@ -16,15 +16,17 @@ Use the first method the data allow, and record which:
 | 3 | `pickett` | PHIE (run `petro_porosity`) and RT in a **proven** water-bearing interval; `a` and `m` (or `m` fitted, if porosity varies) | Rw is only as good as the "100% water" assumption and the m used |
 | — | Regional value | Requested via `missing_data` from regional_geology | Never a textbook default |
 
-Register the result exactly as returned in `register_as` (value, source, reference): `rw` together with `rw_temp_c`. A water sample outranks log-derived Rw. If they disagree by more than about 20%, that is a `contradiction`: sample representativeness versus a bed that is not clean or not fully water-bearing.
+With `pickett`, the tool draws the Pickett plot of the interval into `result.figures`. Iso-saturation lines need `n` in the parameter set. Without it, the plot shows only the Sw = 1 line.
+
+Register the result exactly as returned in `register_as` (value, source, reference): `rw` together with `rw_temp_c`. A water sample outranks log-derived Rw. If they disagree by more than about 20%, that is a `contradiction`. It is between sample representativeness and a bed that is not clean or not fully water-bearing.
 
 ## 2. Temperature
 
-Rw, Rmf and Rm change with temperature (Arps 1953, in degF as printed: R2 = R1 (T1 + 6.77) / (T2 + 6.77); the tool converts degC exactly; chart Gen-6 states it valid 20-100 degC). `petro_saturation` corrects Rw to every sample's formation temperature, so the parameter set needs `rw_temp_c` plus a temperature model:
+Rw, Rmf and Rm change with temperature. The relation is Arps 1953, in degF as printed: R2 = R1 (T1 + 6.77) / (T2 + 6.77). The tool converts degC exactly. Chart Gen-6 states the relation valid 20-100 degC. `petro_saturation` corrects Rw to every sample's formation temperature. So the parameter set needs `rw_temp_c` plus a temperature model:
 - **`surface_temp_c` and `temperature_gradient_c_per_km`** (e.g. `regional`, with a range), or
-- **`surface_temp_c` alone**, in which case the header BHT at log TD is used. Uncorrected BHT reads low, so the temperatures are minima: say so.
+- **`surface_temp_c` alone**: then the tool uses the header BHT at log TD. Uncorrected BHT reads low, so the temperatures are minima: say so.
 
-Only when the task states that Rw is already at formation temperature, use `rw_at_formation_temperature: true`.
+Use `rw_at_formation_temperature: true` only when the task states that Rw is already at formation temperature.
 
 ## 3. Choose the model
 
@@ -37,17 +39,18 @@ Only when the task states that Rw is already at formation temperature, use `rw_a
 | Clay-bound water modelled explicitly | dual_water | + rwb (bound-water resistivity), PHIT and PHIE |
 | Vuggy or fractured carbonate | archie with m from SCAL | m from core, not 2 |
 
-**Archie in shaly rock overstates Sw**, because shale conduction is read as water, and pay is missed. Where VSH is above about 0.15, run a shaly-sand model too and report both. Their difference is the shale effect. The tool warns when Archie meets shale.
+**Archie in shaly rock overstates Sw**, because it reads shale conduction as water. Then pay is missed. Where VSH is above about 0.15, run a shaly-sand model too and report both. Their difference is the shale effect. The tool warns when Archie meets shale.
 
 ## 4. a, m, n and Rsh
 
-- **a, m and n come from SCAL** if supplied: fit them with `petro_scal` (formation factor and resistivity index; skill `petro-core-scal`) and register its `register_as`. Otherwise a = 1, m = 2, n = 2 are allowed only as `assumption`, **with ranges** (e.g. m 1.8-2.2, n 1.8-2.2), so `petro_net_pay` can show their effect. m and n usually dominate the uncertainty in Sw.
-- **Rsh** is read from a thick, in-gauge shale near the zone (`log_crossplot`, citing the interval).
+- **a, m and n come from SCAL** if supplied: fit them with `petro_scal` (formation factor and resistivity index; skill `petro-core-scal`), and register its `register_as`. Otherwise a = 1, m = 2, n = 2 are allowed only as `assumption`, **with ranges** (for example m 1.8-2.2, n 1.8-2.2). The ranges let `petro_net_pay` show their effect. m and n usually dominate the uncertainty in Sw.
+- **Rsh**: read it from a thick, in-gauge shale near the zone (`log_crossplot`), and cite the interval.
 
 ## 5. Run and read: `petro_saturation`
 
 - **Output**: writes `SW`, `BVW` (= SW x PHIE), `RW` (the temperature-corrected Rw) and `TEMP` into a new well file.
 - **Per-zone statistics**: add `tops` to get SW's 10th, 50th and 90th percentiles per zone.
+- **Figure**: the tool draws the interpreted composite log (with VSH, PHIE and BVW tracks and the tops) into `result.figures`.
 
 ## 6. Fluid claims
 
@@ -58,7 +61,7 @@ Saturation from logs is a `measurement` (`derived`). The fluid (gas, oil, water)
 
 ## 7. Report
 
-- `measurements`: "Sw (Simandoux; Rw 0.0755 ohm.m at 25 degC from the DST-1 water sample, corrected to 48-49 degC; a = 1, m = 2, n = 2 assumed) median 0.25 in SAND_B above 1142 m MD", with the provenance id.
+- `measurements`: give each with the provenance id. For example: "Sw (Simandoux; Rw 0.0755 ohm.m at 25 degC from the DST-1 water sample, corrected to 48-49 degC; a = 1, m = 2, n = 2 assumed) median 0.25 in SAND_B above 1142 m MD".
 - `assumptions`: every parameter with its source.
 - `limitations`: e.g. "m and n not measured".
 

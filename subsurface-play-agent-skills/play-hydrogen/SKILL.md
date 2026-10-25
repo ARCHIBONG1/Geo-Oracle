@@ -1,13 +1,17 @@
 ---
 name: play-hydrogen
-description: Natural (native) hydrogen plays and underground hydrogen storage - the element sets, what lifts each, why timing and seal differ from hydrocarbons (active generation, a small mobile molecule, microbial consumption), and how the upstream products map to each. Load before linking the elements of a natural_hydrogen or hydrogen_storage play.
+description: Natural (native) hydrogen plays and underground hydrogen storage. It covers the element sets, what lifts each, and why timing and seal differ from hydrocarbons (active generation, a small mobile molecule, microbial consumption). It also covers how the upstream products map to each. Load before linking the elements of a natural_hydrogen or hydrogen_storage play.
 ---
 
 # Hydrogen plays
 
 ## Natural hydrogen (domain `natural_hydrogen`)
 
-Most natural hydrogen systems are active: the gas is being made now by serpentinisation of iron-rich rocks, by radiolysis in uranium- and thorium-rich basement, or by degassing. So the questions differ from a fossil petroleum charge: is generation ongoing, is there a path, is there a seal that holds hydrogen, and is the gas surviving its sinks.
+Most natural hydrogen systems are active. The gas is made now by serpentinisation of iron-rich rocks, by radiolysis in uranium- and thorium-rich basement, or by degassing. So the questions differ from those of a fossil petroleum charge:
+- Is generation ongoing?
+- Is there a path?
+- Is there a seal that holds hydrogen?
+- Is the gas surviving its sinks?
 
 | Element | Demonstrated by | Inferred from | Owner |
 |---|---|---|---|
@@ -19,9 +23,9 @@ Most natural hydrogen systems are active: the gas is being made now by serpentin
 | trap | a depth closure passing its ledger; a demonstrated stratigraphic trap | a closure with a failing ledger | structural_geology |
 | preservation | temperature above the microbial window (about 90-120 °C) or hydrogen present despite it; no abiotic sink; low diffusive loss | nothing known: unknown | wells_petrophysics, supplied fluid_geochem, literature_review |
 
-Timing (PT4): with ongoing generation (`holds: true` on the generation event), a trap and seal present today suffice. A fossil hydrogen charge needs a trap that predates it and a seal that retained hydrogen since; that is rare and is said so.
+Timing (PT4): with ongoing generation (`holds: true` on the generation event), a trap and seal present today suffice. A fossil hydrogen charge needs a trap that predates it, and a seal that has retained hydrogen since. That is rare, and you state it.
 
-A measured hydrogen flux demonstrates generation_activity and lifts source to inferred; seeps and shows demonstrate migration and lift generation and source; a discovery proves the chain. The matrix applies these.
+A measured hydrogen flux demonstrates generation_activity, and lifts source to inferred. Seeps and shows demonstrate migration, and lift generation and source. A discovery proves the chain. The matrix applies these rules.
 
 ## Underground hydrogen storage (domain `hydrogen_storage`)
 
@@ -35,12 +39,12 @@ A measured hydrogen flux demonstrates generation_activity and lifts source to in
 | geochemical_microbial_stability | brine and mineralogy showing no hydrogen-consuming reactions (sulphate reduction to H2S, methanogenesis, pyrite reduction) at reservoir temperature | wells_petrophysics, sedimentology |
 | cycling_integrity | caprock and wells holding through repeated pressure cycles | structural_geology, supplied test_summaries |
 
-Containment is kept separate as for CO2; the microbial and geochemical element is the one storage assessments most often omit, and a porous-media site without brine chemistry leaves it unknown.
+Keep containment separate, as for CO2. Storage assessments most often omit the microbial and geochemical element. A porous-media site without brine chemistry leaves it unknown.
 
 ## Pitfalls
 
-- A hydrocarbon seal reported as a hydrogen seal: inferred at most without a hydrogen entry pressure.
-- Hydrogen in soil gas taken as a reservoir: it demonstrates generation and migration, not a trap.
+- A hydrocarbon seal reported as a hydrogen seal. Without a hydrogen entry pressure, it is inferred at most.
+- Hydrogen in soil gas taken as a reservoir. It demonstrates generation and migration, not a trap.
 - A storage site screened on capacity without the microbial element.
 
 ## Reporting

@@ -8,19 +8,28 @@ description: Heat-flow statistics, conductive geotherms with sourced conductivit
 ## Heat flow: `reg_heat_flow_stats`
 
 - Points of `ghfdb2024` (or a supplied table) within `radius_km`: median, p10-p90, distance-weighted mean, nearest point, points within 50 km. Filter by quality where the dataset carries it (e.g. `filters={"q_uncertainty": {"max": 20}}`).
-- **Biases to name**: shallow onshore measurements carry palaeoclimate and groundwater-flow effects; offshore probe measurements can be biased by sedimentation; old compilations mix methods. Report the p10-p90 range, not just the median.
-- No point within 50 km (the tool warns): the value is regional; T3 is not met at study-area scale.
+- **Biases to name**:
+  - shallow onshore measurements carry palaeoclimate and groundwater-flow effects;
+  - sedimentation can bias offshore probe measurements;
+  - old compilations mix methods.
+
+  Report the p10-p90 range, not just the median.
+- No point within 50 km (the tool warns): the value is regional, and T3 is not met at study-area scale.
 
 ## Geotherm: `reg_geotherm`
 
-- 1-D steady-state conduction with layered conductivity (W/m/K) and heat production (microW/m3), from the surface (seabed) temperature. Every parameter is sourced: heat flow from the statistics or a calibration (cite `prov:`), conductivities from measured or published lithology values (cite the finding), surface temperature from the seabed or ground temperature.
+- 1-D steady-state conduction with layered conductivity (W/m/K) and heat production (microW/m3), from the surface (seabed) temperature. Every parameter is sourced:
+  - heat flow from the statistics or a calibration (cite `prov:`);
+  - conductivities from measured or published lithology values (cite the finding);
+  - surface temperature from the seabed or ground temperature.
 - Typical conductivities (state them as assumptions, with a source): shale 1.2-2.0, sandstone 2.5-4.0, limestone 2.0-3.0, salt 5-6 W/m/K. Heat production: shales 1-2, sandstones 0.5-1, carbonates 0.2-0.5 microW/m3.
-- The product `thermal_model` (depth, temperature, heat flow) is a regional prior for wells_petrophysics (temperature gradient) and subsurface_play (maturity timing); a 1-D steady-state model carries no lateral or transient effects, which the sidecar states.
+- The product `thermal_model` (depth, temperature, heat flow) is a regional prior for wells_petrophysics (temperature gradient) and subsurface_play (maturity timing). A 1-D steady-state model carries no lateral or transient effects, and the sidecar states this.
+- The tool draws the geotherm (temperature and heat flow against depth, mean gradient, surface heat flow) and returns it in `result.figures`. `reg_render(kind=geotherm, product=<thermal_model>)` draws it again from the product.
 
 ## Calibration: `reg_geotherm_calibrate`
 
-- Fits surface heat flow to corrected well temperatures from a petrophysics `temperature_profile` product (Horner static or DST). Give `water_depth_m` offshore so depths count from the seabed.
-- The fitted heat flow depends on the conductivities assumed: report the pair, and compare the calibrated value with the regional heat-flow statistics (agreement supports transfer; disagreement points at local conductivity or transient effects).
+- The tool fits surface heat flow to corrected well temperatures from a petrophysics `temperature_profile` product (Horner static or DST). Offshore, give `water_depth_m`, so that depths count from the seabed.
+- The fitted heat flow depends on the conductivities assumed: report the pair. Compare the calibrated value with the regional heat-flow statistics. Agreement supports transfer. Disagreement points at local conductivity or transient effects.
 
 ## Reporting
 

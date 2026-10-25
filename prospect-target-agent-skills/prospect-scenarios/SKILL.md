@@ -7,7 +7,7 @@ description: Building trap, fill and contact alternatives from the upstream alte
 
 ## Where they come from
 
-`pt_scenarios` builds and publishes the `scenario_set`; what follows is what goes into it and why.
+`pt_scenarios` builds and publishes the `scenario_set`. What follows is what goes into it, and why.
 
 | Kind | Source |
 |---|---|
@@ -16,15 +16,15 @@ description: Building trap, fill and contact alternatives from the upstream alte
 | contact | a contact measured in a well against one inferred; a gas cap above an oil leg |
 | correlation | the stratigraphic `correlation_alternatives`: a different top changes the closure's reservoir |
 
-Each scenario cites the upstream claim or product that proposes it. A scenario you invented is not a scenario; it is a hypothesis without a basis, and the tool refuses it.
+Each scenario cites the upstream claim or product that proposes it. A scenario that you invented is not a scenario. It is a hypothesis without a basis, and the tool refuses it.
 
 ## Discriminating evidence
 
-Every scenario names what would separate it from the others: a contact from a well in the closure, a DHI, a pressure measurement, a seal capillary-entry pressure. This is what `risk_uncertainty` reads to say which uncertainty is reducible, so a scenario without it is incomplete work.
+Every scenario names what would separate it from the others: a contact from a well in the closure, a DHI, a pressure measurement, a seal capillary-entry pressure. `risk_uncertainty` reads this to say which uncertainty is reducible. So a scenario without it is incomplete work.
 
 ## Never blended
 
-Volumes are reported per scenario. Combining them into one distribution needs weights; a weight is a probability; this specialist reports no probabilities. If asked for a single number across scenarios, decline and give the per-scenario ranges with the evidence that would resolve the split.
+Give volumes per scenario. To combine them into one distribution, you need weights. A weight is a probability, and this specialist reports no probabilities. If you are asked for a single number across scenarios, decline. Give the per-scenario ranges, with the evidence that would resolve the split.
 
 ## Reporting
 

@@ -8,25 +8,31 @@ description: Juxtaposition, shale gouge ratio, shale smear factor and calibrated
 ## Inputs
 
 - A `vshale_log` product from wells_petrophysics at a well near the fault, read with `sg_read_product` (method, endpoints, depth columns). Use `tvdss_m`.
-- A throw at the interval of interest, with its source: a seismic throw measurement, a throw profile (`sg_throw_profile`: `max_throw_own_m`, the fault's own maximum away from the junctions with other faults), or a stated offset; cite it in `depends_on`.
-- The interval on the fault (top and base) must lie inside the log, and the log must reach `top - throw`: the tool refuses otherwise and tells you the log's range.
+- A throw at the interval of interest, with its source. Cite the source in `depends_on`. The source is one of these:
+  - a seismic throw measurement;
+  - a throw profile (`sg_throw_profile`: `max_throw_own_m`, the fault's own maximum away from the junctions with other faults);
+  - a stated offset.
+- The interval on the fault (top and base) must lie inside the log, and the log must reach `top - throw`. Otherwise, the tool refuses, and tells you the log's range.
 
 ## What `sg_fault_seal` computes
 
-- **Juxtaposition**: at each point on the fault, the footwall lithology against the hanging-wall lithology displaced by the throw, classed sand below the Vsh cutoff and shale at or above it (`vsh_cutoff`, default 0.5; state it). The same cutoff defines the shale beds of the SSF, so a bed is classed alike in both. Sand-sand windows are where juxtaposition alone does not seal.
-- **SGR** (Yielding et al. 1997): the Vsh-weighted thickness of the beds that slipped past each point, over the throw, in percent; undefined where the slipped interval leaves the log. The gouge is taken to seal above a threshold (15-20 % in mixed clastics, about 20 % for oil: Bretan et al. 2003; `sgr_threshold_pct`, default 20, cite the calibration you use).
-- **SSF** (Lindsay et al. 1993): throw over shale-bed thickness per shale bed, beds measured between the cutoff crossings, only the beds of the interval that slipped past the analysed part of the fault; smears may become incomplete above about 7 (Yielding et al. 1997 see no seal above about 6).
-- **Column height** (Bretan et al. 2003): the across-fault pressure difference from the lowest SGR in a sand-sand window, converted to a column with the fluid densities you give (water and hydrocarbon or CO2, from wells_petrophysics or stated). Burial depth selects the calibration constant; below `sgr_threshold_pct` the column is 0, so the column and the threshold test agree.
+- **Juxtaposition**: at each point on the fault, the footwall lithology against the hanging-wall lithology displaced by the throw. The tool classes a bed as sand below the Vsh cutoff, and as shale at or above it (`vsh_cutoff`, default 0.5; state it). The same cutoff defines the shale beds of the SSF, so a bed is classed alike in both. Sand-sand windows are where juxtaposition alone does not seal.
+- **SGR** (Yielding et al. 1997): the Vsh-weighted thickness of the beds that slipped past each point, over the throw, in percent. SGR is undefined where the slipped interval leaves the log. The gouge is taken to seal above a threshold (15-20 % in mixed clastics, about 20 % for oil: Bretan et al. 2003). Set it with `sgr_threshold_pct` (default 20), and cite the calibration you use.
+- **SSF** (Lindsay et al. 1993): throw over shale-bed thickness, per shale bed.
+  - The tool measures beds between the cutoff crossings.
+  - It uses only the beds of the interval that slipped past the analysed part of the fault.
+  - Smears may become incomplete above about 7 (Yielding et al. 1997 see no seal above about 6).
+- **Column height** (Bretan et al. 2003): the across-fault pressure difference from the lowest SGR in a sand-sand window. The tool converts it to a column with the fluid densities you give (water and hydrocarbon or CO2, from wells_petrophysics or stated). Burial depth selects the calibration constant. Below `sgr_threshold_pct`, the column is 0, so the column and the threshold test agree.
 
 ## Pitfalls
 
-- SGR uses the footwall column from one well; lateral facies changes along the fault are not captured: say so in `limitations`.
-- A threshold or calibration borrowed from another basin is an assumption; name its source.
-- CO2 densities are much lower than oil at shallow depths: column heights change accordingly; cite the density's source.
+- SGR uses the footwall column from one well. It does not capture lateral facies changes along the fault: say so in `limitations`.
+- A threshold or calibration borrowed from another basin is an assumption. Name its source.
+- CO2 densities are much lower than oil at shallow depths, and column heights change accordingly. Cite the density's source.
 
 ## Reporting
 
 - `[measurement, derived]`: "F1 at 1200-1500 m, throw 30 m: SGR 18-91 % (median 40); sand-sand windows 22 % of the interval; lowest SGR in sand-sand 18 % (below the 20 % threshold); supportable column 0 m by Bretan et al. (2003)", `prov:` id, product `fault_seal`, depends on the vshale_log and the throw's source.
-- Seal profile with `sg_render(kind=seal)`.
+- `sg_fault_seal` draws the seal profile itself (`result.figures`).
 
 <!-- end of skill: structural-fault-seal -->

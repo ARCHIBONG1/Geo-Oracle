@@ -1,13 +1,13 @@
 ---
 name: play-geothermal
-description: Geothermal play types (convection- and conduction-dominated), the elements heat, permeability, fluid and recharge, structural setting and stress, and how the upstream products map to each. Load before linking the elements of a geothermal play.
+description: Geothermal play types (convection- and conduction-dominated) and the elements (heat, permeability, fluid and recharge, structural setting and stress). Also how the upstream products map to each. Load before linking the elements of a geothermal play.
 ---
 
 # Geothermal plays
 
 ## Play types (Moeck 2014)
 
-Convection-dominated (magmatic, plutonic, extensional domain) and conduction-dominated (intracratonic basin, orogenic belt, basement). The type sets which element is usually limiting: permeability and recharge in basins, heat and fluid in basement.
+The play types are convection-dominated (magmatic, plutonic, extensional domain) and conduction-dominated (intracratonic basin, orogenic belt, basement). The type sets which element is usually limiting: permeability and recharge in basins, heat and fluid in basement.
 
 ## Elements
 
@@ -22,11 +22,11 @@ Convection-dominated (magmatic, plutonic, extensional domain) and conduction-dom
 
 ## Timing (PT4)
 
-Heat and recharge must be sustained over the project life: give `heat` and `recharge` events with `holds` in the events chart.
+Heat and recharge must be sustained over the project life. In the events chart, give `heat` and `recharge` events with `holds`.
 
 ## Pitfalls
 
-- Temperature alone treated as a play: without permeability and fluid there is no play.
+- Temperature alone treated as a play. Without permeability and fluid, there is no play.
 - Connectivity between injector and producer assumed from one well.
 - Depositional permeability assumed to survive deep burial and heating.
 
