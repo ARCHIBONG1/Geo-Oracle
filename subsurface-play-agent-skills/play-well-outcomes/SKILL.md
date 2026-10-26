@@ -19,7 +19,7 @@ description: How to classify every well in a play area as a success, partial, a 
 
 Give the structural `trap_geometry` products as `traps`. The tool reads their closed cells: a well is inside when its nearest grid cell is closed. Give `closures` only for outlines supplied as polygons in the wells' CRS. For each well that the rules leave undetermined, give `explanations` as `{well: {element, reason}}`. `element` is one of the play's elements, or "not a test". A plain-string reason stays unsettled. PT5 fails while any well is unexplained or unsettled.
 
-If the wells have x and y, the tool draws the segment map in `result.figures`. It shows each well by outcome class over the outlines you gave (it does not draw trap cells). Publish it.
+If the wells have x and y, the tool draws the segment map in `result.figures`. It shows each well by outcome class over the closures the classification used: the outlines you gave, and the closed cells of the trap products. Publish it.
 
 ## Reading the result
 

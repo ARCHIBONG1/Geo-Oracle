@@ -28,7 +28,7 @@ Draw a product that no tool drew, or an extra view the person asks for.
 - `status_matrix`: plays as rows, elements as columns, the status word in every cell, unknown hatched, the weakest critical element outlined, supporting elements marked.
 - `events_chart`: the dated events on a Ma axis with their sources, the critical moment as a line.
 - `dependency_graph`: one play's critical elements coloured by status, arrows from prerequisite to dependent, the weakest outlined.
-- `segment_map`: the wells from the outcomes file, posted by outcome class over the mapped closures that the classification used. The class word is at every well. The play agent stores no play or segment outline, so the map shows none. Wells without x and y are listed, not drawn.
+- `segment_map`: the wells from the outcomes file, posted by outcome class over the mapped closures that the classification used: supplied outlines as polygons, trap products as their closed cells (four-way and fault-bounded drawn apart). The class word is at every well. The play agent stores no play or segment outline, so the map shows none. Wells without x and y are listed, not drawn.
 
 ## Standards
 

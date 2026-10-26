@@ -34,6 +34,6 @@ Axial statistics (0-180 degrees): mean direction, concentration R (1 = all paral
 
 - `[regional] SHmax N150E +/- 8 (n=197 A-C indicators within 150 km; nearest 5 km; regime SS 70 %, NF 30 %)` as a measurement, `literature`, `prov:…; World Stress Map 2016 release`.
 - `[transfer] …` as an inference with T1-T5.
-- `reg_shmax` draws no figure, and the `stress_field` product has no renderer. Publish it without a figure, and do not draw a rose of typed azimuths for it.
+- `reg_shmax` draws the rose of the A-C indicators itself (`result.figures`), with the mean and the circular SD marked. The rose counts each indicator once. The mean is quality-weighted. Do not draw a rose of typed azimuths for it.
 
 <!-- end of skill: regional-structure-stress -->

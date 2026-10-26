@@ -72,7 +72,7 @@ Every applied claim lists what it depends on, in `depends_on_claim_ids` (upstrea
 
 ## 7. Rendering standards (enforced by the renderers that `sg_render` and the producing tools share)
 
-Publish a figure for every product that you publish and that has a renderer. `sg_orientation_stats`, `sg_fault_stability`, `sg_fault_seal`, `sg_throw_profile` and `sg_closure_spill` draw their own figures into `result.figures`. `sg_render` draws the rest.
+Publish a figure for every product that you publish and that has a renderer. `sg_orientation_stats`, `sg_fault_stability`, `sg_fault_seal`, `sg_throw_profile` and `sg_closure_spill` draw their own figures into `result.figures`, and so does `sg_growth_index` for two or more intervals. `sg_render` draws the rest.
 
 - Stereonets: lower hemisphere, equal area, count and Kamb (1959) contouring printed.
 - Rose: equal-area (radius proportional to the square root of the count, Nemec 1988), bin width and count printed.

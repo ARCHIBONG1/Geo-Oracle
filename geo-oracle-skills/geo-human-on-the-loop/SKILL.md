@@ -91,19 +91,21 @@ Mark the two halves plainly, so the reader knows which parts the system can vouc
 ## 3. Filing it
 
 `hotl_checkpoint(investigation_id, record, decision, verbatim, approved_plan)`.
-- The record is the five parts **and every figure any specialist in the wave returned**: url, caption and the claim it supports. The gateway refuses a record that drops one. You write the final answer from the ledger, and a result several waves back is no longer in front of you. So a figure left out of the record is a figure the answer will not have. Put it in the ledger's Figures table at the same time.
-- `decision` is what the person said.
-- `approved_plan` is the specialists they approved, **and only those will run**. An edit is binding in every mode. The gateway refuses a specialist struck from the plan, so do not re-propose it in the same wave.
+- `record` holds `done` [{job_id, specialist, established, scientific_status, process_audit}], `why`, `contribution`, `next` [{specialist, objective, settles}] and `items`.
+- **`items` answers every item of the wave by its id.** `hotl_status` lists under `checkpoint` each missing-data item, follow-up, claim with rivals, open required output, figure and process-audit flag, with its id (`T03-sed#md2`), its text and the actions its kind takes. Answer each: `{"T03-sed#md2": {"action": "carry", "note": "why"}}`. One answer can cover every item of one kind of one task: `{"T03-sed#md*": {...}}`. An answer for one id wins over it. Every answer needs a note, except one figure carried by its id.
+- The gateway keeps a refused record as a draft. File only what the refusal names, by id. Never shorten what already passed.
+- From the sixth refusal of a wave, stop filing. In `off`, write the unanswered items into the ledger under *Pending checkpoint*, tell the person, and end the turn. In a supervised mode, put them to the person.
+- `decision` is what the person said. `approved_plan` is the specialists they approved, **and only those will run**. An edit is binding in every mode: do not re-propose a struck specialist in the same wave.
 
-After the person refuses or stops, the gateway runs no specialist at all until you file their next decision.
+After a refuse or stop, no specialist runs until you file their next decision.
 
 **File a checkpoint record after every wave in every mode.** The gateway refuses the next wave until you file it. Only the pause differs:
-- in `every_wave`, file the record **after** the person answers, with their words. The gateway refuses `automatic` there;
+- in `every_wave`, file the record **after** the person answers, with their words;
 - in `off` and `key_decisions`, file it with `decision: "automatic"` and carry straight on.
 
-That way an unattended run leaves exactly the same audit trail as a supervised one.
+An unattended run so leaves the same audit trail as a supervised one.
 
-**`automatic` is only for those two modes.** In `every_wave` the gateway refuses it, because it would open the next wave without anyone being asked. That is the one thing this mode exists to prevent. There, every checkpoint carries a real decision (accept, edit, refuse or stop) and the person's own words. If a checkpoint is due and you have not put the summary to them yet, put it to them with `ask_user_question` (section 3a). Carry on when they answer: their reply is what you file.
+**`automatic` is only for those two modes.** In `every_wave` the gateway refuses it: it would open the next wave without anyone being asked. There, every checkpoint carries a real decision (accept, edit, refuse or stop) and the person's own words. If you have not asked them yet, use `ask_user_question` (section 3a). Their reply is what you file.
 
 ## 3a. Each wave needs its own answer
 

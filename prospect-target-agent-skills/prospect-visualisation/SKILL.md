@@ -20,7 +20,7 @@ Publish a figure for every product that you publish and that has a renderer. If 
 
 These return the figure in `result.figures`. Carry each one. The gateway flags a result that drops a figure that a tool drew.
 
-- `pt_grv`: the closure map at the scenario's contact.
+- `pt_grv`: the closure map at the scenario's contact, and the GRV-against-contact curve from the crest down. The curve marks the contact, the spill and the crest, and shades the p10-p90 of the realisations when the closure carries them.
 - `pt_quantity`: the exceedance curve of its `volume_ranges`.
 - `pt_sensitivity`: the tornado of its sensitivity file.
 - `pt_maturation_plan`: the maturity table of every candidate it reads.

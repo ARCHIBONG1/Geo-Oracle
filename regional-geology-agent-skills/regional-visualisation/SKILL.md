@@ -17,7 +17,7 @@ You do not see the figures you render: the tool returns a URL, not an image. Che
 | Kind | Inputs | Use |
 |---|---|---|
 | map | `grid` (a surface), `points` (tables from `reg_points_near`), `faults`, the AOI | Where the data are relative to the AOI; structural grain; fields |
-| rose | `azimuths` | Fault trends from a tool result. `reg_shmax` returns no azimuth per indicator, and the `stress_field` product has no figure |
+| rose | `azimuths` | Fault trends from a tool result. `reg_fault_elements` and `reg_shmax` draw their own roses |
 | profile | `profile_table` from `reg_grid_sample(mode=profile)` | Bathymetry, sediment thickness or anomalies along a line |
 | subsidence | `product`: a `burial_history` product | Total and tectonic subsidence against age; the McKenzie fit, beta and the rift interval when the product holds a fit |
 | geotherm | `product`: a `thermal_model` product | Temperature and heat flow against depth; mean gradient, surface heat flow, layer boundaries |
@@ -29,6 +29,7 @@ These tools draw their product's figure themselves and return it in `result.figu
 - `reg_aoi`: a map of the AOI and its regional extent.
 - `reg_grid_sample` in profile mode: the profile.
 - `reg_fault_elements`: a rose of the fault trends.
+- `reg_shmax`: a rose of the stress indicators, with the SHmax mean and spread.
 - `reg_backstrip`: the subsidence curve.
 - `reg_geotherm`: the geotherm.
 

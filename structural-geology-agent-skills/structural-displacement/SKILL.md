@@ -39,6 +39,8 @@ Report an outlier with its likely explanation, and do not hide it. It fails V2 o
 Expansion index = hanging-wall thickness / footwall thickness for an interval (Thorsen 1963; as defined by Eskens et al. 2025 and Lathrop et al. 2021). EI > 1 is across-fault thickening: deposition while the fault moved.
 - Growth is resolvable only when the hanging wall is thicker by more than twice the pick uncertainty. Only then does V6 pass.
 - EI below 1 beyond the uncertainty is unusual. It is typically a thickness misread on one side (Eskens et al. 2025). It is not growth, and V6 is not tested. Check the picks on both sides.
+- For several intervals across one fault, give `intervals` (youngest first) instead of the two thicknesses. Each interval is read by the same rule. V6 passes when at least one interval shows resolvable growth, and the result names those intervals.
+- With two or more intervals, the tool draws the expansion-index chart itself (`result.figures`): one bar per interval from EI = 1, over the band that the pick uncertainty cannot resolve.
 
 Cite where the thicknesses come from (horizon pairs or wells).
 
