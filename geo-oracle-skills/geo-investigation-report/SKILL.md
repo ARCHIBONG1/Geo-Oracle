@@ -12,7 +12,7 @@ The person gets the ledger at the close of every investigation. The formal repor
 Do these steps in this order, after the final synthesis (`geo-synthesis-audit`) and the closing checkpoint:
 
 1. **Write the Final status block** at the end of the ledger (format in section 2), then save the ledger.
-2. **Give the ledger as a download.** Run `pwd` to get your sandbox home. Then put this block near the end of your message, just before the closing sentence (step 3), with the absolute path at which you saved the ledger:
+2. **Give the ledger as a download.** Run `pwd` to get your sandbox home. Then put this block near the end of your message, just before the closing sentence (step 3), with the absolute path at which you saved the ledger. Write the path plainly: never escape a slash (`\/`), because an escaped path does not download:
 
    ````
    ```sandbox_artifacts
