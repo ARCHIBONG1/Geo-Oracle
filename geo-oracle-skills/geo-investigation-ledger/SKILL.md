@@ -11,7 +11,18 @@ Long investigations outgrow the context window. Compaction removes ids and statu
 
 - **Before any inline question**, fill Pending question and save the ledger. A question blocks the turn until the person answers it. If the person walks away, the harness cuts the turn at its limit with no message. Then this block is the only thing that makes the work recoverable. Write it first, ask second. Clear it when you file the answer.
 - **The investigation id** is new for every new objective, with the date and time in it (`INV-dome-co2-20261006T0504`). Use it for every task and every gateway call of that investigation. If you reuse a previous id, this investigation inherits that id's counters and its approved plan.
-- **Location.** Keep the file at `<home>/investigation/ledger.md`. `<home>` is what `pwd` prints in a new command, before any `cd`. If one session holds several investigations, use `<home>/investigation/<investigation_id>/ledger.md`. Never put the ledger under `/tmp` or in a folder you choose: the gateway and the risk specialist look for it only there.
+- **Location.** Keep the file at `<home>/investigation/ledger.md`. `<home>` is what `pwd` prints in a new command, before any `cd`. If one session holds several investigations, use `<home>/investigation/<investigation_id>/ledger.md`. Never put the ledger under `/tmp` or in a folder you choose.
+- **Create it, then give its path.** Create the ledger in one command that sets the path from `pwd` and prints it:
+
+  ```
+  L="$(pwd)/investigation/ledger.md"; mkdir -p "${L%/*}"; cat > "$L" <<'EOF'
+  # Investigation INV-... — <short title>
+  ...
+  EOF
+  ls -l "$L"
+  ```
+
+  Give the path that the command printed to `set_hotl_mode` as `ledger_path`. The gateway checks that the file is there, and gives this path to the risk specialist, the close and the report. From then on, write to that path only. Do not build the path again from `pwd`, and never write a second ledger. If you lose the path, find the file: `find / -name ledger.md -path '*investigation*' 2>/dev/null`.
 - **When to update.** Update after every reviewed result, before calling the next specialist.
 - **Global ids.** Use them exactly as returned, e.g. `T03-seis/E2` or `T05-struct/C1`. Your own items use `H#` (hypotheses), `X#` (contradictions), `U#` (uncertainties) and `Q#` (open questions). Each row of the Figures table uses `F#`.
 - **Sources.** Every row needs a source. Record only what exists.
@@ -20,7 +31,7 @@ Long investigations outgrow the context window. Compaction removes ids and statu
 - **History.** Mark items as superseded. Do not delete them. The history is part of the audit trail.
 - **Rivals.** Record every alternative a specialist names, in the Hypotheses table or beside its claim, with its test and result. It stays until a test or a checkpoint resolves it.
 - **Open outputs.** List each required output a specialist left open by its token (`T05-struct#2`) in *Next steps* until it is delivered or dismissed.
-- **The close.** At the close, add the *Final status* block at the end (format in skill `geo-investigation-report`). Save, and give the ledger as a download. Write its absolute path plainly: never escape a slash (`\/`), because an escaped path does not download. After that, the ledger is frozen: the formal report prints it unchanged as its appendix, with its hash. Edit it again only when the person asks for more work and the investigation opens again.
+- **The close.** At the close, add the *Final status* block at the end (format in skill `geo-investigation-report`). Save, and give the ledger as a download: the closing checkpoint's reply gives the block (`ledger_download`). Write its absolute path plainly: never escape a slash (`\/`), because an escaped path does not download. After that, the ledger is frozen: the formal report prints it unchanged as its appendix, with its hash. Edit it again only when the person asks for more work and the investigation opens again.
 - **Resuming.** When you resume after a new turn or compaction:
   1. Read the ledger.
   2. For any task marked `running`, call `get_specialist_result(job_id)`.

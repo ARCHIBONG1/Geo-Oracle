@@ -139,8 +139,8 @@ If the user cannot provide the item, proceed with what exists. Record the gap in
   - in `project_context`: the domain.
 
   The play specialist's `element_status_matrix`, `play_concepts` and `containment_assessment` go to `prospect_target` and `risk_uncertainty`. Its `discriminating_evidence` is the list to plan the next wave from.
-- **Risk tasks carry the whole investigation.** Once per investigation, find the ledger's absolute path: run `pwd` in your sandbox. The path is `<that>/investigation/ledger.md`, or `<that>/investigation/<investigation id>/ledger.md` when the chat holds several investigations. Give `risk_uncertainty`:
-  - the ledger path, as `available_evidence` of kind `investigation_ledger`;
+- **Risk tasks carry the whole investigation.** Give `risk_uncertainty`:
+  - the ledger path, as `available_evidence` of kind `investigation_ledger`: the path you gave `set_hotl_mode` as `ledger_path`, never a path built again from `pwd`;
   - every finding relied on, as `upstream_findings` with full ids, classification, status, `[regional]`/`[analogue]` tags and `depends_on`;
   - every product, by reference;
   - the objectives, by name;

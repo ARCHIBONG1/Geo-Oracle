@@ -12,7 +12,7 @@ The person gets the ledger at the close of every investigation. The formal repor
 Do these steps in this order, after the final synthesis (`geo-synthesis-audit`) and the closing checkpoint:
 
 1. **Write the Final status block** at the end of the ledger (format in section 2), then save the ledger.
-2. **Give the ledger as a download.** Run `pwd` to get your sandbox home. Then put this block near the end of your message, just before the closing sentence (step 3), with the absolute path at which you saved the ledger. Write the path plainly: never escape a slash (`\/`), because an escaped path does not download:
+2. **Give the ledger as a download.** The closing checkpoint's reply gives `ledger_download`, a `sandbox_artifacts` block with the path on record. Put it, unchanged, near the end of your message, just before the closing sentence (step 3). If the reply has no `ledger_download`, write this block with the path you gave as `ledger_path`. Do not build the path again from `pwd`. Write the path plainly: never escape a slash (`\/`), because an escaped path does not download:
 
    ````
    ```sandbox_artifacts
@@ -72,6 +72,8 @@ Never write the request for the person. Never quote words they did not write. Th
 **After more work.** If the person asked for more work after a report and you closed again, call `request_report` again with `person_words` when they ask for a new report. A new report starts, and the gateway keeps the earlier one.
 
 **If it refuses**, tell the person why in one or two sentences. An open item (a checkpoint not filed, more work approved, a run still running, evidence set aside and not corrected) must be closed first. Do not work around a refusal.
+
+**If the ledger was not found**, do not tell the person. Follow the `next_action`: find the ledger file you wrote, check that it opens with `# Investigation <investigation_id>`, and call `request_report` again with `ledger_path` set to its absolute path and the same words. The ledger stays in your sandbox until the chat is deleted. Never write a new ledger: the report prints the ledger word for word, so a ledger written again from memory puts a false record in the report. If the reply has a `ledger_note`, tell the person what it says in one sentence.
 
 Then tell the person that the report is in progress, and collect the run with `get_specialist_result(job_id, wait_seconds=...)`. The draft takes some minutes.
 

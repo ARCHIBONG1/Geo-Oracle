@@ -59,7 +59,7 @@ Mark iterative loops explicitly. For example, stratigraphy and seismic often nee
 Risk runs after the play and prospect waves. The investigation does not end at its first answer:
 
 1. **Gate.** Task `risk_uncertainty` with:
-   - the ledger's absolute sandbox path, as kind `investigation_ledger`. Run `pwd`: the path is `<that>/investigation/ledger.md`, or `<that>/investigation/<investigation id>/ledger.md` when the chat holds several investigations;
+   - the ledger's absolute sandbox path, as kind `investigation_ledger`: the path you gave `set_hotl_mode` as `ledger_path`. Do not build it again from `pwd`. The gateway adds the path on record when the brief has none, and corrects a path that differs;
    - every finding relied on, as `upstream_findings` with ids, statuses, scope tags and `depends_on`;
    - every product, by reference;
    - the objectives in scope, and the decision context.
