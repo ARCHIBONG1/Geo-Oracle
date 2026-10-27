@@ -48,9 +48,11 @@ Use this mapping when the task includes an OUTPUT CONTRACT:
 | A material conclusion for Geo Oracle | `claims` | Its nature | — (support and contradiction through evidence ids; `status` from the claim-status list) |
 | A disagreement between sources | `contradictions` | — | Evidence ids, possible explanations, discriminating evidence |
 | A question the literature cannot answer | `unknowns` | — | — |
-| Data that would answer it | `missing_data` | — | — |
+| Data that would answer it | `missing_data`: `{owner, item, form, why}`, owner a specialist tool or `user` | — | — |
 | Access and coverage limits, and the search coverage line | `limitations` | — | — |
-| Implications the project data can test | `recommended_followups` | — | — |
+| Implications the project data can test | `recommended_followups`: `{specialist, question, analysis_mode, evidence_needed}` | — | — |
+
+`check_outcomes`: when the brief lists 'Claims to test', give one entry per claim: `target` (the claim id), `verdict` (`supported`, `contradicted`, `unresolved` or `not_tested`), the `evidence_ids` of your own evidence that decide it, and a one-sentence `basis`. A verdict says what your evidence shows, not whether the claim is true. A blind validation has no such list: leave it empty.
 
 **`source_reference` format** (pipe-separated, one source per item):
 
@@ -104,9 +106,9 @@ Angle brackets show placeholders. Real items carry resolved identifiers.
     }
   ],
   "unknowns": ["Thermal maturity of the Lower Shale within the study area"],
-  "missing_data": ["Rock-Eval and vitrinite reflectance data from study-area wells"],
+  "missing_data": [{"owner": "user", "item": "Rock-Eval and vitrinite reflectance data from study-area wells", "form": "lab report or table", "why": "to test the basin-scale values"}],
   "limitations": ["Searched OpenAlex (12 queries), Exa publication search (5), Tavily (2) on <date>. Not searched: GeoRef, AAPG Datapages (no access)."],
-  "recommended_followups": ["Test Lower Shale TOC and maturity in study-area wells (Rock-Eval, Ro) to check the basin-scale data"]
+  "recommended_followups": [{"specialist": "wells_petrophysics", "question": "Test Lower Shale TOC and maturity in study-area wells (Rock-Eval, Ro)", "analysis_mode": "initial", "evidence_needed": "study-area well logs and lab data"}]
 }
 ```
 

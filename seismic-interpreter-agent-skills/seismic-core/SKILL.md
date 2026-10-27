@@ -25,6 +25,8 @@ What each mode asks of you:
 | challenge | Actively look for evidence against the named interpretation. Report what would falsify it. |
 | reanalysis | Redo the work with the changed inputs or parameters named. Set `supersedes_task_ids`. |
 
+`check_outcomes`: when the brief lists 'Claims to test', give one entry per claim: `target` (the claim id), `verdict` (`supported`, `contradicted`, `unresolved` or `not_tested`), the `evidence_ids` of your own evidence that decide it, and a one-sentence `basis`. A verdict says what your evidence shows, not whether the claim is true. A blind validation has no such list: leave it empty.
+
 ## 1a. What each deliverable takes
 
 A `required_outputs` entry names a product, and the product has a chain. Start the chain early, because the attribute and tracking steps run as jobs. Export what the person is to receive.

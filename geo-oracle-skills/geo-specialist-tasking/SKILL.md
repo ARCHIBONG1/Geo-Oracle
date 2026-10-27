@@ -31,6 +31,7 @@ A specialist's answer can only be as good as its brief. A good brief gives the s
 | `required_outputs` | Concrete deliverables, each unconditional: "a depth map of the horizon at W1, converted with its time-depth table" | "A comprehensive analysis"; a conditional ("a depth map if a valid conversion exists; otherwise state cannot-determine"): the specialist takes the exit and tracks nothing. The chain behind a product is the specialist's job; the only acceptable "cannot" names a missing input. For a seismic volume with a well the standing set is: fault volume, body volume, a horizon at the well, the well tie, the depth map, and each feature's distance to the well. For a closure a prospect will use: `sg_build_model` on that horizon, then `sg_closure_spill` with it as `model` (without it the candidate stays a lead). Every analysis task also gets the standing line "figures for every product you publish that has a renderer" |
 | `downstream_use` | Which task or decision consumes the result | Leaving it out, so the specialist cannot judge the precision needed |
 | `previous_task_id`, `reason_for_reanalysis` | For every non-initial mode | Leaving them empty |
+| `check_targets` | Validation or challenge: the claim ids tested (ledger; a plan's `settles`) | Prose |
 | `instructions` | Leave empty: it replaces the default brief | Duplicating the output format, which the gateway already enforces |
 | `specialist_session_id` | Leave it empty: the gateway continues each specialist's session for the investigation itself (section 2). Name one only to continue a session from an earlier investigation | Copying an id from your notes or ledger; using it for validation or challenge (refused) |
 | `wait_seconds` | Omit it on a single call, so the gateway's default applies; `0` whenever another specialist starts in the same wave; never above the gateway's cap (its description states it: the harness's per-call timeout minus a margin) | Very short waits that force extra polling; a wait that outlasts the harness, which returns a server-execution-timeout and nothing else |
@@ -52,7 +53,7 @@ The gateway keeps one session per specialist per investigation, and chooses it f
 | `analysis_mode` | Session | What the brief carries |
 |---|---|---|
 | `initial`, `follow_up`, `reanalysis` | the investigation's session for that specialist, opened by its first task | as usual; `previous_task_id` for every non-initial mode |
-| `challenge` | a fresh session | the claims to test and how they were made (method, inputs, `prov:` ids) from the ledger, in `upstream_findings`; not the reasoning that led to them |
+| `challenge` | a fresh session | the claims in `check_targets`; how they were made (method, inputs, `prov:` ids) in `upstream_findings`; not the reasoning |
 | `validation` | a fresh session | blind: the question the claim answers and the data, not the earlier answer, and a different method, parameters or data from the run being checked |
 
 - **Why one session.** It keeps the specialist's context: the files it loaded, what it tried, what failed. A follow-up, a correction or a reanalysis needs exactly that.
@@ -98,7 +99,7 @@ When the person rejects or questions a result ("this is wrong", "coherence does 
 
 **Validation** (fresh session, chosen by the gateway; blind)
 - `analysis_mode`: `validation`
-- `previous_task_id`: the task being validated (for the record; it does not put the check in that task's session)
+- `previous_task_id`: the task validated (required; the check runs in a fresh session)
 - `geological_question`: the question the claim answers, asked afresh: "How many faults does the volume hold, and what are their strikes?", not "Is `T04-seis/C2` right?". You compare the two answers in review.
 - `upstream_findings`: nothing from the task being validated **when the same specialist validates** (it would anchor on its own answer).
 - **A different specialist validating** gets the products it must examine, without the conclusions drawn from them: the fault set or body set (`@seismic-interpreter-agent/products/...` from `seismic_publish_structure` / `seismic_publish_bodies`), the horizon maps, the well products. It has no seismic tools. A structural specialist handed only the SEG-Y path returns `insufficient_data`, and the validation is a wasted wave. Before you dispatch, check that `available_evidence` names the products.
@@ -107,7 +108,7 @@ When the person rejects or questions a result ("this is wrong", "coherence does 
 
 **Challenge** (fresh session, chosen by the gateway; the strongest alternative)
 - `analysis_mode`: `challenge`
-- `upstream_findings`: the claim under challenge and how it was made (method, inputs, `prov:` ids), from the ledger; not the specialist's reasoning
+- `check_targets`: the claim under challenge; `upstream_findings`: how it was made (method, inputs, `prov:` ids)
 - `geological_question`: "What is the strongest alternative to `T05-struct/C1`, what observations would discriminate between them, and do the supplied data contain any of those observations?"
 - `known_constraints`: "Do not assume `T05-struct/C1` is correct."
 

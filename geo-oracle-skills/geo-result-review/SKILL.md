@@ -123,7 +123,8 @@ Trace each supporting id back to its origin:
 
 - A validation or challenge result carries the gateway's `independence` class, read from the computations it cites. Count lines from the class, not from the result's prose:
   - validation: `same computation`, `same method and data, other parameters` and `no computation cited` are the same line. `new evidence` is a second line. `earlier computations of other tasks` re-uses other tasks' results, so it adds only the lines those tasks hold. `not classified` means the checked task is not stored: judge it from `session_route`, the brief and the `m:` ids;
-  - challenge: `tested with new computation` ran a new test. `argued from existing results` ran no new computation and tested the claim by argument only.
+  - challenge: `tested with new computation` ran a new test; `argued from existing results` tested the claim by argument only.
+- A verdict in `check.outcomes` is one line, weighed by its class, never proof. Answer each `chk` item with your reading.
 
 Record the number of independent lines for each load-bearing claim in the ledger.
 

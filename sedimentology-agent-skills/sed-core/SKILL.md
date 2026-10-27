@@ -81,6 +81,8 @@ Validation and challenge tasks run in a fresh session, and cannot see the work t
 | challenge | Run the strongest rival depositional model through the interpretation tests beside the named one, and report the tests that separate them. |
 | reanalysis | Redo the work with the changed inputs named, and list the replaced task in `supersedes_task_ids`. |
 
+`check_outcomes`: when the brief lists 'Claims to test', give one entry per claim: `target` (the claim id), `verdict` (`supported`, `contradicted`, `unresolved` or `not_tested`), the `evidence_ids` of your own evidence that decide it, and a one-sentence `basis`. A verdict says what your evidence shows, not whether the claim is true. A blind validation has no such list: leave it empty.
+
 ## The plan, alternatives and history
 
 Before your first tool call, write one `plan` row for each numbered required output. The row gives the tool chain that serves the output, and its status. At the end, bring the rows up to date:
