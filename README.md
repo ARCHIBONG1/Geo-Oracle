@@ -147,6 +147,36 @@ the directories disagree. Because the registered path is
 `<root>/<pack>/<name>`, moving the packs within the repository needs only a
 change to `root` and a re-provision.
 
+### Skills need the sandbox (known limitation)
+
+TrueForge copies an agent's skills into its sandbox, and the agent reads each
+one with a sandbox command (`cat /opt/tf/skills/<name>/SKILL.md`). TrueForge's
+own API states that skills require a sandbox. When the sandbox does not start
+(the sandbox service is down or out of disk, for example), the agent can read
+no skill at all. Its tools still answer, so the run goes on without its
+procedures and no tool call fails.
+
+Preloading does not avoid this. TrueForge can paste a `SKILL.md` into the
+prompt (`preload`) only for skills held in a TrueFoundry registry. For Git
+skills, which all of these are, it refuses `preload` with an error (checked in
+TrueForge 0.180.0). The provisioner therefore attaches every skill with
+`preload: false`.
+
+What catches such a run is the gateway's process audit, after the turn:
+
+- `sandbox unavailable`: the sandbox did not start, so the specialist read no
+  skill and ran no command.
+- `skills not opened` and `skills not read`: a skill the tools or the findings
+  require was never read in full.
+
+Geo Oracle must answer each of these items at its next checkpoint. For a
+report draft written without `lit-investigation-report`, `report_draft` adds
+a release note: Geo Oracle must not give the person the link yet and sends the
+round back. The audit reports the gap; it
+does not prevent it. Two remedies remain open and are not built: a host-side
+skill reader on each agent's tool server, or moving the critical skills to a
+TrueFoundry registry, where `preload` works.
+
 ### Reading costs budget
 
 Every skill read counts against the agent's iteration limit, and a run that
@@ -193,7 +223,25 @@ The literature pack is written for the OpenAlex index (`search_works`,
 `get_work`, `resolve_references`, `list_citations`, `search_entities`,
 `get_entity`, `find_candidate_works`) and the Exa and Tavily search services;
 `lit-search-protocol` and `lit-source-verification` are largely procedures for
-using them correctly. Geo Oracle's pack relies on two TrueForge built-in tools:
+using them correctly:
+
+- **Reply size.** A connector reply over the harness's limit for one reply
+  (24,000 characters) never reaches the agent: TrueForge saves it in the
+  sandbox, and the agent must read it back. `lit-search-protocol` therefore
+  sets OpenAlex `limit` to 20 or less, Exa `numResults` to 8 or less, and
+  Tavily `max_results` to 8 or less without `include_raw_content`. A page is
+  read with `lit_fetch_document`, which records it.
+- **Methods statements.** A search leaves no local record, so the searches go
+  into one methods statement with the connector method ids
+  (`m:lit/openalex-scholarly-index`, `m:lit/exa-semantic-search`,
+  `m:lit/tavily-web-search`) and no provenance ids. The gateway's id check
+  accepts a connector method without one, and `lit_method_provenance` answers
+  for the connector tools.
+- **Retraction.** OpenAlex `get_work` carries no retraction flag. A retracted
+  work appears only under `retracted_works` in a `search_works` reply, which
+  is how `lit-source-verification` checks it.
+
+Geo Oracle's pack relies on two TrueForge built-in tools:
 `get_current_datetime`, the clock behind the time budget in
 `geo-investigation-planning`, and `ask_user_question`, the only channel to the
 person, on which the supervision gates depend. No test here can check these.
@@ -253,14 +301,14 @@ gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 
 | Skill | Covers |
 | --- | --- |
-| `lit-search-protocol` | search planning: expanding terms across formation, historical and stratigraphic names |
-| `lit-inputs-library` | listing the shared inputs folder completely and confirming what is there |
+| `lit-search-protocol` | search planning: expanding terms across formation, historical and stratigraphic names; which tool for which job; the reply-size settings for each connector; the search log and its methods statement |
+| `lit-inputs-library` | listing the shared inputs folder completely (paged by `offset`) and confirming what is there; reading, searching and importing; fetching open-access documents for one investigation, and what a landing page or a stub limits the access level to |
 | `lit-source-appraisal` | the authority, evidence basis, geographic relevance and independence of a source |
-| `lit-source-verification` | resolving works to DOIs or OpenAlex identifiers; verifying every citation |
-| `lit-evidence-extraction` | mapping extracted evidence onto the findings structure |
+| `lit-source-verification` | resolving works to DOIs or OpenAlex identifiers; verifying every citation; the retraction check through `search_works` |
+| `lit-evidence-extraction` | mapping extracted evidence onto the findings structure, including the one `source_reference` format (the resolved record, the `type:` of the work, the read's `prov:` id) |
 | `lit-geoscience-question-bank` | question sets and evidence checklists for decomposing a request |
 | `lit-synthesis-report` | synthesis across sources, conflicting literature, careful language for consensus; methods statements for the investigation report |
-| `lit-investigation-report` | writing the formal investigation report from the frozen bundle (`lit_read_bundle`): the draft JSON, hidden ledger tags and citation markers, the section contents, the narrow rule for conclusions (restate, never raise, lower or add), ASD-STE100, rendering with `lit_render_report`, and revisions |
+| `lit-investigation-report` | writing the formal investigation report from the frozen bundle (`lit_read_bundle`): the draft JSON, hidden ledger tags and citation markers, the section contents, the narrow rule for conclusions (restate, never raise, lower or add), ASD-STE100, the figures and `figures_omitted_reason`, one reference per work, rendering with `lit_render_report`, and revisions |
 
 ### `regional-geology-agent-skills` (9)
 

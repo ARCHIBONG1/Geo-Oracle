@@ -55,10 +55,12 @@ Use this mapping when the task includes an OUTPUT CONTRACT:
 **`source_reference` format** (pipe-separated, one source per item):
 
 ```
-doi:<DOI> | openalex:<W-id> | <First author> et al. <year>, <venue> | title: <title> | relevance: <class> | access: <level> | loc: <page/figure/table>
+doi:<DOI> | openalex:<W-id> | <First author> et al. <year>, <venue> | type: <OpenAlex type, e.g. article, dissertation, book-chapter> | title: <title> | relevance: <class> | access: <level> | loc: <page/figure/table>
 ```
 
-An unresolved source starts with `UNVERIFIED |`. A source without a DOI uses `url:<stable institutional URL>` in its place. Copy the author, year and title from the resolved record: the investigation report prints its references from these fields.
+Copy `type:` from the resolved record, as you copy the author, year and title. The investigation report prints a thesis, a book chapter or a report as that kind of work.
+
+An unresolved source starts with `UNVERIFIED |`. A source without a DOI uses `url:<stable institutional URL>` in its place. A source you read with `lit_read_document` also carries the read's `prov:<id>`, so the gateway can trace the item to the bytes it rests on. Copy the author, year and title from the resolved record: the investigation report prints its references from these fields.
 
 **Statements.** If the evidence is not from the study area, begin the statement with its relevance, e.g. "Basin-scale: …" or "Regional analogue: …". The qualifier then survives, even if someone quotes the statement without its metadata.
 

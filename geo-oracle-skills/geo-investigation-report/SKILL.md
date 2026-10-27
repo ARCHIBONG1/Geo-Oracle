@@ -90,7 +90,7 @@ Call `report_draft(investigation_id)`. It gives:
 
 A long draft comes in pages: call again with `offset=next_offset` until no `next_offset` comes back.
 
-If the drafting run carries the warning `Process audit: skills not opened: lit-investigation-report`, the writer drafted without its procedure. Send the round back with a review note that asks it to read the skill and check the draft against it.
+If `report_draft` gives a `release_note`, or the drafting run carries the warning `Process audit: skills not opened: lit-investigation-report`, the writer drafted without its procedure. Do not deliver it. Send the round back with a review note that asks it to read the skill and redraft from every part of the bundle.
 
 If the drafting run failed and rendered nothing, call `request_report(investigation_id)` again. That round runs again and costs no round. A round runs at most three times. After the third failure, read the run's message, and tell the person that the report could not be produced, and why.
 

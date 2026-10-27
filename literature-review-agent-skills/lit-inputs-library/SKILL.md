@@ -22,7 +22,7 @@ Only you can confirm what a file contains. Be exact: give paths as listed, and i
 
 - **Scope**: the whole folder by default. For narrow questions, use `subfolder` (e.g. `wells`) or `types` (`document`, `table`, `seismic`, `well logs`, `array`, `image`, `spreadsheet`, `archive`, `other`).
 - **What each file gets**: `path`, `type`, `size_mb`, `modified` and `opened_by`.
-- **Totals** per type and subfolder cover everything, even when `truncated` is true.
+- **Totals** per type and subfolder cover everything, even when `truncated` is true. When the listing gives `next_offset`, call it again with `offset` set to that value to see the rest.
 - **The listing skips hidden files.** Your own chat uploads appear under `chat_uploads`.
 
 **Routing by `opened_by`:**
@@ -48,9 +48,9 @@ Only you can confirm what a file contains. Be exact: give paths as listed, and i
 
 ## Searching: `lit_search_documents`
 
-- **Modes**: `all_words` finds pages that hold every word. `mode: "phrase"` finds an exact phrase.
+- **Modes**: `all_words` finds pages that hold every word. `mode: "phrase"` finds an exact phrase. It ignores line breaks and finds a phrase that runs onto the next page.
 - **Hits** give the document, the page and a short snippet. Read the page before you rely on it: a snippet is context, not proof.
-- **Scope**: search everything first, then read the hits.
+- **Scope**: search everything first, then read the hits. With no `paths`, the search covers the inputs folder, your chat uploads and the documents retrieved for this investigation (give `investigation_id`). If no readable document is in scope, the search returns no hits and says so. That is a result, not an error: report it as such.
 
 ## Tables: `lit_preview_table`
 
@@ -64,8 +64,9 @@ The tool shows the columns, the row count and the first rows. That is enough to 
 
 ## Retrieved documents: `lit_fetch_document`
 
+- **This investigation only.** Give `investigation_id` (the Investigation ID line of your task) to `lit_fetch_document` and `lit_list_inputs`. The file then goes into `retrieved/<investigation>/`, and the listing shows only the documents retrieved for this investigation. A document retrieved for another investigation is not evidence for this one. Fetch it again for this investigation if you need it.
 - Give the open-access URL and a label (author, year, venue). The URL comes from OpenAlex's `best_oa_location`, Unpaywall, a repository, or a survey's own site. The file lands in `retrieved/` with a sidecar: URL, final URL, date, content type, checksum.
-- **A landing page is not the paper**: if the URL claims a PDF (a PDF content type, or a name that ends in `.pdf`) and returns something else, the tool refuses the URL. A page served as HTML is saved as an HTML document. Check that it is the paper before you cite it. If it is a landing page, find the PDF link. If you need an HTML page (a survey web page, a report in HTML), the tool fetches it as text.
+- **A landing page is not the paper.** If the URL claims a PDF and returns something else, the tool refuses the URL. An HTML page comes back with `page_kind`: `document`, `landing_page` (a repository record or an abstract page with a PDF link) or `stub` (a redirect or a script page with no article text). For a landing page, fetch its `pdf_url`. If `flags` holds `redirected_to_other_site`, the page comes from another site: check it before you use it. A source read from a landing page is at most `abstract`, and from a stub at most `metadata`. `lit_read_document` returns this as `access_ceiling`. If you need an HTML page (a survey web page, a report in HTML), the tool fetches it as text.
 - Then use `lit_read_document(path='retrieved/…')` and `lit_search_documents(paths=[…])` as for any document. `lit_list_inputs` lists what you have retrieved.
 - Never fetch or bypass paywalled content. Report it as a limitation with the citation.
 
@@ -136,7 +137,7 @@ implementation is correct.
 ## Reporting what you found
 
 Use the citation forms of your system prompt (section 7):
-- **Listing**: in `observations` (`classification` `data`, `source_type` `project_data`), with `source_reference` `project:operations/inputs | lit_list_inputs | m:lit/list-inputs | <time of the call>`.
+- **Listing**: in `observations` (`classification` `data`, `source_type` `project_data`), with `source_reference` `project:operations/inputs | lit_list_inputs | prov:<id> | m:lit/list-inputs`.
 - **Document content**: one evidence item per point, with `source_reference` `project:<path> | <Author or organisation> <year> | title: <document title> | p. <n> | prov:<id> | m:lit/read-document | relevance: … | access: full-text` (give the author, year and title as the document states them, and leave out what it does not state).
   - The readers have two limits. State them when they matter:
     - The reader does not extract a Word document's tables nested inside table cells, or any content inside tracked changes (python-docx documents both exclusions).

@@ -56,6 +56,12 @@ Regional literature is often published in French, Portuguese, Spanish, Russian, 
 
 OpenAlex search calls cost credits against the daily budget. Record lookups by DOI or ID are free. Use `preview` to size a query before you pull many pages.
 
+**Keep each reply under the limit for one reply (24,000 characters).** The agent does not see a larger reply: the harness saves it in the sandbox, and you must read it back with more calls.
+
+- OpenAlex `search_works`: set `limit` to 20 or less. Use `page` to get more results.
+- Exa `web_search_exa`: set `numResults` to 8 or less.
+- Tavily `tavily_search`: do not set `include_raw_content`. Set `max_results` to 8 or less. To read a page, fetch it with `lit_fetch_document`. The fetch records the page, so you can cite it.
+
 ## 3. Iterate: broad, then narrow
 
 1. **Broad round:** establish the terminology, the major papers, the main authors and the competing interpretations.
@@ -110,6 +116,8 @@ For every search, record:
 Report the coverage in `limitations`, for example: "Searched OpenAlex (14 queries), Exa publication search (6), Tavily (3) on 2026-09-25. Not searched: GeoRef, AAPG Datapages, Lyell Collection, OnePetro (no access)."
 
 Report only searches in the log.
+
+Write one methods statement for the searches, with `method_ids` `m:lit/openalex-scholarly-index` (and `m:lit/exa-semantic-search` or `m:lit/tavily-web-search` when you used them) and no `provenance_ids`: a search leaves no local record.
 
 ## 8. When to stop
 

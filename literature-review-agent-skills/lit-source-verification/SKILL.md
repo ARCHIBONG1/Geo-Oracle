@@ -24,7 +24,7 @@ For each work you intend to cite:
 
 ## 2. Retractions and corrections
 
-Check the retraction flag in the OpenAlex record. If you have Crossref access, also check the work's `update-to` field for retraction or correction notices. Crossref includes the Retraction Watch data there.
+OpenAlex `get_work` returns no retraction flag. `search_works` leaves retracted works out by default (its `oql` says "non-retracted") and lists them under `retracted_works`. To check a key work, run `search_works` for its DOI or exact title. If it appears only under `retracted_works`, it is retracted. If you cannot run this check, write `retraction: not checked` in its register line. If you have Crossref access, also check the work's `update-to` field for retraction or correction notices. Crossref includes the Retraction Watch data there.
 
 - **Retracted work, or withdrawn preprint:** do not use it as evidence. You may mention that it was retracted or withdrawn.
 - **Corrected work:** use the corrected version, and note the correction if it matters.
