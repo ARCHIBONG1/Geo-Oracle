@@ -14,7 +14,7 @@ Call **`ask_user_question`**, by that name. Both parameters are required:
 | `question` | the text. Put the whole summary in it; there is nowhere else for it to go |
 | `options` | 0 to 5 mutually exclusive choices, plain strings. **A free-text box is always rendered beside them**, so the person can pick one, type something else, or both |
 
-The question **blocks until it is answered and the turn survives**, so the investigation carries on in the same turn. You cannot perceive the wait. The answer simply appears, and nothing tells you whether it took five seconds or an hour. Never reason about how long it took. Never say that a question returned immediately.
+The question **blocks until it is answered and the turn survives**, so the investigation carries on in the same turn. You cannot perceive the wait: the answer simply appears. Never reason about how long it took, and never say that a question returned immediately.
 
 Before you ask, always **update the ledger, including its Pending question block.** A question holds the turn open. If nobody answers, the harness cuts the turn at its limit with no message. The ledger makes the work recoverable.
 
@@ -34,7 +34,7 @@ ask_user_question(
 **Three rules about options.**
 - Five is the hard maximum, so design for three or four and let the free-text box carry the rest. Accept / edit / refuse / stop is four, and "edit" is really free text. So three plus the box usually reads better than five.
 - Append the exact suffix `" (Recommended)"` to one option **only** where you ask the person to sanity-check your judgement: a plan, a retry, a reduction wave. **Never at an alternatives checkpoint**: a recommendation is pre-selection in a thin disguise. That question asks for their judgement, not your agreement (section 7).
-- If more than five alternatives are in play, do not silently drop one. Say in the question how many there are and offer the ones that differ most, or ask them to narrow it first.
+- More than five alternatives: section 7.
 
 ## 1. The question, once per objective
 
@@ -58,9 +58,9 @@ Ask it with `ask_user_question` as section 0 shows, and carry on in the same tur
 **Mint a new `investigation_id` for a new investigation**, with the date and time in it: `INV-dome-co2-20261006T0504`. If you use the same name twice, the second investigation inherits the first's run count, approved plan and any checkpoint left due. A rerun of yesterday's question would then start two-thirds through its work ceiling. The gateway refuses activation on an id that already carries work, and the refusal tells you to pick a new one.
 
 Then call `set_hotl_mode(investigation_id, mode, verbatim, deliverables=[...], objective=...)` with:
-- their reply **word for word**, not a paraphrase;
+- their reply **word for word**, not a paraphrase (the gateway checks it, section 3);
 - the objective in their words, in one sentence. The gateway records it once and shows it in every checkpoint's state. Open each checkpoint summary with it;
-- the results they asked for, one per item, in their words. The checkpoint that ends the work must give each a status: delivered, partial, not_deliverable or declined.
+- the results they asked for, one per item, in their words. Each gets an id (`dlv1`, `dlv2`, ...). The checkpoint that ends the work gives each a status by its id: delivered, partial, not_deliverable or declined.
 
 The record holds what they said, and the confirmation line quotes it back.
 
@@ -80,22 +80,22 @@ Five parts, short enough to read in a minute:
 
 | Part | Content | Checked |
 |---|---|---|
-| **Done** | which specialists ran, what each established, what it could not, and for each run the gateway flagged, what you did about every `Process audit:` flag (`done[].process_audit`: followed up, accepted with the reason, or rejected) | the gateway refuses a record that misdescribes the wave or leaves a process-audit flag unaddressed |
+| **Done** | which specialists ran, what each established, what it could not, and what you did about every `Process audit:` flag (followed up, accepted with the reason, or rejected) | the gateway records the jobs, their status and figures itself, and refuses a wave with an unanswered process-audit flag |
 | **Why** | why those specialists, in that order | nothing — your reasoning, attested only |
 | **Contribution** | how this moves the objective, and what remains | nothing — attested only |
 | **Next** | the proposed next wave: specialists, inputs, what each settles | tool names must exist |
 | **Work** | "n of 20 specialist runs used", from `hotl_status` | the gateway's counter |
 
-Mark the two halves plainly, so the reader knows which parts the system can vouch for. For example: *"Done and Next are checked against the jobs that ran; Why and Contribution are my reasoning."* Name a specialist that returned `insufficient_data` as such in **Done**. The gateway refuses a record that quietly drops it, because a summary flatters the work in exactly that way.
+Mark the two halves plainly, so the reader knows which parts the system can vouch for. For example: *"Done and Next are checked against the jobs that ran; Why and Contribution are my reasoning."* Name a specialist that returned `insufficient_data` as such in **Done**. The gateway records that status itself and names it back in `needs_attention`, because a summary flatters the work in exactly that way.
 
 ## 3. Filing it
 
-`hotl_checkpoint(investigation_id, record, decision, verbatim, approved_plan)`.
-- `record` holds `done` [{job_id, specialist, established, scientific_status, process_audit}], `why`, `contribution`, `next` [{specialist, objective, settles}] and `items`.
-- **`items` answers every item of the wave by its id.** `hotl_status` lists under `checkpoint` each missing-data item, follow-up, claim with rivals, open required output, figure, process-audit flag and check outcome (`chk`), with its id (`T03-sed#md2`), text and actions. Answer each: `{"T03-sed#md2": {"action": "carry", "note": "why"}}`. One answer can cover every item of one kind of one task: `{"T03-sed#md*": {...}}`. An answer for one id wins over it. Every answer needs a note, except one figure carried by its id.
-- The gateway keeps a refused record as a draft. File only what the refusal names, by id. Never shorten what already passed.
-- From the sixth refusal of a wave, stop filing. In `off`, write the unanswered items into the ledger under *Pending checkpoint*, tell the person, and end the turn. In a supervised mode, put them to the person.
-- `decision` is what the person said. `approved_plan` is the specialists they approved, **and only those will run**. An edit is binding in every mode: do not re-propose a struck specialist in the same wave.
+`hotl_checkpoint(investigation_id, decision, verbatim, approved_plan, record)`. `decision`, `verbatim` and `approved_plan` are arguments of the call, not fields of `record`.
+- `record` holds `why`, `contribution`, `next` [{specialist, objective, settles}] and `items`. The gateway records the jobs, their status and their figures itself. Your prose is kept, not checked.
+- **`items` answers the wave's items by id.** `hotl_status` lists them under `checkpoint`. First come the items with `actions`: process-audit flags and check outcomes (`chk`). Answer each: `{"T03-sed#audit1": {"action": "accepted", "note": "why"}}`. The other items keep their `default`: missing data, follow-ups and open outputs are carried, rivals kept open, figures carried. Answer one only to change it: dismiss or plan it, or mark a rival tested or resolved. One answer can cover every item of one kind of one task (`{"T03-sed#md*": {...}}`), never check outcomes. A note is required, except to confirm a default.
+- The gateway keeps a refused record as a draft. File only what the refusal names, by id.
+- From the sixth refusal of a wave, stop filing. In `off`, write the unanswered items into the ledger under *Pending checkpoint*, tell the person, and end the turn. In a supervised mode, put them to the person. **Never file a decision the person did not make to get past a refusal.**
+- `decision` is what the person said. `verbatim` is their whole reply, exactly as given, or whole lines of their message. The gateway looks for it in this chat and refuses words the person did not write. `approved_plan` is the specialists they approved, **and only those will run**. An edit is binding in every mode: do not re-propose a struck specialist in the same wave.
 
 After a refuse or stop, no specialist runs until you file their next decision.
 
@@ -109,7 +109,7 @@ An unattended run so leaves the same audit trail as a supervised one.
 
 ## 3a. Each wave needs its own answer
 
-The activation answer approves wave 1 and nothing else. Every later wave is a question you put to the person, and an answer they give to **that** question. The gateway refuses a decision whose words are the activation answer, or any reply already on file from an earlier checkpoint. A recycled quote is not an answer. Recycled quotes are how a supervised investigation quietly becomes an unsupervised one.
+The activation answer approves wave 1 and nothing else. Every later wave is a question you put to the person, and an answer they give to **that** question. The gateway refuses a decision whose words are the activation answer, or any reply already on file from an earlier checkpoint. Recycled quotes are how a supervised investigation quietly becomes an unsupervised one.
 
 At every wave boundary, follow this sequence:
 1. File nothing yet.
@@ -156,9 +156,9 @@ Wave 3: Refused — opening nothing. 7 of 20 runs used.
 Wave 3: Stopped at your request — nothing further opened. 7 of 20 runs used.
 ```
 
-The second and third lines matter most to read out. `automatic` is also the word the gateway refuses in every-wave mode. So to someone who asked for key decisions, a bare "Wave 2 automatic" reads as if you skipped them. The line says the setting instead.
+Read the second and third lines out: to someone who asked for key decisions, a bare "Wave 2 automatic" reads as if you skipped them.
 
-**Where it goes.** Put the line, unchanged, in the message that makes your next tool call (the next dispatch, or the next step of the investigation). If nothing else runs, put it in your final answer. Never send it as a reply on its own. A reply with no tool call ends your turn. With the mode `off` or `key_decisions`, nothing else will open the next wave, so the investigation stops while the person is told it is running. This also holds for the line that `set_hotl_mode` returns.
+**Where it goes.** Put the line, unchanged, in the message that makes your next tool call. If nothing else runs, put it in your final answer. Never send it as a reply on its own: a reply with no tool call ends your turn, and in `off` or `key_decisions` nothing else opens the next wave. This also holds for the line that `set_hotl_mode` returns.
 
 **Two of the four triggers are checked, not trusted.** If any specialist in the wave returned a contradiction, or published a `reduction_plan`, the gateway refuses a record filed as "no key decision here" and tells you to ask. The gateway cannot see a change of scope and some refusals, so those remain your judgement. If the plan you had approved no longer fits what you found, that is a trigger, whether or not anything flags it.
 
@@ -194,12 +194,12 @@ When a checkpoint asks the person to choose between competing models, show them 
 - neutral labels and randomised order;
 - the same number of lines and the same figures for each;
 - evidence and test records first;
-- no option pre-chosen. In particular, **no option carries `" (Recommended)"` here**: that is pre-selection in a thin disguise.
+- no option pre-chosen: **no `" (Recommended)"` here** (section 0).
 
-With more than five alternatives, say how many there are and offer those that differ most. Do not drop one silently to fit. Give your own preference only **after** they have answered. If the models genuinely tie, say so and offer none. A confident recommendation is a strong anchor, and the checkpoint asks for their judgement, not your agreement.
+With more than five alternatives, say how many there are and offer those that differ most, or ask them to narrow it first. Do not drop one silently to fit. Give your own preference only **after** they have answered. If the models genuinely tie, say so and offer none. A confident recommendation is a strong anchor, and the checkpoint asks for their judgement, not your agreement.
 
 ## 8. What the system cannot vouch for
 
-Say it once, where it matters, not everywhere. The gateway checks that a record matches the jobs it ran, but it has no channel to the user. So **the decision on file is what you reported**. That is why the confirmation line quotes their words back, and why you surface it unchanged. The same applies to who they are: the gateway records a name and a role as given, never verified.
+Say it once, where it matters, not everywhere. The gateway checks the record against the jobs it ran, and the person's words against what they wrote in this chat. It cannot check that **your decision matches what those words meant**, or who the person is (it records a name and a role as given). That is why the confirmation line quotes their words back, and why you surface it unchanged.
 
 <!-- end of skill: geo-human-on-the-loop -->

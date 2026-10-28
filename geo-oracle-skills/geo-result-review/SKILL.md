@@ -83,7 +83,7 @@ Section 3 asks whether a claim follows from its evidence. These checks ask wheth
    - *sandbox unavailable*: the specialist's sandbox never started (for example, the sandbox service out of disk), so it read no skill. The cause is the infrastructure. Tell the person, and treat the method as unchecked.
    - *tool calls failed*: a tool errored, not refused. Find what the specialist did instead, in its assumptions and limitations. A substitute input (a guessed location, an assumed velocity) changes what the numbers mean.
 
-   Put what you did about each in the checkpoint record (`done[].process_audit`). The gateway refuses the next wave until every flag is addressed.
+   Answer each flag by its id in the checkpoint's `record.items` (followed_up, accepted or rejected, with a note). The gateway refuses the next wave until every flag is answered.
 
    **Read every result's assumptions** before you rely on it. If the first view trimmed them, call `get_specialist_result(job_id, sections=["assumptions"])`. The checkpoint refuses a wave whose assumptions were never delivered to you. An unread assumption, such as "regional queries used an approximate point", stays under every number built on it.
    **Check every location a specialist used** against the investigation's coordinates: the AOI centroid in a regional result, the well position in a seismic one. A location that differs is a method error, whatever the result says.
