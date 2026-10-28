@@ -235,7 +235,8 @@ using them correctly:
   into one methods statement with the connector method ids
   (`m:lit/openalex-scholarly-index`, `m:lit/exa-semantic-search`,
   `m:lit/tavily-web-search`) and no provenance ids. The gateway's id check
-  accepts a connector method without one, and `lit_method_provenance` answers
+  accepts a connector method without one, the report may cite a connector
+  method that a methods statement names (not a superseded or set-aside one), and `lit_method_provenance` answers
   for the connector tools.
 - **Retraction.** OpenAlex `get_work` carries no retraction flag. A retracted
   work appears only under `retracted_works` in a `search_works` reply, which

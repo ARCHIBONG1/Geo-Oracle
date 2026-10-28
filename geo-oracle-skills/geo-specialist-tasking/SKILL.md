@@ -9,8 +9,8 @@ A specialist's answer can only be as good as its brief. A good brief gives the s
 - one geological question;
 - the evidence needed to answer it;
 - the upstream findings it builds on, with their ids;
-- what must not be assumed;
-- what output is needed and why.
+- what the specialist must not assume;
+- the output you need, and why.
 
 ## 1. Field guide
 
@@ -38,13 +38,13 @@ A specialist's answer can only be as good as its brief. A good brief gives the s
 
 ## 1a. Caveats are ceilings, not prohibitions
 
-An upstream result that is uncalibrated, bounded, assumed or regional is still an input. Pass it with its caveat in the evidence `description` and the finding's own status in `upstream_findings`. The specialist computes with it, flags the assumption, and caps its claim (`partially_supported` at most) through the dependency ceiling. Do not write constraints such as "do not calculate stability without measured stress magnitudes" or "do not assess seal from an uncalibrated Vsh". They stop the specialist from using its tools and leave the question unanswered. Reserve `known_constraints` for facts that must not be assumed (an age, a location, a fluid) and for methods the user excludes.
+An upstream result that is uncalibrated, bounded, assumed or regional is still an input. Pass it with its caveat in the evidence `description` and the finding's own status in `upstream_findings`. The specialist computes with it, flags the assumption, and caps its claim (`partially_supported` at most) through the dependency ceiling. Do not write constraints such as "do not calculate stability without measured stress magnitudes" or "do not assess seal from an uncalibrated Vsh". They stop the specialist from using its tools and leave the question unanswered. Reserve `known_constraints` for facts the specialist must not assume (an age, a location, a fluid) and for methods the user excludes.
 
-Never invent a product reference. If a producer failed to publish a product, pass its findings in `upstream_findings` (with their ids and status), and name the missing product in `known_unknowns`. A fabricated `@agent/products/...` reference is a false evidence item. If the failure was a tool fault (a dataset that would not read, a format the tool rejected), retry that producer once, with the fault named in `reason_for_reanalysis`. Only then move on without its product.
+Never invent a product reference. If a producer failed to publish a product, pass its findings in `upstream_findings` (with their ids and status), and name the missing product in `known_unknowns`. A fabricated `@agent/products/...` reference is a false evidence item. If a tool fault caused the failure (a dataset that would not read, a format the tool rejected), retry that producer once. Name the fault in `reason_for_reanalysis`. Only then move on without its product.
 
 ## 1b. A specialist that returns partially_completed
 
-A specialist that ran out of its own turn budget returns `partially_completed`. Its `conclusions` list the products it published, and its `recommended_followups` name the remaining work. Continue it as a `follow_up`, with the task as `previous_task_id` (the gateway continues its session) and the remaining items as the `geological_question`. Its records, products and context are still there. Do not start a new session for this. Do not treat the partial result as a failure to retry from scratch.
+A specialist that ran out of its own turn budget returns `partially_completed`. Its `conclusions` list the products it published, and its `recommended_followups` name the remaining work. Continue it as a `follow_up`, with the task as `previous_task_id` (the gateway continues its session) and the remaining items, in your words, as the `geological_question`. Its records, products and context are still there. Do not start a new session for this. Do not treat the partial result as a failure to retry from scratch.
 
 ## 2. Session choice
 
@@ -53,7 +53,7 @@ The gateway keeps one session per specialist per investigation, and chooses it f
 | `analysis_mode` | Session | What the brief carries |
 |---|---|---|
 | `initial`, `follow_up`, `reanalysis` | the investigation's session for that specialist, opened by its first task | as usual; `previous_task_id` for every non-initial mode |
-| `challenge` | a fresh session | the claims in `check_targets`; how they were made (method, inputs, `prov:` ids) in `upstream_findings`; not the reasoning |
+| `challenge` | a fresh session | the claims in `check_targets`; their method, inputs and `prov:` ids in `upstream_findings`; not the reasoning |
 | `validation` | a fresh session | blind: the question the claim answers and the data, not the earlier answer, and a different method, parameters or data from the run being checked |
 
 - **Why one session.** It keeps the specialist's context: the files it loaded, what it tried, what failed. A follow-up, a correction or a reanalysis needs exactly that.
@@ -63,15 +63,15 @@ The gateway keeps one session per specialist per investigation, and chooses it f
 
 ## 2a. Relaying the person's reaction to a result
 
-When the person rejects or questions a result ("this is wrong", "coherence does a better job", "there are more faults than that"), the brief carries their words, not your theory of the fix. A remark briefed as a method ("use coherence as the principal input") can send run after run onto the wrong input. The real fault is then never looked for.
+When the person rejects or questions a result ("this is wrong", "coherence does a better job", "there are more faults than that"), the brief carries their words, not your theory of the fix. A remark briefed as a method ("use coherence as the principal input") can send run after run onto the wrong input. Then no run looks for the real fault.
 
 1. **Split the reaction into three parts**, each in its own field:
    - what they saw, word for word, in `reason_for_reanalysis` (e.g. "The person: 'This tells me the binary fault interpretation was faulty.'");
    - the outcome they want, in `objective` and `required_outputs` (e.g. "a fault volume, 0 = no fault, 1 = F1, ..., that captures the faults visible on the coherence slices");
    - a method only if they named one, quoted in `known_constraints` as theirs ("The person asked: 'use the coherence attribute'"). Never add a method of your own, and never write "rather than <method>" unless they said it.
-2. **Ask when a reaction can be read two ways.** "Coherence does a better job" may describe what they see, or tell you how to compute. Before you spend a run, ask one question with both readings as options, e.g. "Find out why the fault volume misses what you see in coherence (Recommended), or build the fault volume from coherence instead?"
+2. **Ask when a reaction has two possible readings.** "Coherence does a better job" may describe what they see, or tell you how to compute. Before you spend a run, ask one question with both readings as options, e.g. "Find out why the fault volume misses what you see in coherence (Recommended), or build the fault volume from coherence instead?"
 3. **Diagnose before rerunning.** Send a rejected result back to the same session, as a `follow_up` that asks why: "The person says <their words>. From your own tool calls and your skills' procedure, explain why the result misses it, then fix it." The specialist can read its own run; a fresh session cannot.
-4. **Carry what was done, not a method to keep using.** Put earlier runs in `upstream_findings` and `project_context`, as what each did and produced, with `prov:` ids. Unless the person approved it, do not call an earlier run's approach "the workflow", "the guided volume" or the like. A guess restated as context becomes a premise.
+4. **Carry what each run did, not a method to keep using.** Put earlier runs in `upstream_findings` and `project_context`, as what each did and produced, with `prov:` ids. Unless the person approved it, do not call an earlier run's approach "the workflow", "the guided volume" or the like. A guess restated as context becomes a premise.
 5. **A number the person expects is a hypothesis to test, never a target.** "The person expects four faults: test whether the data support four and report what you find, with the persistence table." Never "can three be separated?", and never a count in `required_outputs`.
 6. **Corrections of the same question are `follow_up` tasks** with `previous_task_id`. They run in the specialist's session automatically. A fresh session is only for validation or challenge (section 2).
 
@@ -101,14 +101,14 @@ When the person rejects or questions a result ("this is wrong", "coherence does 
 - `analysis_mode`: `validation`
 - `previous_task_id`: the task validated (required; the check runs in a fresh session)
 - `geological_question`: the question the claim answers, asked afresh: "How many faults does the volume hold, and what are their strikes?", not "Is `T04-seis/C2` right?". You compare the two answers in review.
-- `upstream_findings`: nothing from the task being validated **when the same specialist validates** (it would anchor on its own answer).
-- **A different specialist validating** gets the products it must examine, without the conclusions drawn from them: the fault set or body set (`@seismic-interpreter-agent/products/...` from `seismic_publish_structure` / `seismic_publish_bodies`), the horizon maps, the well products. It has no seismic tools. A structural specialist handed only the SEG-Y path returns `insufficient_data`, and the validation is a wasted wave. Before you dispatch, check that `available_evidence` names the products.
+- `upstream_findings`: nothing from the task under validation **when the same specialist validates** (it would anchor on its own answer).
+- **A different specialist validating** gets the products it must examine, without the conclusions from them. These products are the fault set or body set (`@seismic-interpreter-agent/products/...` from `seismic_publish_structure` / `seismic_publish_bodies`), the horizon maps and the well products. It has no seismic tools. A structural specialist handed only the SEG-Y path returns `insufficient_data`, and the validation is a wasted wave. Before you dispatch, check that `available_evidence` names the products.
 - `known_constraints`: "Use a method, parameters or data different from `T04-seis`'s (`m:` id from its `source_reference`); do not rely on `T04-seis/E1`–`E3`."
 - A check that repeats the same method on the same data gets the same numbers back from the tools' records. It is not a second line of evidence (`geo-result-review` section 4).
 
 **Challenge** (fresh session, chosen by the gateway; the strongest alternative)
 - `analysis_mode`: `challenge`
-- `check_targets`: the claim under challenge; `upstream_findings`: how it was made (method, inputs, `prov:` ids)
+- `check_targets`: the claim under challenge; `upstream_findings`: its method, inputs and `prov:` ids
 - `geological_question`: "What is the strongest alternative to `T05-struct/C1`, what observations would discriminate between them, and do the supplied data contain any of those observations?"
 - `known_constraints`: "Do not assume `T05-struct/C1` is correct."
 
@@ -138,7 +138,7 @@ When the person rejects or questions a result ("this is wrong", "coherence does 
   "analysis_mode": "initial",
   "objective": "Report the methodological provenance of m:seis/edge-semblance as returned by seismic_method_provenance: the method's name, governing equation, assumptions, every recorded source with its DOI and locator, the verification status, and any recorded gaps. Do not compute anything and do not supply references the tool does not return.",
   "geological_question": "What published method, and what verification, lies behind the semblance attribute used in T03-seis/E2?",
-  "required_outputs": ["the lookup tool's result, verbatim, as evidence with source_reference 'prov:<id of T03-seis/E2> | m:seis/edge-semblance'"],
+  "required_outputs": ["the lookup result's fields, unchanged, as evidence with source_reference 'prov:<id of T03-seis/E2> | m:seis/edge-semblance'"],
   "known_constraints": ["about 3 tool calls"]
 }
 ```
@@ -147,7 +147,7 @@ Route by the method id's domain (`m:seis/` → `seismic_interpretation`, `m:petr
 ## 4. Running jobs
 
 - **Starting several specialists.** This chat makes one tool call per step. A call waits up to `wait_seconds` (default the gateway's cap) before the next can start. So start independent specialists with `wait_seconds: 0`, one after another, and they run in parallel. Then collect each result with `get_specialist_result`.
-- **No result at all** (your call or poll errors out: "other side closed", "read ECONNRESET", "Failed to process successful response", a timeout) is the connection, not the specialist. The job runs on its own thread, and the job id stays valid. Poll it again. Never re-dispatch, and never record it as a failed specialist: that is how a finished wave gets thrown away.
+- **No result at all** (your call or poll errors out: "other side closed", "read ECONNRESET", "Failed to process successful response", a timeout) is the connection, not the specialist. The job runs on its own thread, and the job id stays valid. Poll it again. Never re-dispatch, and never record it as a failed specialist: either mistake throws away a finished wave.
 - **A result reporting `execution_status: error`** ("the specialist's turn failed") is a dead turn. Retry with a new task id, as the `next_action` says. If the turn had run long, narrow the scope. Record it as an execution failure, not a scientific one.
 - **Jobs still running.** If a result says `running`, call `get_specialist_result(job_id=...)` with `wait_seconds = min(cap, remaining turn time - 120)` (see `geo-investigation-planning`, section 7). The call returns as soon as the specialist finishes, so a long wait costs nothing. A wait that outlasts the turn costs the checkpoint. If a poll returns `running` again, poll again, and update the ledger between polls. A poll that fails is the connection (see **No result at all** above).
 - **Collecting a wave.** Each `get_specialist_result` returns one result in its own step, so TrueForge's single-result limit (about 6,000 tokens) applies. **Trimmed results** below covers what exceeds it.

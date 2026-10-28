@@ -9,7 +9,7 @@ Long investigations outgrow the context window. Compaction removes ids and statu
 
 ## Rules
 
-- **Before any inline question**, fill Pending question and save the ledger. A question blocks the turn until the person answers it. If the person walks away, the harness cuts the turn at its limit with no message. Then this block is the only thing that makes the work recoverable. Write it first, ask second. Clear it when you file the answer.
+- **Before any inline question**, fill Pending question and save the ledger. If the ledger does not exist yet, create it first. A question blocks the turn until the person answers it. If the person walks away, the harness cuts the turn at its limit with no message. Then this block is the only thing that makes the work recoverable. Write it first, ask second. Clear it when you file the answer.
 - **The investigation id** is new for every new objective, with the date and time in it (`INV-dome-co2-20261006T0504`). Use it for every task and every gateway call of that investigation. If you reuse a previous id, this investigation inherits that id's counters and its approved plan.
 - **Location.** Keep the file at `<home>/investigation/ledger.md`. `<home>` is what `pwd` prints in a new command, before any `cd`. If one session holds several investigations, use `<home>/investigation/<investigation_id>/ledger.md`. Never put the ledger under `/tmp` or in a folder you choose.
 - **Create it, then give its path.** Create the ledger in one command that sets the path from `pwd` and prints it:

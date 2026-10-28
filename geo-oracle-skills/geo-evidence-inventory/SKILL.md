@@ -61,7 +61,7 @@ For each item the user supplies or mentions, record the following:
 - list curves, columns and extents;
 - extract the rows or excerpts a question needs;
 - convert formats so a specialist can use them;
-- unpack an uploaded archive (`.zip`, `.tar`, `.gz`) into a folder named after it, in one command. Then inventory what came out, file by file, as if each file had been uploaded on its own. Keep the extracted paths: the owner imports the files by those paths.
+- unpack an uploaded archive (`.zip`, `.tar`, `.gz`) into a new folder `unpacked/<archive name>/` in your home folder, in one command. Then inventory what came out, file by file, as if each file had been uploaded on its own. Keep the extracted paths: the owner imports the files by those paths.
 
 Never put a seismic file through your own tools, except to unpack the archive that holds it. Never copy anything from your sandbox into the shared inputs folder.
 

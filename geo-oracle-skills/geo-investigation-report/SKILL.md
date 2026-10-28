@@ -73,7 +73,7 @@ Never write the request for the person. Never quote words they did not write. Th
 
 **If it refuses**, tell the person why in one or two sentences. An open item (a checkpoint not filed, more work approved, a run still running, evidence set aside and not corrected) must be closed first. Do not work around a refusal.
 
-**If the ledger was not found**, do not tell the person. Follow the `next_action`: find the ledger file you wrote, check that it opens with `# Investigation <investigation_id>`, and call `request_report` again with `ledger_path` set to its absolute path and the same words. The ledger stays in your sandbox until the chat is deleted. Never write a new ledger: the report prints the ledger word for word, so a ledger written again from memory puts a false record in the report. If the reply has a `ledger_note`, tell the person what it says in one sentence.
+**If the ledger was not found**, do not tell the person. Follow the `next_action`: find the ledger file you wrote (never one under `unpacked/`), check that it opens with `# Investigation <investigation_id>`, and call `request_report` again with `ledger_path` set to its absolute path and the same words. The ledger stays in your sandbox until the chat is deleted. Never write a new ledger: the report prints the ledger word for word, so a ledger written again from memory puts a false record in the report. If the reply has a `ledger_note`, tell the person what it says in one sentence.
 
 Then tell the person that the report is in progress, and collect the run with `get_specialist_result(job_id, wait_seconds=...)`. The draft takes some minutes.
 
