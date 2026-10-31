@@ -246,6 +246,11 @@ Geo Oracle's pack relies on two TrueForge built-in tools:
 `get_current_datetime`, the clock behind the time budget in
 `geo-investigation-planning`, and `ask_user_question`, the only channel to the
 person, on which the supervision gates depend. No test here can check these.
+TrueForge draws the question as a card with no scroll bar, so
+`geo-human-on-the-loop` and Geo Oracle's prompt put the summary as text in the
+message that makes the call, and only the decision, at most 500 characters, in
+`question`; `tests/test_question_length.py` checks that no prompt or skill puts the
+summary in the question.
 
 The principle matches the rest of the system: a number must come from a tool in
 this repository, which carries provenance; a citation must be resolved through
@@ -285,7 +290,7 @@ compute tool.
 
 | Skill | Governs |
 | --- | --- |
-| `geo-investigation-planning` | turning an objective into testable questions, tasks and a dependency graph; what to record at activation (the person's constraints, the decision chain, a reserve of runs); waves of tasks started one call at a time; the time budget; retries that change the approach; results built on a replaced result; the final state the closing checkpoint records; the risk gate and the reduction loop, including settled failures |
+| `geo-investigation-planning` | turning an objective into testable questions, tasks and a dependency graph; what to record at activation (the person's constraints, the decision chain, a reserve of runs); waves of tasks started one call at a time; large briefs split to fit one specialist turn; the time budget; retries that change the approach; results built on a replaced result; the final state the closing checkpoint records; the risk gate and the reduction loop, including settled failures |
 | `geo-evidence-inventory` | characterising the available evidence and packaging it for specialists |
 | `geo-specialist-tasking` | the brief for each specialist tool and the job tools, field by field, with common mistakes; starting several specialists one call at a time |
 | `geo-result-review` | the checklist for judging a specialist result before relying on it, including evidence the id check set aside and `record.set_aside`, counting lines of evidence from a check's independence class, and reading plan rows, rivals and the evolution |
@@ -293,7 +298,7 @@ compute tool.
 | `geo-play-prospect-evaluation` | the gates before the play, prospect and risk stages; the five domains' elements; the element status scale; the maturity ladder; materiality classes in place of a chance of success |
 | `geo-synthesis-audit` | the structure and citation rules of a synthesis, and its scientific audit |
 | `geo-investigation-report` | the close (the ledger's Final status block, the ledger as a download, one closing sentence that offers the report, no question); on the person's request, `request_report`, the review of the draft with `report_draft`, three rounds at most, and the delivery |
-| `geo-human-on-the-loop` | the supervision question, the objective and deliverables recorded at activation (one result per deliverable), the checkpoint, accept, refuse and edit, partial deliveries, changing mode mid-investigation, and the work gate |
+| `geo-human-on-the-loop` | how to ask (the summary in the chat, the decision in a short question), the supervision question, the objective and deliverables recorded at activation (one result per deliverable), the checkpoint, accept, refuse and edit, partial deliveries, changing mode mid-investigation, and the work gate |
 
 `geo-human-on-the-loop` is the counterpart of `hotl.py`: the gateway enforces the
 gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.

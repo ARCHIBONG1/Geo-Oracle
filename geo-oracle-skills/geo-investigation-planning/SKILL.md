@@ -95,6 +95,7 @@ Pass these to `set_hotl_mode` with the person's answer:
 - **Wave 1:** tasks whose inputs exist now. These are often literature, regional context, well-data QC and seismic data characterisation.
 - **Later waves:** tasks that need earlier outputs.
 - **Parallelism:** Geo Oracle makes one tool call per step. So start the independent tasks of a wave one after another, with `wait_seconds: 0`. Each call returns its job id at once, and the specialists run in parallel. Then collect them one by one.
+- **Large briefs:** One specialist turn may not be sufficient for a long list of required outputs, or for a sequence of long jobs on a large dataset (a large seismic volume: horizon tracking, fault and body extraction, attribute volumes). A specialist turn stops at the gateway's limit, `JOB_MAX_SECONDS` (six hours in this deployment). Split such a brief into smaller tasks, one after the other, in the same wave or in different waves. Do not write this limit, or any time limit, in a brief: the specialists are not told it.
 
 Write the plan into the ledger's *Tasks* table before you run it. For a large investigation, first show the user the plan in a few lines.
 
@@ -135,8 +136,8 @@ Poor reasons:
 ## 7. The turn budget: time and iterations
 
 A TrueForge turn has two ceilings:
-- **Time.** The platform's turn time limit is **three hours in this deployment** (`SERVER_EXECUTION_TIMEOUT_SECONDS=10800`; check it before you assume any other number). It cuts the turn where it stands, with no failure message: the sentence simply ends.
-- **Iterations.** The iteration limit in the agent's runtime configuration (**500 for Geo Oracle here**) counts every model step. Each tool call, each poll of `get_specialist_result`, each skill read and each ledger update is one iteration.
+- **Time.** The platform's turn time limit is **24 hours in this deployment** (`SERVER_EXECUTION_TIMEOUT_SECONDS=86400`; check it before you assume any other number). It cuts the turn where it stands, with no failure message: the sentence simply ends.
+- **Iterations.** The iteration limit in the agent's runtime configuration (**1024 for Geo Oracle here**) counts every model step. Each tool call, each poll of `get_specialist_result`, each skill read and each ledger update is one iteration.
 
 If the ledger is current, a turn cut at either ceiling loses nothing, because the next turn resumes from it. A turn cut before the ledger was written loses the reasoning. So manage both budgets explicitly:
 
@@ -144,10 +145,10 @@ If the ledger is current, a turn cut at either ceiling loses nothing, because th
 2. **Estimate before you start.** A specialist call costs three to five minutes and two to four iterations (start, poll, collect, review). A wave of three parallel calls costs about the same time as one call, but three times the iterations. A skill read or a ledger update is one iteration. If the estimate exceeds either limit, plan the turn as the first part of the investigation, and say so to the user.
 3. **Before every specialist call and every poll**, compute the remaining turn time from `get_current_datetime` and the start time in the ledger: `remaining = limit - elapsed`. Then:
    - `wait_seconds = min(cap, remaining - 120)`: a call may never run past the turn's end. If the wait would be under 60 s, it is not worth making: checkpoint instead.
-   - Keep launching work until about ten minutes of the turn remain, or about 90 % of the iterations are spent. If you stop earlier, you waste the turn. A three-hour turn abandoned at forty minutes leaves two hours unused, and hands the person a resumption they did not ask for.
+   - Keep launching work until about ten minutes of the turn remain, or about 90 % of the iterations are spent. If you stop earlier, you waste the turn. A 24-hour turn abandoned at forty minutes leaves most of the turn unused, and hands the person a resumption they did not ask for.
    - If the turn limit cuts a specialist call, the call returns a timeout error and the turn ends there. The job itself is unharmed and the next turn collects it, but the checkpoint was never written. The arithmetic above prevents that.
 4. **Checkpoint before the cut:** update the ledger (running job ids, open questions, next steps). Then end the turn with a short summary drawn from the ledger, and the sentence "Continue, and I resume from the ledger." The next turn first reads the ledger and collects any jobs still running.
-5. **Never start a specialist call you cannot collect.** A job started ten minutes before the cut will finish after it. Start it with `wait_seconds: 0` and record its job id, so the next turn collects it. Or leave it for the next turn. Specialist runs on several wells take 10 to 20 minutes, and waves run in parallel. So a three-hour turn holds ten to fourteen runs across several waves: most investigations fit in one turn.
+5. **Never start a specialist call you cannot collect.** A job started ten minutes before the cut will finish after it. Start it with `wait_seconds: 0` and record its job id, so the next turn collects it. Or leave it for the next turn. Specialist runs on several wells take 10 to 20 minutes, and waves run in parallel. So a 24-hour turn holds many runs across several waves: most investigations fit in one turn.
 6. **A running job is not a reason to end a turn.** While the clock allows, poll it with a real wait, and carry on. If you hand back because something is in flight, you waste the rest of the turn. You also give the person a checkpoint they did not ask for.
 
 **The checkpoint is where a person joins.** With a human on the loop, the checkpoint summary is the point at which Geo Oracle asks them whether to continue, change direction or stop (`geo-human-on-the-loop`). `ask_user_question` exists for that moment and for material ambiguities in the objective, not for routine progress. Specialists never ask: their "ask user" capability is off, and a question from one stalls its job.

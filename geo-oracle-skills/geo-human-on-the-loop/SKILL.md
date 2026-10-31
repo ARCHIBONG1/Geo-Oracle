@@ -11,8 +11,8 @@ Call **`ask_user_question`**, by that name. Both parameters are required:
 
 | Parameter | Shape |
 |---|---|
-| `question` | the text. Put the whole summary in it; there is nowhere else for it to go |
-| `options` | 0 to 5 mutually exclusive choices, plain strings. **A free-text box is always rendered beside them**, so the person can pick one, type something else, or both |
+| `question` | the decision only, at most 500 characters: the card does not scroll, so a longer one hides the options. Write the summary as text in the message that makes the call |
+| `options` | 0 to 5 mutually exclusive choices, plain strings. **A free-text box is always rendered beside them**, so the person can pick one or type something else |
 
 The question **blocks until it is answered and the turn survives**, so the investigation carries on in the same turn. You cannot perceive the wait: the answer simply appears. Never reason about how long it took, and never say that a question returned immediately.
 
@@ -32,7 +32,7 @@ ask_user_question(
 ```
 
 **Three rules about options.**
-- Five is the hard maximum, so design for three or four and let the free-text box carry the rest. Accept / edit / refuse / stop is four, and "edit" is really free text. So three plus the box usually reads better than five.
+- Five is the hard maximum, so design for three or four and let the free-text box carry the rest. An edit is free text, so accept / refuse / stop plus the box reads best.
 - Append the exact suffix `" (Recommended)"` to one option **only** where you ask the person to sanity-check your judgement: a plan, a retry, a reduction wave. **Never at an alternatives checkpoint**: a recommendation is pre-selection in a thin disguise. That question asks for their judgement, not your agreement (section 7).
 - More than five alternatives: section 7.
 
@@ -114,7 +114,7 @@ The activation answer approves wave 1 and nothing else. Every later wave is a qu
 At every wave boundary, follow this sequence:
 1. File nothing yet.
 2. **Update the ledger, including its Pending question block.**
-3. Put the five-part summary and the question through **`ask_user_question`** (section 0). Give accept / refuse / stop as options, and let the free-text box carry any edit.
+3. Write the five-part summary as text, and in that message call **`ask_user_question`** (section 0). Give accept / refuse / stop as options, and let the free-text box carry any edit.
 4. They answer in the same turn.
 5. File the checkpoint with their words, and clear the pending block.
 
@@ -122,11 +122,11 @@ If you file before they answer, the refusal catches that mistake.
 
 **Do not end your turn to ask.** `ask_user_question` blocks and the turn survives it. An answered checkpoint carries straight on, and the whole investigation runs in one turn.
 
-**If nobody answers, the harness cuts the turn at its limit with no message.** That is the accepted cost of supervision: a supervised investigation is only as alive as its supervisor, which is the point of it. Nothing is lost if you wrote the ledger first. That is why the pending block goes in before the question, not after. An investigation meant to run unattended is `off` mode, not `every_wave`.
+**If nobody answers, the harness cuts the turn at its limit with no message.** That is the accepted cost of supervision: a supervised investigation is only as alive as its supervisor. Nothing is lost if you wrote the ledger first. That is why the pending block goes in before the question, not after. An investigation meant to run unattended is `off` mode, not `every_wave`.
 
 ## 3b. Key decisions only
 
-The same machinery as every-wave mode, fired at four moments instead of at every boundary. **Each of them is an `ask_user_question` call, answered in the same turn, exactly as in every-wave mode (section 0).** Never prose, never a turn ending, never a statement of what you intend followed by a stop.
+The same machinery as every-wave mode, fired at four moments instead of at every boundary. **Each of them is an `ask_user_question` call, answered in the same turn, exactly as in every-wave mode (section 0).** Never prose alone, never a turn ending, never a statement of what you intend followed by a stop.
 
 | Trigger | When | What you ask |
 |---|---|---|
