@@ -28,7 +28,7 @@ Use only the bundle for results and conclusions, and do not use your general kno
 
 ## 2. The draft
 
-The draft is one JSON object, sent to `lit_render_report` as a string in `draft_json`:
+The draft has the parts below. **Store each part with `lit_draft_section(investigation_id, section, blocks_json, review_round)`**: first `title` (one object with the top-level fields: title, keywords, setting_title, figures_omitted_reason, literature_references, literature_sources), then each section's block list (`executive_summary`, `introduction`, `setting`, `data`, `methods`, `results`, `discussion`, `conclusions`). Each reply lists that part's `errors`: correct them and store the part again until it has none. Store a long section in pieces with `append: true`; a part stored on its own cannot regress when another is corrected. In a revision round the store starts from the previous round's draft: store only the parts you change. The stored parts assemble to the draft below:
 
 ```json
 {
@@ -125,9 +125,9 @@ You restate Geo Oracle's conclusions. You never raise, lower or add one.
 
 ## 7. Render
 
-1. Read your draft against the checklist in `lit-report-writing` section 12, and correct it.
-2. Call `lit_render_report(investigation_id, draft_json, review_round, wait_seconds=240)` with the round your brief gives.
-3. **Rejected:** the message lists every error that remains (or the bundle parts still unread). Correct all of them and call again with the same round. **Keep correcting and rendering until the draft renders**: a round has no limit on renders, and a refused draft is no report. A corrected draft is a changed call, so the rule to stop after two refusals does not apply to `lit_render_report`. Stop only for an error the draft cannot correct (a missing bundle part, a server failure) or at three quarters of your turn budget, and name the remaining errors in `limitations`.
+1. Read your stored parts against the checklist in `lit-report-writing` section 12, and store the corrected ones.
+2. Call `lit_render_report(investigation_id, review_round, wait_seconds=240)` with the round your brief gives and no `draft_json`.
+3. **Rejected:** the message lists every error that remains (or the bundle parts still unread). Correct them in the parts they name (store those parts again) and call again with the same round. **Keep correcting and rendering until the draft renders**: a round has no limit on renders, and a refused draft is no report. A corrected draft is a changed call, so the rule to stop after two refusals does not apply to `lit_render_report`. Stop only for an error the draft cannot correct (a missing bundle part, a server failure) or at three quarters of your turn budget, and name the remaining errors in `limitations`.
 4. **Running:** collect it with `get_literature_job_result`. Read every warning (the render returns them all in `style_warnings`). Correct the draft and render again with the same round for each drift, content, uncertainty and `layout:` warning; style advice alone (`style:`) needs no new render.
 5. **`release_checks: failed`:** the PDF has no download link. Correct the problems and render again.
 6. **LaTeX could not compile:** the message gives the first LaTeX error and its line; correct what it names.

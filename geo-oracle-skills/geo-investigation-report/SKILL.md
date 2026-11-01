@@ -116,7 +116,9 @@ Call `report_draft(investigation_id)`. It gives:
 
 A long draft comes in pages: call again with `offset=next_offset` until no `next_offset` comes back.
 
-If `report_draft` gives a `release_note`, or the drafting run carries the warning `Process audit: skills not opened: lit-investigation-report` or `... lit-report-writing`, the writer drafted without its procedure. Do not deliver it. Send the round back with a review note that asks it to read the skills and redraft from every part of the bundle.
+If `report_draft` gives `release_problem_owner: renderer`, the PDF failed a check that the writer cannot correct from the draft. Do not send the round back for it: tell the person that the report could not be released and why, and that the fault is in the report build.
+
+If `report_draft` gives a `release_note` about the drafting run's procedure (`process_audit`), or the drafting run carries the warning `Process audit: skills not opened: lit-investigation-report` or `... lit-report-writing`, the writer drafted without its procedure. Do not deliver it. Send the round back with a review note that asks it to read the skills and redraft from every part of the bundle.
 
 **The warnings are review notes.** Read every page of the warnings. Send each drift and content warning back in your review notes, one subject per note, unless your review of the paragraph shows that it does not apply. When you deliver the report, say why each warning you did not send back does not apply. The style warnings are advice; send back only those that make a paragraph unclear. The process-audit items of a drafting run about findings, figures carried or evidence classes do not apply to a report: do not send them as notes.
 
