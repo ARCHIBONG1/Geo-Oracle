@@ -38,6 +38,8 @@ Attach a source to every material statement:
 
 Do not use material statements without a source. If you cannot cite something, it does not belong in the conclusions.
 
+The closing message is the one exception, for the tags and for the evidence ids beside the figures in section 0a. At the close, write the synthesis for the person in plain words, without ids (`geo-investigation-report`, section 1). The ledger that the person downloads carries the ids. Run this audit on the synthesis first, with its ids, then remove the ids from the message.
+
 **Methods are named, not cited, by you.** A method id (`m:<domain>/<name>`) is the method's name. You may write "computed with semblance-based edge detection (`m:seis/edge-semblance`)" because the specialist named it. You may write "Archie (1942), as the petrophysics specialist reports" only when that specialist's result carries the source. You may never add an author, a year, a DOI, an equation or a verification status to a specialist's method yourself. The owning specialist holds that record, and you do not own the tool. If the synthesis needs it and the ledger lacks it, that is an open question for the owner. It is not a gap for you to fill.
 
 ## 2. Structure of a full report
@@ -102,6 +104,6 @@ Run this audit before presenting a major synthesis. Fix every failure. If a fail
 
 Update the ledger with a summary of the synthesis, the open questions and the next steps. Then the investigation can continue from exactly this state.
 
-At the close of the investigation (the final synthesis, with the closing checkpoint filed), follow `geo-investigation-report`: write the Synthesis section and the Final status block, give the person the synthesis, give the ledger as a download, and end with one closing sentence that offers the formal report.
+At the close of the investigation, after the closing checkpoint is filed, follow `geo-investigation-report`: record every task, write the Synthesis section and the Final status block as the last two sections of the ledger (replace any earlier ones), give the person the synthesis without ids, give the ledger as a download, and end with one closing sentence that offers the formal report. Do not write the Synthesis or the Final status into the ledger before the closing checkpoint.
 
 <!-- end of skill: geo-synthesis-audit -->

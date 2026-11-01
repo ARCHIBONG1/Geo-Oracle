@@ -1,6 +1,6 @@
 ---
 name: geo-investigation-report
-description: How Geo Oracle closes an investigation and, when the person asks, gets the formal investigation report written and reviews it. Use at the close of every investigation (after the final synthesis and the closing checkpoint), and whenever the person asks for a report, a formal report, a write-up or a PDF of a closed investigation. Covers the Synthesis section, the Final status block, the synthesis given to the person, the ledger download, the closing sentence, request_report, report_draft, the three review rounds and the delivery.
+description: How Geo Oracle closes an investigation and, when the person asks, gets the formal investigation report written and reviews it. Use at the close of every investigation (when the closing checkpoint is filed), and whenever the person asks for a report, a formal report, a write-up or a PDF of a closed investigation. Covers the Synthesis section, the Final status block, the synthesis given to the person, the ledger download, the closing sentence, request_report, report_draft, the three review rounds and the delivery.
 ---
 
 # The close and the investigation report
@@ -9,11 +9,11 @@ The person gets the ledger at the close of every investigation. The formal repor
 
 ## 1. The close
 
-Do these steps in this order, after the final synthesis (`geo-synthesis-audit`) and the closing checkpoint:
+The close starts when the closing checkpoint is filed: its reply normally gives `ledger_download`. Do not write the Synthesis or the Final status before that. The gateway can send the work on after a checkpoint, and blocks written before the last results describe an earlier state. Do these steps in this order:
 
-1. **Write the Synthesis section** at the end of the ledger (format in section 2).
-2. **Write the Final status block** after it (format in section 3), then save the ledger.
-3. **Give the person the synthesis** in your closing message, in plain words, before the ledger download. Give it at every close, also when the person does not ask for a report. Write it from the Synthesis section: how the results combine, what the key figures show, the provenance, the open questions with their competing readings and tests, and what was not in scope. Do not use ledger labels or ids in it: write each hypothesis and uncertainty by its content.
+1. **Record every task** in the ledger: each task that the investigation ran, by its full task id, with its result.
+2. **Write the Synthesis section** (format in section 2) and then **the Final status block** (format in section 3), from the state of the work now, as the last two sections of the ledger. If you wrote either one earlier, replace it: remove the old one. Write nothing after the Final status block. Then save the ledger.
+3. **Give the person the synthesis** in your closing message, in plain words, before the ledger download. Give it at every close, also when the person does not ask for a report. Write it from the Synthesis section: how the results combine, what the key figures show, the provenance, the open questions with their competing readings and tests, and what was not in scope. Do not use ledger labels or ids in it, not even as citations in brackets: write each hypothesis and uncertainty by its content. The ledger that the person downloads carries the ids. This rule replaces the citation rule of your prompt for this one message.
 4. **Give the ledger as a download.** The closing checkpoint's reply gives `ledger_download`, a `sandbox_artifacts` block with the path on record. Put it, unchanged, near the end of your message, just before the closing sentence (step 5). If the reply has no `ledger_download`, write this block with the path you gave as `ledger_path`. Do not build the path again from `pwd`. Write the path plainly: never escape a slash (`\/`), because an escaped path does not download:
 
    ````
@@ -29,7 +29,7 @@ The report writer reads the Synthesis section and carries it into the Discussion
 
 Do not call `ask_user_question` at the close. A question blocks the turn until the person answers. The person may not want a report, and the turn must end.
 
-**After the close, the ledger is frozen.** Do not edit it. The report prints it as its appendix with its SHA-256, so any edit after the close breaks the match between the report and the ledger. If the person asks for more work instead of a report, the investigation opens again. Work through the human-on-the-loop rules as usual, add to the ledger, and close again with a new Final status block and a new download.
+**After the close, the ledger is frozen.** Do not edit it, with one exception: when `request_report` refuses because the ledger does not yet describe the end of the work, complete it as the refusal says (record the tasks it names, and put the Synthesis and the Final status at the end), then call again with the same words. The report prints it as its appendix with its SHA-256, so any edit after the close breaks the match between the report and the ledger. If the person asks for more work instead of a report, the investigation opens again. Work through the human-on-the-loop rules as usual, add to the ledger, and close again with a new Final status block and a new download.
 
 ## 2. The Synthesis section
 
