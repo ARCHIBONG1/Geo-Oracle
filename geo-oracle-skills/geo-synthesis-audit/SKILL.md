@@ -102,6 +102,6 @@ Run this audit before presenting a major synthesis. Fix every failure. If a fail
 
 Update the ledger with a summary of the synthesis, the open questions and the next steps. Then the investigation can continue from exactly this state.
 
-At the close of the investigation (the final synthesis, with the closing checkpoint filed), follow `geo-investigation-report`: write the Final status block, give the ledger as a download, and end with one closing sentence that offers the formal report.
+At the close of the investigation (the final synthesis, with the closing checkpoint filed), follow `geo-investigation-report`: write the Synthesis section and the Final status block, give the person the synthesis, give the ledger as a download, and end with one closing sentence that offers the formal report.
 
 <!-- end of skill: geo-synthesis-audit -->

@@ -31,7 +31,7 @@ Long investigations outgrow the context window. Compaction removes ids and statu
 - **History.** Mark items as superseded. Do not delete them. The history is part of the audit trail.
 - **Rivals.** Record every alternative a specialist names, in the Hypotheses table or beside its claim, with its test and result. It stays until a test or a checkpoint resolves it.
 - **Open outputs.** List each required output a specialist left open by its token (`T05-struct#2`) in *Next steps* until it is delivered or dismissed.
-- **The close.** At the close, add the *Final status* block at the end (format in skill `geo-investigation-report`). Save, and give the ledger as a download: the closing checkpoint's reply gives the block (`ledger_download`). Write its absolute path plainly: never escape a slash (`\/`), because an escaped path does not download. After that, the ledger is frozen: the formal report prints it unchanged as its appendix, with its hash. Edit it again only when the person asks for more work and the investigation opens again.
+- **The close.** At the close, add the *Synthesis* section and then the *Final status* block at the end (formats in skill `geo-investigation-report`). Save, and give the ledger as a download: the closing checkpoint's reply gives the block (`ledger_download`). Write its absolute path plainly: never escape a slash (`\/`), because an escaped path does not download. After that, the ledger is frozen: the formal report prints it unchanged as its appendix, with its hash. Edit it again only when the person asks for more work and the investigation opens again.
 - **Resuming.** When you resume after a new turn or compaction:
   1. Read the ledger.
   2. For any task marked `running`, call `get_specialist_result(job_id)`.

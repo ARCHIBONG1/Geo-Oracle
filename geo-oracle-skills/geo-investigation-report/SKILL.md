@@ -1,6 +1,6 @@
 ---
 name: geo-investigation-report
-description: How Geo Oracle closes an investigation and, when the person asks, gets the formal investigation report written and reviews it. Use at the close of every investigation (after the final synthesis and the closing checkpoint), and whenever the person asks for a report, a formal report, a write-up or a PDF of a closed investigation. Covers the Final status block, the ledger download, the closing sentence, request_report, report_draft, the three review rounds and the delivery.
+description: How Geo Oracle closes an investigation and, when the person asks, gets the formal investigation report written and reviews it. Use at the close of every investigation (after the final synthesis and the closing checkpoint), and whenever the person asks for a report, a formal report, a write-up or a PDF of a closed investigation. Covers the Synthesis section, the Final status block, the synthesis given to the person, the ledger download, the closing sentence, request_report, report_draft, the three review rounds and the delivery.
 ---
 
 # The close and the investigation report
@@ -11,8 +11,10 @@ The person gets the ledger at the close of every investigation. The formal repor
 
 Do these steps in this order, after the final synthesis (`geo-synthesis-audit`) and the closing checkpoint:
 
-1. **Write the Final status block** at the end of the ledger (format in section 2), then save the ledger.
-2. **Give the ledger as a download.** The closing checkpoint's reply gives `ledger_download`, a `sandbox_artifacts` block with the path on record. Put it, unchanged, near the end of your message, just before the closing sentence (step 3). If the reply has no `ledger_download`, write this block with the path you gave as `ledger_path`. Do not build the path again from `pwd`. Write the path plainly: never escape a slash (`\/`), because an escaped path does not download:
+1. **Write the Synthesis section** at the end of the ledger (format in section 2).
+2. **Write the Final status block** after it (format in section 3), then save the ledger.
+3. **Give the person the synthesis** in your closing message, in plain words, before the ledger download. Give it at every close, also when the person does not ask for a report. Write it from the Synthesis section: how the results combine, what the key figures show, the provenance, the open questions with their competing readings and tests, and what was not in scope. Do not use ledger labels or ids in it: write each hypothesis and uncertainty by its content.
+4. **Give the ledger as a download.** The closing checkpoint's reply gives `ledger_download`, a `sandbox_artifacts` block with the path on record. Put it, unchanged, near the end of your message, just before the closing sentence (step 5). If the reply has no `ledger_download`, write this block with the path you gave as `ledger_path`. Do not build the path again from `pwd`. Write the path plainly: never escape a slash (`\/`), because an escaped path does not download:
 
    ````
    ```sandbox_artifacts
@@ -21,13 +23,36 @@ Do these steps in this order, after the final synthesis (`geo-synthesis-audit`) 
    ````
 
    If one chat holds several investigations, use `<home>/investigation/<investigation_id>/ledger.md`. The ledger opens with `# Investigation <investigation_id>`. The gateway takes the ledger into a report only when it names the investigation.
-3. **End with one closing sentence that offers the report and shows how to ask for it**, for example: "If you would like a formal report of this investigation, reply 'yes', or ask for it in your own words, for example: 'Write the formal report.'" Offer it only when this investigation filed a closing checkpoint. An investigation with no checkpoint (one specialist call, no human-on-the-loop mode) cannot have a formal report, so end without the offer. Put nothing after the closing sentence. The gateway reads the last 500 characters of your message to take a short 'yes' as the answer to this offer.
+5. **End with one closing sentence that offers the report and shows how to ask for it**, for example: "If you would like a formal report of this investigation, reply 'yes', or ask for it in your own words, for example: 'Write the formal report.'" Offer it only when this investigation filed a closing checkpoint. An investigation with no checkpoint (one specialist call, no human-on-the-loop mode) cannot have a formal report, so end without the offer. Put nothing after the closing sentence. The gateway reads the last 500 characters of your message to take a short 'yes' as the answer to this offer.
+
+The report writer reads the Synthesis section and carries it into the Discussion and the Conclusions. A ledger without it gives a report without your reading of the results.
 
 Do not call `ask_user_question` at the close. A question blocks the turn until the person answers. The person may not want a report, and the turn must end.
 
 **After the close, the ledger is frozen.** Do not edit it. The report prints it as its appendix with its SHA-256, so any edit after the close breaks the match between the report and the ledger. If the person asks for more work instead of a report, the investigation opens again. Work through the human-on-the-loop rules as usual, add to the ledger, and close again with a new Final status block and a new download.
 
-## 2. The Final status block
+## 2. The Synthesis section
+
+```markdown
+## Synthesis
+### How the results combine
+### What the key figures show
+### Provenance
+### Open questions
+### Not in scope
+```
+
+Write each part in prose. Put the ledger ids each statement rests on in brackets at its end (H#, claim ids, X#, U#), so the report can rest on them.
+
+- **How the results combine:** how the results of the specialists fit together, and where they disagree. Say which result depends on which.
+- **What the key figures show:** for each figure that carries a conclusion, what it shows in words: the structure, the trend, the anomaly, and its scale.
+- **Provenance:** which data and records the conclusions rest on, which records were withheld or set aside, and what that changes.
+- **Open questions:** for each open hypothesis, contradiction or material uncertainty: the competing readings, the evidence for each, and the test or data that would decide between them.
+- **Not in scope:** what the person excluded or the data could not support, and why.
+
+The Synthesis adds no finding. Each statement comes from the ledger and the results, at the status they hold.
+
+## 3. The Final status block
 
 ```markdown
 ## Final status
@@ -45,9 +70,9 @@ Do not call `ask_user_question` at the close. A question blocks the turn until t
 | Runs used | n of N specialist runs |
 ```
 
-Copy each status from the ledger. The block summarises the ledger and adds no new finding. Its hypotheses, answer and pre-mortem are the ones the closing checkpoint recorded (`hypotheses`, `objective_check`, `pre_mortem`), word for word.
+Copy each status from the ledger and the Synthesis. The block summarises the ledger and adds no new finding. Its hypotheses, answer and pre-mortem are the ones the closing checkpoint recorded (`hypotheses`, `objective_check`, `pre_mortem`), word for word.
 
-## 3. When the person asks for a report
+## 4. When the person asks for a report
 
 Start a report only when the person's latest message asks for one. Do not start one on your own.
 
@@ -77,14 +102,15 @@ Never write the request for the person. Never quote words they did not write. Th
 
 Then tell the person that the report is in progress, and collect the run with `get_specialist_result(job_id, wait_seconds=...)`. The draft takes some minutes.
 
-## 4. Review the draft
+## 5. Review the draft
 
 Call `report_draft(investigation_id)`. It gives:
 
 - each paragraph (numbered from 1 within its section), with the ledger ids it rests on (the hidden tags); the headings, and each figure and table with its label;
 - the release checks;
 - the warnings (the first page, with their total and a count by kind: drift first, then the content warnings, then style; the rest with `part='warnings'` and the `offset` the reply gives);
-- the literature references as they print (from what the literature evidence recorded);
+- the `review_rule`, when there are drift or content warnings;
+- the literature references as they print (from what the literature evidence recorded). A source the writer found and verified for the report is marked `found_for_report`;
 - the download link (only when the release checks passed);
 - the rounds left.
 
@@ -92,7 +118,11 @@ A long draft comes in pages: call again with `offset=next_offset` until no `next
 
 If `report_draft` gives a `release_note`, or the drafting run carries the warning `Process audit: skills not opened: lit-investigation-report` or `... lit-report-writing`, the writer drafted without its procedure. Do not deliver it. Send the round back with a review note that asks it to read the skills and redraft from every part of the bundle.
 
-If the drafting run failed and rendered nothing, call `request_report(investigation_id)` again. That round runs again and costs no round. A round runs at most three times. After the third failure, read the run's message, and tell the person that the report could not be produced, and why.
+**The warnings are review notes.** Read every page of the warnings. Send each drift and content warning back in your review notes, one subject per note, unless your review of the paragraph shows that it does not apply. When you deliver the report, say why each warning you did not send back does not apply. The style warnings are advice; send back only those that make a paragraph unclear. The process-audit items of a drafting run about findings, figures carried or evidence classes do not apply to a report: do not send them as notes.
+
+**Read the run's `next_action` first.** If the writer's turn ended in an error after the round rendered, the `next_action` says so: the draft is on file. Review it with `report_draft`. Do not ask for the round again.
+
+If the drafting run rendered nothing, call `request_report(investigation_id)` again. That round runs again and costs no round. A round runs at most three times. After the third failure, read the run's message, and tell the person that the report could not be produced, and why.
 
 Compare each paragraph with your ledger. Each of these is a contradiction:
 
@@ -105,13 +135,16 @@ Compare each paragraph with your ledger. Each of these is a contradiction:
 - a figure or table the text does not refer to (the warnings name them);
 - a claim whose recorded alternative the report does not give (the task views in the bundle hold the alternatives);
 - an executive summary part, or a ledger hypothesis, that the warnings name as missing from the summary;
+- a measurement given without its uncertainty, or without the sentence that no uncertainty was computed;
+- published work, found by the writer for the report, used to change a conclusion; the writer may use it only to compare and to give context;
+- a part of your Synthesis that the Discussion or the Conclusions leave out;
 - release checks that failed.
 
 These are not contradictions: a different word order, shorter sentences, a different paragraph order, or a plainer word. The writer may make light edits for flow.
 
 The text may contain no ids; the hidden tags carry them. Do not ask the writer to add ids to the text.
 
-## 5. Send it back, or deliver it
+## 6. Send it back, or deliver it
 
 - **Contradictions found:** call `request_report(investigation_id, review_notes=[...])`, one contradiction for each note. Name the paragraph (section and number), what it says, and what the ledger holds. Then collect the run and review again.
 - **No contradictions, and the release checks passed:** deliver it.
