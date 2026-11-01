@@ -122,7 +122,7 @@ If `report_draft` gives a `release_note`, or the drafting run carries the warnin
 
 **Read the run's `next_action` first.** If the writer's turn ended in an error after the round rendered, the `next_action` says so: the draft is on file. Review it with `report_draft`. Do not ask for the round again.
 
-If the drafting run rendered nothing, call `request_report(investigation_id)` again. That round runs again and costs no round. A round runs at most three times; the run's `next_action` says which run it was and how many are left. While a run is left, run the round again and do not tell the person that the report failed. Only when the `next_action` says no run is left, or the gateway refuses another run, read the last run's message, and tell the person that the report could not be produced, and why.
+If the drafting run rendered nothing, the gateway starts the round's next run itself: the run's `next_action` names the new job. Collect it with `get_specialist_result` and do not call `request_report` for it. A round runs at most three times, and a run costs no round. If the `next_action` instead says to call `request_report(investigation_id)` again, do so. Do not tell the person that the report failed while a run is left. Only when the `next_action` says no run is left, or the gateway refuses another run, read the last run's message, and tell the person that the report could not be produced, and why.
 
 Compare each paragraph with your ledger. Each of these is a contradiction:
 
