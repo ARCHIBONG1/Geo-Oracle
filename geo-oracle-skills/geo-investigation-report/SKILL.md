@@ -81,16 +81,16 @@ Then tell the person that the report is in progress, and collect the run with `g
 
 Call `report_draft(investigation_id)`. It gives:
 
-- each paragraph (numbered from 1 within its section), with the ledger ids it rests on (the hidden tags);
+- each paragraph (numbered from 1 within its section), with the ledger ids it rests on (the hidden tags); the headings, and each figure and table with its label;
 - the release checks;
-- the warnings (on the first page, with their total: drift first, then the content warnings, then style);
+- the warnings (the first page, with their total and a count by kind: drift first, then the content warnings, then style; the rest with `part='warnings'` and the `offset` the reply gives);
 - the literature references as they print (from what the literature evidence recorded);
 - the download link (only when the release checks passed);
 - the rounds left.
 
 A long draft comes in pages: call again with `offset=next_offset` until no `next_offset` comes back.
 
-If `report_draft` gives a `release_note`, or the drafting run carries the warning `Process audit: skills not opened: lit-investigation-report`, the writer drafted without its procedure. Do not deliver it. Send the round back with a review note that asks it to read the skill and redraft from every part of the bundle.
+If `report_draft` gives a `release_note`, or the drafting run carries the warning `Process audit: skills not opened: lit-investigation-report` or `... lit-report-writing`, the writer drafted without its procedure. Do not deliver it. Send the round back with a review note that asks it to read the skills and redraft from every part of the bundle.
 
 If the drafting run failed and rendered nothing, call `request_report(investigation_id)` again. That round runs again and costs no round. A round runs at most three times. After the third failure, read the run's message, and tell the person that the report could not be produced, and why.
 
@@ -101,6 +101,10 @@ Compare each paragraph with your ledger. Each of these is a contradiction:
 - a hypothesis or contradiction the ledger keeps open, shown as settled;
 - a limitation or material uncertainty that is lost;
 - a methods drift warning that changes what was run;
+- an execution event (a run that was cut off, a dropped connection, a rerun) written as a scientific limitation, in the answer or beside a hypothesis; it belongs in the record paragraph at the end;
+- a figure or table the text does not refer to (the warnings name them);
+- a claim whose recorded alternative the report does not give (the task views in the bundle hold the alternatives);
+- an executive summary part, or a ledger hypothesis, that the warnings name as missing from the summary;
 - release checks that failed.
 
 These are not contradictions: a different word order, shorter sentences, a different paragraph order, or a plainer word. The writer may make light edits for flow.

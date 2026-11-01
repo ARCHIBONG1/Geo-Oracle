@@ -1,6 +1,6 @@
 # Skills: the agents' operating procedures
 
-This folder holds 92 skills in 11 packs, one pack per agent. A skill is a
+This folder holds 93 skills in 11 packs, one pack per agent. A skill is a
 Markdown document that an agent reads during a task. It says what to do and in
 what order, which tool to use, what may not be assumed, and in what form to
 report. Nothing here executes.
@@ -27,7 +27,7 @@ agents/skills/
    |______ README.md                             this file
    |
    |______ geo-oracle-skills/                    the orchestrator (9)
-   |______ literature-review-agent-skills/       (8)
+   |______ literature-review-agent-skills/       (9)
    |______ regional-geology-agent-skills/        (9)
    |______ seismic-interpreter-agent-skills/     (8)
    |______ structural-geology-agent-skills/      (8)
@@ -170,8 +170,8 @@ What catches such a run is the gateway's process audit, after the turn:
   require was never read in full.
 
 Geo Oracle must answer each of these items at its next checkpoint. For a
-report draft written without `lit-investigation-report`, `report_draft` adds
-a release note: Geo Oracle must not give the person the link yet and sends the
+report draft written without `lit-investigation-report` or
+`lit-report-writing`, `report_draft` adds a release note: Geo Oracle must not give the person the link yet and sends the
 round back. The audit reports the gap; it
 does not prevent it. Two remedies remain open and are not built: a host-side
 skill reader on each agent's tool server, or moving the critical skills to a
@@ -314,7 +314,8 @@ gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 | `lit-evidence-extraction` | mapping extracted evidence onto the findings structure, including the one `source_reference` format (the resolved record, the `type:` of the work, the read's `prov:` id) |
 | `lit-geoscience-question-bank` | question sets and evidence checklists for decomposing a request |
 | `lit-synthesis-report` | synthesis across sources, conflicting literature, careful language for consensus; methods statements for the investigation report |
-| `lit-investigation-report` | writing the formal investigation report from the frozen bundle (`lit_read_bundle`): the draft JSON, hidden ledger tags and citation markers, the section contents, the narrow rule for conclusions (restate, never raise, lower or add), ASD-STE100, the figures and `figures_omitted_reason`, one reference per work, rendering with `lit_render_report`, and revisions |
+| `lit-investigation-report` | the mechanics of the formal investigation report: reading the frozen bundle (`lit_read_bundle`), the draft JSON with its headings, figures, tables and labels, hidden ledger tags and citation markers, the narrow rule for conclusions (restate, never raise, lower or add), `figures_omitted_reason`, one reference per work, rendering with `lit_render_report`, and revisions |
+| `lit-report-writing` | the content and style of each report section for the people who decide on the investigation: the executive summary in eight parts, the introduction, the geology, the methods in workflow order, the results by subject with status words, alternatives, figures and tables, the conclusions and the record of the investigation, hypotheses written by content, captions, the register and the words to avoid, and the checks before a render |
 
 ### `regional-geology-agent-skills` (9)
 
