@@ -54,6 +54,7 @@ The renderer prints the data table at the top of the section. Refer to it as `[[
 Write the methods by stage of the workflow, not task by task: data preparation, well products, seismic quality control, well tie, horizons, faults, bodies, attributes, depth conversion, follow-up work. Open each stage with a heading block.
 
 - **Keep each methods statement whole.** Every method it names and every number it states stays in Methods, at its stage. Re-order and connect the statements so that each stage reads as one procedure, but merge nothing away: two statements that ran the same method with different settings are two statements. The renderer refuses a statement that lost a method or a fair part of its numbers.
+- **When many statements are lost**, do not shorten them again. Put the statements under their stage headings first, then copy each one's method names and numbers into the text as the statement gives them, and connect the sentences around them. Summarise nothing.
 - **The role of each method in words.** Say what each method does in this workflow and why it was chosen, when the findings state why: "The horizons were tracked with a waveform-correlation tracker [[m:...]], seeded at the well ties, because ...". Cite the method in the clause that names the step.
 - Name the specialist by discipline once per stage, not in each sentence.
 - A method with no published source prints a star; write nothing else for it.
