@@ -60,7 +60,7 @@ Use this mapping when the task includes an OUTPUT CONTRACT:
 doi:<DOI> | openalex:<W-id> | <First author> et al. <year>, <venue> | type: <OpenAlex type, e.g. article, dissertation, book-chapter> | title: <title> | relevance: <class> | access: <level> | loc: <page/figure/table>
 ```
 
-Copy `type:` from the resolved record, as you copy the author, year and title. The investigation report prints a thesis, a book chapter or a report as that kind of work.
+Copy `type:` from the resolved record, as you copy the author, year and title. The investigation report prints a thesis, a book chapter or a report as that kind of work. A record that returns no author list is not a citable source: do not write a placeholder in the author's place. Record it as `UNVERIFIED |` with its DOI and title, so the report can describe it without citing it, or leave it out.
 
 An unresolved source starts with `UNVERIFIED |`. A source without a DOI uses `url:<stable institutional URL>` in its place. A source you read with `lit_read_document` also carries the read's `prov:<id>`, so the gateway can trace the item to the bytes it rests on. Copy the author, year and title from the resolved record: the investigation report prints its references from these fields.
 

@@ -11,18 +11,19 @@ The report reads clean: no ids in the text. Each block carries hidden tags that 
 
 ## 1. Read the bundle
 
-The gateway froze the investigation into a bundle when the person asked for the report. Read it with `lit_read_bundle`, one part at a time. **The renderer refuses to render until you have read four parts to their last page**: `overview`, `digest`, `ledger` and `supervision` (the overview's `read_before_render` lists the ones this bundle holds). A long part comes in pages: when a reply gives `items_next_offset`, `tasks_next_offset` or `next_offset`, call the same part again with `offset` set to it, until a reply gives none. Every page you read is recorded.
+The gateway froze the investigation into a bundle when the person asked for the report. Read it with `lit_read_bundle`, one part at a time. **The renderer refuses to render until you have read the parts the overview's `read_before_render` names, each to its last page**: `overview`, `digest`, `ledger`, `supervision` and, when the bundle holds figures, `figures`. A long part comes in pages: when a reply gives `items_next_offset`, `tasks_next_offset` or `next_offset`, call the same part again with `offset` set to it, until a reply gives none. Every page you read is recorded.
 
 | Part | What it gives |
 |---|---|
 | `overview` | The objective, the HOTL setting, the executive summary Geo Oracle gave the person, one line per task, the figures (agent, caption, the claims each supports), the data, the methods that ran, what is not available, `do_not_rely_on` (superseded tasks, set-aside evidence), and whether the ledger has a Synthesis section. |
-| `digest` | Every task's reply, item by item: the specialist's summary word for word; each claim with its class, status and alternatives; each evidence statement with its limitations; each methods statement; the contradictions, limitations, assumptions, unknowns, missing data, conclusions and follow-ups; the figures; and the prose of the reply outside its findings JSON (it often holds figure descriptions and reasoning the JSON does not). This is your main source. Read all of it. |
+| `digest` | Every task's reply, item by item: the specialist's summary word for word; each claim with its class, status and alternatives; each evidence statement with its limitations; each methods statement; the contradictions, limitations, assumptions, unknowns, missing data, conclusions and follow-ups; the figures; and the prose of the reply outside its findings JSON. This is your main source. Read all of it. |
 | `ledger` | Geo Oracle's ledger: the reference for every status and every conclusion. Its Synthesis section, when present, is Geo Oracle's reading of the results together. |
 | `supervision` | Geo Oracle's supervision record: the request (objective, deliverables, constraints, the decision chain), each checkpoint (why the work stopped or went on, its contribution, the deliverables, the hypotheses, the items and the answers to them) and the requester's interventions. It tells you what was asked, what was decided and why. |
 | `parameters` | Each recorded computation: tool, methods, parameters, and the tasks that cite it. The source of the parameter table in Methods. |
 | `task` (with `task_id`) | One task's findings in one view, when you need to check a claim against its evidence. |
 | `literature` | The literature evidence of the investigation that you may cite. |
-| `figures`, `data`, `methods` | The lists the overview names by count only. |
+| `figures` | Every figure: file name, agent, caption and the claims it supports. Required reading when the bundle holds figures. |
+| `data`, `methods` | The lists the overview names by count only. |
 
 Use only the bundle for results and conclusions, and do not use your general knowledge as a finding. Do not rest a result or a conclusion on a superseded task or on a set-aside claim or evidence item; the overview lists them, and the digest and each task view mark them (`superseded`, `set_aside`). Do not tag them, and do not carry their methods statements.
 
@@ -60,7 +61,7 @@ The draft has the parts below. **Store each part with `lit_draft_section(investi
 
 - **`keywords`**: three to eight short terms for the PDF metadata.
 - **`setting_title`** (optional): `Geological setting` (the default) or `Description of the synthetic model`, for a study of a synthetic volume.
-- **`figures_omitted_reason`** (optional): if no bundle figure supports a claim that Results or Discussion states, say why here. Without it, the renderer refuses a report whose Results and Discussion place no figure while the bundle holds figures.
+- **`figures_omitted_reason`**: only when no bundle figure supports a claim the report states; the renderer checks this and refuses the reason otherwise. Place each figure beside the paragraph that states a claim it supports.
 - **A block** is a paragraph `{text, tags}`, a heading `{heading}`, a figure `{figure, caption, label, tags}` or a table `{table: {caption, columns, rows, label}, tags}`.
   - A heading opens a subsection; it has no tags and no marker. The executive summary has no headings, figures or tables.
   - The figure name is one from the overview's `figures`. Tag a figure with the claims its specialist marked it as supporting (`supports`). Start its caption from the specialist's caption; the renderer adds the source line (the specialist's discipline).
@@ -128,7 +129,7 @@ You restate Geo Oracle's conclusions. You never raise, lower or add one.
 1. Read your stored parts against the checklist in `lit-report-writing` section 12, and store the corrected ones.
 2. Call `lit_render_report(investigation_id, review_round, wait_seconds=240)` with the round your brief gives and no `draft_json`.
 3. **Rejected:** the message lists every error that remains (or the bundle parts still unread). Correct them in the parts they name (store those parts again) and call again with the same round. **Keep correcting and rendering until the draft renders**: a round has no limit on renders, and a refused draft is no report. A corrected draft is a changed call, so the rule to stop after two refusals does not apply to `lit_render_report`. Stop only for an error the draft cannot correct (a missing bundle part, a server failure) or at three quarters of your turn budget, and name the remaining errors in `limitations`.
-4. **Running:** collect it with `get_literature_job_result`. Read every warning (the render returns them all in `style_warnings`). Correct the draft and render again with the same round for each drift, content, uncertainty and `layout:` warning; style advice alone (`style:`) needs no new render.
+4. **Running:** collect it with `get_literature_job_result`. Read every warning in `style_warnings`. Correct the draft and render again with the same round for each drift, content, uncertainty and `layout:` warning; style advice alone (`style:`) needs no new render.
 5. **`release_checks: failed`:** the PDF has no download link. Correct the problems and render again.
 6. **LaTeX could not compile:** the message gives the first LaTeX error and its line; correct what it names.
 
