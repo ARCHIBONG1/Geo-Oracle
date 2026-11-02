@@ -49,7 +49,7 @@ The tool publishes a `well_header` (X/Y, CRS, datums, SRD, TD, bottom-hole X/Y).
 
 ## Marker times
 
-Pass the registered tops as `tops`. The result's `tops_twt` and the `tops_time` product then give each marker's two-way time from this relation. The seismic specialist compares them with the events on the trace (`seismic_trace_events`) and with the synthetic tie.
+Pass the registered tops as `tops`. The result's `tops_twt` and the `tops_time` product then give each marker's two-way time from this relation. The tool warns when a top lies outside the logged interval: its depth is extrapolated along the end leg. Carry the warning into `limitations`. The seismic specialist compares them with the events on the trace (`seismic_trace_events`) and with the synthetic tie.
 
 ## What the seismic tie should show
 

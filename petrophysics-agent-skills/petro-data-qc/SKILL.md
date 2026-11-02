@@ -17,7 +17,7 @@ The import returns a path such as `uploads/W1.las`. Use it from then on. The imp
 
 ## 2. Loading logs: `petro_load_well`
 
-`petro_prepare_wells` handles several wells in one call: it loads and locates them, and publishes `correlation_logs` and `well_tops`. It locates each well by a survey, a track, or `vertical: true` where the task says so. Use it first for any multi-well task, then QC each well as below.
+`petro_prepare_wells` handles several wells in one call: it loads and locates them, and publishes `correlation_logs` and `well_tops`. It locates each well by a survey, a track, or `vertical: true` where the task says so. Use it first for any multi-well task, then QC each well as below. Its reply has a provenance id. Its `warnings` carry every load, unit and trajectory warning, prefixed with the file path: carry them into `limitations`.
 
 The loader reads LAS 2.0/3.0 or CSV logs. It does not support DLIS: ask for LAS.
 
@@ -38,16 +38,21 @@ The loader reads LAS 2.0/3.0 or CSV logs. It does not support DLIS: ask for LAS.
   | RXO | RXO, MSFL, MCFL |
   | DRHO | DRHO, HDRA, ZCOR |
   | PEF | PEF, PEFZ |
-  | CALI | CALI, CAL, HCAL |
+  | CALI | CALI, CAL, HCAL (C1 only with a length unit: in mud-gas files C1 is methane) |
   | BS | BS, BIT (or bit size from the header) |
   | SP | SP |
+  | K, TH, U | POTA/K/HFK (%), THOR/TH/HTHO (ppm), URAN/U/HURA (ppm): spectral gamma ray |
+  | CGR | CGR, HCGR, GRKT (uranium-free GR; never used as GR) |
 
 - **Units**: normalised to API, mV, in, g/cm3, v/v, b/e, us/ft and ohm.m. For example: neutron in percent to v/v, density in kg/m3 to g/cm3, slowness in us/m to us/ft.
 - **Repeated mnemonics**: if a file lists a curve twice (for example two `DEPTH` curves), the loader recognises the base name. It drops a repeat of the depth index, and says so in `warnings`.
-- **Neutron scale**: limestone-scale neutron (`NPHI`, `TNPH`, `NPHILS`) is preferred. If only a sandstone-scale neutron (`NPHISS`) exists, it becomes NPHI with a warning. Then set `nphi_ma` for that scale (0 for quartz). Read crossover displays with care, because they are drawn on the limestone scale.
-- **Unit conflicts are refused, never guessed.** If a header unit disagrees with the data (for example, density labelled g/cm3 but reading 2300), nothing loads, and the message names the curve. Pass `unit_overrides={"RHOB": "kg/m3"}` only with evidence (the report, the task, a vendor convention stated in the file). Record the override in `assumptions`.
-- **A curve with no unit** is read in its canonical unit only if its values are plausible. A unitless neutron with values above 1 is read as percent. Each such reading is reported in `warnings`: carry those into `limitations`.
-- **Header facts kept**: well name, UWI, datum (from `LMF`) and elevations (`EKB`, `EDF`, `EGL`, converted to m), X/Y and CRS, mud type, Rm, Rmf and Rmc with their temperatures, BHT, bit size.
+- **Neutron scale**: limestone-scale neutron (`NPHI`, `TNPH`, `NPHILS`) is preferred. The loader records the NPHI matrix scale from the mnemonic (NPHISS sandstone, NPHILS limestone) or the curve description ("sandstone matrix", "limestone units"). A sandstone or dolomite scale is warned: set `nphi_ma` for that scale (0 for quartz on a sandstone scale). `matrix_id` and `multimineral` refuse it. A scale that is not recorded is unknown: confirm it from the header or the report. Read crossover displays with care, because they are drawn on the limestone scale.
+- **Unit conflicts are refused, never guessed.** If a header unit disagrees with the data, nothing loads, and the message names the curve. Examples: density labelled g/cm3 but reading 2300; NPHI labelled % or PU with a median below 1 PU (the values look like v/v); DT read as us/ft with a median above 200 us/ft (slower than water: the values look like us/m). Pass `unit_overrides={"RHOB": "kg/m3"}` only with evidence (the report, the task, a vendor convention stated in the file). Record the override in `assumptions`.
+  - A unit in `unit_overrides` also confirms a unit that the data seem to contradict. This applies to NPHI in % or PU with a median below 1 PU, and to DT in us/ft with a median above 200. The well then loads with a warning: confirm the unit. Values outside the plausible range are still refused.
+- **A curve with no unit** is read in its canonical unit only if its values are plausible. A unitless neutron with values above 1 is read as percent. A spectral curve (K, TH, U, CGR) whose unit or values fit no unit keeps its own name, with family `other`, and a warning. The well still loads. It becomes `<MNEMONIC>_FILE` only when another mnemonic (for example POTA) was read as that curve. A bare K or U with no unit can be another quantity. It is read as potassium or uranium only when the file has a thorium curve, or when `unit_overrides` states its unit. Each such reading is reported in `warnings`: carry those into `limitations`.
+- **CSV nulls**: -999.25, -999, -9999 and -9999.25 are read as no data (warned).
+- **Header facts kept**: well name, UWI, datum (from `LMF`) and elevations (`EKB`, `EDF`, `EGL`, converted to m), X/Y and CRS, mud type, Rm, Rmf and Rmc with their temperatures, BHT, bit size. The Rw and temperature tools read the header Rmf and BHT units. A blank or unknown temperature unit is refused there: then register `rmf_temp_c`, or `surface_temp_c` and `temperature_gradient_c_per_km`. A header bit size with no unit is read as inches only between 3 and 30 (warned); otherwise no BS curve is made.
+- **Mud-gas curves** (for example C1, H2) are kept under their own names. No petrophysics tool interprets them. A hydrogen reading in mud gas is an observation, not proof of natural hydrogen. Drilling can make it: bit heating with PDC or diamond bits cracks the drilling fluid, and CO, ethene and propene mark that gas. Steel in the well can also react with water (Zgonnik 2020). Gas chromatographs that use hydrogen as carrier gas cannot detect it. State the detector, the bit type and whether helium was measured. Report the reading as an observation with these alternatives.
 
 **What you must supply when the file does not say** (from the task excerpt or report, never assumed):
 - `depth_unit`;
@@ -69,14 +74,15 @@ Give a CSV file path, or `csv_text` for small tables from the task. Column names
 | well_tops | well, top, md_m (or md_ft, tvdss_m, tvdss_ft) | source |
 | deviation_survey | md_m (or md_ft), inc_deg, azi_deg | |
 | checkshots | md_m / tvdss_m (or _ft), twt_ms (or owt_ms, doubled) | well |
-| core_data | md_m (or md_ft), porosity (v/v) or porosity_pct | permeability_md, grain_density_g_cc, sw, sample |
-| pressure_data | md_m / tvdss_m (or _ft), pressure_psi (or pressure_bar, pressure_mpa) | mobility_md_cp, quality, well |
+| core_data | md_m (or md_ft), porosity (v/v) or porosity_pct | permeability_md, grain_density_g_cc, sw, sample (rows with a blank depth or porosity are skipped, with a note) |
+| pressure_data | md_m / tvdss_m (or _ft), pressure_psi (or pressure_bar, pressure_mpa) | mobility_md_cp, quality, well, test (LOT, XLOT, FIT, DFIT, PIT, SRT, minifrac); text columns type, kind, test_type, note, notes, comment, comments, remarks |
 | water_analysis | rw_ohmm or salinity_ppm_nacl | temp_c (or temp_f), sample, well |
 | temperature_data | md_m / tvdss_m (or _ft), temp_c (or temp_f) | kind, hours_since_circulation, well |
 | well_track | md_m (or md_ft), tvdss_m or tvd_m (or _ft) | x, y, well |
 | scal_formation_factor | porosity (or porosity_pct), ff | sample, well |
 | scal_resistivity_index | sw, ri | sample, well |
-| capillary_pressure | sample, porosity (or porosity_pct), permeability_md, pc_psi (or pc_bar, pc_kpa), sw | system, well |
+| capillary_pressure | sample, pc_psi (or pc_bar, pc_kpa), one of sw, s_hg, snw (non-wetting fraction) or s_hg_pct, snw_pct (percent of pore volume) | porosity (or porosity_pct) and permeability_md (Leverett J needs both), system, well, md_m (or md_ft) |
+| dip_picks | md_m (or md_ft), dip_deg, dip_azimuth_deg (or azimuth_deg) | type, quality, well, structural_dip_removed |
 
 - **Layout**: the tool detects comma, tab, semicolon or whitespace delimiters. Lines that start with `#` are comments.
 - **Vendor column names**: map them with `columns`. The unit in the canonical name drives the conversion, for example `{"MD (ft)": "md_ft", "TVDSS (ft)": "tvdss_ft"}`. Report the mapping in `assumptions`.
@@ -90,8 +96,9 @@ Give a CSV file path, or `csv_text` for small tables from the task. Column names
   - TVDSS and X/Y are interpolated along the track.
   - If the track gives TVDSS and its first leg is vertical, the tool **derives** the datum elevation from the data (MD - TVDSS at the top point). The result gives it. Otherwise supply it.
   - If the header's datum elevation disagrees with the track's, the tool warns: report the disagreement.
-- **With a survey**: pass the registered `deviation_survey` table. The tool uses minimum curvature, and follows each leg's arc between stations. If a survey starts below the datum, the tool adds a vertical segment above its first station (warned). If a log runs below the last station, the tool extends it along the last leg (warned; report it).
+- **With a survey**: pass the registered `deviation_survey` table. The tool uses minimum curvature, and follows each leg's arc between stations. If a survey starts below 0 m MD, the tool adds a vertical tie-in station at 0 m MD (warned). If the first station is inclined, the tool builds along one arc from vertical (warned): give the tie-in station if it is known. If a log runs below the last station, the tool extends it along the last leg (warned; report it).
 - **Without a survey**: use `vertical: true` only when the task or data say the well is vertical. Otherwise list the survey in `missing_data`.
+- **Publishing without a trajectory**: `petro_publish_correlation_logs` treats the well as vertical (datum offset only) and warns. Carry the warning into `limitations`.
 - **TVDSS** = TVD - datum elevation: metres below mean sea level, positive down. If there is no datum elevation, the tool refuses: supply it or report it missing. It is never assumed.
 - **The result is a new well file**, with a trajectory. Use its path for all later tools.
 
@@ -100,6 +107,7 @@ Give a CSV file path, or `csv_text` for small tables from the task. Column names
 | Output | Meaning | What you do |
 |---|---|---|
 | `borehole.washout` | CALI - BS > 1 in | Density, neutron, PEF and shallow resistivity are unreliable there: exclude them from statistics and say so |
+| `borehole.probable_bit_size_change` | BS from one header value (`SINGLE_HEADER_BIT_SIZE`), and CALI above it by more than the washout limit over 100 m or more | Probably another bit size, not a washout: these runs are not in `washout`. Ask for the bit sizes in `missing_data` |
 | `borehole.density_correction` | DRHO above 0.15 g/cm3 | RHOB unreliable |
 | `under_gauge_or_mudcake` | Caliper below bit size | Mudcake: a sign of permeability |
 | `spikes_md` | Isolated one-sample spikes | Ignore in statistics; mention only if at a key depth |
@@ -123,6 +131,7 @@ Features are observations. Their meaning is an interpretation with alternatives 
 ## 7. Zones: `petro_zones`
 
 - **Tops**: zones run from each supplied top to the next (tops in MD, or in TVDSS with a trajectory). With a trajectory, zones get TVDSS and true vertical thickness.
+- **Outside the trajectory**: the trajectory is stored on the log grid. So `tvdss_extrapolated` (`TVDSS_EXTRAPOLATED`) means outside the logged interval: TVDSS there extends the end leg. A top given in TVDSS outside the logged interval is refused: give it in MD. A zone whose base is above its top is flagged `ZONE_BASE_ABOVE_TOP`. Report each flag.
 - **Tops with no log step** (gamma ray, else density, within ±2 m): the tool flags them `TOP_WITHOUT_LOG_EXPRESSION`. Report the flag as a contradiction or limitation, and cite the top's source. Never move a top: tops belong to stratigraphy.
 
 ## 8. Parameters: `petro_parameters`
@@ -138,8 +147,16 @@ Register every interpretation parameter before you use it, one set per zone or c
 ```
 
 - **Sources**: core, scal, water_sample, log_crossplot, log_sp, log_percentile, pressure_data, test, analogue, regional, task, assumption.
-- **Parameter names** also include `nphi_ma`, `rmf`, `rmf_temp_c`, `ssp_mv`, `qv`, `m_star`, `n_star`, `rwb`, `nd_gas_tolerance`, `sonic_c`, `pef_sh`, `overburden_porosity_factor`, `overburden_perm_factor`, `swirr`, `sigma_cos_lab`, `sigma_cos_res`, `brine_density`, `fwl_tvdss_m`, `srd_elevation_m`, `source_offset_m`, `salinity_ppm`, `oil_api`, `gor_l_per_l`, `gas_gravity`, `reservoir_pressure_mpa`, `reservoir_temp_c` and `circulation_hours` (see the property, rock and physics skills for when each is needed).
-- **What is refused**: a value with no source, or a value outside physical ranges. The result lists every assumption in `assumed`, and asks for `low`/`high` where they are missing.
+- **Parameter names**: the list below adds to the names above. The property, rock and physics skills tell when each is necessary.
+  - Logs and shale: `nphi_ma`, `nd_gas_tolerance`, `sonic_c`, `pef_sh`, `sp_shale_mv`, `phi_sand_clean`, `phi_shale`.
+  - Rw and saturation: `rmf`, `rmf_temp_c`, `ssp_mv`, `qv`, `m_star`, `n_star`, `rwb`, `swirr`, `salinity_ppm`.
+  - Core and cutoffs: `overburden_porosity_factor`, `overburden_perm_factor`, `k_cutoff_md`.
+  - Capillary pressure: `sigma_cos_lab` (or `sigma_cos_air_mercury`, `sigma_cos_gas_brine`, `sigma_cos_oil_brine`, `sigma_cos_gas_oil`), `sigma_cos_res`, `buoyant_fluid_density`, `brine_density`, `fwl_tvdss_m`.
+  - Pressure, temperature and thermal: `hydrostatic_reference_elevation_m`, `ground_elevation_m`, `tc_shale_w_mk`, `circulation_hours`.
+  - Time-depth: `srd_elevation_m`, `source_offset_m`.
+  - Fluids: `oil_api`, `gor_l_per_l`, `gas_gravity`, `reservoir_pressure_mpa`, `reservoir_temp_c`.
+- **What is refused**: a value with no source, or a value, `low` or `high` outside physical ranges. The result lists every assumption in `assumed`, and asks for `low`/`high` where they are missing.
+- **What is warned, not refused**: a `temperature_gradient_c_per_km` above 150 (a geothermal or convective setting only), and a `brine_density` below 0.9 g/cm3 without `reservoir_temp_c` of 200 degC or more. Confirm the value and the unit. The `hydrocarbon_density` floor is 0.001 g/cm3, so a hydrogen density is accepted.
 - **Report the set** in `assumptions`, and cite its provenance id. Rw is never a textbook default. Without a sample, an SP-derived value or a proven water zone, put Rw in `missing_data`.
 
 ## 9. Figures: `petro_render`

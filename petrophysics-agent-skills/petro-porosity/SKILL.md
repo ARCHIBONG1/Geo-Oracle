@@ -9,7 +9,7 @@ description: Porosity. It covers choosing density, neutron-density or sonic meth
 
 `petro_porosity(well, method, parameter_set, shale_correction=True, tops)`:
 - **Output**: writes `PHIT` (total) and `PHIE` (effective = total minus the shale's apparent porosity, using `VSH`) into a new well file. Run `petro_vshale` first.
-- **Gas correction**: with `neutron_density`, the result lists `gas_corrected_intervals`, where the correction acted.
+- **Gas correction**: with `neutron_density`, the result lists the first 10 `gas_corrected_intervals`, where the correction acted. `gas_corrected_interval_count` gives the total. `gas_corrected_intervals_truncated` is true when the list is cut.
 - **Figure**: with `neutron_density`, the tool draws the neutron-density crossplot into `result.figures`.
 
 ## Methods
@@ -28,7 +28,7 @@ description: Porosity. It covers choosing density, neutron-density or sonic meth
 |---|---|---|
 | rho_ma | Core grain density (`core`) | Known mineral (Schlumberger 2013 Appendix B: quartz 2.64, calcite 2.71, dolomite 2.85; grain densities 2.65/2.71/2.87) as `task` or `assumption` with a range |
 | rho_fl | Mud filtrate in the flushed zone (about 1.0-1.1 g/cm3 for water-based mud) | `assumption` with a range |
-| nphi_ma | Neutron matrix point on the tool's scale: limestone-calibrated sandstone about -0.035, limestone 0, dolomite about +0.02 | — |
+| nphi_ma | Neutron matrix point on the neutron's own scale. Limestone scale (the tools' table, Schlumberger 2013 Appendix B): quartz -0.02, calcite 0, dolomite +0.01. Sandstone scale: quartz 0 | — |
 | rho_sh, nphi_sh, dt_sh | Thick in-gauge shale (`log_crossplot`) | — |
 | dt_ma, dt_fl | Mineral and fluid slowness (Schlumberger 2013 Appendix B: quartz 56.0, calcite 49.0, dolomite 44.0 us/ft; brine about 189) | — |
 | sonic_c | The field-approximation constant, only for sonic_field; cite its source (AAPG Wiki: 0.625-0.70, most accepted 0.67, 0.60 for gas) | — |
@@ -38,9 +38,9 @@ A wrong matrix density is the commonest porosity error: 0.05 g/cm3 in rho_ma mov
 
 ## Traps
 
-- **Gas**: density porosity alone reads too high. The neutron-density gas correction brings it back. Report the gas-corrected intervals as observations that support a gas interpretation, together with the crossover.
+- **Gas**: density porosity alone reads too high. The neutron-density gas correction brings it back. Report the gas-corrected intervals and the crossover as observations of a light gas whose composition is unknown. The logs do not tell hydrocarbon gas from other light gases (for example hydrogen). A gas sample or test names the gas.
 - **Washouts**: density and neutron read porous (a washout mimics gas). Gas-corrected intervals inside washouts (`petro_qc_logs`) are artefacts. `petro_net_pay` excludes bad hole by default.
-- **Shale correction** needs `VSH`. Without it, PHIE = PHIT, and shaly intervals are overstated. Every method, sonic included, removes Vsh times the shale point's apparent porosity by the same transform. So the sonic methods need dt_sh.
+- **Shale correction** (`shale_correction=true`, the default) needs `VSH`: without it, the tool refuses. Only with `shale_correction=false` is PHIE = PHIT, and then shaly intervals are overstated. Every method, sonic included, removes Vsh times the shale point's apparent porosity by the same transform. So the sonic methods need dt_sh.
 - **Carbonates**: sonic porosity misses vugs and fractures. A difference between neutron-density and sonic porosity is secondary porosity. Report it as an interpretation.
 
 ## Calibration

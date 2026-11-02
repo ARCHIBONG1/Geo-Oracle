@@ -7,7 +7,7 @@ description: Lithology and mineralogy from logs. It covers matrix identification
 
 ## The tool
 
-`petro_lithology(well, method, parameter_set, minerals, curves, facies, tops)` writes curves into a new well file. Add `tops` for per-zone composition.
+`petro_lithology(well, method, parameter_set, minerals, curves, facies, tops, porosity_source)` writes curves into a new well file. Add `tops` for per-zone composition.
 
 | Method | Output | Valid when | Needs |
 |---|---|---|---|
@@ -17,14 +17,17 @@ description: Lithology and mineralogy from logs. It covers matrix identification
 
 ## Choosing and checking
 
+- **Neutron scale**: `matrix_id` and `multimineral` use limestone-scale mineral responses. They refuse an NPHI recorded on a sandstone or dolomite scale. When the scale is not recorded, the result has `neutron_scale_note`: confirm the scale from the header or the report, and state it.
 - **Matrix identification**: shale and gas distort the apparent matrix values. Use it in clean, water-bearing intervals. Treat results in shaly or gas-bearing beds as unreliable.
+  - **Porosity**: keep `porosity_source="crossplot"` (default). It enters the charts with the neutron-density crossplot porosity, which does not depend on the lithology. `porosity_source="phit"` accepts only a PHIT that `petro_porosity` wrote with `neutron_density` (warned). A density or sonic PHIT assumes a matrix, so the tool refuses it.
 - **Multimineral**:
   - **Unknowns**: at most one more than the number of logs (the unity constraint supplies the extra equation). With RHOB, NPHI and PEF, that is three minerals plus porosity.
   - **Mineral list**: choose it from the geology (the task, cuttings, core, regional context). Never choose it by trying lists until the residual is small.
   - **`MM_RESID`** is the misfit in units of tool precision. A median below about 1 means that the model explains the logs. Where it is high, the model does not fit. The possible causes are another mineral, hydrocarbons in the flushed zone (the fluid point assumes water), or bad hole. Report those intervals.
-  - **Reference values**: mineral properties are standard chart values, listed in the result. State them. The shale point is a parameter with a source.
+  - **Reference values**: mineral properties are standard chart values (apparent log values), listed in the result. State them. The shale point is a parameter with a source. `halite` is available for evaporite intervals.
+- **Ultramafic or serpentinised rock** (for example a natural-hydrogen host): the tool has no serpentine response. Bound water and hydroxyl raise NPHI, and magnetite conducts. So NPHI-based shale volume and porosity and Archie Sw are not reliable there. Say so, and ask for core and XRD in `missing_data`.
 - **Electrofacies**:
-  - **Clusters**: groups of similar log response, from seeded k-means that keeps the best of 10 starts, so results are reproducible. You choose the number of facies. Try 2-3 values, and report the one whose facies are geologically distinct and stable.
+  - **Clusters**: groups of similar log response, from seeded k-means that keeps the best of 10 starts, so results are reproducible. You choose the number of facies. The tool refuses when the distinct complete samples are fewer than the clusters. Try 2-3 values, and report the one whose facies are geologically distinct and stable.
   - **Bad hole forms its own facies**: a washout is a distinct log signature. Check facies against `petro_qc_logs` before you name them.
   - **Naming**: name facies by their log character (e.g. "low GR, high resistivity, crossover") and by the lithology tools. They are not depositional facies. Depositional facies belong to sedimentology, and core or cuttings calibrate them. Say so, and recommend it.
 

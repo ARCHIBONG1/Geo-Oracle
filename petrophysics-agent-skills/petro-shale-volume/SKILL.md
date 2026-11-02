@@ -21,7 +21,7 @@ description: Shale volume (VSH). It covers choosing gamma-ray, neutron-density o
 | larionov_older | 0.33 (2^(2 IGR) - 1) | Larionov's older-rock (consolidated) curve |
 | clavier / stieber | Non-linear corrections | Alternatives; state why chosen |
 | neutron_density | (phiN - phiD) / (phiN_sh - phiD_sh) | Liquid-filled, known lithology; independent of gamma-ray radioactivity |
-| sp | 1 - PSP / SSP | Water-based mud and good SP only; water-bearing beds |
+| sp | (SP - SP_clean) / (SP_shale - SP_clean), SP_clean = sp_shale_mv + ssp_mv (Asquith & Krygowski eq 2.2) | Water-based mud and good SP only; water-bearing beds |
 
 The non-linear methods read below `gr_linear`. The choice changes the net sand. So the choice needs a reason: the rock's age or consolidation, or agreement with core or the neutron-density method.
 
@@ -30,7 +30,8 @@ The non-linear methods read below `gr_linear`. The choice changes the net sand. 
 These are parameters, so each needs a source:
 - **`gr_clean` and `gr_shale`**: from the task (`task`), from core-calibrated clean sand and shale (`core`), or from the log itself (`log_percentile`). For that source, run with `endpoints: "percentiles"` over a stated interval. Then register the reported values with that source, and with the tool's provenance id as reference.
 - **Neutron-density endpoints**: `rho_ma`, `rho_fl`, `rho_sh`, `nphi_ma` and `nphi_sh`. Shale points (`rho_sh`, `nphi_sh`) come from a thick, in-gauge shale (`log_crossplot`). Matrix points come from core grain density or the known lithology.
-- **Scope**: endpoints are local. If the shale character changes, use one set per zone or formation, and state it.
+- **SP endpoints**: `sp_shale_mv` is the SP reading on the shale baseline. `ssp_mv` is the clean-bed deflection from that baseline: negative for a normal SP, positive for a reversed SP. Read both from the log (`log_sp`) and cite the beds. The tool refuses a missing `sp_shale_mv`, an `ssp_mv` within 5 mV of zero, and an `ssp_mv` whose sign is opposite to the log's main deflection. A drifting baseline needs one `sp_shale_mv` per zone.
+- **Scope**: endpoints are local. If the shale character changes, use one set per zone or formation, and state it. `petro_net_pay` takes one parameter set. So for endpoints per zone, run `petro_net_pay` once per zone, with `zones=[<that zone>]` and that zone's set.
 
 ## Always compare two methods
 

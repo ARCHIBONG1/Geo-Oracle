@@ -13,13 +13,13 @@ description: How to assemble the stress tensor with sourced magnitudes, slip and
 
 Put a target stated in TVDSS in `depth_tvdss_m` as it stands. If you pass it as depth below the seabed, it lands a water depth too deep, possibly outside the pressure profile.
 
-**Keep the pressure_profile in the call.** The tool reads its LOT, XLOT or minifrac for Shmin, even when `pp_mpa` is given and when the depth lies outside the profile's pressures. Answer a refusal about the profile's range with `pp_mpa` plus the profile, never with `pp_mpa` instead of it. A retry without the profile loses the leak-off, and Shmin falls back to the regime's default bound. The result's `shmin_basis` says where Shmin came from. If Shmin falls to a default bound while you hold a profile with a test in it, the result lists that profile in `unused_stress_tests`. The process audit flags it.
+**Keep the pressure_profile in the call.** The tool reads its LOT, XLOT, minifrac or DFIT for Shmin, even when `pp_mpa` is given and when the depth lies outside the profile's pressures. Answer a refusal about the profile's range with `pp_mpa` plus the profile, never with `pp_mpa` instead of it. A retry without the profile loses the leak-off, and Shmin falls back to the regime's default bound. The result's `shmin_basis` says where Shmin came from. If Shmin falls to a default bound while you hold a profile with a test in it, the result lists that profile in `unused_stress_tests`. The process audit flags it.
 
 | Input | Preferred source | Fallback (flag as an assumption) |
 |---|---|---|
 | Sv | integrated density log (layers) from wells_petrophysics | average density 2300-2500 kg/m3 |
 | Pp | pressure_profile product | hydrostatic (1030 x 9.81 x depth) |
-| Shmin | the petrophysics `pressure_profile`: a LOT, XLOT or minifrac in it (status `stress test: ...`) is read as Shmin and carried to the tensor depth at a constant effective stress ratio K = (S - Pp)/(Sv - Pp); or `shmin_mpa` with its basis | NF: frictional-equilibrium bound; SS: midway between Pp and Sv; TF: midway between Sv and SHmax (the tool warns: run the range) |
+| Shmin | the petrophysics `pressure_profile`: a LOT, XLOT, minifrac or DFIT in it (status `stress test: ...`) is read as Shmin (a FIT or PIT is a lower bound, an SRT an upper bound: reported, not used) and carried to the tensor depth at a constant effective stress ratio K = (S - Pp)/(Sv - Pp); or `shmin_mpa` with its basis | NF: frictional-equilibrium bound; SS: midway between Pp and Sv; TF: midway between Sv and SHmax (the tool warns: run the range) |
 | SHmax | breakout and fracture analysis | bounded by frictional equilibrium; run a range |
 | Regime and SHmax azimuth | regional stress_field (regime counts, azimuth with its spread) | local breakouts when supplied |
 

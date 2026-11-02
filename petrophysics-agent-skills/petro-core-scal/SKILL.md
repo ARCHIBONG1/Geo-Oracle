@@ -13,7 +13,7 @@ Core depths are driller's depths, and logs are logger's depths. They routinely d
 2. **Overburden factors**: if the core was measured at ambient conditions (usual for routine analysis), put `overburden_porosity_factor` and `overburden_perm_factor` in the parameter set. Take them from SCAL at stress (`core`, `scal`) or from the report. In situ value = ambient x factor.
    - Without them, the tool uses core as measured, and says so: report it.
    - Typical ranges are about 0.95-0.99 for porosity and 0.5-0.95 for permeability, but use measured values.
-3. **Compute a porosity log first, then run the tool against it.** The comparison curve must rise with core porosity: `PHIE` or `PHID` from `petro_porosity` (density, or density-neutron). Never compare core porosity with raw `NPHI` or `RHOB`. In a sand-shale succession, neutron porosity is *higher* in shale and density is *lower* in sand. So both anti-correlate with core porosity, and the tool refuses them (correlation at or below zero).
+3. **Compute a porosity log first, then run the tool against it.** The comparison curve must rise with core porosity: `PHIE` or `PHIT` from `petro_porosity` (density, or neutron-density). Never compare core porosity with raw `NPHI` or `RHOB`. In a sand-shale succession, neutron porosity is *higher* in shale and density is *lower* in sand. So both anti-correlate with core porosity, and the tool refuses them (correlation at or below zero).
 4. **Read the band, not the single value.** A correlation against depth is a ridge, not a spike, so the shift is only as sharp as the data make it. The tool returns `uncertainty_band_m` and `half_width_m`. The half width is the wider of two things that the tool measures from this well (`half_width_from` says which dominated):
    - the ridge's own width, judged against the point-to-point noise of that profile;
    - the coarser of the two sample spacings, because neither series locates a feature more finely than it is sampled.
@@ -21,14 +21,13 @@ Core depths are driller's depths, and logs are logger's depths. They routinely d
    Report the shift as `<value> +/- <half width>`. Carry the half width downstream as the depth uncertainty on every core-log comparison.
    - Whether a band is tight enough is a judgement about the work, not a property of the number. A half width of 0.5 m is immaterial against a 20 m sand and fatal against 0.3 m laminae. Say which case you are in.
    - A band is a result. It does not block downstream work. If a documented nominal offset falls inside the band, it is consistent with the data, which is worth saying. If it falls outside the band, it is a contradiction worth reporting.
-   - You can set `tolerance` when you know the data better than the profile's noise suggests. Every result states the default and its source.
 5. **A rival is a rival only outside the band.** The tool returns `rival` when a separate maximum outside the band scores within the same tolerance of the best. That is a real alias (repeated beds of the same character) or a genuinely ambiguous match. Then report both shifts, and ask for core-run tie markers in `missing_data`. Lower maxima on the same ridge are noise. The tool lists them as `best_outside_band` for information only. Never report them as competing shifts.
-6. **Read the refusals.** A best shift at the search boundary means that the correlation is still rising beyond the window. Widen `max_shift_m` only if a shift that large is physically plausible (a misnumbered core run). Otherwise the compared intervals are not the same rock, and core-run tie markers are needed. If the correlation after the shift is weak (below 0.3), the tool publishes the result with a warning: say it in `limitations`.
+6. **Read the refusals.** The tool refuses a best shift at the search boundary: the correlation is still rising beyond the window. Widen `max_shift_m` only if a shift that large is physically plausible (a misnumbered core run). Otherwise the compared intervals are not the same rock, and core-run tie markers are needed. If the correlation after the shift is weak (below 0.3), the tool publishes the result with a warning: say it in `limitations`.
 7. **Pass the shift on.** `petro_publish_table(table=..., shift=<the core_depth_shift product>)` publishes a driller-depth table (core data, dip picks) in log depth. It keeps the original as `md_m_driller`, and records the band in the sidecar. The sedimentology specialist needs that table. If you publish the table unshifted, that work stays blocked.
 
 **Reading the result:**
 - **`depth_shift_m`**: added to core depths. Two cases make the match ambiguous (both warned):
-  - a shift at the edge of the search;
+  - a shift near the edge of the search (beyond 90 % of `max_shift_m`; at the edge itself, the tool refuses);
   - a `rival` (a separate maximum, with its `shift_m` and `correlation`) almost as good.
 
   Then report both, and do not over-interpret thin-bed comparisons. The precision is the measured `half_width_m` (step 4), never a fixed figure.

@@ -89,12 +89,19 @@ If the user cannot provide the item, proceed with what exists. Record the gap in
   - A seismic file that the user uploaded to this chat is in your sandbox, not in the folder. Pass it as `{"id": "S1", "kind": "seismic_volume", "description": "uploaded to Geo Oracle chat: /opt/tf/uploads/seismic.npy", "excerpt": "3D volume, axes T,XL,IL, 4 ms"}`, with its real sandbox path. The seismic specialist imports it.
   - If the user states an array axis order other than the default IL,XL,T (inline, crossline, time), include it.
   - If no file name is known, ask `seismic_interpretation` to list the available seismic data.
-- **Well data** goes the same way: LAS and CSV files by their path relative to `operations/inputs` (e.g. `wells/W1.las`), or as a Geo Oracle upload. Only `wells_petrophysics` can open them.
+- **Well data** goes the same way: LAS and CSV files by their path relative to `operations/inputs` (e.g. `wells/W1.las`), or as a Geo Oracle upload. Only `wells_petrophysics` can open them. A petrophysics brief holds these items:
+  - by path, each file that exists: the logs, the tops table, the deviation survey or well track, checkshots, and the core, SCAL, capillary-pressure, water-analysis, pressure and temperature tables;
+  - in each `excerpt`, what the file does not state: depth reference and unit, datum and its elevation, X, Y and CRS, water depth, a vertical well or its survey file, mud type (water-based or oil- or synthetic-based), the unit of each curve the file leaves blank, Rm and Rmf with their units and temperatures, BHT with its unit, and who picked the tops;
+  - in `project_context`, the resource type (hydrocarbon, CO2 storage, geothermal, natural hydrogen or hydrogen storage). It sets the petrophysics deliverables.
+
+  A fact that nobody stated goes in `known_unknowns`. Do not guess it.
+- **Mud gas** in a LAS file goes to `wells_petrophysics`, which keeps the curves but does not interpret them. A gas-show table goes to `subsurface_play`. A hydrogen reading in mud gas is an observation, not proof of natural hydrogen. Drilling can make hydrogen: PDC or diamond bits heat the drilling fluid, and CO, ethene and propene mark that gas. Water can also react with steel in the well. A chromatograph that uses hydrogen as its carrier gas cannot detect hydrogen. In the `excerpt`, state the detector and its carrier gas, the bit type, the mud type, and whether CO, ethene, propene and helium were measured. Put each fact that is not known in `known_unknowns`.
 - **Regional tables go by path too**: a stratigraphic column for backstripping goes as `{"kind": "stratigraphic_table", "description": "<path>"}`. `regional_geology` reads it with `reg_backstrip(units_table=...)` and cannot open it any other way. A gravity or magnetic grid goes the same way, with its coverage if known. The grid's analysis extent is what the grid covers, not the stress radius.
 - **Every other upload goes to its owner the same way**, as `{"id": ..., "kind": ..., "description": "uploaded to Geo Oracle chat: <absolute sandbox path>", "excerpt": "<what is known: columns, units, CRS, source>"}`. The specialist imports it with its own import tool. Owners by type:
   - grids (netCDF, GeoTIFF), GIS layers (GeoJSON, GeoPackage, shapefile, KML) and regional tables → `regional_geology`;
   - structural measurements, fracture picks, section lines → `structural_geology`;
-  - tops, biostratigraphic and dated-sample tables → `stratigraphy`;
+  - per-well tops tables (well, top, depth) → `wells_petrophysics`. It registers them and publishes them as `well_tops` for `stratigraphy`;
+  - biostratigraphic, dated-sample and marker tables, and tops quoted from reports → `stratigraphy`;
   - core and cuttings descriptions, photo indexes and photographs → `sedimentology`;
   - well-outcome, show, seep and geochemistry tables → `subsurface_play`;
   - documents (PDF, Word, text, Markdown, HTML) → `literature_review`.

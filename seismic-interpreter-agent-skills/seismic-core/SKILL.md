@@ -47,7 +47,7 @@ A `required_outputs` entry names a product, and the product has a chain. Start t
 
 **An initial full interpretation runs in this order**: QC → faults → channels and bodies (with the faults) → horizons (seeds in each fault block) → tie, when well products exist → depth map → closure → distances from each well to each feature. Each step feeds the next. If you track a horizon before the faults, or extract channels without them, you have to redo that step.
 
-**Under the turn budget, deliverables come first**: the labelled volumes, maps and tie, each exported with its figure. They come before QC commentary and extra figures (3D views, further sections). A figure never substitutes for a product.
+**Deliverables come first**: the labelled volumes, maps and tie, each exported with its figure. They come before QC commentary and extra figures (3D views, further sections). A figure never substitutes for a product.
 
 **A deliverable is delivered at its status.** A fault volume, channel volume or depth map from seismic alone is `partially_supported`. A depth map from one well's time-depth carries the unknown lateral velocity as its uncertainty. Say so in the claim and the limitations, and deliver the product. The status is the answer. It is never a reason to do any of these:
 - withhold the product;

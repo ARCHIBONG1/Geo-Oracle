@@ -15,7 +15,8 @@ description: Permeability. It covers core porosity-permeability transforms with 
 - **The fit**: log10 k = intercept + slope x porosity on the calibrated plugs. Always run `petro_core_calibrate` first.
 - **Curves written**: `PERM` (50th percentile) with `PERM_P10` and `PERM_P90` (10th/90th percentiles, from the residual scatter). Report the band, not just the median, because permeability uncertainty is large.
 - **`fit.r2`, `sd_log10`**: sd_log10 of about 0.3 means a factor of about 2.6 between the 10th and 90th percentiles.
-- **`extrapolated_fraction`**: where log porosity lies outside the core porosity range, the transform is extrapolated. Say so for those intervals.
+- **`extrapolated_fraction`**: the fraction of samples with a PHIE whose porosity lies outside the core porosity range. There the transform is extrapolated. Say so for those intervals.
+- **Porosity cutoff**: with `k_cutoff_md` (a sourced permeability threshold) in `parameter_set`, the tool inverts the transform to a porosity cutoff (`cutoff_derivation`, `register_as.phi_cutoff`). Its source is `assumption` when `k_cutoff_md` is an assumption, otherwise `core`. Its reference names the `k_cutoff_md` source. See `petro-net-pay`, "Deriving cutoffs".
 - **One transform per rock type**: a sandstone transform does not apply to a limestone. If rock types differ, fit per zone or facies: give a core table restricted to it. State which transform applies where.
 
 ## Flow units
@@ -23,7 +24,7 @@ description: Permeability. It covers core porosity-permeability transforms with 
 `flow_units: N` groups the core plugs by flow-zone indicator (FZI = RQI / phi_z, with RQI = 0.0314 sqrt(k/phi) and phi_z = phi/(1 - phi)). Units are ordered 1 (poorest) to N.
 - **Report**: each unit's FZI and its median porosity and permeability.
 - **Use**: units explain scatter in the poro-perm plot. A mix of units is a common cause of a poor fit.
-- **Limits**: to map units onto the log, you need a link (for example electrofacies or lithology). Propose it as a follow-up. The tool does not guess it.
+- **Limits**: to map units onto the log, you need a link (for example electrofacies or lithology). Propose it as a follow-up. The tool does not guess it. The tool refuses when the distinct plugs are fewer than the units.
 
 ## Timur
 

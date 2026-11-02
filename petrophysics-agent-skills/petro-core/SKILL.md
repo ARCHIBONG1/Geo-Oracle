@@ -1,6 +1,6 @@
 ---
 name: petro-core
-description: Core procedure for every petrophysics task. It covers the SpecialistTask and its analysis mode, the domain emphasis (hydrocarbon, CO2 storage, geothermal), and evidence items and claims with provenance and depth references. It also covers the alternatives to name for log features, the missing_data format and the final self-check. Load at the start of every task.
+description: Core procedure for every petrophysics task. It covers the SpecialistTask and its analysis mode, the domain deliverables (hydrocarbon, CO2 storage, geothermal, natural hydrogen, hydrogen storage), the steps that apply to each kind of task, the reconcile tolerances, evidence items with provenance and depth references, the alternatives for log features, the missing_data format and the final self-check. Load at the start of every task.
 ---
 
 # Petrophysics core procedure
@@ -29,20 +29,63 @@ Use every field.
 
 ## 2. Analysis modes
 
-- **initial**: the full workflow in your system prompt.
-- **follow_up**: reuse earlier results by their paths and provenance ids (`petro_get_record` re-reads any stored result). Add the new data, and answer the new question completely. The cache answers identical calls, so a step that you run again costs nothing and returns the same numbers.
-- **validation**: test an upstream claim against well data. For example, does a seismic amplitude anomaly coincide with log evidence of hydrocarbons at that depth? Report `supported`, `contradicted` or `unresolved`, with the discriminating data.
+- **initial**: the procedure in your system prompt, with the steps that section 3a marks for the task.
+- **follow_up**: reuse earlier results by their paths and provenance ids (`petro_get_record` re-reads any stored result). Add the new data, and answer the new question completely. The cache answers identical calls at no cost.
+- **validation**: test an upstream claim against well data. For example, does a seismic amplitude anomaly coincide with log evidence of hydrocarbons at that depth? Report `supported`, `contradicted` or `unresolved`, with the discriminating data. A blind validation names no claim: answer the question of the brief from your own evidence.
 - **challenge**: seek well evidence against the favoured interpretation. Consider alternative parameters, alternative explanations of a feature, and bad-hole effects.
 - **reanalysis**: rerun with the new data or parameters. List the replaced task in `supersedes_task_ids`, and mark replaced claims `superseded`.
-`check_outcomes`: when the brief lists 'Claims to test', give one entry per claim: `target` (the claim id), `verdict` (`supported`, `contradicted`, `unresolved` or `not_tested`), the `evidence_ids` of your own evidence that decide it, and a one-sentence `basis`. A verdict says what your evidence shows, not whether the claim is true. A blind validation has no such list: leave it empty.
+`check_outcomes`: when the brief lists 'Claims to test', give one entry per claim: `target` (the claim id), `verdict` (`supported`, `contradicted`, `unresolved` or `not_tested`), the `evidence_ids` of your own evidence that decide it, and a one-sentence `basis`. In a challenge, also give `rival_claim_id` (your claim that states the alternative). A verdict says what your evidence shows, not whether the claim is true. A blind validation has no such list: leave it empty.
 
 ## 3. Domain emphasis
 
-| Domain | Emphasise | Watch for |
+| Domain | Deliverables | Watch for |
 |---|---|---|
 | Hydrocarbon | Net pay, hydrocarbon saturation, fluid type, contacts | Low-salinity water mimicking pay; residual hydrocarbons; invasion by oil-based mud |
-| CO2 storage | Reservoir porosity and permeability (injectivity); caprock shale volume; brine salinity; pressure and temperature (CO2 phase and density) | CO2 density changes sharply near its critical point; capillary entry pressure needs mercury-injection data |
-| Geothermal | Temperature and gradient, porosity and permeability, fractures | Raw bottom-hole temperatures read low; conductive clays make resistivity-based saturation meaningless |
+| CO2 storage | Porosity, net thickness and permeability (injectivity); caprock shale volume and porosity; brine salinity; pressure, temperature and CO2 density (`petro_fluid_properties`); seal capacity from MICP (`petro_saturation_height`, method `seal_capacity`, `buoyant_fluid` `co2`) | A flagged sensitive state needs low and high cases. Pure CO2: no impurities, no dissolution. Low permeability is not a seal-capacity measurement |
+| Geothermal | Temperature and gradient with their error (`petro_temperature`); thermal conductivity, heat capacity, heat production and interval heat flow (`petro_thermal`); porosity and matrix permeability | Raw bottom-hole temperatures read low; conductive clays and alteration make resistivity-based saturation meaningless; brine relations extrapolate above 100 degC (the tools warn); logs give matrix, not fracture, permeability |
+| Natural hydrogen | Host-rock description: shale volume, porosity, lithology, spectral gamma ray (K, TH, U); temperature; H2 density | Neutron-density crossover is light gas of unknown composition. In serpentinised or ultramafic hosts, neutron-based shale volume and porosity and Archie Sw are unreliable (bound hydroxyl, conductive magnetite): ask for core and XRD |
+| Hydrogen storage | As CO2 storage, with `h2` as the fluid | H2-brine interfacial tension and contact angle need a source: register them as assumptions with ranges. Pure H2: dissolution and microbial loss are not modelled. A seal for methane is not shown to be a seal for H2 |
+
+**Hydrogen.** Mark every H2 interpretation as emerging practice. Without a gas analysis, a log-based H2 claim stays `proposed`. Archie Sw and pressure gradients do not depend on the gas type, but H2 density comes only from `petro_fluid_properties` (`h2`). Before you use mud-gas H2, ask for the detector and bit types, and look for drilling markers (CO, ethene, propene). Report the zone temperature for the play specialist's microbial-window check. Route H2-brine interfacial tension to `literature_review` and the H2 source to `subsurface_play`.
+
+## 3a. Which steps apply
+
+M = mandatory. C = conditional (the letter gives the condition). U = unnecessary: no plan row. A task of several kinds takes, for each step, the strongest mark of its columns (M over C over U). A `ref` 0 row is only for a step that the objective needs but that is unreliable here or blocked: one short line (`output` at most 60 characters, `blocked_by` at most 80).
+
+| Step | Tie | Net pay | Pressure, contacts | Storage, geothermal, H2 | Validation, challenge |
+|---|---|---|---|---|---|
+| Load, QC, depth references | M | M | M | M | M |
+| Zones and features | C(a) | M | C(b) | M | C(c) |
+| Shale volume, two physics | U | M | C(b) | M | C(c) |
+| Matrix and lithology | U | C(d) | U | C(d) | C(c) |
+| Porosity | U | M | C(b) | M | C(c) |
+| Core shift, grain density, SCAL; porosity again | U | C(e) | U | C(e) | C(c) |
+| Temperature model | U | M | C(f) | M | C(c) |
+| Rw and Sw | U | M | C(b) | C(g) | C(c) |
+| Permeability, saturation-height, seal capacity | U | C(e) | C(b) | C(e) | C(c) |
+| Net pay with uncertainty | U | M | U | C(h) | C(c) |
+| Pressure gradients and contacts | U | C(i) | M | C(i) | C(c) |
+| Fluid properties | U | C(i) | C(f) | M | C(c) |
+| Elastic logs, time-depth, well header | M | U | U | C(j) | C(c) |
+| Thermal properties | U | U | U | C(k) | C(c) |
+
+Conditions: (a) tops exist, for marker times. (b) a log contact or fluid reading is compared with the pressures. (c) the tested claim rests on it; a challenge also runs the rival parameters and models. (d) PEF, core mineralogy or mixed lithology. (e) core, SCAL or capillary-pressure data exist (seal capacity: MICP). (f) fluid densities or phases are in question. (g) a gas, CO2 or H2 saturation is in question; not for geothermal. (h) net thickness for storage; not for geothermal. (i) pressure data exist. (j) monitoring or a seismic tie is asked for. (k) geothermal. Reconcile (section 3b) is mandatory wherever two estimates of one quantity exist.
+
+## 3b. Reconcile: pairs and tolerances
+
+| Pair | Tolerance |
+|---|---|
+| Core and log porosity, after the depth shift | Bias within about ±0.01 v/v |
+| Water-sample and log Rw (SP or Pickett) at one temperature (`petro_rw` `report_at_temp_c`, the same value for each source) | About 20 % |
+| Rw of different wells at one temperature (`petro_rw` `report_at_temp_c`) | About 20 % |
+| Gamma-ray and neutron-density or SP shale volume | About 0.05 v/v |
+| Pressure free-water level and log contact | The contact's `uncertainty_m` plus the capillary entry height |
+| Log SW and SW_SHF, above the transition zone | About 0.05 v/v |
+| Alternative Sw models | No tolerance: report the spread as model uncertainty |
+| Lithology alternatives, fluid indicators | No number: name the data that discriminate |
+| Direct and empirical values (core and Timur permeability; measured and predicted Vs) | The band that the empirical result states |
+
+Each pair's `measurement` gives the two values, their difference, the tolerance and both provenance ids. A contradiction's `description` names the pair. Prefer the method that suits the setting, for example core over logs, or a shaly-sand model over Archie in shaly rock.
 
 ## 4. Writing evidence
 
@@ -53,17 +96,15 @@ Each item states one fact, with its depth reference and its source:
  "classification": "measurement", "source_type": "derived", "source_reference": "prov:9c1e0f3a7b2d4e61 petro_qc_logs | m:petro/qc-logs"}
 ```
 
-- **Header facts** (datum, mud, bit size) are `data` / `project_data`. Cite them as the loaded file plus the load's provenance id.
+- **Header facts**: cite the loaded file plus the load's provenance id.
 - **Log features** from `petro_describe_interval` are `observation` / `derived`. Put what they mean in `interpretations` (`interpretation` / `derived`), and name the alternatives (section 5).
 - **Parameters** go in `assumptions`, with value and source. For example: `m = 2.0 (assumption, range 1.8-2.2; sensitivity required)`, or `Rw = 0.05 ohm.m at 75 degC (water sample, W2 DST)`. Cite the `petro_parameters` provenance id.
-- **Upstream facts**: cite them by their full id (for example `T01-strat/E3`), with `source_type` `upstream_specialist`.
-- **Never paste curves or tables into statements.** Export them (`petro_export`) and cite the file.
 
 ## 5. Features have alternatives
 
 | Feature | Common meaning | Alternatives to name |
 |---|---|---|
-| Strong neutron-density crossover (over 0.06 v/v) | Gas | Light oil or condensate; very low porosity sandstone on a limestone scale; washout (check caliper); an uncorrected neutron |
+| Strong neutron-density crossover (over 0.06 v/v) | Light gas, composition unknown | Light oil or condensate; very low porosity sandstone on a limestone scale; washout (check caliper); an uncorrected neutron |
 | Mild crossover (0.03-0.05 v/v) | Clean water-bearing sandstone read on the limestone scale | Gas in low porosity; light hydrocarbons |
 | Wide neutron-density separation | Shale or bound water | Heavy minerals; a washout on the density |
 | Deep resistivity high relative to the interval | Hydrocarbons | Tight (low-porosity) rock; fresh formation water; a resistive mineral (anhydrite, coal) |
@@ -75,28 +116,24 @@ A fluid claim built only on log features stays `proposed` or `partially_supporte
 
 ## 6. Missing data
 
-Each entry is exactly `<specialist>: <item> — <form> — <why>`:
-- `data_provider: W1 deviation survey — CSV md_m,inc_deg,azi_deg — TVDSS of tops and contacts`
-- `data_provider: formation water sample or Rw — ohm.m at a stated temperature — water saturation cannot be computed without it`
+Each entry is exactly `<owner>: <item> — <form> — <why>`, with one entry per owner. The owner `user` is for data only the person can supply. Join several items of one owner with `;`:
+- `user: W1 deviation survey; a formation water sample or Rw — CSV md_m,inc_deg,azi_deg; ohm.m at a stated temperature — TVDSS of tops and contacts; water saturation needs an Rw source`
 - `stratigraphy: correlated tops for W3 — MD per top — zone averages consistent with W1 and W2`
 - `regional_geology: formation-water salinity range for Unit B — ppm NaCl equivalent — bound Rw where no sample exists`
 
 ## 7. Products for other specialists
 
-Much of your value reaches users through other specialists. So your products follow fixed formats:
+Your products follow fixed formats:
 - **`time_depth`**: CSV twt_ms, depth_m below the SRD.
 - **`elastic_logs`**: CSV depth_m, vp_m_s, vs_m_s, rhob_g_cc (+ twt_ms).
 - **`well_header`**: JSON.
 - **`zone_summary`**: JSON.
 - **`pressure_profile`**: CSV. **`fluid_contacts`**: JSON.
-- **`temperature_profile`**: CSV.
-- **`correlation_logs`** and **`well_tops`**: what the stratigraphy specialist correlates on. `petro_publish_correlation_logs` publishes them per well. `petro_prepare_wells` publishes them for a list of wells in one call (load, locate, publish): use it first for any multi-well task. If a task asks for a correlation, a panel or a framework downstream, it is incomplete until these are published.
+- **`temperature_profile`** and **`thermal_properties`**: CSV. **`seal_capacity`**: JSON.
+- **`correlation_logs`** and **`well_tops`**: what the stratigraphy specialist correlates on (`petro_publish_correlation_logs`, or `petro_prepare_wells` for several wells). A task that asks for a correlation, a panel or a framework downstream is incomplete until these are published.
 
 Each has a JSON sidecar with units, datum, source and provenance.
 
-Handling rules:
-- **Refer to a product only by its reference**, `@petrophysics-agent/products/<file>`. Copy it from `result.products[].conclusion_line` into `conclusions` as `Product: <kind> — <ref>`.
-- **Never paste a product's rows** into statements.
 - **State the datum** (SRD) and the fluid case in the same conclusion, or in a measurement that cites the product.
 
 ## The plan, alternatives and history
@@ -163,10 +200,11 @@ implementation is correct.
 2. Every depth names MD or TVDSS, and the datum is stated (or stated as unknown).
 3. Every parameter has a source. Assumptions are listed with a range.
 4. Bad-hole intervals that bear on the question are stated.
-5. No property is claimed that needs uncomputed or uncalibrated data.
-6. Every `required_outputs` item is produced, or listed in `limitations` with the reason.
-7. Every figure drawn (by `petro_render` or in a tool's `result.figures`) appears in `figures`, and in `conclusions` as a `Figure: <caption> — <url> — supports <claim ids>` line. Every download the user asked for appears as a `Download: …` line. Every product that another specialist needs appears as a `Product: …` line.
-8. The object is under about 10,000 characters, with no curves or tables in statements.
+5. Two tiers: an absent input is in `missing_data`, and an output with no tool is in `limitations`. A computation that an uncalibrated or assumed input allows is run, ranged and capped.
+6. Every computation the objective needs and you did not run is in the plan. Each section 3b pair that the data allow has its measurement, and a contradiction outside its tolerance.
+7. Every `required_outputs` item is produced, or listed in `limitations` with the reason.
+8. Every figure drawn is in `figures` and has a `Figure: …` line in `conclusions`. Every download the user asked for has a `Download: …` line, and every product that another specialist needs a `Product: …` line.
+9. The object is under about 10,000 characters, with no curves or tables in statements.
 
 ## Methods statements
 

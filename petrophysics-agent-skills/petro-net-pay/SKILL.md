@@ -19,8 +19,21 @@ description: Net reservoir, net pay and zone summaries. It covers the cutoff sou
 2. **One parameter set** that holds every parameter those methods need, plus the three cutoffs:
    - `vsh_cutoff`, `phi_cutoff` and `sw_cutoff` come from core or test data (`core`, `test`) or from the task (`task`). Or declare them provisional (`assumption` with a range).
    - Never use an unstated "standard" cutoff. The cutoffs often move net pay more than any other choice.
+   - Endpoints or parameters that differ by zone need one call per zone: `zones=[<zone>]` with that zone's set.
 3. **Ranges (`low`, `high`)** on every uncertain parameter (a, m, n, Rw, matrix density, endpoints, temperature gradient, cutoffs). The uncertainty then covers them.
-4. **A trajectory**, so that the thicknesses are also true vertical (TVT), not only along-hole.
+4. **A trajectory**, so that the thicknesses are also true vertical (TVT), not only along-hole. TVT here is the TVD thickness, not corrected for bed dip.
+
+## Deriving cutoffs
+
+A cutoff stands for a flow or storage criterion of this reservoir (Worthington & Cosentino 2005). No single value is standard. Derive the porosity cutoff from core when core exists:
+1. Get a permeability threshold with its source: for example from tests, from the field's development plan or from the task. Register it as `k_cutoff_md`.
+2. Run `petro_permeability(method="core_transform", parameter_set=<the set with k_cutoff_md>)`. The result gives `cutoff_derivation` and `register_as.phi_cutoff`.
+   - Source: `assumption` when `k_cutoff_md` is an assumption, otherwise `core`. The reference names the `k_cutoff_md` source.
+   - `low` and `high` come from the transform's band. When `k_cutoff_md` has low and high, the cutoff low uses its low on the P90 line. The cutoff high uses its high on the P10 line.
+3. Register that entry. Then the cutoff's range enters the uncertainty runs.
+- A cutoff outside the core porosity range is an extrapolation (warned). Say so.
+- An assumed threshold gives an assumed cutoff: keep the source `assumption`.
+- Vsh and Sw cutoffs have no tool derivation. Source them from core, tests or the task, or register them as assumptions with ranges.
 
 ## What it reports per zone
 
@@ -30,13 +43,14 @@ description: Net reservoir, net pay and zone summaries. It covers the cutoff sou
 | `net_reservoir_*` | VSH at or below its cutoff and PHIE at or above its cutoff |
 | `net_pay_*` | Net reservoir with SW at or below its cutoff |
 | `net_to_gross` | Net reservoir / gross (MD) |
-| `excluded_md_m` | Bad hole (washout, high density correction) or missing data: counted in gross, never in net |
-| `reservoir_*_avg`, `pay_*_avg` | Thickness-weighted porosity and shale volume; pore-volume-weighted Sw |
+| `excluded_md_m` | Bad hole (washout, high density correction) or missing data (including no RT): counted in gross, never in net |
+| `reservoir_*_avg`, `pay_*_avg` | MD-thickness-weighted PHIE and shale volume; pore-volume-weighted Sw |
 | `hydrocarbon_column_m` | Sum of PHIE (1 - SW) over pay (TVT when available): the hydrocarbon thickness |
+| `sw_basis` | `effective`, or `total` for Waxman-Smits: then SW is SwT, the Sw cutoff applies to SwT, Sw averages are PHIT-weighted, and the column is the sum of PHIT (1 - SwT) |
 
 ## Uncertainty
 
-- **`percentiles`**: the 10th, 50th and 90th percentiles of each metric over the seeded runs. The tool draws each ranged parameter independently from a triangular distribution (low, value, high). The runs are reproducible: the same call gives the same numbers.
+- **`percentiles`**: the 10th, 50th and 90th percentiles of each metric over the seeded runs. The tool draws each ranged parameter independently from a triangular distribution: low, high, and the value as the mode (moved into the range if it lies outside). The runs are reproducible: the same call gives the same numbers. Without a trajectory, `uncertainty.unavailable` lists the TVT metrics: they are not computed, not zero.
 - **`drivers_by_hydrocarbon_column`**: the parameters, ranked by how far each one moves the hydrocarbon column over its own low-to-high range. The other parameters stay at their values. The first one or two are the parameters to measure next. For example, m and n point to SCAL, and Rw points to a water sample. Put that in `recommended_followups`.
 - **Reporting**: say "10th percentile", "50th percentile" and "90th percentile". Never say bare P10/P90, because the industries use them in opposite senses. If the ranges are asymmetric, the base case (central values) and the 50th percentile differ. Report both.
 - **What it does not capture**: uncertainty from model choice (for example, Archie against Simandoux) or from depth errors. Run the alternative model separately, and state the difference.
@@ -44,7 +58,8 @@ description: Net reservoir, net pay and zone summaries. It covers the cutoff sou
 ## Checks before reporting
 
 - **Unexpected pay near a contact or in a washout**: check `petro_qc_logs`. The tool never counts pay inside excluded intervals. But look at pay just outside them.
-- **Pay depends on a cutoff**: check the sensitivity for each cutoff. If a zone's net pay changes a lot between the cutoff's low and high, say that the result is cutoff-sensitive.
+- **Pay depends on a cutoff**: the result's `uncertainty.sensitivity_low_high` gives net pay and hydrocarbon column at each ranged cutoff's low and high. The `zone_summary` product holds every ranged parameter. If a zone's net pay changes a lot between a cutoff's low and high, say that the result is cutoff-sensitive.
+- **Bad-hole screen**: `bad_hole_curves_missing` lists CALI, BS or DRHO when they are absent. Then the screen did not run in full: report those net values as unscreened.
 - **Fluid contacts**: a contact read from where pay ends is an `interpretation`. Three kinds of evidence support it: pressures (gradient intersection), tests, or a saturation change that coincides with a density-neutron and resistivity change. With the saturation change alone, it is only `partially_supported`.
 
 ## Reporting
