@@ -90,7 +90,7 @@ If the user cannot provide the item, proceed with what exists. Record the gap in
   - If the user states an array axis order other than the default IL,XL,T (inline, crossline, time), include it.
   - If no file name is known, ask `seismic_interpretation` to list the available seismic data.
 - **Well data** goes the same way: LAS and CSV files by their path relative to `operations/inputs` (e.g. `wells/W1.las`), or as a Geo Oracle upload. Only `wells_petrophysics` can open them. A petrophysics brief holds these items:
-  - by path, each file that exists: the logs, the tops table, the deviation survey or well track, checkshots, and the core, SCAL, capillary-pressure, water-analysis, pressure and temperature tables;
+  - by path, each file that exists: the logs, the tops table, the deviation survey or well track, checkshots, and the core, SCAL, capillary-pressure, water-analysis, pressure and temperature tables, and each test or fluid-recovery summary (DST recoveries, RFT or MDT samples) as kind `well_tests`. RFT or MDT pressure points stay a pressure table;
   - in each `excerpt`, what the file does not state: depth reference and unit, datum and its elevation, X, Y and CRS, water depth, a vertical well or its survey file, mud type (water-based or oil- or synthetic-based), the unit of each curve the file leaves blank, Rm and Rmf with their units and temperatures, BHT with its unit, and who picked the tops;
   - in `project_context`, the resource type (hydrocarbon, CO2 storage, geothermal, natural hydrogen or hydrogen storage). It sets the petrophysics deliverables.
 

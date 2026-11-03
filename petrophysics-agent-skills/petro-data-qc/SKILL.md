@@ -83,11 +83,14 @@ Give a CSV file path, or `csv_text` for small tables from the task. Column names
 | scal_resistivity_index | sw, ri | sample, well |
 | capillary_pressure | sample, pc_psi (or pc_bar, pc_kpa), one of sw, s_hg, snw (non-wetting fraction) or s_hg_pct, snw_pct (percent of pore volume) | porosity (or porosity_pct) and permeability_md (Leverett J needs both), system, well, md_m (or md_ft) |
 | dip_picks | md_m (or md_ft), dip_deg, dip_azimuth_deg (or azimuth_deg) | type, quality, well, structural_dip_removed |
+| well_tests | md_top_m and md_base_m (or _ft; or one depth md_m / tvdss_m), fluid or recovery | well, test, formation, interpretation, pressure_psi (or _bar, _mpa); text kept as text |
 
 - **Layout**: the tool detects comma, tab, semicolon or whitespace delimiters. Lines that start with `#` are comments.
 - **Vendor column names**: map them with `columns`. The unit in the canonical name drives the conversion, for example `{"MD (ft)": "md_ft", "TVDSS (ft)": "tvdss_ft"}`. Report the mapping in `assumptions`.
   - **Times must be in milliseconds**: `twt_ms` (two-way) or `owt_ms` (one-way, doubled on registration). A mapping cannot convert seconds: ask for milliseconds.
 - **Refusals**: the tool refuses malformed tables (a non-increasing survey, core porosity above 0.6, which is probably percent). A refusal for a missing column proposes a `columns` mapping: check it, then retry with it.
+- **Test summaries** (DST, RFT, MDT, production tests): register them as `well_tests`. The result gives the rows in `rows_preview`. Read each recovery: formation water with no free hydrocarbon marks a proven water leg (`petro-saturation`, Pickett). A `pressure_data` refusal for such a table names `well_tests`. RFT and MDT pressure points stay `pressure_data`: `well_tests` is for recovery and test summaries.
+- **A table that fits no kind**: read it with `petro_preview_table` (columns and up to 50 rows, as written). It registers nothing.
 - **Multi-well tables**: tools use only the rows whose `well` matches the loaded well's name. If names differ ("W-1" versus "W1"), reload the well with `well_name` set to match.
 
 ## 4. Trajectory and TVDSS: `petro_trajectory`
