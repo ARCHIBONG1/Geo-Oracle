@@ -11,6 +11,7 @@ description: Porosity. It covers choosing density, neutron-density or sonic meth
 - **Output**: writes `PHIT` (total) and `PHIE` (effective = total minus the shale's apparent porosity, using `VSH`) into a new well file. Run `petro_vshale` first.
 - **Gas correction**: with `neutron_density`, the result lists the first 10 `gas_corrected_intervals`, where the correction acted. `gas_corrected_interval_count` gives the total. `gas_corrected_intervals_truncated` is true when the list is cut.
 - **Figure**: with `neutron_density`, the tool draws the neutron-density crossplot into `result.figures`.
+- **Water legs**: if the result says that water legs are registered, run `petro_rw` method `water_legs` before Sw.
 
 ## Methods
 
