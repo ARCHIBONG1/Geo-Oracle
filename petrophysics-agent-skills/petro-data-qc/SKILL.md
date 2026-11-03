@@ -161,7 +161,7 @@ Register every interpretation parameter before you use it, one set per zone or c
   - Fluids: `oil_api`, `gor_l_per_l`, `gas_gravity`, `reservoir_pressure_mpa`, `reservoir_temp_c`.
 - **What is refused**: a value with no source, or a value, `low` or `high` outside physical ranges. The result lists every assumption in `assumed`, and asks for `low`/`high` where they are missing.
 - **What is warned, not refused**: a `temperature_gradient_c_per_km` above 150 (a geothermal or convective setting only), and a `brine_density` below 0.9 g/cm3 without `reservoir_temp_c` of 200 degC or more. Confirm the value and the unit. The `hydrocarbon_density` floor is 0.001 g/cm3, so a hydrogen density is accepted.
-- **Report the set** in `assumptions`, and cite its provenance id. Rw is never a textbook default. Without a sample, an SP-derived value or a proven water zone, put Rw in `missing_data`.
+- **Report the set** in `assumptions`, and cite its provenance id. Rw is never a textbook default. Without a sample, an SP-derived value, a proven water zone, a regional value or a value the task gives, put Rw in `missing_data`.
 
 ## 9. Figures: `petro_render`
 
