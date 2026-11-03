@@ -72,7 +72,7 @@ Give a CSV file path, or `csv_text` for small tables from the task. Column names
 | kind | Required columns | Optional |
 |---|---|---|
 | well_tops | well, top, md_m (or md_ft, tvdss_m, tvdss_ft) | source |
-| deviation_survey | md_m (or md_ft), inc_deg, azi_deg | |
+| deviation_survey | md_m (or md_ft), inc_deg (or inclination_deg, incl_deg, inc), azi_deg (or azimuth_grid_deg, azimuth_deg, azimuth_true_deg, azi; read as given, warned) | |
 | checkshots | md_m / tvdss_m (or _ft), twt_ms (or owt_ms, doubled) | well |
 | core_data | md_m (or md_ft), porosity (v/v) or porosity_pct | permeability_md, grain_density_g_cc, sw, sample (rows with a blank depth or porosity are skipped, with a note) |
 | pressure_data | md_m / tvdss_m (or _ft), pressure_psi (or pressure_bar, pressure_mpa) | mobility_md_cp, quality, well, test (LOT, XLOT, FIT, DFIT, PIT, SRT, minifrac); text columns type, kind, test_type, note, notes, comment, comments, remarks |
@@ -87,7 +87,7 @@ Give a CSV file path, or `csv_text` for small tables from the task. Column names
 - **Layout**: the tool detects comma, tab, semicolon or whitespace delimiters. Lines that start with `#` are comments.
 - **Vendor column names**: map them with `columns`. The unit in the canonical name drives the conversion, for example `{"MD (ft)": "md_ft", "TVDSS (ft)": "tvdss_ft"}`. Report the mapping in `assumptions`.
   - **Times must be in milliseconds**: `twt_ms` (two-way) or `owt_ms` (one-way, doubled on registration). A mapping cannot convert seconds: ask for milliseconds.
-- **Refusals**: the tool refuses malformed tables (a non-increasing survey, core porosity above 0.6, which is probably percent).
+- **Refusals**: the tool refuses malformed tables (a non-increasing survey, core porosity above 0.6, which is probably percent). A refusal for a missing column proposes a `columns` mapping: check it, then retry with it.
 - **Multi-well tables**: tools use only the rows whose `well` matches the loaded well's name. If names differ ("W-1" versus "W1"), reload the well with `well_name` set to match.
 
 ## 4. Trajectory and TVDSS: `petro_trajectory`
@@ -101,6 +101,7 @@ Give a CSV file path, or `csv_text` for small tables from the task. Column names
 - **Publishing without a trajectory**: `petro_publish_correlation_logs` treats the well as vertical (datum offset only) and warns. Carry the warning into `limitations`.
 - **TVDSS** = TVD - datum elevation: metres below mean sea level, positive down. If there is no datum elevation, the tool refuses: supply it or report it missing. It is never assumed.
 - **The result is a new well file**, with a trajectory. Use its path for all later tools.
+- **Products published before the trajectory** (by `petro_publish_correlation_logs` or `petro_publish_table`) are published again with it. The result gives the new references in `products` and the old ones in `superseded`. Never use or pass on a superseded reference. Other products with an old TVDSS are in `stale_products`: run their tools again.
 
 ## 5. Log QC: `petro_qc_logs`
 

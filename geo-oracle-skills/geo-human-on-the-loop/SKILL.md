@@ -55,7 +55,7 @@ Ask it with `ask_user_question` as section 0 shows, and carry on in the same tur
 > **Yes, every wave** — a checkpoint after each reviewed wave.
 > **Yes, key decisions only** — the plan before the first wave, any change of scope or direction, the reduction wave, and anything a specialist flags as a contradiction or a refusal.
 
-**Mint a new `investigation_id` for a new investigation**, with the date and time in it: `INV-dome-co2-20261006T0504`. If you use the same name twice, the second investigation inherits the first's run count, approved plan and any checkpoint left due. A rerun of yesterday's question would then start two-thirds through its work ceiling. The gateway refuses activation on an id that already carries work, and the refusal tells you to pick a new one.
+**Mint a new `investigation_id` for a new investigation**, with today's UTC date and time from `get_current_datetime` in it: `INV-<slug>-YYYYMMDDTHHMM`. The gateway refuses a new id dated more than a day from today. If you use the same name twice, the second investigation inherits the first's run count, approved plan and any checkpoint left due. The gateway refuses activation on an id that already carries work: pick a new one.
 
 Then call `set_hotl_mode(investigation_id, mode, verbatim, deliverables=[...], objective=...)` with:
 - their reply **word for word**, not a paraphrase (the gateway checks it, section 3);

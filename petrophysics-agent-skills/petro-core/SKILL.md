@@ -96,6 +96,7 @@ Each item states one fact, with its depth reference and its source:
  "classification": "measurement", "source_type": "derived", "source_reference": "prov:9c1e0f3a7b2d4e61 petro_qc_logs | m:petro/qc-logs"}
 ```
 
+- **Classification** is the evidence type: data, observation, measurement, interpretation, inference, hypothesis, assumption or unknown. The support level (`supported`, `partially_supported`, `unresolved`, ...) goes in the claim's `status`, never in `classification`.
 - **Header facts**: cite the loaded file plus the load's provenance id.
 - **Log features** from `petro_describe_interval` are `observation` / `derived`. Put what they mean in `interpretations` (`interpretation` / `derived`), and name the alternatives (section 5).
 - **Parameters** go in `assumptions`, with value and source. For example: `m = 2.0 (assumption, range 1.8-2.2; sensitivity required)`, or `Rw = 0.05 ohm.m at 75 degC (water sample, W2 DST)`. Cite the `petro_parameters` provenance id.

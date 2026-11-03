@@ -9,13 +9,13 @@ A specialist result is evidence to be evaluated, not a verdict. Detail, fluency 
 
 ## 1. First pass: is it usable?
 
-- **`execution_status`** must be `completed`. Anything else is an execution outcome (see the system instructions), never a finding.
+- **`execution_status`** must be `completed`. Anything else is an execution outcome, never a finding.
 - **`scientific_status`**:
   - `insufficient_data` or `cannot_determine`: record it as a result.
   - `requires_clarification`: answer it through a follow-up in the same session, or by asking the user.
   - `not_evaluated`: the reply could not be parsed. Read `raw_output` with extra care, since nothing in it has been validated.
 - **`warnings`**:
-  - Parse repairs mean the specialist did not follow the output contract; the content may be sloppy elsewhere too.
+  - Parse repairs mean the specialist did not follow the output contract; check the rest with care.
   - "Unresolved … reference" means a claim cites evidence that does not exist in the result, so treat that link as unsupported.
   - "Unrecognised keys" means some content is only in the raw reply.
   - `Process audit:` lines are the gateway's own reading of the specialist's run. Address each before you accept the result (section 3a).
@@ -46,6 +46,7 @@ Ask of every material claim:
 6. Were alternatives considered?
 7. Does the conclusion exceed the evidence? Is the uncertainty stated?
 8. Is it consistent with other validated results? Could a known limitation overturn it?
+9. Does the result say that data are absent, empty or not supplied? Compare each such statement with your evidence inventory. If the inventory lists that file, send the task back and name the file. If it calls a file empty, read the file's `bytes` and `rows` in `list_shared_inputs`. If either is above 0, tell the specialist to open the file.
 
 Red flags:
 - specific numbers, depths or coordinates that appear in no evidence you sent;
@@ -67,7 +68,7 @@ A claim that fails a material check is not established evidence. Record it as un
 
 ## 3a. Method and process checks
 
-Section 3 asks whether a claim follows from its evidence. These checks ask whether the specialist produced the evidence the right way. They are mechanical: do them every time.
+These checks ask whether the specialist produced the evidence the right way. They are mechanical: do them every time.
 
 1. **Process-audit flags** (`warnings` starting `Process audit:`):
    - *skills not read*: the specialist worked without those procedures. Check its method against them. When the method matters, ask it (same session) to read each skill on its own and redo the work.
@@ -80,12 +81,12 @@ Section 3 asks whether a claim follows from its evidence. These checks ask wheth
    - *qc fix not acted on*: an error flag named its fix (tool and change), and the run neither called it nor said why. Ask for the fix (same session), or accept with the reason.
    - *typed channel recipe before the generic one*: the specialist assumed a channel type (meandering, submarine) without the user naming it, a well establishing it, or a generic `channel` run first. Ask it (same session) to run the generic recipe and report the measured planform and fill. A type the data were not asked to show is not a finding.
    - *no tool calls*: the specialist ran nothing in that turn, and its result restates the brief. A validation that ran nothing has validated nothing. Send it back, or keep only what the brief itself established.
-   - *sandbox unavailable*: the specialist's sandbox never started (for example, the sandbox service out of disk), so it read no skill. The cause is the infrastructure. Tell the person, and treat the method as unchecked.
+   - *sandbox unavailable*: the specialist's sandbox never started, so it read no skill. The cause is the infrastructure. Tell the person, and treat the method as unchecked.
    - *tool calls failed*: a tool errored, not refused. Find what the specialist did instead, in its assumptions and limitations. A substitute input (a guessed location, an assumed velocity) changes what the numbers mean.
 
    Answer each flag by its id in the checkpoint's `record.items` (followed_up, accepted or rejected, with a note). The gateway refuses the next wave until every flag is answered.
 
-   **Read every result's assumptions** before you rely on it. If the first view trimmed them, call `get_specialist_result(job_id, sections=["assumptions"])`. The checkpoint refuses a wave whose assumptions were never delivered to you. An unread assumption, such as "regional queries used an approximate point", stays under every number built on it.
+   **Read every result's assumptions** before you rely on it. If the first view trimmed them, call `get_specialist_result(job_id, sections=["assumptions"])`. The checkpoint refuses a wave whose assumptions were never delivered to you. An unread assumption stays under every number built on it.
    **Check every location a specialist used** against the investigation's coordinates: the AOI centroid in a regional result, the well position in a seismic one. A location that differs is a method error, whatever the result says.
 2. **The method fits the deliverable.** The `m:` ids in `source_reference` name the methods used. A deliverable must carry the method that makes it:
 
@@ -106,7 +107,7 @@ Section 3 asks whether a claim follows from its evidence. These checks ask wheth
    - faults were extracted in the same investigation, and the recipe ran without `faults` (`qc.fault_overlap` absent);
    - or `qc.selection.final_exceeds_cap` is true.
 
-   "Found at 9/9 settings" is persistence, not identity: a merger of channels, sheets and fault zones is perfectly stable. For other deliverables, if the ids do not make the method plain, ask the specialist which method produced it.
+   "Found at 9/9 settings" is persistence, not identity: a merger of channels, sheets and fault zones is stable. For other deliverables, if the ids do not make the method plain, ask the specialist which method produced it.
 3. **The input fits the method.** Read what each computation ran on (the evidence statements and `source_reference`). Fault likelihood, fault extraction and other trace-correlation methods run on seismic amplitudes. A result computed on an attribute (coherence, a likelihood, a mask) where seismic was expected is a method error, unless the person asked for it.
 4. **Compare with earlier runs of the same question.** If a rerun changes a key number by a large factor (a likelihood percentile ten times smaller, a fault count from 3 to 9), find out why before you accept it. The inputs or the method changed, not the earth.
 5. **Faults come with persistence.** `seismic_interpret_faults` reports how many of the nearby settings find each fault (`found_at`). Report the drawn faults with that table. Report a count that changes across settings as unstable; never tune it.
@@ -145,7 +146,7 @@ If no available evidence can discriminate, keep both interpretations. Do not pic
 
 ## 5a. A deliverable is delivered with its uncertainty, not withheld
 
-**A process-audit flag sends the procedure back, not the measurement.** When the gateway flags a skill not opened, a refused call or an override, the follow-up asks the specialist to read the procedure and check its method against it. A number measured with the right tool on the right inputs stands, unless that check finds it wrong. A rerun that gives a different number is not "the audited one". Report both with their inputs: the difference is the finding. For example, a well tie of 0.98 on the supplied checkshots against 0.85 on a derived time-depth product says the derived product is the weaker input, not that 0.85 is the tie.
+**A process-audit flag sends the procedure back, not the measurement.** When the gateway flags a skill not opened, a refused call or an override, the follow-up asks the specialist to read the procedure and check its method against it. A number measured with the right tool on the right inputs stands, unless that check finds it wrong. A rerun that gives a different number is not "the audited one". Report both with their inputs: the difference is the finding.
 
 A specialist that returns an argument in place of a product the person asked for ("a survey-wide depth map is not defensible because the single-well time-depth is not a validated lateral velocity model"; "the bodies are candidates, so no channel volume") has not answered. The product exists at a stated uncertainty. A depth map from one well's time-depth is the standard first depth map, with the lateral velocity unknown. A channel volume is the extraction with its QC. Send it back as a `follow_up`, with the product in `required_outputs` and the uncertainty to state. Never relay "not defensible" as the result. When the person challenges "X was not produced", the answer to the challenge is X.
 
