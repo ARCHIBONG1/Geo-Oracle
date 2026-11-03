@@ -26,7 +26,7 @@ description: Net reservoir, net pay and zone summaries. It covers the cutoff sou
 ## Deriving cutoffs
 
 A cutoff stands for a flow or storage criterion of this reservoir (Worthington & Cosentino 2005). No single value is standard. Derive the porosity cutoff from core when core exists:
-1. Get a permeability threshold with its source: for example from tests, from the field's development plan or from the task. Register it as `k_cutoff_md`.
+1. Get a permeability threshold with its source: for example from tests, from the field's development plan or from the task. Register it as `k_cutoff_md`. If no source gives one, register an assumed threshold for the reservoir fluid with a wide low and high, source `assumption`, and say why you chose it. The cutoff and the net pay are then conditional on it (two-tier rule).
 2. Run `petro_permeability(method="core_transform", parameter_set=<the set with k_cutoff_md>)`. The result gives `cutoff_derivation` and `register_as.phi_cutoff`.
    - Source: `assumption` when `k_cutoff_md` is an assumption, otherwise `core`. The reference names the `k_cutoff_md` source.
    - `low` and `high` come from the transform's band. When `k_cutoff_md` has low and high, the cutoff low uses its low on the P90 line. The cutoff high uses its high on the P10 line.
