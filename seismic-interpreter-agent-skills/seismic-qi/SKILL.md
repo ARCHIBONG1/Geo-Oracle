@@ -61,6 +61,7 @@ Register a supplied time-depth table with `seismic_register_table` (kind time_de
      - Use it for the datum check, and to report which events sit at the markers. It is context for the tie, not a substitute for the synthetic.
      - Marker times are in the well time frame. Give the tie's shift as `tie_shift_ms`. The tool adds it.
      - With the tie's synthetic, shift and phase, it also gives the event that the synthetic predicts at each marker. It also gives the seismic event to seed a horizon on (`markers[].seed`; `synthetic_reflections` without markers). The tool rotates the synthetic by the tie phase first, so the seed polarity follows the tie. If a row has `seed_ambiguous`, confirm the seed on the tie figure.
+     - For a deviated well, also give `well_track` and `time_depth`. Seed each horizon at its row's `seed_inline` and `seed_crossline` (the well path at the marker), never at the surface location. If a row has `seed_position_beyond_track`, the track does not reach that marker: get a longer track, or confirm that seed on a section.
      - `first_strong_event` is the seabed criterion, not a horizon pick. If there is a stronger event beside it, it names that event.
    - The tie measures the bulk shift and constant phase, and `phase_range_deg` / `phase_uncertainty_deg`: the phases whose correlation stays within 0.01 of the best.
      - Two ties differ in phase only beyond that range.

@@ -76,6 +76,11 @@ For structure maps (z down), the minimum is the shallowest point. Describe maps 
 - `wells`: each well's `well_header` product and its `tops_time` product or `well_tops` table. If a well is within `well_distance` lines, the tool draws it vertical at its X/Y, with its tops as ticks. It also draws a deviated well vertical, and `result.overlays` says so.
 - `result.overlays` gives each drawn item's measured position (line range, z range, distance). In `not_drawn`, it lists what does not cut the section, with the reason. Quote positions from there.
 
+**Slice level** (`seismic_render_slice`):
+- If the person or Geo Oracle gave the level (or the inline or crossline), use it, and give `level_source: "user"` or `"geo_oracle"`.
+- If not, choose a level in the interval of interest, from the horizons or the QC. Never use the middle of the volume. Give `level_source: "agent"`. The tool then warns when the level is in a low-energy part of the volume, and gives the z ranges that hold the energy.
+- For a stratigraphic feature (a channel, fan or other geobody), do not show a flat time slice. Show a horizon slice or a stratal slice, or an interval map (`seismic_horizon_map` with `operation: "extract"`, `stat: "rms"` and a `top_offset` to `bottom_offset` window on the horizon).
+
 **Closures**: `seismic_render_map` with `closures` (the closure map of `seismic_closure`) outlines each closure on its horizon map, and marks its crest.
 
 - Publish a figure for every product that you publish and that has a renderer (system prompt, Figures step). Draw the sections that your key evidence rests on, with the horizons, faults and wells of the claim on them.

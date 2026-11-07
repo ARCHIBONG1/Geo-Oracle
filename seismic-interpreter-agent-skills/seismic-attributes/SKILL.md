@@ -115,6 +115,7 @@ An attribute anomaly is an **observation** or **measurement**. The geological me
 - Edge artefacts sit within half a kernel of window boundaries, so ignore those tiles.
 - The tools ignore unknown params, with a warning. Check `effective_params` to confirm what was used.
 - Time slices through dipping strata mix stratigraphic levels. Prefer sections, or a window around the target interval.
+- If the person or Geo Oracle gave no slice level (or inline or crossline), choose a level in the interval of interest, from the horizons or the QC. Never use the middle of the volume. Give `level_source` to `seismic_render_slice`. For a stratigraphic feature, show a horizon slice, a stratal slice or an interval map (`seismic_horizon_map` with `operation: "extract"`, `stat: "rms"` and a `top_offset` to `bottom_offset` window on the horizon), not a flat time slice.
 
 ## Dip-steered attributes
 
@@ -126,6 +127,7 @@ Axis-aligned attributes read dipping but continuous reflectors as discontinuous,
   - It is not a frequency filter.
 - `seismic_edge_detection_attribute` with `attribute: dip_steered_semblance` (`kernel: [3, 3, 9]`): semblance on dip-aligned traces.
   - Prefer it over `semblance` wherever reflectors dip more than about one sample per trace. The fault-likelihood QC's `reflector_dip` tells you. On flat data, the two agree.
+  - `semblance` and `eig_complex` warn when the reflector dip is more than their kernel follows. Then use dip-steered semblance where the dips are steep.
   - `max_shift` (samples) bounds the steering. The tool clips a dip estimate beyond it.
 
 Both are computed from the same seismic as everything else. Steering removes a false discontinuity. It does not add evidence.
