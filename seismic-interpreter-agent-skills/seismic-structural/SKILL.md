@@ -22,6 +22,8 @@ description: Structural interpretation from seismic - horizon tracking, faults a
 | 3D view of faults and horizons | `seismic_render_3d` | inline image plus interactive link (see `seismic-visualisation`) |
 | Closure | `seismic_closure` | crest, spill point and type, column height, area |
 | Depth | `seismic_time_to_depth` | depth map or depth volume with the stated velocity model |
+| Correct a depth map to two or more wells | `seismic_depth_residual_correction` | corrected map, correction grid, low and high maps, per well: error, tie and leave-one-out residual |
+| Fault set from fault sticks; merge, split or delete faults | `seismic_fault_sticks`, `seismic_edit_faults` | a fault set that every fault tool reads |
 | Sections, attributes | `seismic_describe_section`, edge and dip attributes | breaks, continuity, dip, as before |
 | Figures | `seismic_track_horizon`, `seismic_horizon_map`, `seismic_closure` and `seismic_time_to_depth` draw their maps themselves; `seismic_render_section` with `horizons`, `faults` and `wells`; `seismic_render_map` with `closures` | `result.figures`; section overlay positions in `result.overlays` |
 
@@ -41,7 +43,7 @@ description: Structural interpretation from seismic - horizon tracking, faults a
    - `result.qc`: `measured.coverage`, `signal.correlation_p10`, and `stability` (the same tracking with the stopping threshold x0.9 and x1.1: the share of cells within one sample). Cells that move with the setting are uncertain picks. Report their share.
    - Coverage below 1 is expected at faults, polarity changes and fading reflectors. Say where the gaps are (`seismic_horizon_map` structure tile means show undefined tiles).
    - `low_correlation` stops mean that the event changes character. Do not lower `min_correlation` just to fill the map without saying so. Check a map that you broaden that way, and do not assume it. A lowered threshold lets the tracker cross a fault onto a different loop, and a depth map inherits the error.
-   - `result.qc.faults` (with `faults` given): per fault, the horizon's step against the seismic's own offset. `cycle_skip_suspected` means that the block beyond is on the wrong loop. Retrack with that block's seed at the throw-corrected time, or report the block as untracked. Never deliver a horizon with a suspected skip as it stands, and never convert it to depth.
+   - `result.qc.faults` (with `faults` given): per fault, the horizon's step against the seismic's own offset. `cycle_skip_suspected` means that the block beyond is on the wrong loop. Retrack with that block's seed at the throw-corrected time, or report the block as untracked. Never deliver a horizon with a suspected skip as it stands, and never convert it to depth. The tools still convert and publish it, with a warning and the mark `cycle_skip_faults`. A fault in `cycle_skip_unchecked_faults` was not checked. Report the block beyond it as not checked.
 4. A polarity change along a horizon (for example a soft gas sand becoming a weak hard brine sand) stops a peak or trough tracker. That is information, not a failure. Seed the opposite event beyond the change, and track it. Report where the change sits, as a candidate fluid or lithology boundary (`seismic-qi`).
 
 ## Fault procedure
@@ -78,6 +80,7 @@ description: Structural interpretation from seismic - horizon tracking, faults a
 6. **Delivery**: show `result.faults_figure_markdown`. Give the volume to the user with `seismic_export_volume` (in their axis order if they supplied an array). View it with `seismic_render_slice` or `seismic_render_3d`. A horizon or depth map goes to the user the same way: `seismic_export_volume` on the map file writes a csv (inline, crossline, x, y, value) or npy, never SEG-Y.
    - **Strike and dip.** The fault tools report `apparent_dip` in index units. The true orientation comes from `seismic_publish_structure` with a time-depth table (or a depth volume). Its reply's `fault_orientations` gives each fault's `strike_deg`, `dip_deg` and `dip_azimuth_deg`. Report those as the orientation, with the table as the source. "apparent grid-index dip" is the answer only when no table exists.
 7. Alternatives to consider every time: channel edge, chaotic facies boundary, acquisition footprint (aligned with inline or crossline, regular spacing), migration artefact near steep dip, velocity pull-up or push-down.
+8. **Fault sticks and edits.** If the user gives fault sticks, run `seismic_fault_sticks` with the volume that they were picked on. Report those faults as interpretations. To merge, split or delete faults, run `seismic_edit_faults` and give `reason`: the section evidence for the edit. Never edit faults to reach a number of faults that anyone expects.
 
 ## Closure and depth
 
@@ -92,7 +95,8 @@ description: Structural interpretation from seismic - horizon tracking, faults a
      - convert it with `seismic_time_to_depth` (`method: table`);
      - deliver the map with its uncertainty stated.
      The table is exact at the well, and the lateral velocity variation is unknown, so depths away from the well carry that error. Where the data allow, name a figure for it (for example from a second well or the checkshot drift). One well's function is the standard first depth map. Never withhold it as "not a validated lateral velocity model". Converting the whole volume is not a map.
-4. Closure is not a hydrocarbon column. A spill point bounds the trap. The fluid contact needs other evidence (see `seismic-qi`).
+4. **Two or more wells.** Run `seismic_depth_residual_correction` on the depth map. Give each marker depth as TVDSS (`marker_datum: tvdss`, the default) or below the map's datum (`below_srd`). The tool refuses `tvdss` on a map without a stated SRD: then give `below_srd` and state the map datum. The corrected map ties the wells. Report `leave_one_out_rms_m` as the depth error between the wells. Outside the wells (`fraction_inside_well_hull`) the error is larger: read `correction_beyond_well_errors_m`. If the reply warns that the correction goes beyond the well errors, run again with `method: inverse_distance`. With two wells, depths away from their line are not tied to the wells: say so. The leave-one-out spread is zero at the wells and grows away from them. `low` and `high` are a range, not a bound. Run `seismic_closure` on `map`, `low` and `high`, and report the crest, spill, column and area of each. Use `low` and `high` for well prognosis and against a fixed fluid contact.
+5. Closure is not a hydrocarbon column. A spill point bounds the trap. The fluid contact needs other evidence (see `seismic-qi`).
 
 ## Publishing for structural_geology
 
@@ -100,7 +104,7 @@ When another specialist needs your faults and horizons (structural_geology above
 - fault traces in X/Y with z ranges and, given a time-depth table or a depth volume, strike and dip;
 - horizon grids with inline, crossline, x, y, z.
 
-The sidecar states the domain and the pick uncertainty. structural_geology's tools refuse a time-domain product, so convert first where depth is needed. List each reference in `conclusions` as `Product: fault_set — @seismic-interpreter-agent/products/<file>` (likewise `horizon`). If a task feeds a structural model, a closure with faults, fault stability or fault seal, it is incomplete until these are published.
+The sidecar states the domain and the pick uncertainty. structural_geology's tools refuse a time-domain product, so convert first where depth is needed. A depth below a non-zero SRD is not TVDSS. In that case a depth horizon product also has a `z_tvdss` column. A depth fault set then also has `trace_z_tvdss` and `z_range_tvdss`. State the `depth_datum` of each depth product in `conclusions` and in the brief. List each reference in `conclusions` as `Product: fault_set — @seismic-interpreter-agent/products/<file>` (likewise `horizon`). If a task feeds a structural model, a closure with faults, fault stability or fault seal, it is incomplete until these are published.
 
 ## Classification
 
@@ -113,7 +117,7 @@ The sidecar states the domain and the pick uncertainty. structural_geology's too
 
 - Horizon: tracking quality, coverage gaps and their causes, event choice (peak/trough) and phase.
 - Faults: position ±1 trace and the lateral resolution. Throw in time is apparent. Throw below tuning thickness is unresolved.
-- Depth: the velocity model and its source. For a closure, how sensitive spill and column are to it.
+- Depth: name the velocity model and its source. For a low and a high case, register two time-depth tables from the stated residual range (`seismic_register_table`). Give each one the SRD of the source table in `srd_elevation_m_above_msl`, and check `depth_datum` in each reply. Or use `constant_velocity` or `linear_velocity` with two values. Run `seismic_time_to_depth` and `seismic_closure` for each case. Report spill and column for each case.
 - Time data: geometry, dips and closures are apparent until converted.
 - Structural claims usually need an independent line (well dips, regional structure from the structural_geology specialist) to be `supported`.
 

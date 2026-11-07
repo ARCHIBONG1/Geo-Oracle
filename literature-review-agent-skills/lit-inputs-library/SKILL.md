@@ -145,6 +145,6 @@ Use the citation forms of your system prompt (section 7):
   - The user's own reports are `project_data`. A published paper found in the folder is `literature`. Resolve it to its DOI as well.
   - A report's conclusion stays that report's `interpretation`, however confident it sounds.
 - **Conclusions**: for Geo Oracle, the paths to pass on, grouped by specialist, e.g. "wells_petrophysics: wells/W1.las, wells/W1_tops.csv".
-- **Missing data**: what the question needed but the folder lacks, as `data_provider: <item> — <form> — <why>`.
+- **Missing data**: what the question needed but the folder lacks, as `user: <item> — <form> — <why>`.
 
 <!-- end of skill: lit-inputs-library -->

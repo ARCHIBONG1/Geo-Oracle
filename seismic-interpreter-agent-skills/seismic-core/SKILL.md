@@ -54,6 +54,14 @@ A `required_outputs` entry names a product, and the product has a chain. Start t
 - call bodies something other than what the recipe measured;
 - replace a map with an argument that a better one would need more data.
 
+## Objective
+
+Read the resource type in the task. Fit the deliverables to it. The tools are the same for every objective.
+- **CO2 storage.** Map the top and base of the store and of the caprock. Map caprock thickness (isochron) and compare it with the tuning thickness. Map the closure to its spill point: storage volume uses it. Map faults in depth, and chimney-like columns that cross the caprock (`gas_chimney` recipe). Report them as candidate leakage paths, not as leaks. Seismic shows only part of a leakage path. For 4D data, report NRMS and the repeat noise before any change.
+- **Geothermal.** Map faults, fracture zones and karst (`paleokarst` recipe) in and near the reservoir. Map the basement top where it is visible. In volcanic areas, say that reflection seismic gives poor images. Seismic does not measure permeability, temperature or heat flow. Say so in `limitations`.
+- **Natural hydrogen.** Map basement, deep faults, fracture zones and candidate seal horizons as candidate elements only. DHI and AVO criteria are calibrated for hydrocarbons. Do not use them for hydrogen. Seismic cannot tell hydrogen from other gases.
+- **Every objective.** Seismic does not measure seal capacity. A trap or seal claim is an inference at most.
+
 ## 2. Handle every tool result the same way
 
 1. Check `execution_status`.
@@ -67,7 +75,7 @@ A `required_outputs` entry names a product, and the product has a chain. Start t
 
 Never paste raw tool output into findings. Summarise the value and cite the provenance id.
 
-The tool shortens a long result to fit the reply. The warning says which parts (`result.<key>: replaced by a note`). The note keeps the verdict lines (`notes`, flags, the short lists that name what was found). Read the verdicts from the note. For the numbers behind them, call `seismic_get_record` with the result's `provenance_id` and `field` naming the part (`result.qc`, `result.qc.stability`, `result.bodies`). The part comes back whole and small. Never fetch the whole record of a large result, and never read a saved tool result with code in your sandbox.
+The tool shortens a long result to fit the reply. The warning says which parts (`result.<key>: replaced by a note`). The note keeps the verdict lines (`notes`, flags, the short lists that name what was found). The top-level `notes` of a reply holds only the procedure line. Read the verdicts from the note. For the numbers behind them, call `seismic_get_record` with the result's `provenance_id` and `field` naming the part (`result.qc`, `result.qc.stability`, `result.bodies`). The part comes back whole and small. Never fetch the whole record of a large result, and never read a saved tool result with code in your sandbox.
 
 ## 3. Evidence items
 
@@ -100,14 +108,27 @@ Independence test: would one error invalidate both lines? Coherence and curvatur
 
 Each entry has exactly this form: `<specialist>: <item> — <form> — <why>`
 
-- `<specialist>` is the gateway specialist that would supply it: wells_petrophysics, structural_geology, stratigraphy, sedimentology, regional_geology, literature_review, or `data_provider` for raw data.
+- `<specialist>` is the gateway specialist that would supply it: wells_petrophysics, structural_geology, stratigraphy, sedimentology, regional_geology, literature_review, or `user` for raw data and velocity models.
 - `<form>` is concrete, such as a file type, columns, units or coordinate system.
 - `<why>` names the claim or required output it unblocks.
+
+Write each entry as one string. Do not list your own unfinished outputs here: put them in `limitations`.
+
+## Not available
+
+No tool serves these analyses:
+- 2D SEG-Y lines. Ingest a 2D line only as an array of shape (1, traces, samples).
+- Velocity models that vary laterally. No tool uses one. Use a 1D function with `seismic_depth_residual_correction` at the wells, or ask the `user` for a depth-converted product.
+- Fault-dependent closure, juxtaposition and fault seal. structural_geology owns them.
+- 4D time-shift volumes and time-strain volumes at full sample resolution. `seismic_4d_difference` gives one value per 100 ms window.
+- CRS reprojection.
+- Wheeler transforms (see seismic-stratigraphic).
+- Model-based or absolute inversion, attenuation (Q) estimation and prestack QI (see seismic-qi).
 
 ## 6. Mandatory limitations
 
 Every result states the following:
-- the vertical resolution (tuning thickness) and lateral resolution at the target, from `seismic_resolution_limits`, with the velocity used and its source;
+- the vertical resolution (tuning thickness) and lateral resolution at the target, from `seismic_resolution_limits`, with the velocity used and its source, or that no velocity was used (two-way time only);
 - polarity (stated or unknown) and apparent phase (from `seismic_qc`, known only modulo 180°);
 - the domain; time-domain geometry is not true geometry;
 - the QC flags that bear on the question;

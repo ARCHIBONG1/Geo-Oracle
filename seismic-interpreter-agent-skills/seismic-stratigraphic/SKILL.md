@@ -31,8 +31,8 @@ Use `seismic_detect_terminations` on sections along and across depositional dip 
 
 - Each termination has a projected position (where reflector and surface would meet), the last picked point, its type, the dips and the surface it ends against. Converging reflectors interfere, and the tool stops picking them about half a wavelength early. The projected position corrects for that.
 - Types are geometric:
-  - **onlap**: reflector less inclined than the surface below;
-  - **downlap**: more inclined than the surface below;
+  - **onlap**: the reflector ends against a surface below it, and it is horizontal or dips away from its termination (Sheriff and Geldart 1995 p. 404);
+  - **downlap**: the reflector ends against a surface below it, and it dips toward its termination;
   - **truncation_or_toplap**: ends against a surface above.
   Geometry cannot separate toplap from erosional truncation. Name both, unless other evidence (incision, regional truncation) decides it.
 - `surfaces` groups terminations by the surface they end against. A surface that collects three or more is a **candidate key surface**:

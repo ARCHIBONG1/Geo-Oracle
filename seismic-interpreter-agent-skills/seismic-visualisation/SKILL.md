@@ -31,11 +31,17 @@ The output has these parts:
 - `strongest_envelope_anomalies`: up to five located envelope peaks above the 99.5th percentile.
 - `sharpest_lateral_breaks`: adjacent trace pairs much less similar than their row, with the z ranges where each occurs.
 - `low_continuity_tiles`: tiles well below the section's typical continuity.
+- `tiles.dip_unresolved`: true where the lag search cannot measure the dip of the tile.
+- `tiles.dip_low_correlation`: true where the tile is noisy. Its dip is less certain.
+- `offset_breaks`: adjacent trace pairs where the best lag jumps by 2 or more samples, with `apparent_offset` in z units. These are candidate small throws.
+- `dead_traces`: traces with no data. They are not in the breaks or the continuity.
 
 Good practice:
 - Describe several sections, not one. Include sections perpendicular to the feature, and control sections away from it for comparison.
-- Use finer tiles (12) over a narrow `z_range` to resolve a target. Coarse tiles over the full trace give context.
-- Increase `max_lag` where dips are steep. If `apparent_dip` values sit at ±max_lag × dt, the true dip is steeper than measured.
+- Use finer tiles (12) over a narrow `z_range` to resolve a target. Coarse tiles over the full trace give context. Keep each tile longer than one dominant period (see the tile warning).
+- `apparent_dip` is reliable only up to `max_lag` - 1 samples per trace. Do not report the dip of a tile with `dip_unresolved`. Do not report an offset break with `in_unresolved_tile` as a throw.
+- A larger `max_lag` hides faults with a smaller throw. Read `offset_breaks` for small throws.
+- `dead_traces` are missing data, not faults.
 - Describe the attribute volume on the same sections as the amplitude volume, so that you can compare them tile by tile.
 - Quote values with their location. Example: "IL 120: continuity 0.91–0.96 in all tiles except the XL 248–260 column (0.58–0.66) from 300 to 900 ms (E4, prov:…)."
 

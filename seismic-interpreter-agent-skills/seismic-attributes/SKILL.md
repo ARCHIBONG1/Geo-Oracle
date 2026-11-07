@@ -34,8 +34,8 @@ Every result gives you:
 | Where are faults or fractures? | semblance, eig_complex (coherence) | chaos; volume_curvature (Kmax/Kmin) for flexures | B |
 | Fault vs chaotic facies vs noise? | coherence + chaos | describe_section breaks repeated over several z ranges | B |
 | Structural dip, strike, azimuth? | gradient_structure_tensor, gradient_dips | describe_section apparent dip | C |
-| Folds, flexures, subtle drape? | volume_curvature (needs inline and crossline dip) | gradient_dips first: pass `<its output_path>::il_dip` as darray_il and `::xl_dip` as darray_xl | B, C |
-| Bright or dim amplitude, reflection strength? | envelope | rms, reflection_intensity, sweetness | A, F |
+| Folds, flexures, subtle drape? | volume_curvature (needs inline and crossline dip) | gst_2D_dips first: pass `<its output_path>::il_dip` as darray_il and `::xl_dip` as darray_xl | B, C |
+| Bright or dim amplitude, reflection strength? | envelope | rms, sweetness | A, F |
 | Lateral lithology or thickness change, thin beds? | instantaneous_frequency, dominant_frequency | cwt_ricker spectral components | A, D |
 | Channel edges, stratigraphic detail? | coherence on conditioned data | spectral components; instantaneous_phase for continuity | B, D, A |
 | Frequency shadow below a bright spot? | cwt_ricker at low vs high frequency | instantaneous_frequency | D, A |
@@ -49,6 +49,7 @@ Every result gives you:
 - Envelope is reflection strength, independent of phase. It is the right amplitude measure for bright or dim events.
 - Instantaneous phase shows continuity independent of amplitude, which is good for weak reflectors.
 - Instantaneous frequency is noisy by nature. Read its tile statistics, not single samples. Anomalously low values under bright events may be absorption or tuning.
+- The complex-trace attributes are computed per trace, with no lateral smoothing. For a map, apply a 3D median (`seismic_noise_reduction_attribute` with `attribute: median`) to the finished attribute. The median ignores NaN samples and keeps them as NaN. Report the dead traces.
 - Sweetness is envelope divided by the square root of instantaneous frequency. It highlights sand-prone bright, low-frequency packages in clastic settings. It is a screening tool only.
 
 **B. Edge detection** (`seismic_edge_detection_attribute`)
@@ -76,7 +77,7 @@ Every result gives you:
 
 **E. Noise reduction** (`seismic_noise_reduction_attribute`)
 - Methods: gaussian (sigmas), median (kernel), convolution (kernel), structure_oriented_filter (see Dip-steered attributes).
-- Median (3,3,3) removes spikes and preserves edges better than gaussian, so it is better before coherence.
+- Median (3,3,3) removes spikes better than gaussian. A 3 x 3 lateral median also removes features one trace wide. For narrow faults or fractures, use kernel (1,1,k), or compare coherence on unfiltered data.
 - Heavy smoothing hides small faults. Report the conditioning used whenever you cite a coherence result.
 
 **F. Signal processing** (`seismic_signal_processing_attribute`)
@@ -85,6 +86,8 @@ Every result gives you:
 - `rms` with a vertical window about one period long is a stable amplitude-strength map attribute.
 - `trace_agc` is Yilmaz's rms automatic gain control: it scales every sliding window of `kernel` samples to rms `desired_rms` (default 1).
 - `reflection_intensity` is the signed amplitude integrated over the window (trapezoid rule, sample units). Peaks and troughs cancel within a window, so it is not an energy measure. Use `rms` for energy.
+- Barnes (2016) advises against gradient_magnitude and reflection_intensity as seismic attributes. Use coherence for edges and rms for energy.
+- AGC windows for amplitude balancing are usually several hundred ms. The default 9-sample window is a strong, display-only gain.
 
 ## Units of the attributes
 
@@ -102,7 +105,7 @@ Every result gives you:
 
 ## Reading attribute output
 
-Read the statistics in `outputs` (min, max, mean, std) for scale: an anomaly means something only relative to that distribution. Then run `seismic_describe_section` on the attribute volume. For unsigned attributes such as envelope, coherence and frequency, `relative_rms` per tile reads as "attribute level relative to the section".
+Read the statistics in `outputs` (min, max, mean, std) for scale: an anomaly means something only relative to that distribution. The statistics use the finite samples only. `non_finite_fraction` is the share of NaN or infinite samples, for example on dead traces. Then run `seismic_describe_section` on the attribute volume. For unsigned attributes such as envelope, coherence and frequency, `relative_rms` per tile reads as "attribute level relative to the section".
 
 An attribute anomaly is an **observation** or **measurement**. The geological meaning (a fault, a channel, gas) is an **interpretation**, and it needs the alternatives from the matrix above.
 
@@ -115,11 +118,11 @@ An attribute anomaly is an **observation** or **measurement**. The geological me
 
 ## Dip-steered attributes
 
-Axis-aligned attributes read dipping but continuous reflectors as discontinuous, and they smear them when filtered. Two methods follow the local dip instead. The gradient structure tensor (`gst_2D_dips`) estimates the dip over `dip_kernel` (default 3 x 3 x 9).
+Axis-aligned attributes read dipping but continuous reflectors as discontinuous, and they smear them when filtered. Two methods follow the local dip instead. The gradient structure tensor (`gst_2D_dips`) estimates the dip over `dip_kernel` (default 3 x 3 x 9). For fault work, use a `dip_kernel` much larger than the analysis window (Marfurt et al. 1999 smooth dip over about ten times the window). A small dip_kernel follows the fault offset.
 
 - `seismic_noise_reduction_attribute` with `attribute: structure_oriented_filter` (`kernel: [3, 3, 1]`, `median: true`): the dip-steered median filter.
-  - On noisy data, use it before fault likelihood, semblance or any edge attribute.
-  - The median keeps faults sharp. The mean (`median: false`) does not.
+  - Use it on noisy data before semblance or edge attributes. It has no edge stop, so it smears reflections at faults, more with a larger kernel. Compare fault attributes on raw and filtered data.
+  - The median does not keep faults sharp (Fehmers and Hoecker 2003).
   - It is not a frequency filter.
 - `seismic_edge_detection_attribute` with `attribute: dip_steered_semblance` (`kernel: [3, 3, 9]`): semblance on dip-aligned traces.
   - Prefer it over `semblance` wherever reflectors dip more than about one sample per trace. The fault-likelihood QC's `reflector_dip` tells you. On flat data, the two agree.

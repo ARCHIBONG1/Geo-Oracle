@@ -26,7 +26,7 @@ Fault likelihood (`seismic_interpret_faults`, or step by step `seismic_fault_lik
 1. **Dip beyond the lag**: if `qc.suggested_max_dip_samples` is present, reflectors dip more than the likelihood's correlation follows (`reflector_dip.steepest_samples_per_trace_p90` > `max_dip_samples`). Rerun with that `max_dip_samples` first.
 2. **Then judge** from the evidence, and say which evidence you used:
    - `measured_fraction` low: much of the interval is too quiet to measure, and likelihood is blind there.
-   - `separability.otsu_eta` low (no clear fault tail; values near 1 separate well), or null.
+   - `separability.otsu_eta` low, or null. Near 1, the likelihood splits clearly into two values. A smooth spread with no fault tail gives about 0.64, so eta alone does not show a small fault tail.
    - the extraction finds no fault, or faults that make no geological sense, although `seismic_describe_section` shows sharp lateral breaks.
    These are judgements, not cut-offs. If likelihood looks poor, run the `fault_attribute` recipe, and report both results. Give `seismic_compare_extractions` between the likelihood fault volume (`seismic_interpret_faults` with `output: "binary"`) and the recipe's volume.
 3. **An explicit request wins.** If the user names an approach ("use fault likelihood only", "extract faults from coherence"), run exactly that. Report any QC concern, but do not switch methods. "Extract faults from coherence" means the `fault_attribute` recipe, which reads coherence by design. Fault likelihood itself needs the seismic. It refuses a coherence volume unless you give `override_reason` because the user asked for exactly that.
@@ -67,10 +67,12 @@ Fault likelihood (`seismic_interpret_faults`, or step by step `seismic_fault_lik
      - it runs the per-sample reading as a second pass, and compares it.
 
      Report per body:
-     - `per_sample.category`: `confirmed` (the per-sample reading supports it above its background rate), or `map-only` (seen in map view only, which on noisy data is common and not a rejection);
+     - `per_sample.category`: `confirmed` (the median of the body's per-sample mean excess is above the 95th percentile of the background traces), or `map-only` (seen in map view only, which on noisy data is common and not a rejection);
      - `stacked_with`: vertically separate bodies in one corridor. Report them apart;
      - `stratal.joined_across_faults`;
      - the notes in warnings. A body elongated less than 2:1 may be two channels touching in plan. Its level, top and base follow the strongest bounding reflection (typically a few samples off the fill). So the thickness is an estimate, and below the tuning thickness an upper bound.
+
+     Every constraint bounds the bodies (`constraints`). Seeds, `qc_sweep` and `cross_check` do not run in stratal mode (`constraints_detail.not_applied`). Use `segmentation='per_sample'` for them.
 
      `stratal.sample_only` lists per-sample groups outside every footprint. Review each: none is a channel until it is. The map-view reading finds channels that the per-sample reading alone largely misses, and it holds up better as noise rises. `segmentation='per_sample'` runs the recipe alone, for comparison or for a non-channel recipe. A body thinner than the slice thickness minus the step is not resolved. For thin channels, thin the slices (`stratal.thickness`, `stratal.step`).
    - `wells`: every well in the survey, `{'name', 'inline', 'crossline'}` (or x, y), with `sand_top` and `sand_base` of a sand or channel interval from its logs (petrophysics), in the volume's z unit. `result.wells` lists the bodies that each well column penetrates. A logged sand in no body is a warning: report it under contradictions before you call the channels mapped.
@@ -92,19 +94,19 @@ Fault likelihood (`seismic_interpret_faults`, or step by step `seismic_fault_lik
 
 **`result.qc` first, as for faults.** Five questions, and a sixth when `cross_check` is given, each with a reading line:
 - *measured*: `valid_fraction`, the share of the volume that the constraints and finite inputs left.
-- *signal*: `separability` per input (Otsu's eta; the tool flags a constant input, which carries nothing).
-- *stability*: the extraction repeated at the nine neighbouring threshold settings. It gives each body's `found_at`, `stable` (two thirds) and `voxels_p10/p50/p90`. A body found at under two thirds is setting-dependent: report it as such, and never retune to keep or lose it. The tool skips this check above 60 million voxels (crop first).
-- *resolution*: `thickness_below_tuning` and `width_below_fresnel_diameter` per body, from the predominant frequency and the velocity. The predominant frequency is the source seismic's spectral peak times 1.283 for time volumes, or the value given in `resolution`. The velocity is given, or a constant `velocity_model`. A flagged body is detected, not measured: never quote its thickness or width as resolved.
+- *signal*: `separability` per input. `otsu_eta` tells how two-valued the histogram is. It does not show a small feature tail: read `tail_fraction`. The tool flags a constant input, which carries nothing.
+- *stability*: the extraction repeated at the nine neighbouring threshold settings. It gives each body's `found_at`, `stable` (two thirds) and `voxels_p10/p50/p90`. A body found at under two thirds is setting-dependent: report it as such, and never retune to keep or lose it. `thresholds_run` gives the thresholds each setting used. Settings that ran with the same thresholds count once (`collapsed`, `distinct_settings`). The tool skips this check above 60 million voxels (crop first).
+- *resolution*: `thickness_below_tuning` and `width_below_fresnel_diameter` per body, from the predominant frequency and the velocity. The predominant frequency is the source seismic's spectral peak over the bodies' z range plus 10 %, widened to 128 ms or 3 periods of the whole-trace peak, whichever is longer (`frequency_window_ms`), times 1.283 for time volumes, or the value given in `resolution`. The velocity is given, or a constant `velocity_model`. A flagged body is detected, not measured: never quote its thickness or width as resolved.
 - *truncation*: the share of a body on a constraint or data boundary. Over a quarter means that its size is a minimum.
 - *cross_check* (when `cross_check` names discontinuity volumes): each body's share in the attribute's anomalous tail, and the tall anomalies that no body explains. The seismic is the same, so this is consistency, not confirmation.
 
 
 - **Thresholds** are percentiles of the score inside the constraints. They assume that the feature is a minority of the constrained volume, so constrain tightly. Report `thresholds` and their source.
 - **Seeds**: report each seed's status. Every entry in `conflicts` is evidence against the attribute's picture. An example is a tied well that sees a channel where the score is low: a bed thinner than tuning, or an insensitive attribute. Put each conflict in `contradictions`, and never drop one.
-- **Bodies**: `shape_units` says whether shape is in metres or index units. Never quote a dip or volume in index units. The metrics: `fault.length_along_strike_m` / `height_along_dip_m`, `channel.sinuosity` (about +/- 1.5 %), `channel.mean_width` (about +/- one bin), `set.clark_evans_r` (karst spacing; no edge correction).
+- **Bodies**: `shape_units` says whether shape is in metres or index units. Never quote a dip or volume in index units. The metrics: `fault.length_along_strike_m` / `height_along_dip_m`, `channel.sinuosity` (about +/- 1.5 %), `channel.mean_width` (about +/- one bin), `channel.axis_thickness_median` (in `channel.thickness_unit`), `set.clark_evans_r` (karst spacing; no edge correction) and `set.pattern` (from a Monte Carlo rank test with a guard area, `set.monte_carlo_p`; below 20 bodies, 'not distinguishable from random').
 - "No body found with this recipe and these thresholds" is not "no body".
 - **Resolution**: a body thinner than the tuning thickness (`seismic_resolution_limits`) has an unreliable thickness. A body narrower than the Fresnel zone has an unreliable map width. Say so.
-- **Curvature for karst**: most-negative curvature marks sags and collapse. Compute `gradient_dips`, then `volume_curvature` with `darray_il: '<dips>::il_dip'` and `darray_xl: '<dips>::xl_dip'`. Add it to the paleokarst recipe through `overrides.inputs` as `{name: 'curvature', sense: 'low', weight: ...}`, with `inputs.curvature = '<curvature>::KMNeg'`. `inputs` is a list, so an override replaces it whole: repeat chaos and semblance there.
+- **Curvature for karst**: most-negative curvature marks sags and collapse. Low KMNeg also marks valleys and channels. A bowl needs KMPos below 0 as well (Chopra and Marfurt 2007). Compute `gst_2D_dips`, then `volume_curvature` with `darray_il: '<dips>::il_dip'` and `darray_xl: '<dips>::xl_dip'`. Add it to the paleokarst recipe through `overrides.inputs` as `{name: 'curvature', sense: 'low', weight: ...}`, with `inputs.curvature = '<curvature>::KMNeg'`. `inputs` is a list, so an override replaces it whole: repeat chaos and semblance there.
 
 ## Classification
 

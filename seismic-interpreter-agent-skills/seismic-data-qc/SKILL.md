@@ -18,7 +18,7 @@ The import returns a path such as `uploads/seismic.npy` (in your work folder). U
 
 ## Loading sequence
 
-1. `seismic_list_data` shows which SEG-Y files, arrays, volumes and tables exist, and the tables already registered. Under `computed`, it shows every volume or map that earlier calls wrote, with what each holds. Reuse those by path, and do not recompute them. A `truncated` entry means that the list cut a group: name the file you need. Match the entries to the task's evidence paths. If a path named in the task is absent from the list, put it in `missing_data` as `data_provider: <file> — SEG-Y in operations/inputs — <why>`.
+1. `seismic_list_data` shows which SEG-Y files, arrays, volumes and tables exist, and the tables already registered. Under `computed`, it shows every volume or map that earlier calls wrote, with what each holds. Reuse those by path, and do not recompute them. A `truncated` entry means that the list cut a group: name the file you need. Match the entries to the task's evidence paths. If a path named in the task is absent from the list, put it in `missing_data` as `user: <file> — SEG-Y in operations/inputs — <why>`.
 2. `seismic_scan_segy` reads headers only, so it is quick. Read:
    - `recommended_header_bytes` and `header_candidates`: which byte pair gives a regular inline/crossline grid. The standard pair is 189/193. Older data often uses 9/21.
    - `segy_revision` and `trace_identification_codes`: from rev 2.0, code 1 is time-domain and 25 depth-domain data. Rev 0 and 1 do not record the domain.
@@ -47,6 +47,8 @@ Ingest refuses duplicate inline/crossline pairs, which mean prestack data or wro
 | dataset (`.h5` only) | The file | Needed when the file holds several datasets; the tool lists them. |
 | domain, z_unit, z_step | The user or task | `z_unit: "sample"` without z_step: z counts samples, and frequency, resolution, tie and depth tools will refuse. Say so. |
 | inline/crossline numbering | The user or task | Defaults 1, 2, 3, …; say that numbers are indices. |
+
+- A 2D line can be ingested only as an array of shape (1, traces, samples) with `seismic_ingest_array`. If you have only a 2D SEG-Y, ask the user for the line as a .npy array of that shape.
 
 **Axis order after ingest.** The tool transposes a stated order (for example `T,XL,IL`) into IL,XL,T with a numpy transpose. It reports `axis_order_in` and `transposed_to_IL_XL_T`. From then on, everything is IL,XL,T: kernels are [inline, crossline, samples], preview axes 0/1/2 are inline/crossline/time, and sections are inlines or crosslines. Every tool refuses files that have not been ingested (raw `.npy`, plain `.h5`). The reason: the attribute library assumes inline, crossline, z order, so it would compute an array in another order along the wrong axes.
 
@@ -78,12 +80,12 @@ What each flag means for you:
 
 ## Resolution limits
 
-Call `seismic_resolution_limits` with the spectrum's peak frequency of the target interval as `peak_frequency_hz`, and with an interval velocity.
+Call `seismic_resolution_limits` with the spectrum's peak frequency of the target interval as `peak_frequency_hz`, and with an interval velocity when a product gives it.
 - The tuning thickness takes the **predominant** frequency, the reciprocal of the wavelet's breadth (Kallweit & Wood 1982). For a Ricker wavelet, it is 1.283 times the peak. The tool converts the peak, and says so in `frequency`.
 - Give `dominant_frequency_hz` instead only when you have the predominant frequency itself, such as one over the breadth of an extracted wavelet.
 - Pass the spectrum's `band_minus20db_hz` as `band_hz`. If the band spans two octaves or more, the result adds Kallweit & Wood's broadband tuning, 1/(1.4 fu), as a cross-check (`broadband`).
-- The velocity comes from the task, an upstream specialist, or a stated assumption (for example, "assumed 2,800 m/s for consolidated clastics at ~2 s").
-- Report the tuning thickness (λ/4), the Widess limit (λ/8) and the lateral resolution: the unmigrated Fresnel radius and the migrated Fresnel diameter (about λ/2).
+- Take the velocity from the task or an upstream product (for example the time-depth table at the target). If neither gives it, do not assume a velocity. Omit `interval_velocity_m_s`. The tool then gives the limits in two-way time only (`tuning_time_ms`, `widess_time_ms`). Report them in ms. Do not state them in metres. Without a velocity, compare the two-way time of a feature with the result's top-level `tuning_time_ms`, not `broadband.tuning_time_ms`. The lateral resolution needs the average velocity and the two-way time of the target (`two_way_time_ms`). Without an interval velocity, the tool gives only the unmigrated Fresnel radius, not the migrated Fresnel diameter. Without the average velocity or the two-way time, state that the lateral resolution is not available. Ask for the time-depth product in `missing_data`: the owner is `wells_petrophysics` when wells with sonic or checkshot data exist, else `user`. When the product arrives, compute again with its velocity.
+- With an interval velocity, report the tuning thickness (λ/4), the Widess limit (λ/8) and the lateral resolution: the unmigrated Fresnel radius and the migrated Fresnel diameter (about λ/2).
 - The interval velocity sets the wavelength. The Fresnel radius needs the **average** velocity from the surface to the target. If you know it, pass it as `average_velocity_m_s`. If not, the tool uses the interval velocity and says so in `fresnel_velocity`: repeat that caveat.
 - Any bed, throw or feature smaller than the tuning thickness is below resolution. Say so, and do not measure its thickness from the seismic.
 
