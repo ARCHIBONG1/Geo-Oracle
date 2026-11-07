@@ -117,7 +117,7 @@ A fluid claim built only on log features stays `proposed` or `partially_supporte
 
 ## 6. Missing data
 
-Each entry is exactly `<owner>: <item> — <form> — <why>`, with one entry per owner. The owner `user` is for data only the person can supply. Join several items of one owner with `;`:
+List the delivery first (`petro-data-qc`, section 1). Each entry is exactly `<owner>: <item> — <form> — <why>`, with one entry per owner. The owner `user` is for data only the person can supply. Join several items of one owner with `;`:
 - `user: W1 deviation survey; a formation water sample or Rw — CSV md_m,inc_deg,azi_deg; ohm.m at a stated temperature — TVDSS of tops and contacts; water saturation needs an Rw source`
 - `stratigraphy: correlated tops for W3 — MD per top — zone averages consistent with W1 and W2`
 - `regional_geology: formation-water salinity range for Unit B — ppm NaCl equivalent — bound Rw where no sample exists`

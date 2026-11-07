@@ -15,6 +15,8 @@ description: Getting well data in and checking it. It covers importing uploads, 
 
 The import returns a path such as `uploads/W1.las`. Use it from then on. The import refuses a file that is not in any recent sandbox. Then ask, via `missing_data`, for the file to be uploaded again or copied into `operations/inputs`.
 
+**Before you call a well table missing** (tops, survey, checkshots, pressures, core), run `petro_list_data`. `input_files` covers all subfolders. Use such a table for a task well, even if the brief did not name it. Its evidence `statement` says that the listing found it. Do not use a table that the brief excludes. Only a table absent from a listing with no `truncated` field is missing.
+
 ## 2. Loading logs: `petro_load_well`
 
 `petro_prepare_wells` handles several wells in one call: it loads and locates them, and publishes `correlation_logs` and `well_tops`. It locates each well by a survey, a track, or `vertical: true` where the task says so. Use it first for any multi-well task, then QC each well as below. Its reply has a provenance id. Its `warnings` carry every load, unit and trajectory warning, prefixed with the file path: carry them into `limitations`.

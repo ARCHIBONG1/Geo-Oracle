@@ -99,7 +99,7 @@ These checks ask whether the specialist produced the evidence the right way. The
    | a distance from a well to a feature | `m:seis/feature-distance`; a bounding-box overlap is not a distance |
    | channel type (meandering, submarine, tidal, ...) | `m:seis/recipe-channel` with the measured `planform` and fill, or a typed recipe whose `type_basis` names the user or a well |
 
-   A fault volume without its extraction method is a thresholded attribute, not faults: follow up. "No channels" without `m:seis/segment-volume` means the channel workflow never ran. Send it back to run the generic recipe, over a `z_window` when there are no horizons.
+   A fault volume without its extraction method is a thresholded attribute, not faults: follow up. "No channels" without `m:seis/segment-volume` means the channel workflow never ran. Send it back to run the generic recipe on the whole volume, with all tracked horizons.
 
    **A channel result is read with its QC**, not its count. Refuse (send back) a body result when:
    - a body's extents are the survey's (one channel does not span every inline and crossline);

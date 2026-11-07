@@ -339,7 +339,7 @@ gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 | `seismic-data-qc` | uploads, SEG-Y header scanning, ingest decisions, resolution |
 | `seismic-attributes` | choosing, setting up, running and reading the attribute tools |
 | `seismic-structural` | horizon tracking with seeds guided by the synthetic, faults and throw, structure and isochron maps, closure and spill |
-| `seismic-attribute-interpretation` | bodies by recipe: channels by stratal slices first and per sample second, in a window hung on a horizon, with wells; faults when the fault-likelihood check looks poor; karst and other bodies; constraints, seeds and the catalogue |
+| `seismic-attribute-interpretation` | bodies by recipe: channels by stratal slices first and per sample second, over the whole volume between all tracked horizons (an interval only on request), with wells; faults when the fault-likelihood check looks poor; karst and other bodies; constraints, seeds and the catalogue |
 | `seismic-stratigraphic` | terminations, key surfaces, seismic facies, stratal slices |
 | `seismic-qi` | when amplitudes can be trusted; wavelet, synthetic and well tie, including the range of phase the tie searches; AVO |
 | `seismic-visualisation` | reading `seismic_describe_section`, the agent's only view of a section |

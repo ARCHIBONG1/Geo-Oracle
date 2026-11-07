@@ -7,7 +7,7 @@ description: Seismic stratigraphy and seismic facies, from the termination and f
 
 **Channels and other depositional bodies as volumes:** if a task asks for stratigraphic features, bodies or channels, answer it by running them, not by reading sections. Run `seismic_segment_volume` with the generic `channel` recipe (skill `seismic-attribute-interpretation`, section 1):
 - compute envelope, semblance and chaos;
-- hang the window on a tracked horizon at the channel level (`interval`; a flat `z_window` only up to 25 samples);
+- read the whole volume by default: give all tracked horizons as `horizons` (use `interval` only when the person or Geo Oracle asks for one);
 - give the extracted faults as `faults`.
 
 It returns each body's axis, sinuosity, width and thickness, and a labelled volume. Terminations and reflection character describe the frame. They never substitute for the extraction. Say "no channel" only from its result.
