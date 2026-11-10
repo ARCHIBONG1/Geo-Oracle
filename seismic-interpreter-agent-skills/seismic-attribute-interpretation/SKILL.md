@@ -5,13 +5,13 @@ description: Attribute-driven interpretation, extracted from attribute volumes b
 
 # Attribute-driven interpretation
 
-Fault likelihood (`seismic_interpret_faults`, or step by step `seismic_fault_likelihood` -> `seismic_extract_faults`) stays the primary fault method. The tools here are general: one engine, driven by recipes. It serves faults when likelihood is poor, channels, paleokarst and any body that an attribute can outline.
+Fault likelihood (`seismic_interpret_faults`) is the default fault method; `fault_attribute` is its backup. The tools here are general: one engine, driven by recipes. It serves faults when likelihood is poor, channels, paleokarst and any body that an attribute can outline.
 
 ## Tools
 
 | Task | Tool | Key outputs |
 |---|---|---|
-| See the recipes and what each input needs | `seismic_list_recipes` | per recipe: purpose, the exact attribute call behind each input (`compute_with`), method, required constraints, cleanup, shape filter |
+| See the recipes and what each input needs | `seismic_list_recipes` | per recipe: purpose, inputs (sense, weight, `compute_with`), method, thresholds, required constraints, cleanup, shape filter |
 | Extract bodies | `seismic_segment_volume` (job) | labelled, binary or score volume; thresholds and their source; seeds used, rejected or not used; conflicts; every body with size, extents, orientation, volume, channel or karst metrics; `extraction_figure_markdown` |
 | Describe or filter any body volume | `seismic_describe_bodies` | the same catalogue for any labelled or binary volume (e.g. from `seismic_binarize_volume`); optional shape filter writes a filtered volume |
 | Second opinion | `seismic_compare_extractions` | share of each extraction within a voxel tolerance of the other, F-measure |
@@ -28,29 +28,33 @@ Fault likelihood (`seismic_interpret_faults`, or step by step `seismic_fault_lik
    - `measured_fraction` low: much of the interval is too quiet to measure, and likelihood is blind there.
    - `separability.otsu_eta` low, or null. Near 1, the likelihood splits clearly into two values. A smooth spread with no fault tail gives about 0.64, so eta alone does not show a small fault tail.
    - the extraction finds no fault, or faults that make no geological sense, although `seismic_describe_section` shows sharp lateral breaks.
-   These are judgements, not cut-offs. If likelihood looks poor, run the `fault_attribute` recipe, and report both results. Give `seismic_compare_extractions` between the likelihood fault volume (`seismic_interpret_faults` with `output: "binary"`) and the recipe's volume.
+   These are judgements, not cut-offs. If likelihood looks poor, run `fault_attribute` too, and report both. Give `seismic_compare_extractions` between the likelihood fault volume (`seismic_interpret_faults` with `output: "binary"`) and the recipe's volume.
 3. **An explicit request wins.** If the user names an approach ("use fault likelihood only", "extract faults from coherence"), run exactly that. Report any QC concern, but do not switch methods. "Extract faults from coherence" means the `fault_attribute` recipe, which reads coherence by design. Fault likelihood itself needs the seismic. It refuses a coherence volume unless you give `override_reason` because the user asked for exactly that.
 
 ## Procedure
 
-1. `seismic_list_recipes` lists every recipe with its inputs (sense and weight), the exact attribute call behind each input (`compute_with`), and its method and thresholds. It also says whether horizons are required (`horizons`), and gives its cleanup and shape filter. Read it, and do not rely on a table from memory. Choose by the question:
-   - `fault_attribute` when fault likelihood looks poor;
+1. `seismic_list_recipes` lists every recipe (see Tools) and whether it needs horizons (`horizons`). Give `volume` when the data are not sampled at 4 ms: it then states the kernels for that interval. Read it, and do not rely on a table from memory. Choose by the question:
+   - `fault_attribute` is the backup fault method: use it when fault likelihood looks poor, or when `seismic_interpret_faults` finds no fault on noisy data. It gives one body per plane: count planes, not faults. `seismic_interpret_faults` is the default fault tool: give its volume as `faults`, never these bodies;
    - `channel` for every channel, body or stratigraphic-feature question;
-   - `paleokarst`, `salt`, `mtd`, `gas_chimney` by the feature named.
+   - `channel_thin` (a thin channel at one horizon) when `verdict.next` names it. A wide fill comes back as its two flanks;
+   - `paleokarst`, `salt`, `mtd`, `gas_chimney` by the feature named. `salt` finds compact diapirs and stocks; for salt walls or elongated salt, give `recipe_version: 1`.
    The typed channel recipes (`channel_meandering`, `channel_submarine`) need a `type_basis` (`user` or `well`) and an interval. Otherwise, they never run before the generic one.
 
-   **The generic `channel` recipe is the channel answer.** It does not assume bright or dim fill. The catalogue reads the type from the body: `channel.planform` (straight < 1.05, sinuous, meandering >= 1.5 by sinuosity) and `input_percentiles` (envelope near 1 = bright fill, near 0 = dim fill).
+   **The generic `channel` recipe is the channel answer.** It does not assume bright or dim fill. The catalogue reads the type from the body: `channel.planform` (straight < 1.2, a design cut; sinuous; meandering >= 1.5 by sinuosity) and `input_percentiles` (envelope near 1 = bright fill, near 0 = dim fill).
    - If the user names a type that has no recipe (tidal, braided, incised valley, distributary), use the generic recipe still, with `type_basis: {source: 'user', detail: '<their words>'}`. Report the measured planform and fill.
    - A valley is a wide channel body. Report its width and planform, never a type that it was not measured to have.
-   - By default, run it on the whole volume. Give all the tracked horizons as `horizons` (see `horizons` below). Use `interval` only when the person or Geo Oracle asks for an interval. Give **`faults: {volume: <the seismic_interpret_faults volume>}`**. The recipe's inputs (low semblance, high chaos) are also a fault's. Without the faults, the bodies grow into the fault zones and merge. The tool refuses a channel recipe without `faults`, unless `no_faults_reason` names a `seismic_interpret_faults` run on this seismic: the `prov:` id of one that found no faults, or the `job_id` of one that failed.
-   - **A request for a geobody or channel pass "only" limits the deliverables, not the steps.** Do these steps: (1) extract the faults (`seismic_interpret_faults`); (2) track the horizons (`seismic_track_horizon`); (3) extract the bodies with `faults` and `horizons`. Deliver only what the person asked for.
-   - Say "No channels" only from its result, never from sections or terminations. If the recipe gives no body, and the channels would be thinner than the tuning thickness (`seismic_resolution_limits`), report "not detected at this resolution", not "no channels".
+   - By default, run it on the whole volume, with all the tracked horizons as `horizons` (see below). Give **`faults: {volume: <the seismic_interpret_faults volume>}`**. The `channel`, `channel_thin` and `channel_submarine` inputs (low semblance, high chaos) are also a fault's. Without the faults, the bodies grow into the fault zones and merge. The tool refuses these recipes without `faults`, unless `no_faults_reason` names a `seismic_interpret_faults` run on this seismic: the `prov:` id of one that found no faults, or the `job_id` of one that failed.
+   - **A request for a geobody or channel pass "only" limits the deliverables, not the steps.** Do these steps: (1) extract the faults (`seismic_interpret_faults`); (2) track the horizons (`seismic_track_horizon`); (3) extract the bodies with `horizons`, and `faults` as the recipe takes them (below). Deliver only what the person asked for.
+   - Say "No channels" only from its result, never from sections or terminations.
+
+   **Read `result.verdict`. Do `verdict.next`. Report a doubtful or failed result with its reasons, never as a finding.**
 
    **Read the body QC before the bodies** (`result.qc`). If the reply says that it was abridged, `seismic_get_record` with the provenance id and `field: "result.qc"` returns it whole.
    - `selection`: how much of the window the bodies fill, and how many rounds the cap took. Report the final percentiles (`thresholds`), not the recipe's defaults. `final_exceeds_cap` means that the bodies are still merged with their surroundings: give the faults, narrow the window or seed.
    - `stability.merges` / `merged_bodies`: bodies that become one a setting away are parts of one feature, or a threshold effect. Never report them as separate channels without saying so.
    - `extent`: a body flagged `window_share`, `level_share` or `branching` is a sheet or a merger, never one channel. Its width, planform and sinuosity describe the merger. A channel does not have the survey's extents.
-   - `fault_overlap`: a body mostly in the fault zones is fault-parallel. Report it with the fault it follows, not as fill. Bodies outside the fault zones are not fault disruption.
+   - **Faults, per recipe.** `channel`, `channel_thin`, `channel_submarine`: the fault zones are excluded; `result.fault_policy.comparison` lists the bodies found without the exclusion, and those along the faults (see `fault_overlap`). To keep them, give `exclude: false` with `exclude_reason`. `gas_chimney`, `paleokarst`: not excluded by default; chimneys and collapse are often fault-related, so the faults give an association only. Other recipes: excluded unless `exclude: false`. For a fault-bounded salt or MTD body, give `exclude: false` with `exclude_reason`, and bound it with `fault_side` or `polygon`. A warning that the faults are mostly interpolated means they may not be faults.
+   - `fault_overlap`: a body mostly in the fault zones runs along a fault: for a channel recipe a damage zone or a fault-read channel wall, for a chimney, karst, salt or MTD body a fault association. Check it on sections before you report it. Bodies outside the fault zones are not fault disruption.
    - `cross_check`: the check marks an attribute that the recipe scored as `circular`. The bodies lie in its tail by construction, which says nothing about what they are. Only an attribute that the recipe did not use, or the faults, checks that.
    - Stability `9/9` says that the body persists. It says nothing about what the body is. A merger of channels, sheets and fault zones is perfectly stable.
    - A body that passes these checks is a channel interpretation at its claim status (`partially_supported` from seismic alone). The status is the answer. It is never a reason to withhold the volume, or to call the bodies something else.
@@ -60,23 +64,23 @@ Fault likelihood (`seismic_interpret_faults`, or step by step `seismic_fault_lik
    - `horizons`: **by default a channel recipe reads the whole volume.** Give all the tracked horizon maps (from `seismic_track_horizon`) as `horizons`. The tool slices the whole volume: proportional or parallel between consecutive horizons, parallel to the first horizon above it, and parallel to the last horizon below it (`result.stratal.plan.zones`).
      - Gaps in a horizon are filled parallel to the nearest horizon in that trace (`plan.gaps`). Traces with no horizon get only the per-sample pass. Horizons that cross in more than 5 % of the traces are refused: correct the picks, or leave one out.
      - A map that the tracker marked wrong (`cycle_skip_faults` or `horizon_not_mapped`) is left out of `horizons` with a warning, and refused as an `interval` bound. Retrack it to use it.
-     - With no horizon, the tool reads the whole volume sample by sample and warns: the per-sample reading cannot separate bodies thinner than the tuning thickness. Track the horizons and run again with `horizons`.
-   - `interval`: **only when the person or Geo Oracle asks for an interval.** Top and base horizons bound it, or one horizon with `top_offset` and `bottom_offset`. The typed recipes (`channel_meandering`, `channel_submarine`, `mtd`) refuse to run without it. When `interval` is given, the tool does not use `horizons`.
+     - With no horizon, the tool reads the whole volume sample by sample and warns: the per-sample reading cannot separate bodies thinner than the tuning thickness.
+   - `interval`: **only when the person, Geo Oracle or `verdict.next` asks for an interval.** Top and base horizons bound it, or one horizon with `top_offset` and `bottom_offset`. The typed recipes (`channel_meandering`, `channel_submarine`, `mtd`) refuse to run without it. When `interval` is given, the tool does not use `horizons`.
    - **Stratal first, per-sample second (the default for every channel recipe with `horizons` or an `interval`).** The tool does these steps:
-     - it slices the whole volume (or the interval), parallel to a horizon, or proportional between two horizons where the zone thickens or thins (`result.stratal.plan` says which and why);
+     - it slices the whole volume (or the interval) as `result.stratal.plan` says;
      - it reads each slice in map view, and keeps the bodies that persist across slices beyond what overlapping slices share;
      - it joins pieces across fault zones;
      - it runs the per-sample reading as a second pass, and compares it.
 
      Report per body:
-     - `per_sample.category`: `confirmed` (the median of the body's per-sample mean excess is above the 95th percentile of the background traces), or `map-only` (seen in map view only, which on noisy data is common and not a rejection);
+     - `per_sample.category`: `confirmed` (the median of the body's per-sample mean excess is above the 95th percentile of the background traces), or `map-only` (seen in map view only). Report the `confirmed` bodies as the result (`result.reading.result`), and the `map-only` bodies as candidates (`reading.candidates`): keep them in the body table, and never count them as channels;
      - `stacked_with`: vertically separate bodies in one corridor. Report them apart;
      - `stratal.joined_across_faults`;
      - the notes in warnings. A body elongated less than 2:1 may be two channels touching in plan. Its level, top and base follow the strongest bounding reflection (typically a few samples off the fill). So the thickness is an estimate, and below the tuning thickness an upper bound.
 
      Every constraint bounds the bodies (`constraints`). Seeds, `qc_sweep` and `cross_check` do not run in stratal mode (`constraints_detail.not_applied`). Use `segmentation='per_sample'` for them.
 
-     `stratal.sample_only` lists per-sample groups outside every footprint. Review each: none is a channel until it is. The map-view reading finds channels that the per-sample reading alone largely misses, and it holds up better as noise rises. `segmentation='per_sample'` runs the recipe alone, for comparison or for a non-channel recipe. A body thinner than the slice thickness minus the step is not resolved. For thin channels, thin the slices (`stratal.thickness`, `stratal.step`).
+     `stratal.sample_only` lists per-sample groups outside every footprint. Review each: none is a channel until it is. The map-view reading finds channels that the per-sample reading alone misses. `segmentation='per_sample'` runs the recipe alone, for comparison or for a non-channel recipe. A body thinner than the slice thickness minus the step is not resolved. `stratal.decision: 'ribbon'` (the `channel_thin` default; elsewhere opt-in; development evidence only) reads bright and dim ribbon-shaped bodies on every slice. It also keeps channel flanks, and it fails on noisy data (`stratal.decision.noise`).
    - `wells`: every well in the survey, `{'name', 'inline', 'crossline'}` (or x, y), with `sand_top` and `sand_base` of a sand or channel interval from its logs (petrophysics), in the volume's z unit. `result.wells` lists the bodies that each well column penetrates. A logged sand in no body is a warning: report it under contradictions before you call the channels mapped.
    - `polygon` / `polygon_xy`: the area of interest.
    - `fault_side`: one fault block (`hanging_wall` or `footwall`, or a reference point for a vertical fault).
@@ -87,27 +91,26 @@ Fault likelihood (`seismic_interpret_faults`, or step by step `seismic_fault_lik
    - else interpreted horizons, for example an amplitude anomaly on a stratal slice (`source: "horizon"`);
    - else none: hysteresis needs no seed, and growing seeds itself at the strongest score peaks.
    The tool uses the strongest group present (`seed_policy: "all"` uses every valid seed).
-5. **Time volumes:** give `velocity_model` (as for `seismic_time_to_depth`), so that thickness, volume, dip and plunge are in metres. Without it, those are in index units, and the tool skips the shape rules that need metres (listed under `shape_filter.not_applied`).
+5. **Time volumes:** give `velocity_model` (as for `seismic_time_to_depth`), so that thickness, volume, dip and plunge are in metres. Without it, those are in index units. The dip rule (`min_dip_deg`) then uses the bin and sample lengths: `spacing_m`, else (in `fault_attribute`) stated defaults (`shape_filter.dip_spacing`). A volume without geometry (.npy) has no bin size: state the one you assume in `spacing_m`.
 6. Run `seismic_segment_volume` on attributes computed in this task from the volume you are interpreting. Files that earlier runs left in the work folder may come from an earlier version of the same file. The tool (and `seismic_structure_qc`) refuses volumes that derive from different loads of the seismic. The fix is to recompute them, not to override. Change a threshold only through `overrides` (for example `{"method": {"strong": {"percentile": 99}}}`), and say why. The result records the effective recipe.
 7. **Always publish `result.extraction_figure_markdown`** for every extraction you report, as for well ties. An extraction is a judgement, and a wrong one is easiest to see. You cannot see it, but the user can.
-8. For a 3D view, use `seismic_render_3d` with the output volume as a body overlay. To download, use `seismic_export_volume`.
+8. For a 3D view (`seismic_render_3d`) or a download, follow `result.next`.
 
 ## Reading the result
 
 **`result.qc` first, as for faults.** Five questions, and a sixth when `cross_check` is given, each with a reading line:
 - *measured*: `valid_fraction`, the share of the volume that the constraints and finite inputs left.
 - *signal*: `separability` per input. `otsu_eta` tells how two-valued the histogram is. It does not show a small feature tail: read `tail_fraction`. The tool flags a constant input, which carries nothing.
-- *stability*: the extraction repeated at the nine neighbouring threshold settings. It gives each body's `found_at`, `stable` (two thirds) and `voxels_p10/p50/p90`. A body found at under two thirds is setting-dependent: report it as such, and never retune to keep or lose it. `thresholds_run` gives the thresholds each setting used. Settings that ran with the same thresholds count once (`collapsed`, `distinct_settings`). The tool skips this check above 60 million voxels (crop first).
-- *resolution*: `thickness_below_tuning` and `width_below_fresnel_diameter` per body, from the predominant frequency and the velocity. The predominant frequency is the source seismic's spectral peak over the bodies' z range plus 10 %, widened to 128 ms or 3 periods of the whole-trace peak, whichever is longer (`frequency_window_ms`), times 1.283 for time volumes, or the value given in `resolution`. The velocity is given, or a constant `velocity_model`. A flagged body is detected, not measured: never quote its thickness or width as resolved.
+- *stability*: the extraction repeated at the nine neighbouring threshold settings. It gives each body's `found_at`, `stable` (two thirds) and `voxels_p10/p50/p90`. A body found at under two thirds is setting-dependent: report it as such, and never retune to keep or lose it. Settings that ran with the same thresholds (`thresholds_run`) count once (`collapsed`, `distinct_settings`). The tool skips this check above 60 million voxels (crop first).
+- *resolution*: `thickness_below_tuning` and `width_below_fresnel_diameter` per body, from the predominant frequency and the velocity. The predominant frequency is measured on the source seismic around the bodies (a window of at least 128 ms or 3 periods, `frequency_window_ms`), or given in `resolution`. The velocity is given, or a constant `velocity_model`. A flagged body is detected, not measured: never quote its thickness or width as resolved.
 - *truncation*: the share of a body on a constraint or data boundary. Over a quarter means that its size is a minimum.
 - *cross_check* (when `cross_check` names discontinuity volumes): each body's share in the attribute's anomalous tail, and the tall anomalies that no body explains. The seismic is the same, so this is consistency, not confirmation.
 
 
-- **Thresholds** are percentiles of the score inside the constraints. They assume that the feature is a minority of the constrained volume, so constrain tightly. Report `thresholds` and their source.
+- **Thresholds** are percentiles of the score inside the constraints, or MADs above the median of a shape response (`fault_attribute`, `paleokarst`, `salt`, `gas_chimney`). A percentile selects a fixed share of any volume: its bodies do not show that the feature is present, so constrain tightly. When one or two masses hold the selection (`thresholds.percentile_quota`: `mtd`, `channel_submarine`, `salt` v1), the verdict is failed.
 - **Seeds**: report each seed's status. Every entry in `conflicts` is evidence against the attribute's picture. An example is a tied well that sees a channel where the score is low: a bed thinner than tuning, or an insensitive attribute. Put each conflict in `contradictions`, and never drop one.
 - **Bodies**: `shape_units` says whether shape is in metres or index units. Never quote a dip or volume in index units. The metrics: `fault.length_along_strike_m` / `height_along_dip_m`, `channel.sinuosity` (about +/- 1.5 %), `channel.mean_width` (about +/- one bin), `channel.axis_thickness_median` (in `channel.thickness_unit`), `set.clark_evans_r` (karst spacing; no edge correction) and `set.pattern` (from a Monte Carlo rank test with a guard area, `set.monte_carlo_p`; below 20 bodies, 'not distinguishable from random').
 - "No body found with this recipe and these thresholds" is not "no body".
-- **Resolution**: a body thinner than the tuning thickness (`seismic_resolution_limits`) has an unreliable thickness. A body narrower than the Fresnel zone has an unreliable map width. Say so.
 - **Curvature for karst**: most-negative curvature marks sags and collapse. Low KMNeg also marks valleys and channels. A bowl needs KMPos below 0 as well (Chopra and Marfurt 2007). Compute `gst_2D_dips`, then `volume_curvature` with `darray_il: '<dips>::il_dip'` and `darray_xl: '<dips>::xl_dip'`. Add it to the paleokarst recipe through `overrides.inputs` as `{name: 'curvature', sense: 'low', weight: ...}`, with `inputs.curvature = '<curvature>::KMNeg'`. `inputs` is a list, so an override replaces it whole: repeat chaos and semblance there.
 
 ## Classification

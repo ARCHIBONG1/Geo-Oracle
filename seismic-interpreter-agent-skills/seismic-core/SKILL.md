@@ -35,7 +35,7 @@ A `required_outputs` entry names a product, and the product has a chain. Start t
 |---|---|---|
 | Data QC | `seismic_scan_segy` → `seismic_ingest_array` → `seismic_describe_volume` → `seismic_qc` (interval of interest) → `seismic_resolution_limits` | — |
 | Fault volume, fault set, strikes and dips | `seismic_interpret_faults` on the seismic (z_range to the reflective interval) → read `qc` and persistence → `seismic_fault_throw` with a horizon where one exists → `seismic_publish_structure` | `seismic_export_volume` (labels); `faults_figure_markdown` |
-| Channel or body volume (any stratigraphic feature or geobody) | envelope, semblance and chaos attributes (jobs) → `seismic_segment_volume` with `recipe: "channel"`, all tracked horizons as `horizons` (the whole volume; `interval` only when the person or Geo Oracle asks for one), and `faults` (also for a "channels only" request) → read `qc` → `seismic_publish_bodies` | `seismic_export_volume` (labels); `extraction_figure_markdown` |
+| Channel or body volume (any stratigraphic feature or geobody) | envelope, semblance and chaos attributes (jobs) → `seismic_segment_volume` with `recipe: "channel"`, all tracked horizons as `horizons` (the whole volume; `interval` only when the person or Geo Oracle asks for one), and `faults` (required for `channel` and `channel_submarine`, also for a "channels only" request; other recipes take them by their own rule, `seismic-attribute-interpretation`) → read `qc` → `seismic_publish_bodies` | `seismic_export_volume` (labels); `extraction_figure_markdown` |
 | Horizon (time map) | `seismic_list_events` at the well (for a deviated well, at the marker's `seed_inline` and `seed_crossline` from `seismic_trace_events` with `well_track`) → `seismic_fault_throw` for each fault between blocks → a seed per block at the throw-corrected time → `seismic_track_horizon` with `faults` (the fault set) → read `qc.faults` → `seismic_horizon_map` `structure` | `seismic_export_volume` on the map (csv); its own map figure; `seismic_render_section` with the horizon and faults |
 | Depth map | the horizon above → `seismic_time_to_depth` (`method: table` with the well's time-depth, or the stated model) → `seismic_horizon_map` `structure` | export; its own map figure |
 | Well tie | `seismic_convert_coordinates(well_header)` → `seismic_trace_events` (seabed and markers) → `seismic_extract_wavelet` → `seismic_synthetic` (`elastic_logs` + `time_depth`) → `seismic_well_tie` → `seismic_depth_function_check` where a second well exists | all three `*_figure_markdown` lines, always |
@@ -45,7 +45,7 @@ A `required_outputs` entry names a product, and the product has a chain. Start t
 | Facies, key surfaces | `seismic_detect_terminations` on two orientations; `seismic_classify_facies` on an interval | its own class-map figure; `seismic_render_section` with the horizons |
 | AVO, DHI, 4D, inversion | `seismic-qi` | per the tool |
 
-**An initial full interpretation runs in this order**: QC → faults → horizons (seeds in each fault block) → channels and bodies (with the faults and the horizons) → tie, when well products exist → depth map → closure → distances from each well to each feature. Each step feeds the next. If you track a horizon before the faults, or extract channels without the faults or the horizons, you have to redo that step.
+**An initial full interpretation runs in this order**: QC → faults → horizons (seeds in each fault block) → channels and bodies (with the horizons, and the faults as each recipe takes them) → tie, when well products exist → depth map → closure → distances from each well to each feature. Each step feeds the next. If you track a horizon before the faults, or extract channels without the faults or the horizons, you have to redo that step.
 
 **Deliverables come first**: the labelled volumes, maps and tie, each exported with its figure. They come before QC commentary and extra figures (3D views, further sections). A figure never substitutes for a product.
 
@@ -70,8 +70,9 @@ Read the resource type in the task. Fit the deliverables to it. The tools are th
    - `rejected`: fix the arguments.
    - `error`: correct the call once, then record the failure in `limitations`.
 2. Read `qc_flags` and `warnings`. They describe the conditions under which the numbers hold.
-3. Note the `provenance_id`. It is how you cite the result.
-4. Use `report_hint` to decide the section and classification. You may downgrade a hint (for example, treat an observation as unusable because of QC). Never upgrade it.
+3. `seismic_interpret_faults`, `seismic_track_horizon` and `seismic_segment_volume` give a verdict: `quality` (good, doubtful, failed), `reasons`, and one `next` action (a tool call with its arguments, or how to report). Read `result.verdict`. Do `verdict.next`. Report a doubtful or failed result with its reasons, never as a finding.
+4. Note the `provenance_id`. It is how you cite the result.
+5. Use `report_hint` to decide the section and classification. You may downgrade a hint (for example, treat an observation as unusable because of QC). Never upgrade it.
 
 Never paste raw tool output into findings. Summarise the value and cite the provenance id.
 
