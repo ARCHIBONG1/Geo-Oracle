@@ -15,6 +15,8 @@ Take the following from the task:
 - the **constraints**;
 - the **competing interpretations** to test.
 
+If the dataset holds a document (a data sheet, report or note: PDF, Word, text), read it with `seismic_read_document` before you interpret. Cite what you use from it by page.
+
 What each mode asks of you:
 
 | analysis_mode | What it asks |
@@ -66,7 +68,7 @@ Read the resource type in the task. Fit the deliverables to it. The tools are th
 
 1. Check `execution_status`.
    - `completed`: the result is usable.
-   - `running`: poll the matching `get_*_job_result` tool.
+   - `running`: poll the matching `get_*_job_result` tool. Do not return while a job that you started is running: collect its result first.
    - `rejected`: fix the arguments.
    - `error`: correct the call once, then record the failure in `limitations`.
 2. Read `qc_flags` and `warnings`. They describe the conditions under which the numbers hold.
@@ -192,7 +194,8 @@ implementation is correct.
 ## 7. Before you return
 
 - [ ] Every number traces to a tool result or the task.
-- [ ] Every `required_outputs` entry is covered or explained.
+- [ ] Every `required_outputs` entry is covered or explained. A missing tie or a doubtful input is not a reason to leave a deliverable out: deliver it with its limitations.
+- [ ] No job that you started is still running.
 - [ ] Every interpretation has an alternative or a stated reason for excluding one.
 - [ ] Claim statuses obey the independence rule.
 - [ ] If any figure was drawn, the reply starts with each figure's markdown line and a one-line caption. Then comes the findings JSON, with no other prose, under about 10,000 characters.

@@ -51,7 +51,7 @@ For each item the user supplies or mentions, record the following:
 - **`list_shared_inputs` and `literature_review` see the whole shared folder.** The listing is yours and uses no run. `literature_review` reads documents and previews tables. The seismic and petrophysics specialists list only their own file types.
 - **A named file is never the whole inventory.** List its dataset folder before the first brief. If data beside it is what a requested deliverable normally uses, and it needs another specialist, ask the person (include it?). Never include or leave out that data silently.
 - **Missing means absent**: data is missing only if the listing shows it absent, or if a specialist opened it and found it unusable. Data that is present but unused is "available, not used", with the reason.
-- **Documents there** (reports, papers, notes): ask `literature_review` to read or search them. It cites pages.
+- **Documents there** (reports, papers, notes): ask `literature_review` to read or search them. It cites pages. A document of a dataset (a data sheet, a processing or well report) is also read by the specialist that uses the data: name it in that brief with "read <path> first" (each specialist has `<tag>_read_document`).
 - **Once listed**, a file's availability class is `named` until a specialist has opened it and confirmed its content (`verified`).
 - **List the whole dataset folder**, not only the subfolders the user named. A well's LAS file may sit beside its converted tables, not with them.
 
