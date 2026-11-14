@@ -14,6 +14,7 @@ description: How to build the structural model (fault planes, horizons per fault
 
   Read `holdout` in the result.
 - **V1 geometric consistency**: cutoffs present on both sides along each fault, with a consistent downthrown side; two horizons do not cross (give `second_horizon`).
+- If the tool cannot read a throw on a fault (for example, another fault is too near), it still builds the model. V1 fails for that fault, and `throw_unreadable` names it. Leave the fault out with `fault_ids`, or merge the two faults if they are one fault zone.
 - `trace_vs_strike_misfit` flags a trace that is not perpendicular to the dip azimuth. The plane follows the trace, and the result gives the misfit.
 - The product `structural_model` carries the ledger (V1, V7 and the untested ones honestly "not tested") and the model grid file. Later tools read the ledger and propagate failures.
 
@@ -38,6 +39,7 @@ Build one model per plausible interpretation (one fault or two segments; differe
   - The tool computes both the four-way closure and the fault-bounded closure (fault traces as barriers). `fault_dependent` is true when they differ beyond the pick uncertainty, or when an offset across a fault closes part of the closure's outline. A fold limb without an offset is not a fault step.
 - **Realizations**: seeded, correlated perturbations within the pick uncertainty. They give ranges of spill, area and relief, and whether the closure survives in all realizations. The result records the seed and count. The same seed reproduces the ranges exactly.
   - By default the realizations hold pick noise only (`realization_basis`). Depth conversion usually gives the larger error. When the depth conversion has a known error (for example the well mistie residuals), give `depth_error_m` with `depth_error_basis` (and `depth_error_range_m`, default 1000 m). The result then also gives P10, P50 and P90 (`percentiles`). Use 100 realizations or more.
+- Unpicked nodes inside the grid: the tool bridges an enclosed hole of up to `max_hole_cells` nodes (default 1). It floods twice, with the hole at its deepest and at its shallowest picked neighbour. When the two differ, the headline is the smaller closure, and `fill_range` gives the range. `unbridged` is the reading without bridging. Report the range and any differing readings. Say that the closure assumes the horizon is continuous at the named nodes.
 - Depth only: the tool refuses a time-domain surface. Closures at the grid edge are open: say so.
 - Report ranges, never one number: "spill 528-532 m, closed area 0.24-0.27 km2 over 20 realizations (seed 7); closed in all".
 

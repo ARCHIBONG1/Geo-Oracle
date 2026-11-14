@@ -26,7 +26,7 @@ description: Fault-network topology (I, Y, X nodes), connectivity, abutting rela
 ## Pitfalls
 
 - A trace that stops short of another because the picks end is an I node to the tool, but may be a Y node in reality. Say when the picks limit the topology, and ask `seismic_interpretation` for the missing sticks.
-- Tolerance matters. The default is two survey cells: twice the median spacing of the traces' vertices (`tolerance_basis` says so). Report it. If the traces are simplified, give `tolerance_m`.
+- Tolerance matters. The default is two survey cells. Give `horizon` (a horizon on the same survey) so the tool takes the cell from its grid. Without it, the tool uses the fault set's bin size, else twice the median spacing of the traces' vertices; that is not reliable on simplified traces (qc_flag `TOLERANCE_FROM_TRACE_VERTICES`). `tolerance_basis` gives the basis: report it.
 - Topology from one horizon's traces describes that level. Faults can link at depth and not at the surface.
 
 ## Reporting

@@ -97,7 +97,7 @@ Pass these to `set_hotl_mode` with the person's answer:
 
 - **Wave 1:** tasks whose inputs exist now. These are often literature, regional context, well-data QC and seismic data characterisation.
 - **Later waves:** tasks that need earlier outputs.
-- **Parallelism:** Geo Oracle makes one tool call per step. So start the independent tasks of a wave one after another, with `wait_seconds: 0`. Each call returns its job id at once, and the specialists run in parallel. Then collect them one by one.
+- **Parallelism:** Geo Oracle makes one tool call per step. So start the independent tasks of a wave one after another, with `wait_seconds: 0`. Each call returns its job id at once, and the specialists run in parallel. Then collect them one by one. A wave is closed when its running jobs have returned. A task that you start after that belongs to the next wave, and the gateway refuses it until the checkpoint is filed.
 - **Large briefs:** One specialist turn may not be sufficient for a long list of required outputs, or for a sequence of long jobs on a large dataset (a large seismic volume: horizon tracking, fault and body extraction, attribute volumes). A specialist turn stops at the gateway's limit, `JOB_MAX_SECONDS` (six hours in this deployment). Split such a brief into smaller tasks, one after the other, in the same wave or in different waves. Do not write this limit, or any time limit, in a brief: the specialists are not told it.
 
 Write the plan into the ledger's *Tasks* table before you run it. For a large investigation, first show the user the plan in a few lines.

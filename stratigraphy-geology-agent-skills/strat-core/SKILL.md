@@ -17,7 +17,7 @@ description: The stratigraphy specialist's working rules. They cover the two led
 
 ## 2. The two ledgers
 
-Reported tops arrive in `well_tops` products or supplied tables. They are `data`. Cite them by their product reference, and never move them. Your picks are `interpretation`, with a tie rank and a source. The panel holds both, tagged. `stg_consistency` lists every disagreement beyond the tolerance (C1). Report a disagreement in `contradictions`, with the likeliest reason (a lithostratigraphic pick, a different datum, a depth-reference error) and the discriminating data. C1 fails only when a pick is untagged or a reported top was replaced.
+Reported tops arrive in `well_tops` products or supplied tables. They are `data`. Cite them by their product reference, and never move them. Your picks are `interpretation`, with a tie rank and a source. The panel holds both, tagged. `stg_consistency` lists every disagreement beyond the tolerance (C1). Report a disagreement in `contradictions`, with the likeliest reason (a lithostratigraphic pick, a different datum, a depth-reference error) and the discriminating data. C1 compares each interpreted pick with its linked reported top. The link is the top that the pick names in `reported_top`. Without it, the link is the top of the same name in the same well (case and spaces ignored). C1 fails when a pick is untagged or a reported top was replaced. C1 also fails when a linked pick is farther from its top than the C1 tolerance, unless a `c1_explanations` entry cites evidence that resolves. If every such pick comes from an alignment (rank 5, or repeating a stored DTW result), the panel is `proposed` (`c1_effect`). If a hand or tie pick fails, the panel is `contradicted`. The default tolerance comes from the data: the pick's stated `uncertainty_m`, else one log sample, plus one log sample for the reported top. If no pick is linked, C1 is `not informative`. A surface that follows a time line, not the operator's top, takes its own name (section 2a), so it has no link.
 
 ## 2a. Name a correlated surface for what it follows
 
@@ -39,28 +39,31 @@ If you name the time line after the unit, a correct correlation reads as a 45 m 
 | 5 | Log-pattern match (DTW) | Shape match | Patterns repeat at different ages |
 | 6 | Lithological similarity | Rock units | Often diachronous |
 
-Anchors are ranks 1-3 (`anchors_by_well` of `stg_dtw_chain`, `anchors` of `stg_dtw_pair`). Ranks 4-6 support. A surface correlated on rank 4-6 evidence alone caps its panel at `partially_supported`. A lithostratigraphic unit may cross time lines. If a rock-line correlation and a time-line correlation disagree, build both panels. The one that crosses time lines fails C2. Report it as the contradicted alternative.
+Anchors are ranks 1-3 (`anchors_by_well` of `stg_dtw_chain`, `anchors` of `stg_dtw_pair`). Ranks 4-6 support. A surface correlated on rank 4-6 evidence alone caps its panel at `partially_supported`. A lithostratigraphic unit may cross time lines. If a rock-line correlation and a time-line correlation disagree, build both panels. `stg_compare_panels` finds where the rock-line panel crosses the time lines, and marks it contradicted. Report it as the contradicted alternative.
 
 ## 4. The consistency ledger
 
 | Test | Question | Tool |
 |---|---|---|
-| C1 | Every pick tagged; disagreements listed | `stg_consistency` |
-| C2 | Surfaces keep their order in every well; no crossing | `stg_consistency` |
+| C1 | Every pick tagged; each linked pick within the C1 tolerance of its reported top, or explained | `stg_consistency` with `c1_explanations` |
+| C2 | Surfaces keep their order in every well; no crossing. `not informative` when every pair of wells takes its picks from one DTW mapping, which keeps the order | `stg_consistency` |
 | C3 | Age-depth monotonic per well; the surfaces' ages do not reverse | `stg_consistency` with `age_models` |
 | C4 | Thickness changes smooth or explained (fault, erosion, growth) | `stg_consistency` with `thickness_explanations` |
 | C5 | Correlated surfaces within tolerance of tied seismic horizons | `stg_consistency` with `seismic_ties` |
 | C6 | The two logs related over a window (not a test of the mapping): window DTW cost in the best 5 % of 30 surrogates' costs | `c6_results` of `stg_dtw_chain` (or `stg_dtw_pair` results) passed to `stg_consistency` |
 | C7 | Surface ages in the chart's span and order, given its transfer status | `stg_consistency` with `chart` |
+| Loop closure | A surface carried around three wells of one `stg_dtw_chain` call (A to B to C, against A to C) returns within the tolerance (3 resolution steps by default) | `stg_consistency` with `loop_explanations` |
 
 Status:
-- `supported`: C1-C3 pass, and every pick rests on a rank 1-3 tie (`picks_above_rank_3` lists the others);
-- `partially_supported`: C1 and C2 pass, and the rest are not tested or the ties are rank 4-6;
-- `contradicted`: any unexplained failure of C1-C5 or C7. A C6 failure does not contradict a panel;
+- A test that is `not informative` (it could not fail) is set aside. It does not pass, and it does not block. A test that is `not tested` does not support the panel: `supported` needs C1, C2 and C3 each passed or not informative.
+- `supported`: no unexplained failure, at least one of C1, C2, C3, C4, C5, C7 passed, and every pick rests on a rank 1-3 tie (`picks_above_rank_3` lists the others);
+- `partially_supported`: C1 and C2 each passed or are not informative, and either some ties are rank 4-6 or C3 is not tested;
+- `contradicted`: any unexplained failure of C1-C5 or C7. Exception: a C1 failure only on alignment picks gives `proposed`. A C6 failure does not contradict a panel;
 - `unresolved`: two panels pass the same tests;
-- `proposed`: no test fails, but C1 or C2 is not tested (for example, no two wells share two surfaces); or C6 fails for a well pair whose log-derived (rank-5) picks are in the panel: log similarity is not shown, so those picks are not supported (`c6_effect` names the pairs). It is not a claim status: report the panel as a `hypothesis`, and say which tests could not run or which pairs failed C6. If no rank-5 pick comes from a failing pair (for example, every pick is a rank 1-3 tie), C6 is reported but does not change the status. Measured cost: C6 failed no correct mapping at noise up to 60 % of the signal, and about 11-14 % of related pairs at noise equal to the signal.
+- `proposed`: no test that could fail has passed (for example, no pick is linked to a reported top and all picks come from one chain, with C3 and C4 not run). Or C6 fails for a well pair whose log-derived (rank-5) picks are in the panel: log similarity is not shown, so those picks are not supported (`c6_effect` names the pairs). Or C1 fails only on alignment picks (`c1_effect`). It is not a claim status: report the panel as a `hypothesis`, and say which tests could not run or which pairs failed C6. If no rank-5 pick comes from a failing pair (for example, every pick is a rank 1-3 tie), C6 is reported but does not change the status. Measured cost: C6 failed no correct mapping at noise up to 60 % of the signal, and about 11-14 % of related pairs at noise equal to the signal.
+- The loop closure is reported only. It names the surfaces that do not close (`loop_effect`, quality flag), and it never changes the status.
 
-Record the ledger in every panel interpretation and in the product sidecar.
+`status_basis` names the tests that carried the status and the tests set aside. Record the ledger in every panel interpretation and in the product sidecar.
 
 ## 5. Competing panels
 

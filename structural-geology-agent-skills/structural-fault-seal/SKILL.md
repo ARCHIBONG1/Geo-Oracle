@@ -22,7 +22,7 @@ description: Juxtaposition, shale gouge ratio, shale smear factor and calibrated
   - The tool measures beds between the cutoff crossings.
   - It uses only the beds of the interval that slipped past the analysed part of the fault.
   - Smears may become incomplete above about 7 (Yielding et al. 1997 see no seal above about 6).
-- **Column height** (Bretan et al. 2003): the across-fault pressure difference from the lowest SGR in a sand-sand window. The tool converts it to a column with the fluid densities you give (water and hydrocarbon or CO2, from wells_petrophysics or stated). Burial depth selects the calibration constant. Below `sgr_threshold_pct`, the column is 0, so the column and the threshold test agree.
+- **Column height** (Bretan et al. 2003): the across-fault pressure difference from the lowest SGR in a sand-sand window. The tool converts it to a column with the fluid densities you give (water and hydrocarbon or CO2, from wells_petrophysics or stated). Burial depth selects the calibration constant. With `depth_column` `md_m`, give `md_datum_elevation_m` and `water_depth_m` (offshore) or `ground_elevation_m` (onshore). Otherwise give `max_burial_below_surface_m`, or the tool refuses. Below `sgr_threshold_pct`, the column is 0, so the column and the threshold test agree.
 
 ## Pitfalls
 

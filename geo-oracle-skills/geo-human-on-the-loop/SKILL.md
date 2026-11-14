@@ -62,11 +62,11 @@ Then call `set_hotl_mode(investigation_id, mode, verbatim, deliverables=[...], o
 - the objective in their words, in one sentence. The gateway records it once and shows it in every checkpoint's state. Open each checkpoint summary with it;
 - the results they asked for, one per item, in their words. Each gets an id (`dlv1`, `dlv2`, ...). The checkpoint that ends the work gives each a status by its id: delivered, partial, not_deliverable or declined.
 
-The record holds what they said, and the confirmation line quotes it back.
+The confirmation line quotes their reply back.
 
-**One result per deliverable.** An item is one product or one answer the person can check: "closures on horizon A" and "closures on horizon B", not "closures on the main horizons"; "Shmin at the reservoir depth", not "stress tensor, slip tendency and SGR". The gateway refuses an item that lists several results, because one status cannot be honest about a bundle. A bundle closed as delivered hides its missing parts. At the closing checkpoint, give each result its own entry:
+**One result per deliverable.** An item is one product or one answer the person can check: "closures on horizon A" and "closures on horizon B", not "closures on the main horizons"; "Shmin at the reservoir depth", not "stress tensor, slip tendency and SGR". The gateway refuses an item that lists several results: a bundle closed as delivered hides its missing parts. At the closing checkpoint, give each result its own entry:
 - `delivered`, with the job, task or product (`@agent/products/<file>`) of this investigation that holds it. The gateway checks that it exists;
-- `partial`, with that reference and `missing` naming the part not there. It needs the person's decision or a follow-up wave, never an automatic close;
+- `partial`, with that reference and `missing` naming the part not there. It needs the person's decision or a follow-up wave, never an automatic close. In mode off only, it closes when `absent_input` names the input that does not exist;
 - `not_deliverable`, with the input that does not exist;
 - `declined`, with the person's words.
 
