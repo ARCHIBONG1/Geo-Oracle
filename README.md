@@ -1,9 +1,13 @@
 # Skills: the agents' operating procedures
 
-This folder holds 93 skills in 11 packs, one pack per agent. A skill is a
-Markdown document that an agent reads during a task. It says what to do and in
-what order, which tool to use, what may not be assumed, and in what form to
-report. Nothing here executes.
+This folder holds 93 skills in 11 packs, one pack per agent. There are eleven
+agents, all running on the TrueForge agent platform: Geo Oracle, which plans
+and runs an investigation for a person, and the ten specialists it calls
+(literature review, regional geology, seismic interpretation and so on). A
+skill is a Markdown document that an agent reads during a task. It says what to
+do and in what order, which tool to use, what may not be assumed, and in what
+form to report. Nothing here executes. Terms such as gateway, ledger, product, provenance identifier and wave
+are defined in [Terms used in this repository](../../README.md#terms-used-in-this-repository).
 
 The system prompt makes an agent competent in general; its skills make it
 competent at a particular job, and they hold the rules that would otherwise have
@@ -82,7 +86,7 @@ description: Core operating procedure for every seismic interpretation task -
   end marker knows its read was incomplete, and the gateway does not count such
   a read as done. `tests/test_live_run_1019_fixes.py` checks that every skill
   ends with its marker. Keep each skill well under that size; the longest are
-  about 3,500 words.
+  about 3,300 words.
 
 ## The four kinds of skill
 
@@ -94,7 +98,7 @@ alone whether it needs a document.
 | `<tag>-core` | 9 | The pack's operating procedure, read first: how to read a task, handle a tool result, classify evidence, set claim status, report missing data, and shape the findings. |
 | `<tag>-data-qc` | 8 | Getting data in and judging whether it can bear the question: uploads, units, depth conventions, reading other agents' products. |
 | `<tag>-visualisation` | 7 | What the figure tools enforce, describing before interpreting, and what a figure may and may not support. |
-| Domain skills | 68 | One per body of method: attributes, saturation, fault seal, sequence stratigraphy, flip tests and so on. |
+| Domain skills | 69 | One per body of method: attributes, saturation, fault seal, sequence stratigraphy, flip tests and so on. |
 
 Not every pack has all three of the first kinds. Geo Oracle's procedure is spread
 across planning, tasking and review, and the literature specialist's sits in
@@ -102,9 +106,9 @@ across planning, tasking and review, and the literature specialist's sits in
 skill. Data admission is part of `regional-data` for the regional specialist.
 Petrophysics and structural geology keep their figure rules inside the domain
 skills, and the risk specialist combines planning and figures in
-`risk-planning-and-visualisation`. Two names look like core skills but are not:
-`petro-core-scal` concerns core samples, and `sed-core-description` the
-vocabulary for describing drill core.
+`risk-planning-and-visualisation` (counted above as a visualisation skill). Two
+names look like core skills but are not: `petro-core-scal` concerns core
+samples, and `sed-core-description` the vocabulary for describing drill core.
 
 ## How skills work with the rest of the system
 
@@ -162,20 +166,24 @@ skills, which all of these are, it refuses `preload` with an error (checked in
 TrueForge 0.180.0). The provisioner therefore attaches every skill with
 `preload: false`.
 
-What catches such a run is the gateway's process audit, after the turn:
+What catches such a run is the gateway's process audit, which runs after each
+specialist turn and can report these items:
 
 - `sandbox unavailable`: the sandbox did not start, so the specialist read no
   skill and ran no command.
 - `skills not opened` and `skills not read`: a skill the tools or the findings
   require was never read in full.
 
-Geo Oracle must answer each of these items at its next checkpoint. For a
-report draft written without `lit-investigation-report` or
-`lit-report-writing`, `report_draft` adds a release note: Geo Oracle must not give the person the link yet and sends the
-round back. The audit reports the gap; it
-does not prevent it. Two remedies remain open and are not built: a host-side
-skill reader on each agent's tool server, or moving the critical skills to a
-TrueFoundry registry, where `preload` works.
+Geo Oracle must answer each item at its next checkpoint (each wave of
+specialist tasks closes with one). A literature
+report draft written without reading `lit-investigation-report` or
+`lit-report-writing` gets a release note from `report_draft`: Geo Oracle must
+not give the person the report link yet, and sends the draft back with
+`request_report` for another round.
+
+The audit reports the gap; it does not prevent it. Two remedies are possible
+but not built: a host-side skill reader on each agent's tool server, or moving
+the critical skills to a TrueFoundry registry, where `preload` works.
 
 ### Reading costs budget
 
@@ -190,8 +198,9 @@ makes one tool call per step, so each of its skill reads is alone in its step.
 The gateway refuses a specialist call until Geo Oracle's chat has read
 `geo-specialist-tasking`, and refuses a checkpoint until it has read
 `geo-result-review`. A read that came back as a truncated preview, without its
-end marker, does not count. After a context compaction Geo Oracle reads both
-again, because the gateway cannot see a compaction.
+end marker, does not count. After a context compaction, which replaces the
+earlier chat with a summary, Geo Oracle reads both again, because the gateway
+cannot see a compaction.
 
 ### Skills name the tools
 
@@ -201,16 +210,18 @@ together: renaming a tool silently invalidates every skill that names it. Where
 no tool exists for an analysis, the skill says so, so the agent records the gap
 in its limitations instead of improvising.
 
-Skills also carry method identifiers from the provenance registry
-(`m:seis/edge-semblance`) and name the pack's method lookup tool
-(`seismic_method_provenance`). Each core skill tells the specialist to carry a
-result's method identifiers into its findings next to the provenance identifier,
-and to answer any question about an equation or a source from the lookup tool
-rather than from memory. Geo Oracle's pack does the reverse: it has no lookup
-tool, quotes identifiers from the ledger as names only, and refers deeper
-questions to the specialist that owns the method.
-`tests/test_provenance_registry.py` checks offline that every identifier a skill
-quotes exists and that every pack names its lookup tool.
+Skills also carry method identifiers (`m:seis/edge-semblance`) from the
+provenance registry, the catalogue of published methods and their sources in
+`src/geo_oracle/tools/tool_suites/provenance/`. Each specialist has a method
+lookup tool (`seismic_method_provenance` for the seismic interpreter). Each core
+skill tells the specialist to carry a result's method identifiers into its
+findings next to the provenance identifier, and to answer any question about an
+equation or a source from the lookup tool rather than from memory. Geo Oracle's
+pack does the reverse: it has no lookup tool, quotes identifiers from the
+investigation ledger as names only, and refers deeper questions to the
+specialist that owns the method. `tests/test_provenance_registry.py` checks
+offline that every identifier a skill quotes exists and that every specialist's
+system prompt names its lookup tool.
 
 A renamed tool must also be renamed in the provenance registry, which every tool
 server checks as it starts. The full list of places a tool appears is the
@@ -221,23 +232,24 @@ checklist "Adding, renaming or changing a tool" in
 
 The literature pack is written for the OpenAlex index (`search_works`,
 `get_work`, `resolve_references`, `list_citations`, `search_entities`,
-`get_entity`, `find_candidate_works`) and the Exa and Tavily search services;
+`get_entity`, `find_candidate_works`) and the Exa and Tavily search services.
 `lit-search-protocol` and `lit-source-verification` are largely procedures for
 using them correctly:
 
-- **Reply size.** A connector reply over the harness's limit for one reply
+- **Reply size.** A connector reply larger than TrueForge's limit for one reply
   (24,000 characters) never reaches the agent: TrueForge saves it in the
   sandbox, and the agent must read it back. `lit-search-protocol` therefore
   sets OpenAlex `limit` to 20 or less, Exa `numResults` to 8 or less, and
   Tavily `max_results` to 8 or less without `include_raw_content`. A page is
   read with `lit_fetch_document`, which records it.
-- **Methods statements.** A search leaves no local record, so the searches go
-  into one methods statement with the connector method ids
-  (`m:lit/openalex-scholarly-index`, `m:lit/exa-semantic-search`,
-  `m:lit/tavily-web-search`) and no provenance ids. The gateway's id check
-  accepts a connector method without one, the report may cite a connector
-  method that a methods statement names (not a superseded or set-aside one), and `lit_method_provenance` answers
-  for the connector tools.
+- **Methods statements.** A search leaves no local record and so has no
+  provenance identifier. The searches are instead described in one methods
+  statement that names the connector methods (`m:lit/openalex-scholarly-index`,
+  `m:lit/exa-semantic-search`, `m:lit/tavily-web-search`). The gateway's
+  identifier check accepts a connector method without a provenance identifier.
+  The report may cite a connector method only when a methods statement names
+  it, and not one from a superseded task or set-aside evidence.
+  `lit_method_provenance` answers questions about the connector tools.
 - **Retraction.** OpenAlex `get_work` carries no retraction flag. A retracted
   work appears only under `retracted_works` in a `search_works` reply, which
   is how `lit-source-verification` checks it.
@@ -249,8 +261,8 @@ person, on which the supervision gates depend. No test here can check these.
 TrueForge draws the question as a card with no scroll bar, so
 `geo-human-on-the-loop` and Geo Oracle's prompt put the summary as text in the
 message that makes the call, and only the decision, at most 500 characters, in
-`question`; `tests/test_question_length.py` checks that no prompt or skill puts the
-summary in the question.
+`question`. `tests/test_question_length.py` checks that no prompt or skill puts
+the summary in the question.
 
 The principle matches the rest of the system: a number must come from a tool in
 this repository, which carries provenance; a citation must be resolved through
@@ -282,6 +294,15 @@ no longer structured evidence. The core skills and the reply models in
 
 ## The packs
 
+Several core-skill rows repeat the same items. The *plan rows* are one row per
+output the brief asks for, opened before the first tool call and closed with its
+status. *Alternatives with tests* are the rival readings of each interpretation,
+each with the test that separates it. The *evolution* is the geological history
+an interpretation rests on, in order. The *method cautions* are what each
+planned tool's method means for its numbers, read once from the lookup tool.
+*Validation and challenge* tasks re-check or contest earlier work in a fresh
+session that cannot see it.
+
 ### `geo-oracle-skills` (9): the orchestrator
 
 The specialist packs govern doing geology; this pack governs running an
@@ -293,7 +314,7 @@ compute tool.
 | `geo-investigation-planning` | turning an objective into testable questions, tasks and a dependency graph; what to record at activation (the person's constraints, the decision chain, a reserve of runs); waves of tasks started one call at a time; large briefs split to fit one specialist turn; the time budget; retries that change the approach; results built on a replaced result; the final state the closing checkpoint records; the risk gate and the reduction loop, including settled failures |
 | `geo-evidence-inventory` | characterising the available evidence and packaging it for specialists |
 | `geo-specialist-tasking` | the brief for each specialist tool and the job tools, field by field, with common mistakes; starting several specialists one call at a time |
-| `geo-result-review` | the checklist for judging a specialist result before relying on it, including evidence the id check set aside and `record.set_aside`, counting lines of evidence from a check's independence class, and reading plan rows, rivals and the evolution |
+| `geo-result-review` | the checklist for judging a specialist result before relying on it, including evidence the identifier check set aside and `record.set_aside`, counting lines of evidence from a check's independence class, and reading plan rows, rivals and the evolution |
 | `geo-investigation-ledger` | the format of `investigation/ledger.md`, the running record the synthesis is written from |
 | `geo-play-prospect-evaluation` | the gates before the play, prospect and risk stages; the five domains' elements; the element status scale; the maturity ladder; materiality classes in place of a chance of success |
 | `geo-synthesis-audit` | the structure and citation rules of a synthesis, and its scientific audit |
@@ -303,7 +324,7 @@ compute tool.
 `geo-human-on-the-loop` is the counterpart of `hotl.py`: the gateway enforces the
 gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 
-### `literature-review-agent-skills` (8)
+### `literature-review-agent-skills` (9)
 
 | Skill | Covers |
 | --- | --- |
@@ -311,11 +332,11 @@ gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 | `lit-inputs-library` | listing the shared inputs folder completely (paged by `offset`) and confirming what is there; reading, searching and importing; fetching open-access documents for one investigation, and what a landing page or a stub limits the access level to |
 | `lit-source-appraisal` | the authority, evidence basis, geographic relevance and independence of a source |
 | `lit-source-verification` | resolving works to DOIs or OpenAlex identifiers; verifying every citation; the retraction check through `search_works` |
-| `lit-evidence-extraction` | mapping extracted evidence onto the findings structure, including the one `source_reference` format (the resolved record, the `type:` of the work, the read's `prov:` id) |
+| `lit-evidence-extraction` | mapping extracted evidence onto the findings structure, including the one `source_reference` format (the resolved record, the `type:` of the work, the read's `prov:` identifier) |
 | `lit-geoscience-question-bank` | question sets and evidence checklists for decomposing a request |
 | `lit-synthesis-report` | synthesis across sources, conflicting literature, careful language for consensus; methods statements for the investigation report |
-| `lit-investigation-report` | the mechanics of the formal investigation report: reading the frozen bundle (`lit_read_bundle`; the overview, digest, ledger and supervision record to their last page), the draft JSON with its sections, headings, figures, tables and labels, hidden ledger tags, citation markers and derived values, the published work the writer may add for the Introduction, Setting and Discussion, the narrow rule for conclusions (restate, never raise, lower or add), what the renderer refuses and warns on, rendering with `lit_render_report`, and revisions |
-| `lit-report-writing` | the content and register of each report section, written as a peer-reviewed geoscience paper for the people who decide on the investigation: the executive summary in eight parts, the introduction (problem, prior work, question, contribution), the geological setting, the data, the methods by stage with the parameter table, the results by subject with uncertainties, figures and tables, the discussion with the Synthesis and the alternatives table, the conclusions and the record of the investigation, naming and terms, captions, and the checks before a render |
+| `lit-investigation-report` | the mechanics of the formal investigation report: reading the frozen bundle with `lit_read_bundle` (the overview, digest, ledger and supervision record, each to its last page); the draft JSON (sections, headings, figures, tables, labels, hidden ledger tags, citation markers, derived values); the published work the writer may add to the Introduction, Setting and Discussion; conclusions that restate the investigation's and never raise, lower or add to them; what the renderer refuses and warns on; rendering with `lit_render_report`; revisions |
+| `lit-report-writing` | the content and register of each section, written as a peer-reviewed geoscience paper for the people who decide on the investigation: the executive summary in eight parts; the introduction (problem, prior work, question, contribution); the geological setting; the data; the methods by stage with the parameter table; the results by subject with uncertainties, figures and tables; the discussion with the Synthesis and the alternatives table; the conclusions and the record of the investigation; naming and terms; captions; the checks before a render |
 
 ### `regional-geology-agent-skills` (9)
 
@@ -393,7 +414,7 @@ gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 | Skill | Covers |
 | --- | --- |
 | `sed-core` | the interpretation ladder; diagnostic evidence before suggestive; what validation and challenge ask in a fresh session; the plan rows and alternatives with tests; the method cautions read at planning; methods statements for the investigation report |
-| `sed-core-description` | the fixed vocabulary: Wentworth classes, structure and contact codes, bioturbation index |
+| `sed-core-description` | the fixed vocabulary: Wentworth classes, structure and contact codes, bioturbation index; features a description names as absent or doubtful, which get no code; lithofacies codes; cuttings; described thicknesses, and baffle beds and sand packages per well from `sed_baffle_summary` (a vertical record at the well, not lateral continuity) |
 | `sed-data-qc` | registering descriptions, analyses, analogue tables and photo indexes; the depth rule |
 | `sed-facies-analysis` | transitions, the embedded Markov test, Walther's law, excluding key surfaces |
 | `sed-depositional-systems` | the diagnostic matrix for each environment; how an association becomes an environment |
@@ -404,7 +425,7 @@ gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 
 | Skill | Covers |
 | --- | --- |
-| `play-core` | the ordinal status scale, including disfavoured for evidence against (a tie of grades stays disfavoured, and the evidence on the other side is listed as conflicting evidence, also after a lift); the scope rule; the weakest link; dependencies; what validation and challenge ask in a fresh session; the plan rows and alternatives with tests; the method cautions read at planning; methods statements for the investigation report |
+| `play-core` | the ordinal status scale, including `disfavoured` for evidence against: a tie of grades stays disfavoured, and the evidence on the other side is listed as conflicting, also after a lift; the scope rule; the weakest link; dependencies; what validation and challenge ask in a fresh session; the plan rows and alternatives with tests; the method cautions read at planning; methods statements for the investigation report |
 | `play-data-qc` | other agents' products and claims, their ledgers, scope and transfer |
 | `play-petroleum-systems` | hydrocarbon elements and processes, the events chart, the critical moment as stated by the investigator |
 | `play-co2-storage` | CO2 storage elements with containment kept separate; the pressure limit; trapping through time |
@@ -452,13 +473,18 @@ are done.
 4. Commit and push. TrueForge reads the skill from GitHub, so until it is pushed
    the skill is registered but empty.
 
-**Changing a skill.** Check four links: the tool names it mentions; anything a
-core skill says about evidence classes, claim status, scientific status or
-missing data, which must match the models in `geological_mcp.py`; the skills
-table in the system prompt, which `tests/test_agent_prompts.py` checks; and the pack listing in
-`ops/agents.toml`, which the provisioner checks. Renaming a skill touches three
-of these at once. Editing only the body touches none of them, but still needs a
-push, and the end marker must stay the last line.
+**Changing a skill.** Check four links:
+
+- the tool names it mentions;
+- anything a core skill says about evidence classes, claim status, scientific
+  status or missing data, which must match the models in `geological_mcp.py`;
+- the skills table in the system prompt, which `tests/test_agent_prompts.py`
+  checks;
+- the pack listing in `ops/agents.toml`, which the provisioner checks.
+
+Renaming a skill touches three of these at once. Editing only the body touches
+none of them, but still needs a push, and the end marker must stay the last
+line.
 
 **Deleting a skill.** Remove its row from the system prompt first, because a
 prompt that names a missing skill makes the agent spend an iteration looking for
