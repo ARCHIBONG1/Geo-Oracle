@@ -29,6 +29,8 @@ description: Juxtaposition, shale gouge ratio, shale smear factor and calibrated
 - SGR uses the footwall column from one well. It does not capture lateral facies changes along the fault: say so in `limitations`.
 - A threshold or calibration borrowed from another basin is an assumption. Name its source.
 - CO2 densities are much lower than oil at shallow depths, and column heights change accordingly. Cite the density's source.
+- Above SGR 40 %, the tool flags the column (`calibration_flag`) and gives `column_at_calibration_limit_m`. That column is an upper bound, not a measured capacity: observed oil columns stop near 3 bar of buoyancy pressure there. Report it as an upper bound.
+- The column calibration comes from oil and gas traps on normal faults. For CO2 or hydrogen, give `fluid` (hydrogen is about 7-17 kg/m3). For these fluids, and for reverse or strike-slip faults, the column is outside the calibration. Report it as such, with `calibration_scope`.
 
 ## Reporting
 

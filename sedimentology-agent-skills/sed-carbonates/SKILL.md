@@ -7,7 +7,7 @@ description: Carbonate rocks in the sedimentology specialist. It covers the text
 
 ## 1. Texture first
 
-Classify a carbonate by its depositional texture, not its grain size. The texture is how much mud the rock holds, and whether the grains or the mud support it (Dunham 1962). Embry & Klovan's (1971) terms cover coarse and organically bound rocks. `sed_standardise` reads the texture from the description's words:
+Classify a carbonate by its depositional texture, not its grain size. The texture is how much mud the rock holds, and whether the grains or the mud support it (Dunham 1962). Embry & Klovan's (1971) terms cover coarse and organically bound rocks. `sed_standardise` reads the texture from the class word of the lithology. In a range ("packstone/grainstone", "packstone to grainstone", "wackestone-packstone"), the first-named class is the texture. It uses the description's words only when the lithology has no class word. Other class words ("grainstone interbeds" in a lime mudstone) go to `secondary_textures`, not to the texture:
 
 | Code | Texture | Read from |
 |---|---|---|
@@ -31,12 +31,12 @@ If the describer gave a Wentworth size, the tool keeps it. But a grainstone's "g
   - `Mic` microbial fabrics (stromatolites, thrombolites);
   - `Pel` pelagic fauna (planktonic foraminifera, coccoliths, radiolaria, ammonites).
 
-  Miliolids, dasyclads, peneroplids, ostracods and "low diversity" mark a **restricted fauna**.
+  Miliolids, peneroplids, ostracods and "low diversity" mark a **restricted fauna** (Flügel FZ 8; dasyclads also live in open settings, and charophytes are freshwater), but only when no stenohaline group (`Ech`, `Bra`, `Bry`) and no freshwater biota is present: the stenohaline groups mark normal-marine water, and ostracods also live in fresh water (Flügel 2010, Box 14.1).
 - **Fabrics** (depositional): `Fe` fenestral, `Tp` tepee, `Hg` hardground, `Ev` evaporite nodules or casts, `Br` breccia or debrite.
 - **Diagenesis** (overprint, never an environment): `Do` dolomitisation, `Vg` dissolution and moldic or vuggy porosity, `Ka` karst, `Ce` cementation, `St` stylolites, `Ch` chert.
 - The clastic structure codes (`Xb`, `Pl`, `Ng`, `Hcs`, `Wr`, `Cr`, `Bi`, `Tf`, `Cv`, `Md`, `Rt`) apply to carbonates too. For example, a cross-bedded ooid grainstone is `cG-oo-Xb`.
 
-`sed_code_lithofacies` codes a carbonate interval **c + texture-allochem-fabric** (`cG-oo-Xb`, `cM-x-Fe`, `cBf-x-Ms`, `cX-x-Do`). It chooses the dominant fabric by a priority: the diagnostic fabrics first, then diagenesis, then the structures.
+`sed_code_lithofacies` codes a carbonate interval **c + texture-allochem-fabric** (`cG-oo-Xb`, `cM-x-Fe`, `cBf-x-x`, `cX-x-Do`). It chooses the dominant fabric by a priority: the diagnostic fabrics first, then diagenesis, then the structures.
 
 The leading `c` keeps a carbonate code apart from a clastic one. The Dunham letters M and G are also the clastic mud and gravel letters. So a lime mudstone `cM-…` is never the same facies as a mud `M-…`, and a grainstone `cG-…` is never a conglomerate `G-…`. The described-thickness totals count carbonates under `c`. Evaporites code `E`, and coals `C`. A lithology that no class recognises is `U`, and `sed_standardise` lists it in `lithologies_outside_the_vocabulary`.
 
@@ -48,24 +48,30 @@ The environments are Wilson's (1975) standard facies belts, as Flügel (2010, Bo
 |---|---|---|---|
 | pelagic basin / outer ramp (FZ 1A-1B) | pelagic fauna (planktonic forams, coccoliths, radiolaria, calpionellids, ammonites) | lime mudstone, planar lamination, bioturbation, chert, grading | fenestral, tepee, evaporites, ooid grainstone, framebuilders, cross-bedding |
 | carbonate slope (FZ 3-4) | graded beds or breccias with a pelagic matrix | grading, breccia, rudstone, floatstone, slumps, pelagic fauna | fenestral, tepee, evaporites, ooid grainstone, roots, cross-bedding |
-| reef / platform margin (FZ 5) | boundstone with framebuilders (corals, rudists, stromatoporoids, sponges) | rudstone, floatstone, the framebuilders, algae, early cement | fenestral, tepee, evaporites, pelagic, roots |
+| reef / platform margin (FZ 5) | boundstone with framebuilders (corals, rudists, stromatoporoids, sponges) | a boundstone without framebuilders (bindstones also form on the restricted and evaporitic platform), rudstone, floatstone, the framebuilders, algae, early cement | fenestral, tepee, evaporites, pelagic, roots |
 | ooid shoal (FZ 6) | ooid grainstone | grainstone, cross-bedding, ooids, peloids, coated grains, hardgrounds | lime mudstone, fenestral, evaporites, pelagic |
 | open marine platform (FZ 7, and FZ 2 deep shelf) | a diverse normal-marine fauna (two or more groups including echinoderms, brachiopods or bryozoans) in a non-bound texture | wackestone, packstone, lime mudstone, bioturbation, algae, benthic forams, molluscs | fenestral, tepee, evaporites, pelagic, roots |
-| lagoon / platform interior (FZ 8) | restricted fauna (miliolids, dasyclads, peneroplids, ostracods, low diversity) | wackestone, lime mudstone, packstone, peloids, algae, benthic forams, bioturbation, oncoids, dolomitisation | fenestral, tepee, pelagic, ooid grainstone, hummocky |
+| lagoon / platform interior (FZ 8) | restricted fauna (miliolids, peneroplids, ostracods, low diversity) | wackestone, lime mudstone, packstone, peloids, algae, benthic forams, bioturbation, oncoids, dolomitisation | fenestral, tepee, pelagic, ooid grainstone, hummocky |
 | carbonate tidal flat (FZ 8, its tidal-flat part) | fenestral fabric, tepees, microbial lamination | evaporite nodules, planar lamination, dolomitisation, mud drapes, roots, lime mudstone, peloids, restricted fauna | framebuilders, pelagic, hummocky |
 | sabkha / evaporitic platform (FZ 9A) | nodular, chicken-wire or laminated gypsum/anhydrite | planar lamination, microbial lamination, dolomitisation, lime mudstone, fenestral, tepee | open-marine fauna, pelagic, framebuilders, ooid grainstone |
+| carbonate inner ramp | none | grainstone, ooids, bioclasts, peloids, cross-bedding, wave ripples, roots, bioturbation (Tucker & Wright 1990, p. 49) | none |
+| carbonate mid ramp (just below fair-weather wave base; Flügel 2010, p. 692) | none | grainstone, rudstone, wackestone, bioclasts, cross-bedding, hummocky, coarsening upward (Tucker & Wright 1990, p. 50) | none |
+| carbonate outer ramp | none | packstone, wackestone, bioclasts, grading, sole marks, planar lamination, ripples, bioturbation (Tucker & Wright 1990, p. 50) | none |
+| lacustrine carbonate | none | freshwater biota (charophytes, land snails; not diagnostic: charophytes also live on brackish platforms, Flügel 2010, p. 663), lime mudstone, wackestone, packstone, molluscs, bioturbation, organic-rich mud, peloids, intraclasts, oncoids, microbial fabrics, ooids, roots, karst, breccia (Tucker & Wright 1990, pp. 181-182) | open-marine fauna (an inference from "the biota indicate fresh water", not a stated criterion) |
+
+The ramp and lake rows are rivals for the rimmed-shelf belts. They have no diagnostic feature, so S2 for them is at most `suggestive_only`.
 
 The tool forms the composites from the features and your flags:
 - an ooid grainstone needs `oo` and texture `G`;
 - a graded bed with pelagic matrix needs `Ng`, and either `Pel` in the fauna or `hemipelagic=true`;
 - the tool forms the open-marine fauna from the skeletal groups (or `open_marine_fauna=true`);
-- `pelagic=true` and `restricted_fauna=true` are flags for what the fauna list shows.
+- `pelagic=true` and `restricted_fauna=true` are flags for what the fauna list shows. The tool does not form a restricted fauna when a stenohaline group is present.
 
 The S1-S7 ledger, the transition test and the association rung are the clastic ones. Only the vocabulary, the code and the matrix differ.
 
 **Three cautions from the texts.**
 - Fenestrae, tepees, mudcracks and evaporites show subaerial exposure, not a tidal flat as such (Tucker & Wright 1990, p. 138). Report "peritidal / exposed" unless the succession shows the flat.
-- FZ 7 and FZ 8 grade into each other, and FZ 2 (deep shelf) and FZ 7 share their microfacies (Flügel 2010, p. 661). So the succession and the neighbouring belts decide the open-platform and lagoon verdicts, as much as one association does.
+- FZ 7 and FZ 8 grade into each other (Flügel 2010, p. 661), and FZ 2 (deep shelf) and FZ 7 share their microfacies (Flügel 2010, p. 692). So the succession and the neighbouring belts decide the open-platform and lagoon verdicts, as much as one association does.
 - On a ramp, the ooid shoal lies in the inner or mid ramp, not at a platform edge (Flügel 2010, p. 681).
 
 ## 4. What to say and not say

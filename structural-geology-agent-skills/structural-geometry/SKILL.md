@@ -12,13 +12,14 @@ Planes as dip and dip azimuth (direction of dip, from north). Lines as plunge an
 ## `sg_orientation_stats`
 
 - Fisher: mean vector, resultant length, concentration k (above about 50 is tight; below 10 is diffuse), alpha95 (the cone of confidence on the mean).
-- Orientation tensor: Woodcock's k and C. k > 1 is a cluster (one set), and k < 1 a girdle (folded beds or a conjugate pair). C gives the strength.
+- Orientation tensor: Woodcock's K and C. K > 1 is a cluster (one set), and K < 1 a girdle (folded beds or a conjugate pair). C gives the strength. Fisher's k (above) is a different number.
 - `cluster_threshold_deg` groups the measurements into sets (greedy angular clustering, deterministic for a fixed input order). Report each set's count, mean plane, k and alpha95. The tool leaves sets with fewer than three members unassigned.
 - If there are fewer than five orientations, say that the statistics are weakly constrained.
+- Fracture picks from a borehole (image log) under-sample planes that are near parallel to the hole (Terzaghi bias). The tool flags them (`BOREHOLE_SAMPLING_BIAS`). Report the set means. Do not report the set fractions as abundance.
 
 ## `sg_fold_axis`
 
-Bedding poles on a cylindrical fold lie on a great circle. The pole of that circle is the fold axis (pi method). Read `cylindricity` (girdle supports a cylindrical fold), the girdle misfit, and k. A cluster means the beds are not folded about one axis in that domain.
+Bedding poles on a cylindrical fold lie on a great circle. The pole of that circle is the fold axis (pi method). Read `cylindricity` (girdle supports a cylindrical fold), the girdle misfit, and Woodcock's K. A cluster means the beds are not folded about one axis in that domain.
 
 ## `sg_surface_attributes`
 
@@ -26,7 +27,7 @@ Dip, dip azimuth and mean curvature (Roberts 2001 eq. 15; positive over antiform
 
 ## Reporting
 
-- `[measurement, derived]`: "Fault set: mean plane 085/88, k 120, alpha95 3 deg, n 6; two sets at 085 and 160 (threshold 25 deg)", with the `prov:` id and the product reference in `depends_on`.
+- `[measurement, derived]`: "Fault set: mean plane 085/88, k 120, alpha95 6.1 deg, n 6; two sets at 085 and 160 (threshold 25 deg)", with the `prov:` id and the product reference in `depends_on`.
 - `sg_orientation_stats` draws the stereonet with the mean plane and, for planes, the rose of strikes itself (`result.figures`).
 - `sg_fold_axis` draws no figure. Draw its bedding with `sg_render(kind=stereonet)` on the same table.
 

@@ -27,17 +27,18 @@ For each environment, the matrix in `sed-depositional-systems` lists:
 `sed_diagnostic_check` returns S2:
 - `pass` with a diagnostic feature;
 - `suggestive_only` without one;
-- `fail` with features against it and none diagnostic.
+- `fail` with features against it and none diagnostic;
+- `no_support` with no feature of the matrix row. Missing evidence is not evidence against: the model is not contradicted.
 
-A suggestive-only result caps the model at `partially_supported` at the association rung.
+A suggestive-only result caps the model at `partially_supported` at the association rung. The tool refuses a feature code that is not in the vocabulary, and lists the valid codes.
 
 ## 3. The ledger
 
 | Test | Question | Tool or input |
 |---|---|---|
-| S1 | Every facies rests on described features or calibrated electrofacies (image readings alone fail) | `observational_basis` |
+| S1 | Every facies rests on described features or calibrated electrofacies (image readings alone, or cuttings: not tested, and the model stays `proposed`) | `observational_basis` |
 | S2 | At least one diagnostic feature | `sed_diagnostic_check` |
-| S3 | Transitions non-random with above-random links (pooled; fewer than 10 transitions: not tested) | `pooled_transitions` file from `sed_transitions_all` (or the pooled file from `sed_associations`) |
+| S3 | Transitions non-random: pass. Randomness not rejected: inconclusive. Fewer than 10 transitions (30 with exactly three facies), no degrees of freedom, or pooled wells that are not homogeneous: not tested, with `s3_reason` | `pooled_transitions` file from `sed_transitions_all` (or the pooled file from `sed_associations`) |
 | S4 | Fits the key surfaces and the regional setting supplied | `stratigraphic_fit` |
 | S5 | Geobody or analogue geometry fits | no tool yet: pass `geometry` with its evidence, or leave it not tested |
 | S6 | Palaeocurrent pattern fits | no tool yet: pass `palaeocurrents` with its evidence, or leave it not tested |
@@ -46,8 +47,11 @@ A suggestive-only result caps the model at `partially_supported` at the associat
 Status:
 - `supported`: S1 and S2 passed, two of S3-S7 passed, none failed;
 - `partially_supported`: S1 passed, and S2 suggestive-only or few tests run;
-- `contradicted`: an unexplained failure;
+- `contradicted`: an unexplained failure of S2-S7 (`no_support`, `inconclusive` and not tested are not failures);
+- `proposed`: S1 not passed (image readings alone, cuttings, no basis), or S2 `no_support`. An explained S2 failure counts as `no_support`, and any other explained failure as not tested. Any explained failure caps the status at `partially_supported`;
 - `unresolved`: two models pass the same tests.
+
+Give `sed_interpretation_tests` the `sed_diagnostic_check` result unchanged, or its `provenance_id`. The tool refuses a typed or edited result. Give `sed_diagnostic_check` the coded file (`coded`, `well`, `top_m`, `base_m`): it then refuses a feature that the description does not hold. The ledger reports `diagnostic_bound: true` only when the bound well is one of the model's `wells` (with no bound well, every model well must be a well of the file), the coded file is in `depends_on`, and the file has not changed since the check. An explanation cannot lift a failed S1. An explanation counts only when it cites a stored `prov:` id of this agent or an existing product or table path that is also in `depends_on`. The model's own coded file, facies_log or transitions file does not count as evidence.
 
 The ledger goes into the depositional_model sidecar and into the statement of the interpretation.
 

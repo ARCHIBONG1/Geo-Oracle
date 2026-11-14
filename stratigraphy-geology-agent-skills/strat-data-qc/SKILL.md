@@ -15,13 +15,14 @@ description: How to read correlation_logs and well_tops products and their sidec
 | `chronostrat_chart` | regional_geology | time scale, sources, gaps | C7 |
 | `fault_network` | structural_geology | abutments, throws | Gap versus fault (`stg_gap_vs_fault`): the product must carry the faults' traces and throws (one with topology only is refused) |
 
-`stg_read_product` returns the sidecar and a preview. If `stg_list_data` lists a well file (LAS), you cannot open it here. Ask `wells_petrophysics: correlation_logs and well_tops for <well> — petro_publish_correlation_logs — correlation`.
+`stg_read_product` returns the sidecar and a preview. For other products (horizon, chart, fault network) it gives the sidecar's values in `sidecar` (domain, depth datum, pick uncertainty, time scale), and for a fault network or fault set a `fault_summary` (faults with a trace, a throw, a dip, a depth). A supplied report (PDF, Word or text) is read with `stg_read_document`: cite it by page, and register its tables with `stg_register_table`. If `stg_list_data` lists a well file (LAS), you cannot open it here. Ask `wells_petrophysics: correlation_logs and well_tops for <well> — petro_publish_correlation_logs — correlation`.
 
 ## Depth
 
 - Correlate in TVDSS. A deviated well can lack a trajectory-based TVDSS (sidecar `trajectory` "vertical (datum offset only)" with `deviated` true). Then `wells_petrophysics` must run `petro_trajectory` first. Say so.
 - `stg_register_table` converts every table's MD to TVDSS with the wells' logs (`logs=`). A row for a well without logs stays MD-only, and the tool flags it.
 - `stg_convert_depth` does the same MD-to-TVDSS conversion for a depth that reaches you outside a registered table: a quoted top, a core depth, a sample. Never convert by hand.
+- A depth outside the logged interval has no TVDSS here. `stg_convert_depth`, `stg_build_panel` and `stg_age_model` refuse it. `stg_register_table` leaves the row's TVDSS empty and names the row in `flags`; the table's `tvdss_available` is then false. TVDSS to MD is refused only at a depth that the well crosses more than once or runs flat through. `stg_dtw_pair` then gives `md_b` null and says why. Ask `wells_petrophysics` for a trajectory-based value.
 - Report picks with both MD and TVDSS. The products carry both.
 
 ## Tables (`stg_register_table`)

@@ -18,6 +18,8 @@ description: How to read upstream products and their sidecars (domain, pick unce
 
 `sg_read_product` returns the sidecar and a preview. Read it before every use: the domain and the uncertainty decide what you may conclude. A product with no stated domain is flagged, and cannot feed closures or stress analyses.
 
+Read a supplied document (a PDF, Word or text report or data sheet) with `sg_read_document`, page by page. Cite the page.
+
 ## Time and depth
 
 - Dips, closures, spill points, stresses and seal need depth. Those tools refuse a time-domain horizon or fault set. Report the refusal, and request `seismic_interpretation: depth versions of H1 and the fault set — seismic_time_to_depth then seismic_publish_structure — closures and stability need depth`.

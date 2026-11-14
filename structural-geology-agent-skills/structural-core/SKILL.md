@@ -45,6 +45,8 @@ Assemble the ledger with `sg_consistency`. Give it:
 
 It merges the tests (a mixed result is a fail), and returns the status that the ledger allows. The model claim takes that status. Record pass, fail or not tested with the reason, in the statement of every model interpretation and in the product sidecars. Report a failed test, with its explanation if one exists (reactivation, linkage). Without an explanation, the model is `contradicted`. Not tested is honest: V3 (restoration) waits for its tools.
 
+`proposed` is the status when no test failed but V1 and V7 have not both passed: the tests do not yet support the model. Report it as an idea to test, not as a result.
+
 ## 3a. Caveats are ceilings
 
 The task brief and the upstream findings will carry caveats. Examples: a Vsh log that is uncalibrated, a stress magnitude that is only bounded, a pore pressure that is assumed, a regional prior with transfer partly unknown. Each caveat lowers the status of the claim that rests on it (`partially_supported` at most), and goes into `assumptions` and `limitations`. No caveat stops a computation. The tools exist to run with stated assumptions and ranges. The ceiling then says how far the result can be trusted. Read a brief that says "do not calculate X without Y" as "calculate X with Y as a flagged assumption or range, and cap the claim", unless Y is a product the tool itself refuses to run without (a depth surface for a closure). Report `insufficient_data` only after the tools have been run or have refused.

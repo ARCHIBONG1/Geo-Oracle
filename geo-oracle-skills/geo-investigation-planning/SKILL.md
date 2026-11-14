@@ -44,8 +44,11 @@ If you call every specialist "for completeness", you add cost and noise, and cre
 The following are typical constraint flows, not a fixed order. Use them to spot prerequisites.
 
 - `wells_petrophysics` → `stratigraphy`: correlation logs, reported tops, facies and net reservoir.
+- `wells_petrophysics` → `structural_geology`: `vshale_log` for fault seal, and `pressure_profile` for stress. Fault seal reads the log in TVDSS. The `vshale_log` has TVDSS only when the well's trajectory exists before `petro_vshale` runs.
+- `wells_petrophysics` → `sedimentology`: `core_depth_shift` (`petro_core_calibrate`). Sedimentology compares core with curves only after this shift.
 - `stratigraphy` → `seismic_interpretation`: well ties and horizon identity.
-- `seismic_interpretation` → `structural_geology`: fault and horizon geometry (depth products).
+- `stratigraphy` → `sedimentology`: `correlated_tops` as key surfaces. Sedimentology does not count facies transitions across them.
+- `seismic_interpretation` → `structural_geology`: fault and horizon geometry as depth-domain `horizon` and `fault_set` products.
 - `regional_geology` → `structural_geology`: the stress field as a regional prior.
 - `sedimentology` → reservoir distribution → `subsurface_play`.
 - `regional_geology` and `literature_review` → context and analogues for every discipline. These are context, not local evidence.
@@ -106,9 +109,9 @@ Example plan:
 | T01-lit | literature_review | Published source-rock and reservoir evidence, Lower Shale / Main Sand | none | 1 |
 | T02-wells | wells_petrophysics | QC and net reservoir in the Main Sand, W1–W3 | none | 1 |
 | T03-strat | stratigraphy | Main Sand correlation W1–W3 | T02 | 2 |
-| T04-seis | seismic_interpretation | H2/H3 mapping and amplitude character | T03 (well ties) | 2 |
-| T05-struct | structural_geology | Closure geometry at H3, fault-seal considerations | T04 | 3 |
-| T06-play | subsurface_play | Is the Main Sand structural play supported? | T01–T05 | 4 |
+| T04-seis | seismic_interpretation | H2/H3 mapping and amplitude character | T03 (well ties) | 3 |
+| T05-struct | structural_geology | Closure geometry at H3, fault-seal considerations | T02 (vshale_log), T04 | 4 |
+| T06-play | subsurface_play | Is the Main Sand structural play supported? | T01–T05 | 5 |
 
 ## 6. Is the next call worth it?
 

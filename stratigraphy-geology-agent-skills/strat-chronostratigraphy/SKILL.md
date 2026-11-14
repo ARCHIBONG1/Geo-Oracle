@@ -7,7 +7,7 @@ description: Age models from dated samples and datums with cited ages. It covers
 
 ## `stg_age_model`
 
-- Inputs per well: dated samples from the `age_dates` table (rank 1) and biostratigraphic datums with cited ages (rank 2), each with its error and source. Give at least two per well.
+- Inputs per well: dated samples from the `age_dates` table (rank 1) and biostratigraphic datums with cited ages (rank 2), each with its error and source. Give at least two per well. Give the registered `age_dates` table as `table`: the tool reads the well's rows itself. A row outside the logged interval is skipped with a warning. Type only the biostratigraphic datums in `datums`; a typed datum that repeats a table row is used once.
 - The model is piecewise-linear age against depth, never extrapolated beyond the datums. A seeded Monte Carlo envelope (p10-p90) covers the datum errors. The tool rejects a realisation whose ages reverse, as Blaauw (2010) does, and `rejected_realizations` says how many. Many rejections mean that the datums barely keep their order within their errors. The tool records the seed, and the same seed reproduces the envelope.
 - Reversals (a deeper datum younger than a shallower one beyond their errors) fail C3. The cause is reworking, a fault repeat, or a wrong age. Say which, or leave it failing.
 - The tool gives sedimentation rates between datums. If a rate changes by an order of magnitude between intervals, it points at a condensed section or a gap.
@@ -15,11 +15,11 @@ description: Age models from dated samples and datums with cited ages. It covers
 
 ## Ages of surfaces and missing time
 
-- A correlated surface's age in each well comes from that well's model. The consistency tool does this for C3: the surfaces' ages must not reverse down any well.
+- A correlated surface's age in each well comes from that well's model. The consistency tool does this for C3: the surfaces' ages must not reverse down any well. A surface outside the model's dated range, or at a hiatus, gets no age: the tool lists it in `untested_surfaces`. With no two aged surfaces in a well, C3 is not tested.
 - Missing time at an unconformity: give its depth in `hiatuses_tvdss` of `stg_age_model`.
   - The tool then builds the model separately above and below it (Blaauw 2010's hiatus option), and never interpolates across it.
   - `hiatuses` returns the missing time: the age just below minus the age just above. Each age comes from its own side's nearest datums, extrapolated to the surface (stated), with the p10-p90 range.
-  - The missing time is resolvable only when the range excludes zero.
+  - The missing time is resolvable only when the range excludes zero (its p10 is above zero). The tool keeps negative gaps in the realisations, so the range is not forced above zero. `p_gap_positive` gives the share of positive gaps.
   - With a single datum on one side, only the upper bound (the two nearest datums' age difference) is known.
 
   Without the hiatus, interpolation across it would smear the gap into the rates.

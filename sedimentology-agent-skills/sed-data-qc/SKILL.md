@@ -16,14 +16,15 @@ description: How to register core and cuttings descriptions, analyses, analogue 
 | `regional_framework` | regional_geology | setting, transfer | S4 |
 | horizon extractions | seismic_interpretation | domain, attribute | No tool yet |
 
-Read every product's sidecar with `sed_read_product` before you use it. The depth reference, the shift, the domain and the provenance come from there, not from the file name. If `sed_list_data` lists a well file or seismic volume, you cannot open it here. Ask the owner for the product.
+Read every product's sidecar with `sed_read_product` before you use it. It returns every scalar sidecar value (status, datum, tag) in `sidecar_values`. `sed_apply_depth_shift` returns the shift's `uncertainty_band_m` and its `rival`: carry them into `limitations`. The depth reference, the shift, the domain and the provenance come from there, not from the file name. If `sed_list_data` lists a well file or seismic volume, you cannot open it here. Ask the owner for the product.
 
 ## Depth
 
 - Core and photograph depths are driller's depths, unless the table says otherwise.
 - Before any comparison with curves, picks or the framework's surfaces, apply the well's `core_depth_shift` (`sed_apply_depth_shift`).
 - If the well has no shift, ask `wells_petrophysics: core depth shift for <well> — petro_core_calibrate on the core porosity — compare core with curves`, and compare nothing.
-- Register each table with its `depth_reference` (driller, log, unknown). The tools carry it through to the products and figures.
+- Register each table with its `depth_reference` (driller, log, unknown). The tools carry it through to the products and figures. The `facies_log` gives it per row, and its sidecar says `mixed` when the rows differ.
+- `sed_transitions`, `sed_transitions_all` and `sed_render` refuse key surfaces or a curve against a well whose intervals are not at log depth.
 
 ## Tables (`sed_register_table`)
 
@@ -36,7 +37,7 @@ Read every product's sidecar with `sed_read_product` before you use it. The dept
 | `analogue_table` | system, body_type, thickness_m, width_m, length_m, source, n | Always `[analogue]` |
 | `photo_index` | file, well, top_m, base_m, lighting, scale_bar_mm | Images without a scale cannot support size statements; `sed_render(kind='core_photos')` draws them in depth order (shift to log depth to draw them beside the graphic log) |
 
-In `description`, say who described or analysed the rock, and how. It travels into the products.
+In `description`, say who described or analysed the rock, and how. It travels into the products. If a core report or a data sheet (PDF, Word, text) comes with the table, read it with `sed_read_document` before you register the table: it can give the depth reference, the describer and the conventions. `sed_list_data` does not list documents. Take the path from the brief or the inputs listing that the orchestrator gives: `sed_read_document` opens the document by that path.
 
 ## Reporting
 

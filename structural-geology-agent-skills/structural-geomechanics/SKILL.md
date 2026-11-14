@@ -31,11 +31,12 @@ The result lists the principal stresses for the regime (NF: Sv > SHmax > Shmin; 
   - slip tendency Ts = tau / (sigma_n - Pp) (Morris et al. 1996);
   - dilation tendency Td = (S1 - sigma_n)/(S1 - S3) (Ferrill et al. 1999);
   - critical pressure increase dP = (sigma_n - Pp) - (tau - C)/mu, the pore-pressure rise to Mohr-Coulomb failure.
+  - the least principal stress also limits the pressure rise (S3 is Sv in thrust faulting, Shmin otherwise). Above S3, the rock fractures open. `critical_dp_mpa_*` give the smaller of dP and S3 - Pp, and `critical_dp_limit` names the limit (`shear` or `least_stress`). `critical_dp_shear_mpa_*` keep dP alone. The tool refuses a pore pressure at or above S3.
 - The ranges come from a deterministic grid: friction 0.4, 0.6, 0.85 by default, and the Shmin and SHmax ranges you give (from the bounds, or +/- the measurement uncertainty).
   - Byerlee (1978): 0.85 below 200 MPa normal stress, 0.6 above. 0.4 stands for weak clay-rich gouge below Byerlee's range.
   - The base case uses the median of the list (`base_mu`).
-  - The result gives the grid and the true case count. There are no random draws.
-- For injection or production questions, give `planned_pressure_increase_mpa`. The verdict per fault is stable in all cases, fails in some, or fails in all, with `fraction_of_cases_stable`. "Fails in some" is `partially_supported` with that fraction.
+  - The result gives the grid and the true case count. There are no random draws. Grid cases with the pore pressure at or above Shmin have no tensor: the tool leaves them out and counts them (`skipped_cases`).
+- For injection or production questions, give `planned_pressure_increase_mpa`. The verdict per fault is stable in all cases, fails in some, or fails in all, with `fraction_of_cases_stable`. "Fails in some" is `partially_supported` with that fraction. The least principal stress can set the limit. Then the verdict says "exceeds the least principal stress (fracture opening)" in place of "fails". Report a fracture that opens, not a fault that slips. Faults tied at that limit are ordered by their shear value.
 - Vertical faults perpendicular to SHmax carry no shear stress (a principal plane). Ts near 0 is right, not an error.
 - Ts at or above 1 in some cases means one of two things: that stress state is implausible for an existing fault, or the magnitudes are wrong. Say which.
 

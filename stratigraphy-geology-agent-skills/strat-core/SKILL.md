@@ -11,7 +11,7 @@ description: The stratigraphy specialist's working rules. They cover the two led
 |---|---|---|---|
 | Which surfaces correlate between wells? | Rank 1-3 tie points, then `stg_dtw_chain` (or `stg_dtw_pair` for one pair) constrained between them | Markers, stacking patterns | Lithology alone; unconstrained pattern matching |
 | Is the reported top right? | C1: the reported top beside the correlated surface, difference listed | Core, sidewall samples | Silent replacement of the reported pick |
-| How certain is the correlation? | The C1-C7 ledger; the alternative panel; `stg_compare_panels` | DTW support against rigid shifts (C6) | One panel presented as the only one |
+| How certain is the correlation? | The C1-C7 ledger; the alternative panel; `stg_compare_panels` | DTW support against surrogate logs (C6) | One panel presented as the only one |
 | How old is this surface? | Age model from dated samples and datums | Regional chart | Ages from recalled zonations |
 | Is there a gap here? | Age jump across the surface; truncation on tied seismic | Thickness trends; structural fault cut-outs | Calling a fault cut-out an unconformity |
 
@@ -50,14 +50,15 @@ Anchors are ranks 1-3 (`anchors_by_well` of `stg_dtw_chain`, `anchors` of `stg_d
 | C3 | Age-depth monotonic per well; the surfaces' ages do not reverse | `stg_consistency` with `age_models` |
 | C4 | Thickness changes smooth or explained (fault, erosion, growth) | `stg_consistency` with `thickness_explanations` |
 | C5 | Correlated surfaces within tolerance of tied seismic horizons | `stg_consistency` with `seismic_ties` |
-| C6 | DTW cost in the best quarter of rigid shifts | `c6_results` of `stg_dtw_chain` (or `stg_dtw_pair` results) passed to `stg_consistency` |
+| C6 | The two logs related over a window (not a test of the mapping): window DTW cost in the best 5 % of 30 surrogates' costs | `c6_results` of `stg_dtw_chain` (or `stg_dtw_pair` results) passed to `stg_consistency` |
 | C7 | Surface ages in the chart's span and order, given its transfer status | `stg_consistency` with `chart` |
 
 Status:
 - `supported`: C1-C3 pass, and every pick rests on a rank 1-3 tie (`picks_above_rank_3` lists the others);
 - `partially_supported`: C1 and C2 pass, and the rest are not tested or the ties are rank 4-6;
-- `contradicted`: any unexplained failure;
-- `unresolved`: two panels pass the same tests.
+- `contradicted`: any unexplained failure of C1-C5 or C7. A C6 failure does not contradict a panel;
+- `unresolved`: two panels pass the same tests;
+- `proposed`: no test fails, but C1 or C2 is not tested (for example, no two wells share two surfaces); or C6 fails for a well pair whose log-derived (rank-5) picks are in the panel: log similarity is not shown, so those picks are not supported (`c6_effect` names the pairs). It is not a claim status: report the panel as a `hypothesis`, and say which tests could not run or which pairs failed C6. If no rank-5 pick comes from a failing pair (for example, every pick is a rank 1-3 tie), C6 is reported but does not change the status. Measured cost: C6 failed no correct mapping at noise up to 60 % of the signal, and about 11-14 % of related pairs at noise equal to the signal.
 
 Record the ledger in every panel interpretation and in the product sidecar.
 
