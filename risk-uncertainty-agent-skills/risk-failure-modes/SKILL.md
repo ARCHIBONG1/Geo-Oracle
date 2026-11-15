@@ -5,7 +5,7 @@ description: Failure modes per domain from a fixed library, without numeric rati
 
 # Failure modes
 
-For the domain and the objective, `ru_failure_modes` lists every mode in a fixed library (hydrocarbon, CO2 storage, geothermal, natural hydrogen, hydrogen storage). For each mode, it gives:
+When the matrix holds more than one play, give `play`: the tool refuses a matrix of several plays without it. For the domain and the objective, `ru_failure_modes` lists every mode in a fixed library (hydrocarbon, CO2 storage, geothermal, natural hydrogen, hydrogen storage). For each mode, it gives:
 - the mechanism;
 - the elements involved, and each element's status from the play matrix;
 - the weakest of them;

@@ -20,12 +20,14 @@ Most natural hydrogen systems are active. The gas is made now by serpentinisatio
 | migration | seeps or shows along faults or fractures from the source | conductive faults in the network | supplied seeps and shows; structural_geology |
 | reservoir | net reservoir and porosity in wells; fractured basement with tested permeability | facies model; fault network | wells_petrophysics, sedimentology, structural_geology |
 | seal | salt or evaporite; clay with a measured hydrogen entry pressure | a conventional top seal (inferred at most: a seal that holds methane is not shown to hold hydrogen) | wells_petrophysics, stratigraphy, structural_geology |
-| trap | a depth closure passing its ledger; a demonstrated stratigraphic trap | a closure with a failing ledger | structural_geology |
+| trap | none from a map alone; a well result on the closure (hydrogen in a well inside it) | a depth closure passing its ledger, or a mapped stratigraphic trap (a trap_geometry link: inferred at most) | structural_geology |
 | preservation | temperature above the microbial window (about 90-120 °C) or hydrogen present despite it; no abiotic sink; low diffusive loss | nothing known: unknown | wells_petrophysics, supplied fluid_geochem, literature_review |
+
+Regional or analogue evidence for any element lifts it to analogue-supported at most, never to inferred.
 
 Timing (PT4): with ongoing generation (`holds: true` on the generation event), a trap and seal present today suffice. A fossil hydrogen charge needs a trap that predates it, and a seal that has retained hydrogen since. That is rare, and you state it.
 
-A measured hydrogen flux demonstrates generation_activity, and lifts source to inferred. Seeps and shows demonstrate migration, and lift generation and source. A discovery proves the chain. The matrix applies these rules.
+A measured hydrogen flux demonstrates generation_activity, and lifts source to inferred. Seeps and shows demonstrate migration, and lift generation and source. A discovery lifts the charge chain to inferred. The matrix applies these rules.
 
 ## Underground hydrogen storage (domain `hydrogen_storage`)
 
@@ -39,7 +41,7 @@ A measured hydrogen flux demonstrates generation_activity, and lifts source to i
 | geochemical_microbial_stability | brine and mineralogy showing no hydrogen-consuming reactions (sulphate reduction to H2S, methanogenesis, pyrite reduction) at reservoir temperature | wells_petrophysics, sedimentology |
 | cycling_integrity | caprock and wells holding through repeated pressure cycles | structural_geology, supplied test_summaries |
 
-Keep containment separate, as for CO2. Storage assessments most often omit the microbial and geochemical element. A porous-media site without brine chemistry leaves it unknown.
+Keep containment separate, as for CO2. For PT4, give `play_events_chart` one `containment` event per period (injection, cycling, post-operation), each with `holds: true` or `holds: false` and the claim that supports it. Every event needs start_ma and end_ma: 0 for the present day and for planned periods. An event without `holds` tests nothing, and PT4 stays not tested unless another event fails. Storage assessments most often omit the microbial and geochemical element. A porous-media site without brine chemistry leaves it unknown.
 
 ## Pitfalls
 

@@ -28,7 +28,7 @@ The columns before the semicolon are required; the others are optional.
 
 | Kind | Columns | Notes |
 |---|---|---|
-| `zone_summary` | zone; well, net_to_gross, porosity, sw, and their p10/p90 where given | the source of the volume inputs; quote each as `{product: <this table>, field: <column>, value: ...}` |
+| `zone_summary` | zone; well, net_to_gross, porosity, sw, and their p10/p90 where given | the source of the volume inputs; quote each as `{product: <this table>, field: <column>, value: ..., range_from_product: [p10, p50, p90], row: {zone: <zone>}}`. The value and the range ends must be those of one row, within 0.5 %: the value from the column, the ends from its `_p10` and `_p90` columns. Give `row` whenever the column holds more than one distinct value; without the `_p10` and `_p90` columns, give the range as `{range, source}` |
 | `pvt` | fluid; pressure_mpa, temperature_c, bo or bg, density_kg_m3, source, sample | at reservoir conditions; a formation volume factor at other conditions is the wrong number |
 | `licence_outline` | name, x, y; vertex (the point order) | one row per vertex, at least three per polygon; the `crs` argument is required, because a coordinate without a CRS cannot be checked |
 | `keepout_zones` | name, x, y; vertex, buffer_m, reason | as the licence; `buffer_m` is the distance the target keeps outside the polygon (0 when absent) |
@@ -37,5 +37,9 @@ The columns before the semicolon are required; the others are optional.
 ## Claims as inputs
 
 An upstream finding becomes an input as `{range: [p10, p50, p90], source: '<its full id>'}`. Never give it as a bare number, and never upgrade its classification or status. If a finding gives one value and no range, say so: a single value is a p50 with no spread, and that is a limitation worth reporting.
+
+From a JSON product, quote a key or an indexed entry that holds one number. Take a range only from the p10 and p90 keys beside it (`<leaf>_p10` / `<leaf>_p90`, `p10` / `p90`, `10th_percentile` / `90th_percentile`); otherwise give the range as `{range, source}`.
+
+Check the percentile convention of each upstream range before you order it. This tool reads non-exceedance: p10 is the low value. Many sources state exceedance percentiles, in which P90 is the low value. Reorder such a range as [low, mid, high] and give `convention: 'non-exceedance'`. The tool refuses `convention: 'exceedance'`.
 
 <!-- end of skill: prospect-data-qc -->

@@ -15,6 +15,8 @@ The audit works from the findings' assumption lists and the claim graph. An assu
 
 ## Bias (`ru_bias`)
 
+Give `scenario_counts` and `volumes`. Without them the single-model check and the range check do not run: the result lists them in `checks_skipped`, and an empty report does not cover them.
+
 | Check | What it finds |
 |---|---|
 | single model | an objective with one scenario where the data allow an alternative |

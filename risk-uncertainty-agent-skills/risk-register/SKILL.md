@@ -12,7 +12,11 @@ Use all of these sources, every time:
 - the forwarded findings, copied exactly from the task with their ids, classifications, statuses, scope tags, `depends_on`, assumptions and `kind` (unknown, assumption, limitation, missing_data, contradiction, alternative). A claim of status unresolved, proposed or contradicted, or of classification unknown or hypothesis, is an entry;
 - the products: every failing or untested ledger entry, every warning, every transfer below demonstrated.
 
-Give the objectives by name. An entry naming two or more is shared.
+Give the objectives by name. An entry naming two or more is shared. Also give `objective_claims` (`{objective: [ids of the claims that state its conclusion]}`): an entry that affects a claim of an objective affects that objective, also when its text does not name it.
+
+The checks of one product that were not tested become one entry (`<product>: checks not tested: ...`). A failed check is its own entry. A check with the value `explained` failed and carries an accepted explanation: it is a limitation, not an open failure. When a prospect product says that a critical element or the play is contradicted while the candidate keeps its rung (`for_risk.contradicted_critical`, `for_risk.play_verdict`), that is an entry of kind contradiction.
+
+`ru_import_ledger` names the ledger sections that no rule reads (`unknown_sections`) and the ids whose row came again with other content (`changed_ids`). State both in `limitations`.
 
 ## Classify (`ru_classify`)
 

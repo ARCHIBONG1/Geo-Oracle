@@ -1,23 +1,32 @@
 ---
 name: play-well-outcomes
-description: How to classify every well in a play area as a success, partial, a failure on a named element or undetermined. The classification uses the operator's stated reason, the trap's closed cells and your explanations. Also what each outcome demonstrates. Load before play_classify_outcomes.
+description: How to settle every well in a play area as a success, partial, a failure on a named element or not a test. The tool proposes candidate elements from the operator's stated reason and the trap's closed cells; your explanations settle each dry well. Also what each outcome demonstrates. Load before play_classify_outcomes.
 ---
 
 # Wells as tests
 
 ## Classification (`play_classify_outcomes`)
 
+The tool proposes; you settle. It never classifies a dry well as a failure: it reads candidate elements from the stated reason, and you decide.
+
 | Result | Class | Demonstrates | Failed element |
 |---|---|---|---|
-| discovery | success | every critical element of the play (hydrocarbon) | — |
-| shows | partial | source, maturation, migration | from the stated reason, when it names one element |
-| dry with a stated reason | failure | — | the reason mapped: trap (closure, structure), reservoir (tight, absent, facies), seal (leak, caprock), preservation (breach, biodegradation, flushing), migration (no shows, charge), timing |
-| dry with a reason naming several elements | undetermined | — | listed as `candidate_elements`; settle it with `explanations` `{element, reason}`, citing the evidence |
-| dry outside every closure, no reason | failure | — | trap (from the trap's closed cells or a supplied outline) |
-| dry without a usable reason, inside the closure | undetermined | — | — |
-| not reached, mechanical | undetermined | — | the well did not test the play: give `explanations` `{element: "not a test", reason}`, and it leaves the success and failure counts |
+| discovery | success | what the well shows at that well (`demonstrates`). A discovery well inside the closure may be linked as a study-area observation of reservoir, seal and trap. Such links make those elements demonstrated in the matrix, which is correct for the area the well tests: state in the link `note` that the observation is at one well. The charge chain (source, maturation, migration, timing) is lifted separately: a discovery lifts the charge chain to inferred for its play through `discoveries` `{play: [wells]}` | — |
+| shows | partial | source, maturation, migration | none from the tool; you may give one with `explanations` `{element, reason}` |
+| dry (D&A, water wet, tight and the like) | undetermined until you settle it | — | yours: `explanations` `{element, reason}` citing evidence, or `{element: "not a test", reason}` |
+| not reached, mechanical | undetermined | — | the well did not test the play: give `{element: "not a test", reason}`, and it leaves the success and failure counts |
 
-Give the structural `trap_geometry` products as `traps`. The tool reads their closed cells: a well is inside when its nearest grid cell is closed. Give `closures` only for outlines supplied as polygons in the wells' CRS. For each well that the rules leave undetermined, give `explanations` as `{well: {element, reason}}`. `element` is one of the play's elements, or "not a test". A plain-string reason stays unsettled. PT5 fails while any well is unexplained or unsettled.
+The tool reads the result without case. Whole phrases such as "oil discovery" or "gas producer" are successes. D&A, dry and abandoned, water wet and wet count as dry. A plugging status alone is not an outcome (discovery wells are plugged too): P&A or abandoned leaves the well undetermined. Any word the tool does not know is listed in `unrecognised_results`: put the well's outcome in the table and register it again.
+
+What the tool proposes for a dry or shows well:
+- `candidate_elements`: the elements the stated reason reads as failed, by keyword. A keyword counts only in a negative clause ("no", "not", "absent", "poor", "thin", "leaking" or a failure word such as "tight"). Negated or all-clear wording ("not breached", "ruled out", "seal not an issue") counts nothing. For a dry well outside every closure whose reason names no failed element, the candidate is trap (trapping_mechanism for CO2 storage).
+- `mentioned_elements`: every element the reason mentions, failed or not.
+- `not_tested_wording`: the reason says the element was not tested at the well ("not penetrated", "did not reach the target", "no logs").
+- `hedged`: the reason is hedged ("may", "likely", "suspected").
+
+`proposed` lists each proposal with its basis (keyword or outline), and one warning names every well still to settle with what is proposed. The reading is by keyword, so it can be wrong: an all-clear or a hedged reason can still give a candidate. Check each against the reason and the evidence.
+
+Settle every dry well that tests the play with `explanations` `{well: {element, reason}}`: `element` is one of the play's elements, or "not a test", and `reason` cites the evidence. A plain-string reason keeps a dry well unsettled. PT5 fails while any dry, mechanical, not-reached or unrecognised well is not settled. Give "not a test" yourself; the tool never sets it. Give `traps` (the structural `trap_geometry` products: their closed cells are read; a well is inside when its nearest grid cell is closed) or `closures` (outlines supplied as polygons in the wells' CRS).
 
 If the wells have x and y, the tool draws the segment map in `result.figures`. It shows each well by outcome class over the closures the classification used: the outlines you gave, and the closed cells of the trap products. Publish it.
 

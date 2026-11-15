@@ -15,7 +15,7 @@ description: The four flip tests (play status, maturity, threshold straddle, sce
 | alternative fills, contacts or models | `ru_compare_scenarios` | `scenario_set`; the recorded outcome per scenario | — |
 | a volume range | `ru_sensitivity_read` | `volume_ranges`; a geological threshold if the decision context has one | — |
 
-Every test takes the entry id it is for. It returns a `test_record` with its provenance id, and `ru_materiality_report` accepts that record.
+Every test takes the entry id it is for, as `ru_merge` wrote it (`U-` and six characters, made from the text of the entry, so the same uncertainty keeps its id when the register is built again). It returns a `test_record` with its provenance id. Pass that record to `ru_materiality_report` as the tool returned it. The report reads the class from the stored test, so a changed class, an unknown provenance id, or a test for an entry that is not in the register is refused.
 
 ## Reading the result
 
@@ -26,7 +26,9 @@ Every test takes the entry id it is for. It returns a `test_record` with its pro
   - a different maturity or status between scenarios.
 - A range that changes with nothing categorical is contributing. A volume without a geological threshold is contributing at most: there is no commercial threshold in this system.
 - If every case lies on the failing side of a threshold, that is not a straddle. It is a settled failure, class `settled_failure`. Report it beside the material entries as decisive. It takes no reduction action on its range, because no narrowing can change it. `ru_reduction_plan` lists it with its open questions, the threshold's source and the basis of the inputs. Those are what to check.
-- The flip tools run the owners' rules. The base case they compute is the owner's own result. A mismatch there is a fault to report.
+- The flip tools run the owners' rules. The base case they compute is the owner's own result. `ru_flip_maturity` refuses a `prospect_definition` whose recorded tests it cannot rebuild. Report that refusal as a fault of the product, and ask for `pt_readiness` to be run again. Do not give the entry a class from another test in its place.
+- In `ru_flip_play`, every critical element at the play's status caps the play (`capping_elements`). The conclusion changes when the status changes, or when an element that did not cap the play before caps it now. When one of several tied elements is raised and the others still cap the play, that is a tie (`tie: true`), not a flip. Give `discoveries` as the play specialist gave them: a list, or `{play: [wells]}`.
+- `ru_straddle` needs its threshold and the source of the threshold. For a `volume_ranges` product, `ru_sensitivity_read` reads the whole stored range against the threshold, not only p10, p50 and p90.
 
 ## Plausible alternatives
 
@@ -38,7 +40,7 @@ Say in the findings which alternatives were tested and why.
 
 ## The report (`ru_materiality_report`)
 
-The report gives every entry's class from its tests. An entry with no test is undetermined, and it needs a reason in the findings. The tool refuses a material class without a provenance id. The tool draws the register with its materiality classes and one flip diagram of its tests in `result.figures`. Publish them.
+The report gives every entry's class from its tests. An entry with no test is undetermined. Give its reason in `untested_reasons` (`{entry id: reason}`), and also in the findings. An undetermined entry without a reason fails U4. The tool refuses a material class without a provenance id. The tool draws the register with its materiality classes and one flip diagram of its tests in `result.figures`. Publish them.
 
 ## Reporting
 

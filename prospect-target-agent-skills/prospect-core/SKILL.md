@@ -16,16 +16,16 @@ Five domains, read from `project_context`: hydrocarbon, CO2 storage, geothermal,
 | prospect | R1-R5 pass | yes, per scenario |
 | target | R1-R7 pass | yes, and a location |
 
-`pt_readiness` sets the rung. It is the rung you report, with the reason it gives. If a candidate falls, report it where it lands, with what would lift it.
+`pt_readiness` sets the rung. It is the rung you report, with the reason it gives. The rung does not read element statuses: when the result carries `geological_caveat` (contradicted, disfavoured or unknown critical elements, or a contradicted play), put it in the maturity claim and beside every quantity and target. If a candidate falls, report it where it lands, with what would lift it.
 
 | Test | Passes when |
 |---|---|
-| R1 play basis | an `element_status_matrix` covers the candidate's play |
+| R1 play basis | an `element_status_matrix` covers the candidate's play: give the elements file from `pt_inherit_elements` (with `play_concepts`, so the play's test verdict is read) |
 | R2 trap in depth | the closure is in depth, closed, with V1 and V7 passed in the structural validity record. The record carries V1 and V7 only when `sg_closure_spill` ran with `model`, the structural_model on the same horizon |
 | R3 element tracing | every element has a row in the play matrix or a basis, with no refused claim |
 | R4 input provenance | every volume input resolves to a product or a stated range with its source |
-| R5 consistency | at least one check passes and none fails: contact inside the closure and at or above spill, column within the seal capacity, reservoir present — `pt_consistency`, run per scenario before `pt_readiness`. A fill-to-spill contact is not a test |
-| R6 derived location | a target location from `pt_target_point` passes every constraint |
+| R5 consistency | at least one check passes and none fails: contact inside the closure and at or above spill, column within the seal capacity (with `seal_capacity_source`), reservoir present (with `reservoir_basis`) — `pt_consistency`, run per scenario before `pt_readiness`, and every scenario's file given to `pt_readiness` as a list. A fill-to-spill contact is not a test |
+| R6 derived location | a target location from `pt_target_point` passes every constraint; give its result as `target`, with its `provenance_id` |
 | R7 alternatives | the `scenario_set` from `pt_scenarios` holds two or more scenarios that differ in kind, description or contact, each with a basis. Names alone are not tested |
 
 ## 2. The three refusals

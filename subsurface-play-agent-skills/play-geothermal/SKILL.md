@@ -13,12 +13,14 @@ The play types are convection-dominated (magmatic, plutonic, extensional domain)
 
 | Element | Demonstrated by | Inferred from | Owner |
 |---|---|---|---|
-| heat | temperatures measured at depth in study-area wells | a geotherm calibrated regionally; heat flow | wells_petrophysics (temperature_profile), regional_geology (thermal_model) |
+| heat | temperatures measured at depth in study-area wells | heat flow at the site (a geotherm calibrated only regionally: analogue-supported) | wells_petrophysics (temperature_profile), regional_geology (thermal_model) |
 | permeability | core or test permeability; fracture data from image logs | facies and diagenesis; fault network | wells_petrophysics, sedimentology, structural_geology |
 | fluid_recharge | pressure history or hydrochemistry showing recharge | a connected aquifer in the framework | wells_petrophysics, regional_geology |
-| structural_setting | the fault network and stress field at the site | regional structural elements | structural_geology, regional_geology |
+| structural_setting | the fault network and stress field at the site | the site's fault network interpreted (regional structural elements alone: analogue-supported) | structural_geology, regional_geology |
 | cap_seal (supporting, convective systems) | a seal over the reservoir | seal facies | stratigraphy |
-| stress_for_stimulation (supporting, low permeability) | measured stress and fault stability | the regional stress field | structural_geology, regional_geology |
+| stress_for_stimulation (supporting, low permeability) | measured stress and fault stability | fault stability at the site (the regional stress field alone: analogue-supported) | structural_geology, regional_geology |
+
+A petrothermal (enhanced or engineered) play has no natural fluid recharge. The template still holds `fluid_recharge` as critical: state it as engineered (the planned circulation), with its basis, and say in `limitations` that the template has no petrothermal path.
 
 ## Timing (PT4)
 

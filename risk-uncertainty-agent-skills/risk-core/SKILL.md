@@ -13,7 +13,7 @@ This specialist says which uncertainties change a conclusion, what would reduce 
 
 | Rule | Mechanism |
 |---|---|
-| No probability, chance, likelihood class, severity, impact rating, risk matrix or heat map | the tools have no such output and refuse such keys and wording; `U7` scans every product |
+| No probability, chance, likelihood class, severity, impact rating, risk matrix or heat map | the tools have no such output and refuse such keys, and such wording in your own fields. Text that you copy from another specialist is kept as given, with a warning: do not repeat it as a rating. `U7` scans your own fields and the keys of the products |
 | Material only by flip test | `ru_materiality_report` refuses a material class without a test's provenance id |
 | The owners' rules, not a copy | the flip tools import `PlayElements.status_matrix` and `ProspectCore.readiness`; the rule versions are recorded |
 | Nothing new | a new interpretation, volume or status is a request to its owner in the plan |
@@ -49,19 +49,21 @@ Each entry is epistemic, unless it is marked aleatory with a reason (natural var
 
 ## 5. U1-U7
 
-- U1 coverage against the ledger;
-- U2 every entry with a source and an owner;
+- U1 every open ledger row (by its U# or X# id) and every open question is the source of an entry;
+- U2 every entry with a source and a named owner (an owner `unknown` fails it);
 - U3 every entry typed;
-- U4 every entry tested or its reason stated;
+- U4 every entry tested, or its reason given in `untested_reasons` of `ru_materiality_report`;
 - U5 every material entry with an action;
-- U6 every contradiction carried with a path;
-- U7 no arbitrary numbers.
+- U6 every contradiction carried with a specific path;
+- U7 no arbitrary numbers in your own fields.
+
+A test can read `not informative`. That means the test could not fail on what it was given (for example U6 with no contradiction). It is not a pass and it is not a failure. Report it as it is.
 
 `ru_analysis_tests` runs them. Run it last. Report a failing test, and do not hide it.
 
 ## 6. Statement forms
 
-- Entry: `U-<n> | <type>, <nature>, <scope> | <materiality>: <text>`
+- Entry: `<entry id> | <type>, <nature>, <scope> | <materiality>: <text>` (the id is the one `ru_merge` wrote, for example `U-3fa2c1`)
 - Materiality claim: `<entry> is material to <conclusion>` with `depends_on_claim_ids`
 - Attempt: `<entry>: tried <what> (<owner>, <mode>) because <why>; outcome <settled|settled as a failure|narrowed|unchanged|newly material|overturned|newly a settled failure|changed|entry withdrawn>`
 
@@ -71,7 +73,7 @@ Each entry is epistemic, unless it is marked aleatory with a reason (natural var
 
 ## 8. The refusals, in the words to use
 
-"No chance of success is stated: the system reports which uncertainties change a conclusion and what would settle them. For this site: U-<n> (well containment unknown) is material to the play and the site; the integrity record of the legacy well would settle it."
+"No chance of success is stated: the system reports which uncertainties change a conclusion and what would settle them. For this site: <entry id> (well containment unknown) is material to the play and the site; the integrity record of the legacy well would settle it."
 
 ## Analysis modes
 

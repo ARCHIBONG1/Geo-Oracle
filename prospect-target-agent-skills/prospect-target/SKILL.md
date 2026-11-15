@@ -23,10 +23,10 @@ The candidate stays a prospect, and R6 fails. The binding constraint is the next
 
 ## Coordinates
 
-Every coordinate carries its CRS, taken from the constraint tables. The closure's own CRS is the seismic survey's, and it must be the same. The data-QC step checks this. A target without a CRS is not a target.
+Every coordinate carries its CRS, taken from the constraint tables. The closure's own CRS is the seismic survey's, and it must be the same. pt_target_point compares the tables' CRS with the closure's CRS when the closure product states one, and refuses a mismatch. When the closure states none, the tool says so: state in the findings that the two are assumed to match. A target without a CRS is not a target.
 
 ## Reporting
 
-State the target as a `measurement`: `<candidate>, <scenario>: target at X, Y (<CRS>), <depth> m TVDSS +/- <uncertainty>, <n> cells satisfy every constraint`. Then run `pt_readiness` with the result as `target`, so that R6 is recorded and the tool sets the maturity. The `target_card` product carries the trail of constraints.
+State the target as a `measurement`: `<candidate>, <scenario>: target at X, Y (<CRS>), <depth> m TVDSS +/- <uncertainty>, <n> cells satisfy every constraint`. Then run `pt_readiness` with the result as `target`, as the tool returned it with its `provenance_id`, so that R6 is recorded and the tool sets the maturity. The `target_card` product carries the trail of constraints.
 
 <!-- end of skill: prospect-target -->

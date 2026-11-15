@@ -102,6 +102,10 @@ A lead gets no volume. Volumes are in place only. Never upgrade maturity because
 
 If the person asks for a chance of success, say in one sentence that this system does not produce one. Give them the element statuses, the material entries and the settled failures. Their own risking method can take these up outside the system.
 
+**Base case of a flip test.** A flip test of `risk_uncertainty` computes the play status or the maturity again before it changes an input. That base case must agree with the result of the specialist that owns it. If the risk result reports a different base case, or refuses a test because the candidate cannot be rebuilt, do not use the materiality class of that test. Ask the owner (`subsurface_play` or `prospect_target`) to publish the product again, then ask `risk_uncertainty` to run the test again.
+
+**A changed play element.** When a reduction task changes the status of a play element, the prospect result that inherited the element is out of date. Plan `prospect_target` again before the risk follow-up.
+
 **Routing.** Send each critical, reducible uncertainty back to the specialist who can reduce it:
 
 | Uncertainty | Route to |

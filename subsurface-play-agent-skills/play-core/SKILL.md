@@ -29,6 +29,7 @@ The scale is ordinal: demonstrated > inferred > analogue-supported > hypothesise
   - Report `conflicting_evidence` as a contradiction in the findings.
   - A hypothesis is not evidence against.
   - Link evidence against as `against: true`. Never leave it out because it is regional.
+- **A direct link must show the element itself.** Link an observation or measurement as direct only when it shows what the element needs: for seal, a capacity (entry pressure) or a retained column or pressure difference; for source, an oil-source correlation or measured richness (TOC, Rock-Eval) in study-area samples; for reservoir, net reservoir and porosity in wells. A lithology or a facies alone is not a direct link for seal or source: link it as an interpretation.
 - **The elements come from the template.** For each domain, `play_element_template` gives the critical and supporting elements, their dependencies and what evidence lifts each. Link evidence to those elements and no others.
 - **Weakest link.** The play's status is the minimum over its critical elements, and the capping element is named.
 - **Dependencies** (from `play_element_template`):
@@ -38,7 +39,7 @@ The scale is ordinal: demonstrated > inferred > analogue-supported > hypothesise
   - Natural hydrogen: generation needs a source; migration needs generation; preservation needs the seal.
   - Hydrogen storage: injectivity and deliverability need the storage unit; geochemical and microbial stability needs the storage unit; cycling integrity needs caprock and well containment.
 
-  A demonstrated product proves its prerequisites: a measured hydrogen flux lifts source to inferred. The matrix flags an element above its prerequisite. A discovery proves the charge chain.
+  A demonstrated product proves its prerequisites: a measured hydrogen flux lifts source to inferred. The matrix flags an element above its prerequisite. A discovery lifts the charge chain to inferred: give it to `play_status_matrix` as `discoveries` `{play: [wells]}`, so it lifts only the play the discovery tested. A plain list lifts every play in the call.
 - **A claimed status may lower an element, never raise it.** Lower it with the reason in the note (a product's ledger fails, a transfer is unknown, a caveat upstream).
 - **Figures.** `play_status_matrix` draws the status matrix and each play's dependency graph in `result.figures`. Publish them.
 
@@ -46,27 +47,32 @@ The scale is ordinal: demonstrated > inferred > analogue-supported > hypothesise
 
 Every well in the play area is one of these:
 - a success (what it demonstrates);
-- a failure on a named element. The tool maps the operator's stated reason to an element, and keeps the reason beside it. A dry well outside the mapped closure fails on trap;
-- undetermined.
+- a failure on a named element, which you give with `explanations` `{element, reason}` citing evidence;
+- not a test.
 
-Undetermined wells fail PT5 until you explain them with cited evidence (`explanations`).
+The tool only proposes: it reads candidate elements from the operator's stated reason (and proposes the trap-like element for a dry well outside every closure), and keeps the reason beside them. Every dry well stays undetermined, and fails PT5, until you settle it.
+
+One well's failure is local. Link it to the element as an interpretation against (`against: true`, kind `interpretation`), which disfavours the element. Link it as an observation against, which contradicts the element for the whole play, only when the failure is shown play-wide.
 
 ## 4. The play tests
 
 | Test | Pass when | Tool |
 |---|---|---|
-| PT1 | every critical element has a status (unknown allowed, named) | `play_tests` |
+| PT1 | every critical element has a status (unknown allowed, named); a play from the matrix always has one, so PT1 reads `not informative` there | `play_tests` |
 | PT2 | no element demonstrated on regional or analogue evidence | the matrix's refusals |
 | PT3 | no dependency flag: clear a flag by revising the matrix (lower the element or support its prerequisite); an explained flag keeps the play below supported | the matrix's flags |
-| PT4 | trap and seal before charge; containment through time; heat and recharge sustained | `play_events_chart`, `play_timing_check` |
+| PT4 | trap formation against expulsion or generation (seal timing is not tested); containment statements through time hold; heat and recharge statements hold | `play_events_chart`, `play_timing_check` |
 | PT5 | every well explained | `play_classify_outcomes` |
 | PT6 | no post-charge uplift, breach or cool exposure (no tool computes it: give your reasoned judgement with cited evidence) | `play_tests` argument `preservation` |
 | PT7 | fairway coherent (no tool tests it yet) | always not tested |
 
+Each test is pass, fail, not tested, explained or not informative. Key each explanation PT1 to PT7. PT5 is not explained in `play_tests`: settle every well in `play_classify_outcomes`. A failed test with an accepted explanation (`play_tests` `explanations`) reads `fail (explained: <reason>)` in the `play_tests` result, and `explained` in the published product's test record. An explained PT2-PT4 keeps the play below supported. `not informative` is a test that cannot fail on its input (PT1 on a play from the matrix): it neither passes nor blocks. PT1 and PT6 need not pass for supported; a failed PT1 or PT6 makes the play contradicted; PT7 is always not tested. An explained PT1 or PT6 failure does not block supported in the tool.
+
 Status:
-- supported: PT1-PT5 passed, and the weakest critical element inferred or better;
+- supported: PT2-PT5 passed, PT1 not failed, and the weakest critical element inferred or better;
 - proposed: a critical element unknown or disfavoured (the tests list disfavoured elements);
-- contradicted: any failure or a contradicted element;
+- proposed also when the only failed tests are PT2 or PT3 and no critical element is contradicted: these are bookkeeping states, named in `status_reason`; clear them by revising the matrix;
+- contradicted: any other failure (PT1, PT4, PT5, PT6) or a contradicted element;
 - partially_supported: otherwise;
 - unresolved: competing concepts that pass the same tests.
 
