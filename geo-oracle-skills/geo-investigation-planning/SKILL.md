@@ -41,19 +41,18 @@ If you call every specialist "for completeness", you add cost and noise, and cre
 
 ## 4. Map dependencies
 
-The following are typical constraint flows, not a fixed order. Use them to spot prerequisites.
+Call `system_map` before you plan. It shows, for each specialist, what it takes, what it makes, and which specialist uses each product. An edge marked `needed` is a prerequisite: the consumer cannot do that work without the product.
 
-- `wells_petrophysics` → `stratigraphy`: correlation logs, reported tops, facies and net reservoir.
-- `wells_petrophysics` → `structural_geology`: `vshale_log` for fault seal, and `pressure_profile` for stress. Fault seal reads the log in TVDSS. The `vshale_log` has TVDSS only when the well's trajectory exists before `petro_vshale` runs.
-- `wells_petrophysics` → `sedimentology`: `core_depth_shift` (`petro_core_calibrate`). Sedimentology compares core with curves only after this shift.
-- `stratigraphy` → `seismic_interpretation`: well ties and horizon identity.
-- `stratigraphy` → `sedimentology`: `correlated_tops` as key surfaces. Sedimentology does not count facies transitions across them.
-- `seismic_interpretation` → `structural_geology`: fault and horizon geometry as depth-domain `horizon` and `fault_set` products.
-- `regional_geology` → `structural_geology`: the stress field as a regional prior.
-- `sedimentology` → reservoir distribution → `subsurface_play`.
-- `regional_geology` and `literature_review` → context and analogues for every discipline. These are context, not local evidence.
-- Integrated model → `subsurface_play` → `prospect_target` → `risk_uncertainty`.
-- `risk_uncertainty` → the reduction wave → `risk_uncertainty` again in `follow_up` mode (section 4a).
+Check each task against the map and against `list_shared_inputs`:
+
+- Does the task need a product? Then a task that makes it must come first, and must be collected.
+- Does one brief hold work that needs such a product and work that does not? Split it. Send the independent part now. Send the dependent part after the product exists. Example: seismic quality control and fault extraction need no well product. A well tie and a depth map need the `time_depth` product of `wells_petrophysics`.
+- Ask for products in a brief. Do not name tool calls.
+- The gateway warns when a task starts before a `needed` product exists. If the task asks for that work, the warning shows a planning error: correct it. If the task does not ask for that work, ignore the warning.
+- Fault seal reads the `vshale_log` in TVDSS. The log has TVDSS only when the well's trajectory exists before the shale-volume step runs. Ask petrophysics for the trajectory first.
+- `structural_geology` needs the `horizon` and `fault_set` in depth, not in time.
+
+`regional_geology` and `literature_review` give context and analogues. These are context, not local evidence. `risk_uncertainty` runs after the play and prospect work, then again in `follow_up` mode after the reduction wave (section 4a).
 
 Mark iterative loops explicitly. For example, stratigraphy and seismic often need an initial pass each. Then they need a reconciliation once the horizon interpretation exists.
 
@@ -100,7 +99,15 @@ Pass these to `set_hotl_mode` with the person's answer:
 - **Parallelism:** Geo Oracle makes one tool call per step. So start the independent tasks of a wave one after another, with `wait_seconds: 0`. Each call returns its job id at once, and the specialists run in parallel. Then collect them one by one. A wave is closed when its running jobs have returned. A task that you start after that belongs to the next wave, and the gateway refuses it until the checkpoint is filed.
 - **Large briefs:** One specialist turn may not be sufficient for a long list of required outputs, or for a sequence of long jobs on a large dataset (a large seismic volume: horizon tracking, fault and body extraction, attribute volumes). A specialist turn stops at the gateway's limit, `JOB_MAX_SECONDS` (six hours in this deployment). Split such a brief into smaller tasks, one after the other, in the same wave or in different waves. Do not write this limit, or any time limit, in a brief: the specialists are not told it.
 
-Write the plan into the ledger's *Tasks* table before you run it. For a large investigation, first show the user the plan in a few lines.
+Write the plan into the ledger before you run it, and show it to the person in a few lines before the activation question (not inside the question). The plan has five parts:
+
+- the objective, in one sentence;
+- the deliverables, one result each;
+- the waves: which specialist runs in each wave, and what it needs from earlier waves;
+- the expected runs against the ceiling, and the reserve for reruns;
+- the result that would change the plan.
+
+A later change to the plan is a dated note under it: what changed, and which result caused the change. Do not rewrite the plan.
 
 Example plan:
 
