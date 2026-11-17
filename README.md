@@ -83,8 +83,8 @@ description: Core operating procedure for every seismic interpretation task -
 - **The last line** is `<!-- end of skill: <name> -->`. TrueForge replaces a tool
   result of more than about 6,000 tokens with a short preview, and a skill read
   that is cut off fails without any other error. An agent that does not see the
-  end marker knows its read was incomplete, and the gateway does not count such
-  a read as done. `tests/test_live_run_1019_fixes.py` checks that every skill
+  end marker knows its read was incomplete, and the gateway counts a read as
+  done only when it brought back both the `name:` line and the end marker. `tests/test_live_run_1019_fixes.py` checks that every skill
   ends with its marker. Keep each skill well under that size; the longest are
   about 3,300 words.
 
@@ -197,8 +197,9 @@ makes one tool call per step, so each of its skill reads is alone in its step.
 
 The gateway refuses a specialist call until Geo Oracle's chat has read
 `geo-specialist-tasking`, and refuses a checkpoint until it has read
-`geo-result-review`. A read that came back as a truncated preview, without its
-end marker, does not count. After a context compaction, which replaces the
+`geo-result-review`. A skill counts as read only when the chat's reads brought
+back both its `name:` line and its end marker; a read of the end alone does not
+count, and a skill read in pages counts once both parts have come back. After a context compaction, which replaces the
 earlier chat with a summary, Geo Oracle reads both again, because the gateway
 cannot see a compaction.
 
