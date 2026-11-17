@@ -30,10 +30,13 @@ description: How to read correlation_logs and well_tops products and their sidec
 | Kind | Columns | Rules |
 |---|---|---|
 | `biostrat_events` | well, md_m, taxon, event (FO, LO, ACME, FCO, LCO), sample_type (cuttings, core, sidewall, outcrop), confidence | A first occurrence from cuttings is never a datum (caving); it is kept as rank-5 support and flagged. A last occurrence above a younger datum suggests reworking: report it |
+| `biostrat_occurrences` | well, md_m, taxa (several in a cell, separated by `;`; a bracket at the end of an entry is its abundance), sample, sample type | For a list of samples with the taxa in each. The tool derives each taxon's last occurrence (shallowest sample) and first occurrence (deepest sample) in each well. `result.table` is a `biostrat_events` table: give it to the tools that ask for one. An event at the top or the base of the sampling, from one sample only, or from a sample noted as reworked, caved or doubtful (`sample_note`), is not usable as a datum. The events have no age: match the taxa to a zonation or datum list and cite it |
 | `age_dates` | well, md_m, method, age_ma, error_ma, time_scale | Rank 1; the time scale must be stated |
 | `reported_tops` | well, top, md_m, source | Reported ledger (a report's tops when no well_tops product exists) |
 | `marker_table` | well, md_m, marker | Rank 4 |
 | `chemostrat_data` | well, md_m, variable, value | Registered and converted to TVDSS only: no tool reads it yet. Cite it as an observation |
+
+`error_ma` is one standard deviation (1 sigma). If the laboratory gives 2-sigma errors, name the column `uncertainty_2sigma_ma`: the tool halves it into `error_ma`.
 
 In `description`, say who produced the data and how. It travels into the products.
 

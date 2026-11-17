@@ -8,7 +8,8 @@ description: Biostratigraphic events as tie points. It covers sample-type rules,
 ## Events and what they are worth
 
 - A **last occurrence (LO)** is usable from cuttings. Caving carries younger material down, so the highest occurrence of a taxon survives. Reworking can still make its depth too high.
-- A **first occurrence (FO)** from cuttings is not a datum: caving places it too high. From core or sidewall samples, it is a datum. `stg_register_table` marks each event `usable_as_datum`.
+- A **first occurrence (FO)** from cuttings is not a datum: caved material makes it appear deeper than it is. From core or sidewall samples, it is a datum. `stg_register_table` marks each event `usable_as_datum`.
+- A laboratory often gives a list of samples with the taxa in each, not events. Register it with kind `biostrat_occurrences`: the tool derives each taxon's LO and FO in each well and marks each `usable_as_datum`. Do not derive events by hand.
 - Confidence and sample type travel with the event. A datum of low confidence anchors nothing.
 
 ## `stg_order_events`

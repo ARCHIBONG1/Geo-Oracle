@@ -311,7 +311,7 @@ compute tool.
 
 | Skill | Governs |
 | --- | --- |
-| `geo-investigation-planning` | turning an objective into testable questions, tasks and a dependency graph; what to record at activation (the person's constraints, the decision chain, a reserve of runs); waves of tasks started one call at a time; large briefs split to fit one specialist turn; the time budget; retries that change the approach; results built on a replaced result; the final state the closing checkpoint records; the risk gate and the reduction loop, including settled failures |
+| `geo-investigation-planning` | turning an objective into testable questions, tasks and a dependency graph; what to record at activation (the person's constraints, the decision chain, a reserve of runs); waves of tasks started one call at a time; large briefs split to fit one specialist turn; the time budget; retries that change the approach; results built on a replaced result; a contradicted input sent back before the task that builds on it; the final state the closing checkpoint records; the risk gate and the reduction loop, including settled failures |
 | `geo-evidence-inventory` | characterising the available evidence and packaging it for specialists |
 | `geo-specialist-tasking` | the brief for each specialist tool and the job tools, field by field, with common mistakes; starting several specialists one call at a time |
 | `geo-result-review` | the checklist for judging a specialist result before relying on it, including evidence the identifier check set aside and `record.set_aside`, counting lines of evidence from a check's independence class, and reading plan rows, rivals and the evolution |
@@ -343,7 +343,7 @@ gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 | Skill | Covers |
 | --- | --- |
 | `regional-core` | the task procedure, scope tags, the transfer checklist, the memo; the plan rows and alternatives with tests; the method cautions read at planning; methods statements for the investigation report |
-| `regional-data` | areas of interest, the reference-data catalogue, supplied GIS files, grid sampling |
+| `regional-data` | areas of interest, the reference-data catalogue and what to do when a dataset cannot be fetched, supplied GIS files, grid sampling |
 | `regional-stratigraphy` | time-scale discipline, chronostratigraphic charts, hiatuses and overlaps |
 | `regional-structure-stress` | fault trends, the orientation of maximum horizontal stress, stress regime, domain boundaries |
 | `regional-thermal` | heat-flow statistics, conductive geotherms, calibration to corrected well temperatures |

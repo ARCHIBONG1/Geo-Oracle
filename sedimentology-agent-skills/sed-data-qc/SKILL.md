@@ -30,9 +30,9 @@ Read every product's sidecar with `sed_read_product` before you use it. It retur
 
 | Kind | Columns | Notes |
 |---|---|---|
-| `core_description` | well, top_m, base_m, lithology; grain_size, sorting, structures, contacts, bioturbation_index (0-6), colour, fossils, notes | The describer's words are kept; the vocabulary is standardised afterwards |
+| `core_description` | well, top_m, base_m, lithology; grain_size, sorting, structures, contacts, bioturbation_index (0-6, or a range such as 3-4), colour, fossils, notes, accessories, shows | The describer's words are kept; the vocabulary is standardised afterwards. Accessories are read for features; shows are kept, not coded. A row with md_m and no top_m or base_m is a point sample |
 | `cuttings_description` | well, top_m, base_m, lithology; grain_size, percent, notes | Cuttings mix intervals: structures are unreliable, lithology proportions usable |
-| `grain_size_data` | well, depth_m, phi5 ... phi95 | Registered only; no statistics tool yet |
+| `grain_size_data` | well, depth_m, phi5 ... phi95 | Registered only; no statistics tool yet. If the file has no well column, give the well in the `well` argument |
 | `point_count_data`, `xrd_data` | well, depth_m, quartz/feldspar/lithics or mineral/percent | Registered only; no composition tool yet |
 | `analogue_table` | system, body_type, thickness_m, width_m, length_m, source, n | Always `[analogue]` |
 | `photo_index` | file, well, top_m, base_m, lighting, scale_bar_mm | Images without a scale cannot support size statements; `sed_render(kind='core_photos')` draws them in depth order (shift to log depth to draw them beside the graphic log) |

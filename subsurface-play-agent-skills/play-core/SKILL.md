@@ -163,6 +163,7 @@ implementation is correct.
 3. No probability, percentage or score anywhere near an element or a play.
 4. Every play with its PT1-PT7; the alternative concept assessed where named.
 5. Products as `Product:` lines; figures as `Figure:` lines.
+- If any figure was drawn, the reply starts with each figure's markdown line and a one-line caption. The findings JSON comes after them.
 
 ## Methods statements
 

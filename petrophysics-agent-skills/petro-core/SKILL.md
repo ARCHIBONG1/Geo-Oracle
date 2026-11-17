@@ -206,6 +206,7 @@ implementation is correct.
 7. Every `required_outputs` item is produced, or listed in `limitations` with the reason.
 8. Every figure drawn is in `figures` and has a `Figure: …` line in `conclusions`. Every download the user asked for has a `Download: …` line, and every product that another specialist needs a `Product: …` line.
 9. The object is under about 10,000 characters, with no curves or tables in statements.
+- If any figure was drawn, the reply starts with each figure's markdown line and a one-line caption. The findings JSON comes after them.
 
 ## Methods statements
 

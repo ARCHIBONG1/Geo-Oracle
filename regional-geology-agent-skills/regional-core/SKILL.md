@@ -139,6 +139,7 @@ implementation is correct.
 4. `limitations` state resolution and distance to the nearest data.
 5. Competing models are carried, with discriminating evidence.
 6. Products listed as `Product: …` lines; figures as `Figure: …` lines.
+- If any figure was drawn, the reply starts with each figure's markdown line and a one-line caption. The findings JSON comes after them.
 
 ## Methods statements
 

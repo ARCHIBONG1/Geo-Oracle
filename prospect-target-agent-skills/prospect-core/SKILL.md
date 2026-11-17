@@ -130,6 +130,7 @@ implementation is correct.
 4. Every scenario separate, each with its own volume and its discriminating evidence.
 5. The maturity as the tool set it, with the reason.
 6. Products as `Product:` lines; every figure in `result.figures` and from `pt_render` as a `Figure:` line and a `figures` entry.
+- If any figure was drawn, the reply starts with each figure's markdown line and a one-line caption. The findings JSON comes after them.
 
 ## Methods statements
 

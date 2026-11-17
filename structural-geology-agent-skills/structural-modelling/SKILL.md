@@ -14,7 +14,7 @@ description: How to build the structural model (fault planes, horizons per fault
 
   Read `holdout` in the result.
 - **V1 geometric consistency**: cutoffs present on both sides along each fault, with a consistent downthrown side; two horizons do not cross (give `second_horizon`).
-- If the tool cannot read a throw on a fault (for example, another fault is too near), it still builds the model. V1 fails for that fault, and `throw_unreadable` names it. Leave the fault out with `fault_ids`, or merge the two faults if they are one fault zone.
+- If the tool cannot read a throw on a fault (for example, another fault is too near), it still builds the model. V1 fails for that fault, and `throw_unreadable` names it. Merge the two faults if they are one fault zone. Leave a fault out with `fault_ids` only when its throw cannot be read. Report each fault that you leave out. The result and the product name it in `faults_excluded`.
 - `trace_vs_strike_misfit` flags a trace that is not perpendicular to the dip azimuth. The plane follows the trace, and the result gives the misfit.
 - The product `structural_model` carries the ledger (V1, V7 and the untested ones honestly "not tested") and the model grid file. Later tools read the ledger and propagate failures.
 

@@ -148,6 +148,7 @@ implementation is correct.
 3. Every model with its ledger; the alternative built and tested where possible.
 4. Core depths shifted to log depth before any comparison; the depth reference stated.
 5. Image readings flagged; analogues tagged; products as `Product:` lines; figures as `Figure:` lines.
+- If any figure was drawn, the reply starts with each figure's markdown line and a one-line caption. The findings JSON comes after them.
 
 ## Methods statements
 

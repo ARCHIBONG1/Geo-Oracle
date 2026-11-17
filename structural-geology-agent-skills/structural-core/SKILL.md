@@ -47,6 +47,8 @@ It merges the tests (a mixed result is a fail), and returns the status that the 
 
 `proposed` is the status when no test failed but V1 and V7 have not both passed: the tests do not yet support the model. Report it as an idea to test, not as a result.
 
+A fault whose throw contradicts the model stays in the fault set. Flag the fault and report the failed test. Never leave a fault out to make a validity test pass.
+
 ## 3a. Caveats are ceilings
 
 The task brief and the upstream findings will carry caveats. Examples: a Vsh log that is uncalibrated, a stress magnitude that is only bounded, a pore pressure that is assumed, a regional prior with transfer partly unknown. Each caveat lowers the status of the claim that rests on it (`partially_supported` at most), and goes into `assumptions` and `limitations`. No caveat stops a computation. The tools exist to run with stated assumptions and ranges. The ceiling then says how far the result can be trusted. Read a brief that says "do not calculate X without Y" as "calculate X with Y as a flagged assumption or range, and cap the claim", unless Y is a product the tool itself refuses to run without (a depth surface for a closure). Report `insufficient_data` only after the tools have been run or have refused.
@@ -164,6 +166,7 @@ implementation is correct.
 4. Every parameter sourced or flagged as an assumption with its range.
 5. Alternatives stated where the data permit.
 6. Products as `Product: …` lines; figures as `Figure: …` lines.
+- If any figure was drawn, the reply starts with each figure's markdown line and a one-line caption. The findings JSON comes after them.
 
 ## Methods statements
 

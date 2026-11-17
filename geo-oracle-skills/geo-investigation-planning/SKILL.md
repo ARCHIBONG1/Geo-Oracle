@@ -41,7 +41,7 @@ If you call every specialist "for completeness", you add cost and noise, and cre
 
 ## 4. Map dependencies
 
-Call `system_map` before you plan. It shows, for each specialist, what it takes, what it makes, and which specialist uses each product. An edge marked `needed` is a prerequisite: the consumer cannot do that work without the product.
+Call `system_map` before you plan. After a context compaction, call it again before you plan another wave: the summary can lose the map. It shows, for each specialist, what it takes, what it makes, and which specialist uses each product. An edge marked `needed` is a prerequisite: the consumer cannot do that work without the product.
 
 Check each task against the map and against `list_shared_inputs`:
 
@@ -51,6 +51,8 @@ Check each task against the map and against `list_shared_inputs`:
 - The gateway warns when a task starts before a `needed` product exists. If the task asks for that work, the warning shows a planning error: correct it. If the task does not ask for that work, ignore the warning.
 - Fault seal reads the `vshale_log` in TVDSS. The log has TVDSS only when the well's trajectory exists before the shale-volume step runs. Ask petrophysics for the trajectory first.
 - `structural_geology` needs the `horizon` and `fault_set` in depth, not in time.
+- A result can contradict an input that the next task builds on. Send the contradiction back first. Brief the specialist that made the input with a `follow_up` or a `validation`, and give both values and their sources. Start the dependent task after that result.
+- If the contradiction stays open, write it in the dependent task's `known_unknowns` as a condition, with both values. The specialist then states which value its result uses.
 
 `regional_geology` and `literature_review` give context and analogues. These are context, not local evidence. `risk_uncertainty` runs after the play and prospect work, then again in `follow_up` mode after the reduction wave (section 4a).
 

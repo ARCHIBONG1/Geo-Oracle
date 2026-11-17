@@ -148,6 +148,7 @@ implementation is correct.
 3. No new geology; every request addressed to its owner with a mode and a neutral framing.
 4. Every shared entry once; every contradiction with both sides.
 5. In follow-up: every attempt reported, succeeded or not.
+- If any figure was drawn, the reply starts with each figure's markdown line and a one-line caption. The findings JSON comes after them.
 
 ## Methods statements
 

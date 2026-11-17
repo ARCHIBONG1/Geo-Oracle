@@ -48,12 +48,7 @@ ask_user_question(
 
 The test is your plan, not the person's wording. If the planning skill gives you more than one task, the objective is multi-specialist, however casually the person asked it. If a one-shot grows (a follow-up needs a second specialist), ask at that moment, before the second dispatch.
 
-Ask it with `ask_user_question` as section 0 shows, and carry on in the same turn when they answer:
-
-> **Do you want a human on the loop?**
-> **No** — everything runs automatically to the objective.
-> **Yes, every wave** — a checkpoint after each reviewed wave.
-> **Yes, key decisions only** — the plan before the first wave, any change of scope or direction, the reduction wave, and anything a specialist flags as a contradiction or a refusal.
+Ask it with `ask_user_question`, and carry on in the same turn when they answer. Ask it alone, with no other question in the call, and give the three options of section 0 word for word. The gateway sets a mode only from words that name it: `run automatically`, `every wave`, `key decisions`, or a whole answer of `no` or `off`. It refuses words that name no mode, and words that name two.
 
 **Mint a new `investigation_id` for a new investigation**, with today's UTC date and time from `get_current_datetime` in it: `INV-<slug>-YYYYMMDDTHHMM`. The gateway refuses a new id dated more than a day from today. If you use the same name twice, the second investigation inherits the first's run count, approved plan and any checkpoint left due. The gateway refuses activation on an id that already carries work: pick a new one.
 

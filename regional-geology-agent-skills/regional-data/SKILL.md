@@ -24,6 +24,11 @@ description: Areas of interest and regional extents, the geodata snapshot catalo
   - If the task asks for current data, `refresh=true` takes a new snapshot. The old one stays.
 - **Custom datasets** (a national survey's download, a published compilation): `reg_fetch_dataset(<new id>, custom={url, name, version, licence, resolution, kind, columns...})`. Take every item from the dataset's own documentation, never guess it. Report a download that fails in `limitations`, and do not work around it.
 - **A dataset that is neither catalogued nor fetchable cannot be used.**
+- **A public source can close or move.** The catalogue lists such a dataset under `not_available`, or `reg_fetch_dataset` refuses it and gives the reason. Then:
+  - Do not use another dataset in its place. Do not use a value from memory.
+  - Write one `missing_data` entry for each dataset: `user: <dataset name> — a copy of the file (<grid, points or vector>) — <what the task needs it for>`. Geo Oracle then asks the person for it.
+  - Say in `limitations` which required outputs are missing because of it, and give the refusal's reason.
+  - Continue with the parts of the task that do not need the dataset. A supplied copy is registered with `reg_register_layer`.
 - Use datasets by id as `source` (e.g. `wsm2016`, `ghfdb2024`, `gem_faults`, `etopo2022`, `globsed`, `usgs_comcat_<region>`). Column mappings (azimuth, quality, heat flow, magnitude) come from the catalogue. Override them only when a supplied file uses other names.
 - Cite every value as `prov:<id>; <dataset name> <version>` with `source_type` `literature` (a published compilation).
 
