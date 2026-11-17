@@ -33,7 +33,7 @@ A specialist's answer can only be as good as its brief. A good brief gives the s
 | `previous_task_id`, `reason_for_reanalysis` | For every non-initial mode | Leaving them empty |
 | `check_targets` | Validation or challenge: the claim ids tested (ledger; a plan's `settles`) | Prose |
 | `instructions` | Leave empty: it replaces the default brief | Duplicating the output format, which the gateway already enforces |
-| `specialist_session_id` | Leave it empty: the gateway continues each specialist's session for the investigation itself (section 2). Name one only to continue a session from an earlier investigation | Copying an id from your notes or ledger; using it for validation or challenge (refused) |
+| `specialist_session_id` | Leave it empty: the gateway continues each specialist's session for the investigation itself (section 2). Name one only to continue an earlier investigation's session from this chat | Copying an id from your notes or ledger; using it for validation or challenge (refused) |
 | `wait_seconds` | Omit it on a single call, so the gateway's default applies; `0` whenever another specialist starts in the same wave; never above the gateway's cap (its description states it: the harness's per-call timeout minus a margin) | Very short waits that force extra polling; a wait that outlasts the harness, which returns a server-execution-timeout and nothing else |
 
 ## 1a. Caveats are ceilings, not prohibitions

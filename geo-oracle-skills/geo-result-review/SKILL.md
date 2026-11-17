@@ -120,7 +120,7 @@ Trace each supporting id back to its origin:
 - Two specialists who both rely on `T03-seis/E2` provide one line of evidence, not two.
 - A local interpretation built on a literature analogue, plus that same analogue, is one line.
 - Log-derived facies and core-described facies from the same interval are independent only if the log interpretation was not calibrated to that core description.
-- A re-check by the same specialist is a second line only if it ran in a fresh session (`session_route` says so), was briefed blind (the question, not the earlier answer), and used a different method, parameters or data. A re-check in the investigation's session, or one that repeated the same method on the same data, is the same line. The specialist's tools return the earlier result for identical inputs.
+- A re-check by the same specialist is a second line only if it ran in a fresh session (`session_route` says so), was briefed blind (the question, not the earlier answer), and used a different method, parameters or data. A re-check in the investigation's session, or one that repeated the same method on the same data, is the same line. Identical inputs give the same provenance id.
 
 - A validation or challenge result carries the gateway's `independence` class, read from the computations it cites. Count lines from the class, not from the result's prose:
   - validation: `same computation`, `same method and data, other parameters` and `no computation cited` are the same line. `new evidence` is a second line. `earlier computations of other tasks` re-uses other tasks' results, so it adds only the lines those tasks hold. `not classified` means the checked task is not stored: judge it from `session_route`, the brief and the `m:` ids;

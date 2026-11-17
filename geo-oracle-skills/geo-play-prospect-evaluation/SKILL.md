@@ -48,6 +48,8 @@ A play can remain a viable hypothesis while several of its elements are unknown.
 
 **Screening.** Earlier in the investigation, you may run it explicitly as a screening, to identify which elements lack evidence. Set `required_outputs` accordingly, and label the result "screening".
 
+**After a screening.** A screening is a statement about the evidence at the time it ran. When a result that the screening lacked arrives later (the trap, the reservoir, the seal or the charge evidence), run the evaluation again before you close the investigation. Send it as `reanalysis`, with `previous_task_id` set to the screening task and the new result in `upstream_task_ids`. A risk result that used the screening needs the same rerun. If you do not run it again, record in the ledger why the screening result still stands.
+
 **Brief contents.** Pass the following:
 - the domain (one of the five) and the play types in scope;
 - the per-element findings, as `upstream_findings` with global ids, classes and their `[regional]` or `[analogue]` scope tags. Include the findings against an element;
