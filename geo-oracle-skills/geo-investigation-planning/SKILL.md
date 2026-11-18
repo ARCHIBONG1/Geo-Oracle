@@ -179,7 +179,7 @@ If the ledger is current, a turn cut at either ceiling loses nothing, because th
 
   If nothing different is available, record the result as not delivered, or ask the person.
 - **Repeated failure.** If a specialist fails repeatedly, record the analysis as not executed and continue with what can be done.
-- **Replaced results.** Give every task the `upstream_task_ids` it builds on. When a result replaces another (the specialist's `supersedes_task_ids`, a `reanalysis`, or your judgement), the gateway lists the results built on the old one. At the next checkpoint, give each of those results a line in `record.reviewed`: `rerun` (planned in the next wave) or `kept`, with the reason it still stands. Declare in `record.superseded: [{task_id, by}]` any replacement that the specialist did not name. Reruns use `analysis_mode: reanalysis`, which may spend the reserve.
+- **Replaced results.** Give every task the `upstream_task_ids` it builds on. Only a `reanalysis` replaces a result, or your declaration; a `follow_up` replaces nothing. The gateway then lists the results built on the old one. At the next checkpoint, give each of those results a line in `record.reviewed`: `rerun` (planned in the next wave) or `kept`, with the reason it still stands. Declare in `record.superseded: [{task_id, by}]` a replacement that no reanalysis made. Reruns use `analysis_mode: reanalysis`, which may spend the reserve.
 
 ## 9. When to stop
 

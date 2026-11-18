@@ -1,11 +1,11 @@
 ---
 name: geo-investigation-report
-description: How Geo Oracle closes an investigation and, when the person asks, gets the formal investigation report written and reviews it. Use at the close of every investigation (when the closing checkpoint is filed), and whenever the person asks for a report, a formal report, a write-up or a PDF of a closed investigation. Covers the Synthesis section, the Final status block, the synthesis given to the person, the ledger download, the closing sentence, request_report, report_draft, the three review rounds and the delivery.
+description: How Geo Oracle closes an investigation and, when the person asks, gets the formal investigation report written and reviews it. Use at the close of every investigation (when the closing checkpoint is filed), and whenever the person asks for a report, a formal report, a write-up or a PDF of a closed investigation. Covers the Synthesis section, the Final status block, the synthesis given to the person, the ledger download, the closing sentence, request_report, report_draft, the record check, the three review rounds and the delivery. How to edit the report (the commission, the reader, the notes and the verdict) is in geo-report-editor, which you read next.
 ---
 
 # The close and the investigation report
 
-The person gets the ledger at the close of every investigation. The formal report is optional: the literature specialist writes it only when the person asks. You review the draft against your ledger before the person sees it.
+The person gets the ledger at the close of every investigation. The formal report is optional: the literature specialist writes it only when the person asks. You are its editor in chief: read `geo-report-editor` when a report is requested, before you call `request_report`, and again each time a draft comes back. This skill gives the mechanics; that one gives the editing.
 
 ## 1. The close
 
@@ -120,13 +120,13 @@ If `report_draft` gives `release_problem_owner: renderer`, the PDF failed a chec
 
 If `report_draft` gives a `release_note` about the drafting run's procedure (`process_audit`), or the drafting run carries the warning `Process audit: skills not opened: lit-investigation-report` or `... lit-report-writing`, the writer drafted without its procedure. Do not deliver it. Send the round back with a review note that asks it to read the skills and redraft from every part of the bundle.
 
-**The warnings are review notes.** Read every page of the warnings. Send each drift and content warning back in your review notes, one subject per note, unless your review of the paragraph shows that it does not apply. When you deliver the report, say why each warning you did not send back does not apply. The style warnings are advice; send back only those that make a paragraph unclear. A warning that Results and Discussion have no figure while the bundle holds figures always goes back as a note: name the figures the writer should place. The process-audit items of a drafting run about findings, figures carried or evidence classes do not apply to a report: do not send them as notes.
+**The warnings.** Read every page of the warnings. `geo-report-editor`, section 4, says which go back and which are for your judgement. A warning that Results and Discussion have no figure while the bundle holds figures always goes back as a note: name the figures the writer should place. The process-audit items of a drafting run about findings, figures carried or evidence classes do not apply to a report: do not send them as notes.
 
 **Read the run's `next_action` first.** If the writer's turn ended in an error after the round rendered, the `next_action` says so: the draft is on file. Review it with `report_draft`. Do not ask for the round again.
 
 If the drafting run rendered nothing, the gateway starts the round's next run itself: the run's `next_action` names the new job. Collect it with `get_specialist_result` and do not call `request_report` for it. A round runs at most three times, and a run costs no round. If the `next_action` instead says to call `request_report(investigation_id)` again, do so. Do not tell the person that the report failed while a run is left. Only when the `next_action` says no run is left, or the gateway refuses another run, read the last run's message, and tell the person that the report could not be produced, and why.
 
-Compare each paragraph with your ledger. Each of these is a contradiction:
+**The record check.** Compare each paragraph with your ledger. Each of these is a contradiction:
 
 - a conclusion stated more strongly or more weakly than its ledger status;
 - a claim, number or source that the ledger and the findings do not hold, including a reference whose author, year or title is not the source the literature specialist found;
@@ -148,8 +148,8 @@ The text may contain no ids; the hidden tags carry them. Do not ask the writer t
 
 ## 6. Send it back, or deliver it
 
-- **Contradictions found:** call `request_report(investigation_id, review_notes=[...])`, one contradiction for each note. Name the paragraph (section and number), what it says, and what the ledger holds. Then collect the run and review again.
-- **No contradictions, and the release checks passed:** deliver it.
+- **Notes to send** (`geo-report-editor`, section 5): call `request_report(investigation_id, review_notes=[...])`, one note for each entry. A note on a contradiction names the paragraph (section and number), what it says, and what the ledger holds. Then collect the run and review again.
+- **The verdict is accept** (`geo-report-editor`, section 6), and the release checks passed: deliver it.
 - **Three rounds are the limit.** After the third round, deliver the last report with your remaining objections, but only if it passed its release checks. If it failed them, it has no download link: tell the person that it could not be released, and why.
 
 Deliver it in a short message:

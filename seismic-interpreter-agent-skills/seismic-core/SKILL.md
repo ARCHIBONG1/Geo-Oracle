@@ -22,10 +22,10 @@ What each mode asks of you:
 | analysis_mode | What it asks |
 |---|---|
 | initial | Characterise the data and answer the question at the resolution the data allows. |
-| follow_up | Answer the narrower question. If the task gives the provenance ids of earlier results, reuse them through `seismic_get_record`. |
+| follow_up | Answer the narrower question. If the task gives the provenance ids of earlier results, reuse them through `seismic_get_record`. It replaces nothing: leave `supersedes_task_ids` empty. |
 | validation | Answer the question afresh. If the brief names a method, parameters or data different from the run being checked, use them. The brief may withhold the earlier answer on purpose. Report what you measured: Geo Oracle compares. |
 | challenge | Actively look for evidence against the named interpretation. Report what would falsify it. |
-| reanalysis | Redo the work with the changed inputs or parameters named. Set `supersedes_task_ids`. |
+| reanalysis | Redo the work with the changed inputs or parameters named. Run the tools again: do not give the earlier result again. The result replaces the task in Previous task ID; list any other task that it redoes in `supersedes_task_ids`. |
 
 `check_outcomes`: when the brief lists 'Claims to test', give one entry per claim: `target` (the claim id), `verdict` (`supported`, `contradicted`, `unresolved` or `not_tested`), the `evidence_ids` of your own evidence that decide it, and a one-sentence `basis`. A verdict says what your evidence shows, not whether the claim is true. A blind validation has no such list: leave it empty.
 
@@ -142,6 +142,7 @@ Every result states the following:
 Before your first tool call, write one `plan` row for each numbered required output. The row gives the tool chain that serves the output, and its status. At the end, bring the rows up to date:
 - `delivered`, with the product (`@agent/products/<file>`) or the provenance id that holds it;
 - or `partial`, `not_done` or `refused`, with what stopped it in `blocked_by`.
+- or `not_deliverable`, only when the supplied data cannot give the output whatever you run: name the missing input in `blocked_by`. A tool that failed or a check that did not pass is not that.
 
 The gateway compares the rows with the brief. An output left open goes to Geo Oracle's checkpoint by its token. After you write the plan, read the cautions of the tools in the plan once: `seismic_method_provenance(tool='<tool>, <tool>', verbosity='cautions')`. A caution says what a method means for its number (a bound, a proxy, an uncalibrated value, a design rule). Each result also carries the cautions of the methods it ran. Carry every caution that applies to a result into its limitations.
 

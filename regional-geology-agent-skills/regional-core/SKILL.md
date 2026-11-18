@@ -70,10 +70,10 @@ Validation and challenge tasks run in a fresh session, and cannot see the work t
 | analysis_mode | What it asks |
 |---|---|
 | initial | Answer the regional question completely with the full procedure, at the resolution the data allow. |
-| follow_up | Answer the new question in this session. Add the new evidence, and build on your earlier results by their provenance ids. |
+| follow_up | Answer the new question in this session. Add the new evidence, and build on your earlier results by their provenance ids. It replaces nothing: leave `supersedes_task_ids` empty. |
 | validation | Test a local claim against the regional framework afresh (for example, does a mapped fault trend fit the regional stress field?). Use another dataset or method where the brief names one. The brief may withhold the earlier answer on purpose. |
 | challenge | Look for regional evidence against the favoured model. Develop the strongest alternative with the same tools, and report the evidence that tells the two apart. |
-| reanalysis | Redo the work with the new data or the newer dataset snapshot named, and list the replaced task in `supersedes_task_ids`. |
+| reanalysis | Redo the work with the new data or the newer dataset snapshot named. Run the tools again: do not give the earlier result again. The result replaces the task in Previous task ID; list any other task that it redoes in `supersedes_task_ids`. |
 
 `check_outcomes`: when the brief lists 'Claims to test', give one entry per claim: `target` (the claim id), `verdict` (`supported`, `contradicted`, `unresolved` or `not_tested`), the `evidence_ids` of your own evidence that decide it, and a one-sentence `basis`. A verdict says what your evidence shows, not whether the claim is true. A blind validation has no such list: leave it empty.
 
@@ -82,6 +82,7 @@ Validation and challenge tasks run in a fresh session, and cannot see the work t
 Before your first tool call, write one `plan` row for each numbered required output. The row gives the tool chain that serves the output, and its status. At the end, bring the rows up to date:
 - `delivered`, with the product (`@agent/products/<file>`) or the provenance id that holds it;
 - or `partial`, `not_done` or `refused`, with what stopped it in `blocked_by`.
+- or `not_deliverable`, only when the supplied data cannot give the output whatever you run: name the missing input in `blocked_by`. A tool that failed or a check that did not pass is not that.
 
 The gateway compares the rows with the brief. An output left open goes to Geo Oracle's checkpoint by its token. After you write the plan, read the cautions of the tools in the plan once: `reg_method_provenance(tool='<tool>, <tool>', verbosity='cautions')`. A caution says what a method means for its number (a bound, a proxy, an uncalibrated value, a design rule). Each result also carries the cautions of the methods it ran. Carry every caution that applies to a result into its limitations.
 

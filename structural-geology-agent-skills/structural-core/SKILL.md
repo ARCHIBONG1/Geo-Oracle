@@ -95,10 +95,10 @@ Validation and challenge tasks run in a fresh session, and cannot see the work t
 | analysis_mode | What it asks |
 |---|---|
 | initial | Answer the question at the resolution the data allow. |
-| follow_up | Answer the narrower question in this session; build on your earlier results by their provenance ids. |
+| follow_up | Answer the narrower question in this session; build on your earlier results by their provenance ids. It replaces nothing: leave `supersedes_task_ids` empty. |
 | validation | Build the model or measure the quantity afresh, with another method, parameter set or data where the brief names one (throw from cutoffs, seal from the smear factor as well as the gouge ratio). Run the validity ledger on what you build. The brief may withhold the earlier answer on purpose. |
 | challenge | Build the strongest alternative structural model (another fault linkage, trap geometry or stress regime), run the same tools on it, and report the observations that tell the two apart. An alternative argued without a tool run is not a test. |
-| reanalysis | Redo the work with the changed inputs named, and list the replaced task in `supersedes_task_ids`. |
+| reanalysis | Redo the work with the changed inputs named. Run the tools again: do not give the earlier result again. The result replaces the task in Previous task ID; list any other task that it redoes in `supersedes_task_ids`. |
 
 `check_outcomes`: when the brief lists 'Claims to test', give one entry per claim: `target` (the claim id), `verdict` (`supported`, `contradicted`, `unresolved` or `not_tested`), the `evidence_ids` of your own evidence that decide it, and a one-sentence `basis`. A verdict says what your evidence shows, not whether the claim is true. A blind validation has no such list: leave it empty.
 
@@ -107,6 +107,7 @@ Validation and challenge tasks run in a fresh session, and cannot see the work t
 Before your first tool call, write one `plan` row for each numbered required output. The row gives the tool chain that serves the output, and its status. At the end, bring the rows up to date:
 - `delivered`, with the product (`@agent/products/<file>`) or the provenance id that holds it;
 - or `partial`, `not_done` or `refused`, with what stopped it in `blocked_by`.
+- or `not_deliverable`, only when the supplied data cannot give the output whatever you run: name the missing input in `blocked_by`. A tool that failed or a check that did not pass is not that.
 
 The gateway compares the rows with the brief. An output left open goes to Geo Oracle's checkpoint by its token. After you write the plan, read the cautions of the tools in the plan once: `sg_method_provenance(tool='<tool>, <tool>', verbosity='cautions')`. A caution says what a method means for its number (a bound, a proxy, an uncalibrated value, a design rule). Each result also carries the cautions of the methods it ran. Carry every caution that applies to a result into its limitations.
 

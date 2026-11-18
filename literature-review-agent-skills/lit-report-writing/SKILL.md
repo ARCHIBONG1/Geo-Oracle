@@ -1,130 +1,160 @@
 ---
 name: lit-report-writing
-description: How to write each section of the formal investigation report as a scientific report for the people who decide on the investigation. Covers the executive summary and its eight parts, the introduction, the geological setting, the data, the methods with their parameter table, the results by subject with uncertainties and figures, the discussion with its alternatives table, the conclusions and the record of the investigation, hypotheses written by content, naming and terms, captions, the scientific report register, and the checks before a render. Read it after lit-investigation-report, before you write any section, and again before you render.
+description: How to write the formal investigation report so that a person who was not in the investigation can read it and act on it. It covers how to work, a report whose main question stays open, what each section does, paragraphs, terms, numbers and status words, figures and captions, and the renderer's notes. Read it after lit-investigation-report and again before you render. Worked examples are in lit-report-examples.
 ---
 
 # Writing the investigation report
 
-The readers are the people who decide on the investigation: stakeholders and investors, with geoscientists among them. Write the body as you would a paper for a peer-reviewed geoscience journal: the full evidence, the reasoning that connects it, and the limits of what it shows. Write the executive summary for the decision makers, in plain language, with the same rigour.
+A report is an argument. It answers a question for a reader who must decide something and who was not there when the work was done. The investigation gave you the evidence and the conclusions. Your work is to make a reader understand them: what was asked, what the evidence shows, how far it goes, and what would change it.
 
-`lit-investigation-report` gives the mechanics: the bundle, the draft JSON, tags, markers, labels and the render. This skill gives the content and the register of each section. Write from the whole bundle: the digest holds every claim, alternative, limitation and methods statement of every task, and the report must carry them.
+A report is not a list of all that the investigation produced: the appendix is.
 
-## 1. The executive summary
+`lit-investigation-report` gives the mechanics. Open `lit-report-examples` when you draft a section.
 
-The executive summary is the abstract of the report. Write it in eight parts, in this order, one or more paragraphs each, and mark each paragraph with its `part`:
+## 1. How to work
 
-| part | Content | Tags |
+1. **Read the whole bundle first.** Read every required part to its last page before you write a sentence of the report.
+2. **Write the answer before the report.** In your own notes, write one short paragraph: the question the investigation sought to address, the answer it reached, the two or three results that carry that answer, and what stays open.
+3. **Outline the argument.** List the subsections of Results and Discussion, and under each one the point it makes in one sentence. Then give every item a home in the outline before you draft:
+   - every claim that is supported, partially supported, unresolved or contradicted;
+   - every methods statement;
+   - every hypothesis, contradiction and material uncertainty of the ledger;
+   - every figure that shows something a conclusion rests on.
+   An item with no home shows a gap in the outline: change the outline.
+4. **Draft section by section, from the outline.** Write prose first, for the reader, without thinking about ids.
+5. **Reverse-outline each section.** When a section is drafted, write down the first sentence of each paragraph, in order. Read only those sentences, as Geo Oracle will before anything else. They must tell the section's story with no gap and no repeat. Then check each paragraph against its first sentence: the rest of the paragraph is the evidence for it and nothing else. Join, cut or rewrite a paragraph that does not fit. Keep the item it carried by moving it to the paragraph where it belongs.
+6. **Read the whole draft as the reader.** Read from the title to the last line as a geoscientist who does not know this investigation. Mark each place where you would stop.
+7. **Tag last.** When the prose is right, add the tags to each block from the items it rests on.
+8. **Render, and treat what comes back as a proofreader's notes** (section 8).
+
+## 2. What a good report does
+
+It gives the answer early. It shows the reader where things are before it says what was found there. It says once what it does not try to do. It gives a reason for each choice of method. It explains its terms and its figures. Its discussion argues to a picture. It says nothing twice. A rule of this skill that you satisfy with a sentence written only for the rule has failed.
+
+## 3. When the main question stays open
+
+Such a report is not a list of what went wrong. It tells the reader three things:
+
+- **What the investigation sought to establish:** the question, and what answer would have supported the decision.
+- **What it established:** the findings that stand, with their evidence. A thing shown to be absent, or not a factor, is a finding.
+- **What it did not establish:** each item with why it could not be established from the supplied data, the candidate explanations that remain, and the data or test that would decide between them.
+
+The executive summary carries this in full (its `delivered`, `results` and `open_items` parts). The body does not repeat it: Results give the evidence for each finding, and the Conclusions give only the answer and what would settle the open items.
+
+## 4. The sections
+
+### 4.1 Executive summary
+
+The executive summary is the abstract of the report, written for the people who decide. It is in plain language, with the same rigour as the body. Write it last, from the finished body, in eight parts, in this order, and mark each paragraph with its `part`:
+
+| part | What the reader gets | Tags |
 |---|---|---|
-| `background` | From the broad to the particular: the geological and business context of the area, then the area and its data, then the task. One or two sentences of general geoscience context are allowed here and nowhere else, with no number and no claim about this area. Give context; do not define methods. | `frame` |
-| `objective` | The primary objective, as the requester asked for it. | `frame`, the task ids |
-| `decision` | The decision the work supports, and what was asked. | `frame` |
-| `delivered` | What was delivered and what was not, in one paragraph. | the claim ids and hypotheses |
-| `results` | The principal results, each with its key numbers, its uncertainty and its ledger status in words. | the claim ids and hypotheses, and the evidence ids that hold the numbers |
-| `open_items` | The open items, and why each matters to the decision. | the contradictions, uncertainties and open hypotheses |
-| `confidence` | The confidence in the answer, and the main limitations. | the uncertainties and the claims they limit |
+| `background` | Where and what: the area, the data, the setting of the question. One or two sentences of general context are allowed here and nowhere else, with no number and no claim about this area. | `frame` |
+| `objective` | What the investigation sought to address. | `frame`, the task ids |
+| `decision` | The decision that the reader faces, then the answer, said plainly ("The evidence does not yet support a well"). Never "the work supports the decision whether ...": it reads as a yes. | `frame` |
+| `delivered` | What the investigation sought to establish and what it delivered. | the claim ids and hypotheses |
+| `results` | What was established: the principal results, each with its key number, its uncertainty and its status in words. | the claim ids, hypotheses and the evidence ids that hold the numbers |
+| `open_items` | What was not established, and why each matters to the decision. | the contradictions, uncertainties and open hypotheses |
+| `confidence` | How far the answer can be trusted, and the limitations that matter most. | the uncertainties and the claims they limit |
 | `next_steps` | What would settle the open items. | the hypotheses and uncertainties they would settle |
 
-Rules:
+- Write 250 to 500 words. Explain each technical term in a few words. Give no number without its meaning.
+- The eight parts are one account, not eight answers. State the decision once. Write the results as sentences that a person who decides can read, not as a row of statuses.
 - `frame` is a tag when the ledger has a Frame section; when it has none, tag these parts with the task ids.
-- The Final status block of the ledger is the source of the conclusions, at the status each holds there; without one, take them from the Hypotheses table and the closing summary. Add no conclusion. Numbers and status words may be added.
-- Tag every ledger hypothesis in the summary, written by its content with its status; the renderer refuses a summary that misses one.
-- Write 250 to 500 words. Write numbers with their units.
-- Geo Oracle's closing summary is the anchor: keep each of its conclusions and each of its negations. The Synthesis section of the ledger, when present, gives how the results combine: use it in `results`, `open_items` and `confidence`.
+- The conclusions are those of the ledger's Final status block, at the status each holds there (without one, the Hypotheses table and the closing summary). Keep each conclusion and each negation of Geo Oracle's closing summary. Every ledger hypothesis is in the summary, by its content. Add no conclusion; numbers and status words may be added.
 
-## 2. Introduction
+### 4.2 Introduction
 
-Four movements, in this order, each one or more paragraphs:
-1. **The problem**: the geological question, why it matters for the decision, and the area.
-2. **Prior work**: what published studies and the project's own reports establish about the area and the question, cited. You may search for and verify published work for this (`lit-investigation-report`, section 5). When neither the bundle nor your search finds any, say so in one sentence.
-3. **The question**: the objective and the decision, in the form "The decision this work supports is ...".
-4. **The contribution**: what this investigation adds, its scope and its exclusions, and one sentence on the structure of the report.
+Four movements, each one or more paragraphs:
+1. **The problem.** The geological question, why it matters to the decision, and the area.
+2. **What was known or claimed before.** What published work and the project's own records say about the area and the question, cited. When neither the bundle nor your search gives any, say so in one sentence.
+3. **The question.** The objective, and the decision that it serves.
+4. **Purpose and scope.** What this investigation set out to do, the scale it works at, and what it does not try to do, each with the reason.
 
-## 3. Geological setting
+### 4.3 Geological setting
 
-The regional and local geology: the basin, the structural and stratigraphic framework, and the units the study names, from the literature evidence, from the regional, stratigraphy and sedimentology findings, and from published work you verified. Cite each source in the clause it supports. Name the formations the well tops give, with their depths or times.
+The regional and local geology that the reader needs for the argument, and no more: the basin, the structural and stratigraphic framework, and the units the study names, with the formations the well tops give and their depths or times. Take it from the literature evidence, the findings and published work you verified, each cited in the clause it supports. Write no result here. The setting is never empty: when no regional work ran, build it from what the investigation holds (the units in their order with the depths that the well tops give, the ages that the supplied data give, what the core shows the reservoir to be), and say in one sentence what is not known. When the data are synthetic, set `setting_title` to `Description of the synthetic model` and describe what the model represents, its dimensions and its known properties.
 
-When the data are synthetic (the objective or the data say so), set `setting_title` to `Description of the synthetic model` and describe the model: what it represents, its dimensions and its known properties, from the bundle. Write no result in this section.
+### 4.4 Data
 
-## 4. Data
+Refer to the data table as `[[tab:data]]`. Then describe the data by kind, not file by file: what each data set covers, its quality as the quality control found it, its gaps, and what each gap prevents.
 
-The renderer prints the data table at the top of the section. Refer to it as `[[tab:data]]`. Then describe the data as the findings report them: each data set, its coverage, its quality (the quality control results), its gaps and what they prevent, and the products that later stages used. When the bundle lists no data, name the inputs in the text.
+### 4.5 Methods
 
-## 5. Methods
+Write the methods as one workflow that a geoscientist could repeat, in the order the science needs (data preparation, well products, seismic quality control, well ties, horizons, faults, depth conversion), not the order in which the tasks ran. Open each stage with a heading block.
 
-Write the methods by stage of the workflow, not task by task: data preparation, well products, seismic quality control, well tie, horizons, faults, bodies, attributes, depth conversion, follow-up work. Open each stage with a heading block.
+Say what was done at each stage and, when the findings say why, why the method suits these data. Cite the source of a method in the clause that names the step: the source of the method that ran, not a general text for a common operation. When a method was tried and set aside, say so in a sentence, with the reason.
 
-- **Keep each methods statement whole.** Every method it names and every number it states stays in Methods, at its stage. Re-order and connect the statements so that each stage reads as one procedure, but merge nothing away: two statements that ran the same method with different settings are two statements. The renderer refuses a statement that lost a method or a fair part of its numbers.
-- **When many statements are lost**, do not shorten them again. Put the statements under their stage headings first, then copy each one's method names and numbers into the text as the statement gives them, and connect the sentences around them. Summarise nothing.
-- **The role of each method in words.** Say what each method does in this workflow and why it was chosen, when the findings state why: "The horizons were tracked with a waveform-correlation tracker [[m:...]], seeded at the well ties, because ...". Cite the method in the clause that names the step.
-- Name the specialist by discipline once per stage, not in each sentence.
-- A method with no published source prints a star; write nothing else for it.
-- If a methods statement was set aside, write one sentence: which results depend on it, and that the record of the method is withheld.
-- **The parameter table.** End the section with a table block of the computations: step, method, the key parameters and their values, from `lit_read_bundle(part="parameters")`. Group the rows by stage. Copy the values as recorded.
+Let the parameter table carry the settings. End the section with a table of the computations (step, method, key parameters and values, from `lit_read_bundle(part="parameters")`), grouped by stage, with the values copied as recorded. The prose then explains the choices and does not recite the values.
 
-## 6. Results
+Every methods statement of the specialists must be carried whole: each method it names is cited at its stage, and each number it states is written: a setting in Methods (prose or table), an outcome (a value measured, a shift found, a count) in Results. Plan this in the outline (section 1, step 3). When many statements are lost at a render, the outline is at fault, not the wording: go back to the stages, give each lost statement its stage, and write that stage again as one procedure with its numbers in the table. Do not add a paragraph for each lost statement at the end of the section.
 
-One subsection per subject, with a heading block: the input data, the well products, the well ties, the horizons, the faults, the bodies, the attributes, the depth conversion, and so on. Within a subsection:
+Methods describe procedures. A measured value or an outcome ("the panel failed", "the median throw is ...") is a result and belongs in Results. A method with no published source prints a star; write nothing else for it. If a methods statement was set aside, say in one sentence which results depend on it and that the record of the method is withheld.
 
-1. **Every claim** of the subject that is supported, partially supported, unresolved or contradicted, written with its evidence and its status in words, and tagged with its claim id. The renderer refuses a report that leaves one out.
-2. **Measurements carry their uncertainty**: write "1250 ± 6 ms", or the range or spread the findings give. When no uncertainty was computed, say so: "no uncertainty was computed for the throw". Status words (supported, unresolved) belong to interpretations and hypotheses, not to a measurement.
-3. **Figures and tables**: refer to each figure or table in the sentence that uses it, and say what it shows: the trend, the structure, the anomaly, and its scale. Put numbers that compare three or more items in a table block: well ties, horizon statistics, fault throws and distances, depth ranges and their uncertainties.
-4. **The specialists' limitations** of each result, with the result.
-5. **Products not released** (a diagnostic map, a failed track) go under one heading, "Diagnostic products not released"; say in the first sentence why they are shown.
+### 4.6 Results
 
-Results report; they do not argue. The argument belongs in the Discussion.
+**Orient the reader first.** Before the first result, say where things are, as far as the record shows: the wells, the features that the results name, and how each mapped level relates to the level the decision is about. Use the map that shows them together when the record has one. Where the record does not show a position or a relation, say so there: it is a limit of the result (`lit-report-examples`, section 12).
 
-## 7. Discussion
+Results say what was found, one subject to a subsection, under a heading block. Open each subsection with its point: what was found about the rock, not what happened to a table or a tool. Then give the evidence with its numbers, and read the figure in the sentence that uses it (section 7). Where the supplied material claimed or implied something, set the finding against it: what was believed, what was found, and the one reason for the difference. When two supplied records disagree, the disagreement is the finding: write neither of them as shown. Give a limitation where one changes how the result can be used, with what it changes; a result with no such limit needs no sentence about limits.
 
-1. **How the results combine.** The investigation's reading of its results together: what depends on what, where the results agree, and where they disagree. Carry Geo Oracle's Synthesis section here and tag those paragraphs `synthesis`; the renderer refuses a report that leaves it out when the ledger has one.
-2. **The alternatives.** For each hypothesis and each claim with a recorded alternative: the competing readings, the evidence for and against each, and the test that would decide between them, and whether it ran. Give them in a table block with the columns reading, evidence for, evidence against and deciding test, and discuss the ones that matter to the decision in the text.
-3. **The contradictions** the ledger preserves, with their discriminating evidence.
-4. **Comparison with published work**: how the results compare with published studies of the area or of analogues, cited. A comparison gives context; it never changes a conclusion. Where published work differs from a result, say so and say what would explain the difference.
-5. **Limitations**: what the data and the methods could not do, and the material uncertainties, each with the conclusion it can change.
+A measurement carries its uncertainty, range or spread ("1250 ± 6 ms"); when none was computed, say so. Status words belong to interpretations and hypotheses, not to a measurement.
 
-## 8. Conclusions
+A claim that the argument needs has its home in a subsection. A claim that it does not need goes in one labelled table at the end of Results (finding, status), tagged with those claims and introduced by one sentence. Never close Results with a run of one-sentence paragraphs, one for each claim left over.
 
-1. The answer to the objective, at the status the Final status block gives it.
-2. Each hypothesis, by its content, with its status in words.
-3. What would settle each open item.
-4. A heading block "Record of the investigation", then one paragraph: the tasks that did not run or ran again, and the records that were withheld, in a sentence each, without platform words. Name a task by its content, not its id. Tag the paragraph with the ids the ledger's Tasks table holds for those runs, and with the task that replaced a superseded one.
+Every claim that is supported, partially supported, unresolved or contradicted is in a subsection or in that table, with its status in words; a superseded claim is written as superseded, with the claim that replaced it. Nothing about how the report was made belongs here (which figures were left out, what was not supplied to you). Diagnostic products that were not released go under one heading, "Diagnostic products not released", with the reason they are shown in its first sentence.
 
-An execution event (a task cut off, a dropped connection, a task run again or split) is not a scientific limitation; it goes in the record paragraph only. A withheld record is a fact about the provenance of a result: say it once, where the method or the result is ("The record of the fault orientations was withheld, so the dips rest on the specialist's statement only"), without saying why.
+### 4.7 Discussion
 
-## 9. Naming, terms and labels
+Write the discussion as an argument, in this order:
+1. **What the results mean together.** Which result depends on which, where they agree, where they disagree, and what follows for the question. Geo Oracle's Synthesis section is the source: write its reading into this argument, and tag those paragraphs `synthesis`. Do not go through the results again one by one: end on the picture that the evidence favours, at its status, and on what the reader cannot yet be told.
+2. **The rival readings.** For each hypothesis and each claim with a recorded alternative: the competing readings, the evidence for and against each, the test that would decide, and whether it ran. Give them in a table block with the columns reading, evidence for, evidence against and deciding test. In the text, discuss those that matter to the decision, and say which the evidence favours.
+3. **The contradictions** the ledger preserves, each with what would resolve it, weighed in prose: which of them the decision turns on, and why. Sentences of one form in a row are a list.
+4. **Comparison with published work,** cited. It gives context and never changes a conclusion. Where it differs from a result, say so and say what would explain it. With no published work, leave this part out.
+5. **Limitations.** What the data and methods could not do, each with the conclusion it can change and the conclusions it leaves standing.
 
-- **Ledger labels are tags, never text.** Write a hypothesis by its content and status ("the hypothesis that the closure holds oil, which remains weakly constrained"), a contradiction by its content, an uncertainty by its cause and effect. The renderer refuses a label that stands for a hypothesis.
-- **Horizons and markers keep their names**, with the full name at first mention: the label, the formation name and the word horizon (for example "the H7 Lower Marl horizon"), then the short name. A horizon label alone, next to the hypotheses, reads as a hypothesis.
-- **Terms**: define each technical term that is not standard geoscience usage at its first use, in a clause. Use one term for one thing throughout. Expand each abbreviation at its first use.
-- Name the specialists by discipline: "the petrophysics specialist", "the seismic specialist".
-- **Status vocabulary.** A ledger hypothesis is untested, weakly constrained, partially constrained, supported, strongly supported, contradicted, unresolved or superseded. A claim is proposed, supported, partially supported, contradicted, unresolved or superseded. The objective is answered, partly answered or not answerable. Use the status word the ledger or the findings give. "Supported" is not "proven", "weakly constrained" is not "supported", and "unresolved" is not "likely". A superseded claim is written as superseded, with the claim that replaced it.
+### 4.8 Conclusions
 
-## 10. Register
+Short, and in this order:
+1. The answer to the objective, at the status the Final status block gives it, with the real reason for it. If the question is not established, give the reason that matters most, not the easiest to state.
+2. What each hypothesis came to, as a finding ("the closure on the mapped reflector is not a validated trap"), never its own words with a status after them.
+3. What would settle each open item, the most decisive first.
+4. A heading block "Record of the investigation", then one paragraph: the work that did not run or ran again, and the records that were withheld, a sentence each. Tag the paragraph with the ids the ledger's Tasks table holds for those runs.
 
-- **Paragraphs**: one claim, or one closely related group of claims, per paragraph. Open with the point, then the evidence, then what it means, with the connecting words that show the reasoning ("because", "so", "however", "which implies"). No list of disconnected sentences.
-- **Sentences**: complete and varied, active or passive as the sense needs. Keep most below about 30 words; the renderer flags one above about 40.
-- **Certainty only through the status words** of the ledger and the findings. No intensifiers ("clearly", "robustly", "strongly suggests") that raise a status.
-- **Numbers**: copy each number and unit as the ledger, the findings or the records give it. Do not round, convert or average, except as a derived value (`lit-investigation-report`, section 2), which the renderer checks and marks. Use the standard symbols: ±, %, °, m, ms, m/s, km.
-- **No platform words**: write "the requester", not "the person"; "the investigation record", not "the bundle"; "withheld", not "set aside". Do not write "gateway", "HOTL", "specialist call", "iteration", "job" or "turn".
-- **The executive summary** is in plain language: short paragraphs, the decision first, each technical term explained in a few words, and no number without its meaning.
+Say each thing once.
 
-## 11. Captions
+An execution event (work cut off, a dropped connection, work run again) is not a scientific limitation: it goes in the record paragraph only. A withheld record is a fact about the provenance of a result: say it once, where the method or the result is, without saying why.
 
-A caption has three parts: what is shown, with its units and its slice, horizon or line; what the reader should see, in one sentence; and what it rests on. Explain every symbol: blank cells, bands, dots, lines, colours. Start from the specialist's caption, check each number against the findings and the figure's record, and write the record's value. Place each figure after the paragraph that refers to it.
+## 5. Paragraphs and sentences
 
-## 12. Before you render
+- **One point for each paragraph, stated in its first sentence.** The rest is its evidence and what it means.
+- Keep sentences under 30 words.
+- **Say a thing once.** State a limitation where it first matters; after that, refer to it in a few words or not at all. A limit that applies to every result (an unconfirmed datum, synthetic data) is stated once, in the setting or the data, with what it covers; the results then do not repeat it.
 
-Read your draft against this list, correct it, then render.
-1. Every part of the digest, ledger and supervision record was read to its last page.
-2. Each section has the content of sections 1 to 8; the summary has its eight parts and every hypothesis.
-3. Every supported, partially supported, unresolved or contradicted claim is in Results or Discussion, tagged.
-4. Every measurement has its uncertainty, or the sentence that none was computed.
-5. Every methods statement is whole in Methods, and the parameter table is there.
-6. The Discussion carries the Synthesis, the alternatives table and the limitations.
-7. Every figure and table has a label, and the text refers to each one.
-8. No label, id or platform word in the text; no execution event outside the record paragraph.
-9. Published work you added is cited only in the Introduction, the Setting and the Discussion, and changes no conclusion.
-10. The ledger inconsistencies you found are in your `limitations`.
+## 6. Terms, numbers and status words
 
-After the render, read every warning and correct the draft before you return it.
+- **Define each term that is not standard geoscience usage at first use, in a clause,** and use one term for one thing. The names that the investigation coined need this most (a label for a reflector with no formation name, a name for a test): the reader meets them nowhere else. Also give them one place: end the Introduction with a labelled table, "Terms used in this report" (term, meaning), for each coined name, abbreviation and test name that the report uses, and refer to it there. Expand each abbreviation at first use. A code that a specialist's tool gives a test (a letter and a number) means nothing to the reader: write what the test checks ("the check that both sides of each fault cut the horizon"), and use the code after that only if you must.
+- **Ledger labels are tags, never text.** Write a hypothesis by its content and status (never "H2 is contradicted", nor "(H2)" after the sentence), a contradiction by its content, an uncertainty by its cause and effect.
+- **Horizons and markers keep their names,** with the full name at first mention (the label, the formation name and the word horizon), then the short name.
+- **Numbers:** copy each number and unit as the ledger, the findings or the records give it. When one quantity has two values in the report (a depth at the well and the median of its map), say what each is where the second appears. Do not round, convert or average, except as a derived value (`lit-investigation-report`, section 2).
+- **Status words.** A ledger hypothesis is untested, weakly constrained, partially constrained, supported, strongly supported, contradicted, unresolved or superseded. A claim is proposed, supported, partially supported, contradicted, unresolved or superseded. The objective is answered, partly answered or not answerable. Use the word the ledger or the findings give. Certainty comes only from these words: use no intensifier ("clearly", "robustly", "strongly suggests") that raises a status.
+- **No platform words.** Write of the investigation, not of a person or a request ("the investigation sought to address", not "the requester asked" or "the request asked"; "the investigation ended before ...", not "the requester stopped ..."). Write "the investigation record", not "the bundle"; "withheld", not "set aside". Do not write "gateway", "HOTL", "specialist call", "iteration", "job", "turn", "session", "ledger" or "the tool". Name the specialists by discipline. What happened to the software is not geology: a table that did not register, a refused run and a product "admitted" or not are written by their effect on what is known, and the event itself goes in the record paragraph.
+
+## 7. Figures, tables and captions
+
+- **A figure is part of a sentence.** Name it and say what the reader should see: "As [[fig:thickness]] shows, the sand thickens to the north-east, from 18 m at the first well to 31 m at the second."
+- **Choose figures.** Use a figure only when a conclusion rests on what it shows, and place it after the paragraph that first uses it. When two show nearly the same thing, use one. Most reports need about a dozen or fewer. A sentence that only names figures ("Figures 8 and 9 show two more sections") reads nothing: when you cannot say what the reader should see in a figure, leave the figure out. The unused-figure warning is no reason to place one.
+- **A caption has three parts:** what is shown, with its units and its slice, horizon or line; what the reader should see, in one sentence; and what it rests on. Start from the specialist's caption, and check its numbers against the findings.
+
+## 8. The renderer's notes
+
+The renderer answers with errors and warnings. Read them as a proofreader's notes: each points at a place where the report fails a reader or the record. It is not a list of things to add.
+
+- **Find the cause first,** from all the notes of a render together. Most come from the outline: a claim with no home, a method at the wrong stage.
+- **Revise the paragraph the note points at,** so that the item is part of the argument. Do not add a sentence or a paragraph whose only purpose is to make the note go away: a report made of such additions passes every check and cannot be read.
+- **A note may be wrong for your draft.** When your reading of the paragraph shows that a warning does not apply, leave the text and say why in your `limitations`.
+
+## 9. Before you render
+
+Read the stored draft once more as its reader (section 1, steps 5 and 6) and revise it. Then check it against the record and against what the renderer refuses (`lit-investigation-report`, section 4): each item at its home, each measurement with its uncertainty, and no label, id, platform word or misplaced execution event in the text.
 
 <!-- end of skill: lit-report-writing -->

@@ -11,20 +11,19 @@ Call **`ask_user_question`**, by that name. Both parameters are required:
 
 | Parameter | Shape |
 |---|---|
-| `question` | the decision only, at most 500 characters: the card does not scroll, so a longer one hides the options. Write the summary as text in the message that makes the call |
-| `options` | 0 to 5 mutually exclusive choices, plain strings. **A free-text box is always rendered beside them**, so the person can pick one or type something else |
+| `question` | the decision only, at most 500 characters: the card does not scroll, so a longer one hides the options |
+| `options` | 0 to 5 mutually exclusive choices, plain strings. **A free-text box is always rendered beside them** |
 
-The question **blocks until it is answered and the turn survives**, so the investigation carries on in the same turn. You cannot perceive the wait: the answer simply appears. Never reason about how long it took, and never say that a question returned immediately.
+The question **blocks until it is answered and the turn survives**, so the investigation carries on in the same turn. You cannot perceive the wait. Never reason about how long it took, or say that a question returned immediately.
 
-Before you ask, always **update the ledger, including its Pending question block.** A question holds the turn open. If nobody answers, the harness cuts the turn at its limit with no message. The ledger makes the work recoverable.
+Before you ask, always **update the ledger, including its Pending question block**, which makes the work recoverable if the turn is cut. The person cannot open the ledger while a question waits. Write the ledger, then put all the decision needs in the message (the summary, plan or changes), then ask. Never point to the ledger instead, or put the message in the question. For a plan: waves in order, specialists in each, what each settles, runs it will use.
 
-A worked example: the activation question. Every other trigger copies its shape.
+A worked example, the activation question; every other trigger copies its shape.
 
 ```
 ask_user_question(
   question: "This is a multi-specialist CO2 storage investigation: inventory and QC, then structure, "
-            "then the play and site gates, then a risk review and its reduction wave. "
-            "Do you want a human on the loop?",
+            "then the play and site gates, then a risk review. Do you want a human on the loop?",
   options: ["No - run automatically to the objective",
             "Yes, every wave - a checkpoint after each reviewed wave",
             "Yes, key decisions only - the plan, scope changes, the reduction wave, contradictions and refusals"]
@@ -79,7 +78,7 @@ Five parts, short enough to read in a minute:
 | **Why** | why those specialists, in that order | nothing — your reasoning, attested only |
 | **Contribution** | how this moves the objective, and what remains | nothing — attested only |
 | **Next** | the proposed next wave: specialists, inputs, what each settles | tool names must exist |
-| **Work** | "n of 20 specialist runs used", from `hotl_status` | the gateway's counter |
+| **Work** | "n of 40 specialist runs used", from `hotl_status` | the gateway's counter |
 
 Mark the two halves plainly, so the reader knows which parts the system can vouch for. For example: *"Done and Next are checked against the jobs that ran; Why and Contribution are my reasoning."* Name a specialist that returned `insufficient_data` as such in **Done**. The gateway records that status itself and names it back in `needs_attention`, because a summary flatters the work in exactly that way.
 
@@ -141,14 +140,14 @@ The last two can fire **mid-wave**, not only at a boundary. Ask when you reach t
 Every `hotl_checkpoint` returns one. The gateway builds it from state you cannot set: the wave number, the specialists opening, the run count. Surface it to the person **unchanged**. Each line says which setting it acted under, so nobody can mistake a wave that opened without asking for one that skipped them:
 
 ```
-Wave 2: Approved as recorded — opening: structural_geology. 4 of 20 runs used.
+Wave 2: Approved as recorded — opening: structural_geology. 4 of 40 runs used.
         Your words on file: "yes, but skip the seismic rerun"
-Wave 2: HOTL Selection — Key Decisions Only (no key decision here) — opening: structural_geology. 4 of 20 runs used.
-Wave 2: HOTL Selection — Unsupervised — opening: subsurface_play. 4 of 20 runs used.
-Wave 3: Work gate — 20 runs used, continuing to 30. This gate holds even unsupervised.
-        Your words on file: "yes, keep going, raise it to 30"
-Wave 3: Refused — opening nothing. 7 of 20 runs used.
-Wave 3: Stopped at your request — nothing further opened. 7 of 20 runs used.
+Wave 2: HOTL Selection — Key Decisions Only (no key decision here) — opening: structural_geology. 4 of 40 runs used.
+Wave 2: HOTL Selection — Unsupervised — opening: subsurface_play. 4 of 40 runs used.
+Wave 3: Work gate — 40 runs used, continuing to 80. This gate holds even unsupervised.
+        Your words on file: "yes, keep going, raise it to 80"
+Wave 3: Refused — opening nothing. 7 of 40 runs used.
+Wave 3: Stopped at your request — nothing further opened. 7 of 40 runs used.
 ```
 
 Read the second and third lines out: to someone who asked for key decisions, a bare "Wave 2 automatic" reads as if you skipped them.

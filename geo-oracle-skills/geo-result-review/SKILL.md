@@ -156,7 +156,7 @@ A specialist that returns an argument or a gap in place of a product the person 
 |---|---|---|
 | Accept | Passes the checks (sections 3 and 3a); the classification is honest | Add to the ledger with its status |
 | Accept with qualification | Usable, but has stated limitations | Add to the ledger with the qualification attached |
-| Follow-up (the investigation's session) | A missing item, a clarification, or format problems | Brief it as a `follow_up` with `previous_task_id`; the gateway continues the session |
+| Follow-up (the investigation's session) | A missing item, a clarification, or format problems | Brief it as a `follow_up` with `previous_task_id`; it replaces nothing |
 | Validate (fresh session, or another specialist) | A load-bearing claim with a single line of evidence, where independent evidence exists | Validation task, briefed blind with a different method (`geo-specialist-tasking` section 2) |
 | Challenge (fresh session) | An interpretation that plays or prospects depend on, with under-explored alternatives | Challenge task, briefed with the claims and how they were made |
 | Reanalysis | An upstream input changed, or a QC failure | Reanalysis task with `previous_task_id` |

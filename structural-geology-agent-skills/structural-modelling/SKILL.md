@@ -24,6 +24,7 @@ Build one model per plausible interpretation (one fault or two segments; differe
 
 ## `sg_closure_spill`
 
+- **Give the wells.** Pass `wells=[...]` with the `well_header` product of every well of the study (`@petrophysics-agent/products/<file>`). The result then says for each well whether it lies inside the closure, the horizon depth at the well, and its distance and bearing from the crest, and the closure map shows the wells. Report those in your findings: a closure that cannot be placed from the wells cannot be used to say where to drill. When no `well_header` product is in your brief, say so in `missing_data` with the owner (the petrophysics specialist). The positions are surface positions: say so for a deviated well.
 - **Give the model.** Build `sg_build_model` on the horizon first, then call `sg_closure_spill` on the same horizon with `model=<that structural_model>` whenever a prospect will use the closure. The model's V1 and V7 then carry into the `trap_geometry` validity record (`validity_from_model` in the result), and prospect maturity (R2) needs them passed. Without `model` they stay "not tested" and the candidate stays a lead. A model built on another horizon is refused: each horizon needs its own model.
 - The tool floods in order of depth from a crest.
   - If no `crest` is given, the tool tries every local crest of the surface, shallowest first. A local crest is a cell shallower than every cell within 3 cells on its side of any fault, not on the data edge.

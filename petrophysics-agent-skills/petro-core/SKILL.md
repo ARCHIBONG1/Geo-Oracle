@@ -30,10 +30,10 @@ Use every field.
 ## 2. Analysis modes
 
 - **initial**: the procedure in your system prompt, with the steps that section 3a marks for the task.
-- **follow_up**: reuse earlier results by their paths and provenance ids (`petro_get_record` re-reads any stored result). Add the new data, and answer the new question completely. The cache answers identical calls at no cost.
+- **follow_up**: reuse earlier results by their paths and provenance ids (`petro_get_record` re-reads any stored result). Add the new data, and answer the new question completely. The cache answers identical calls at no cost. It replaces nothing.
 - **validation**: test an upstream claim against well data. For example, does a seismic amplitude anomaly coincide with log evidence of hydrocarbons at that depth? Report `supported`, `contradicted` or `unresolved`, with the discriminating data. A blind validation names no claim: answer the question of the brief from your own evidence.
 - **challenge**: seek well evidence against the favoured interpretation. Consider alternative parameters, alternative explanations of a feature, and bad-hole effects.
-- **reanalysis**: rerun with the new data or parameters. List the replaced task in `supersedes_task_ids`, and mark replaced claims `superseded`.
+- **reanalysis**: run the tools again with the new data or parameters; do not repeat the earlier result. It replaces the task in Previous task ID. Mark replaced claims `superseded`.
 `check_outcomes`: when the brief lists 'Claims to test', give one entry per claim: `target` (the claim id), `verdict` (`supported`, `contradicted`, `unresolved` or `not_tested`), the `evidence_ids` of your own evidence that decide it, and a one-sentence `basis`. In a challenge, also give `rival_claim_id` (your claim that states the alternative). A verdict says what your evidence shows, not whether the claim is true. A blind validation has no such list: leave it empty.
 
 ## 3. Domain emphasis
@@ -135,15 +135,16 @@ Your products follow fixed formats:
 
 Each has a JSON sidecar with units, datum, source and provenance.
 
-- **State the datum** (SRD) and the fluid case in the same conclusion, or in a measurement that cites the product.
+- **State the datum** (SRD) and the fluid case in that conclusion, or in a measurement citing the product.
 
 ## The plan, alternatives and history
 
-Before your first tool call, write one `plan` row for each numbered required output. The row gives the tool chain that serves the output, and its status. At the end, bring the rows up to date:
+Before your first tool call, write one `plan` row for each numbered required output, with its tool chain and status. At the end, update them:
 - `delivered`, with the product (`@agent/products/<file>`) or the provenance id that holds it;
-- or `partial`, `not_done` or `refused`, with what stopped it in `blocked_by`.
+- or `partial`, `not_done` or `refused`, with what stopped it in `blocked_by`;
+- or `not_deliverable`, when the supplied data cannot give it (not a failed tool or check): name the missing input.
 
-The gateway compares the rows with the brief. An output left open goes to Geo Oracle's checkpoint by its token. After you write the plan, read the cautions of the tools in the plan once: `petro_method_provenance(tool='<tool>, <tool>', verbosity='cautions')`. A caution says what a method means for its number (a bound, a proxy, an uncalibrated value, a design rule). Each result also carries the cautions of the methods it ran. Carry every caution that applies to a result into its limitations.
+The gateway compares the rows with the brief; an open output goes to Geo Oracle's checkpoint. After you write the plan, read its tools' cautions once: `petro_method_provenance(tool='<tool>, <tool>', verbosity='cautions')`. A caution says what a method means for its number (a bound, a proxy, an uncalibrated value, a design rule). Each result also carries the cautions of the methods it ran. Carry every caution that applies to a result into its limitations.
 
 Every claim of class interpretation or hypothesis carries `alternatives`. These are the strongest rival readings of the same data that you can name from your own domain. Each rival has the `test` that tells it from the claim, and the `result` of that test or 'not run: <why>'. If the data allow it, run the test with your tools. A rival without a test is not an alternative. A weak rival listed to fill the field misleads. Rivals to consider here: a shale or mineral effect on the log, a borehole or invasion effect, a fluid effect read as lithology, a depth mismatch.
 

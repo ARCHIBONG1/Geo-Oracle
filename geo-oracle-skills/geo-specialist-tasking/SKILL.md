@@ -70,10 +70,10 @@ When the person rejects or questions a result ("this is wrong", "coherence does 
    - the outcome they want, in `objective` and `required_outputs` (e.g. "a fault volume, 0 = no fault, 1 = F1, ..., that captures the faults visible on the coherence slices");
    - a method only if they named one, quoted in `known_constraints` as theirs ("The person asked: 'use the coherence attribute'"). Never add a method of your own, and never write "rather than <method>" unless they said it.
 2. **Ask when a reaction has two possible readings.** "Coherence does a better job" may describe what they see, or tell you how to compute. Before you spend a run, ask one question with both readings as options.
-3. **Diagnose before rerunning.** Send a rejected result back to the same session, as a `follow_up` that asks why: "The person says <their words>. From your own tool calls and your skills' procedure, explain why the result misses it, then fix it." The specialist can read its own run; a fresh session cannot.
+3. **Diagnose before rerunning.** Send a rejected result back to the same session, as a `follow_up` that asks why: "The person says <their words>. From your own tool calls and your skills' procedure, explain why the result misses it." Send the full redo as a `reanalysis`. A fresh session cannot read the run.
 4. **Carry what each run did, not a method to keep using.** Put earlier runs in `upstream_findings` and `project_context`, as what each did and produced, with `prov:` ids. Unless the person approved it, do not call an earlier run's approach "the workflow", "the guided volume" or the like. A guess restated as context becomes a premise.
 5. **A number the person expects is a hypothesis to test, never a target.** "The person expects four faults: test whether the data support four and report what you find, with the persistence table." Never "can three be separated?", and never a count in `required_outputs`.
-6. **Corrections of the same question are `follow_up` tasks** with `previous_task_id`. They run in the specialist's session automatically. A fresh session is only for validation or challenge (section 2).
+6. **A `follow_up` adds to a result or corrects part of it, and replaces nothing. A `reanalysis` redoes the whole task and replaces it.** Both name `previous_task_id` and run in the specialist's session.
 
 ## 3. Templates
 
@@ -113,15 +113,15 @@ When the person rejects or questions a result ("this is wrong", "coherence does 
 
 **Reanalysis** (upstream changed; the investigation's session)
 - `analysis_mode`: `reanalysis`
-- `previous_task_id`: the superseded task
+- `previous_task_id`: the task it redoes
 - `reason_for_reanalysis`: what changed and why, e.g. "`T03-strat` revised: the Main Sand in W2 is two lobes (`T08-strat/C1`)"
 - `upstream_findings`: the changed findings
 
-**Correction from the person** (the investigation's session; section 2a)
+**Correction from the person** (asks why; section 2a)
 - `analysis_mode`: `follow_up`
 - `previous_task_id`: the corrected task
 - `reason_for_reanalysis`: the person's words, verbatim
-- `geological_question`: "Why does `T01-seis`'s fault volume miss what the person sees ('<their words>')? Check your tool calls against your skills' procedure, then fix it."
+- `geological_question`: "Why does `T01-seis`'s fault volume miss what the person sees ('<their words>')? Check your tool calls against your skills' procedure."
 - `known_constraints`: a method only if the person named one, quoted as theirs
 
 **Follow-up** (the investigation's session)

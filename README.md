@@ -1,6 +1,6 @@
 # Skills: the agents' operating procedures
 
-This folder holds 93 skills in 11 packs, one pack per agent. There are eleven
+This folder holds 96 skills in 11 packs, one pack per agent. There are eleven
 agents, all running on the TrueForge agent platform: Geo Oracle, which plans
 and runs an investigation for a person, and the ten specialists it calls
 (literature review, regional geology, seismic interpretation and so on). A
@@ -30,8 +30,8 @@ Every skill is a directory holding a single `SKILL.md`.
 agents/skills/
    |______ README.md                             this file
    |
-   |______ geo-oracle-skills/                    the orchestrator (9)
-   |______ literature-review-agent-skills/       (9)
+   |______ geo-oracle-skills/                    the orchestrator (10)
+   |______ literature-review-agent-skills/       (11)
    |______ regional-geology-agent-skills/        (9)
    |______ seismic-interpreter-agent-skills/     (8)
    |______ structural-geology-agent-skills/      (8)
@@ -304,7 +304,7 @@ planned tool's method means for its numbers, read once from the lookup tool.
 *Validation and challenge* tasks re-check or contest earlier work in a fresh
 session that cannot see it.
 
-### `geo-oracle-skills` (9): the orchestrator
+### `geo-oracle-skills` (10): the orchestrator
 
 The specialist packs govern doing geology; this pack governs running an
 investigation, and each skill corresponds to gateway machinery rather than to a
@@ -320,12 +320,13 @@ compute tool.
 | `geo-play-prospect-evaluation` | the gates before the play, prospect and risk stages; the five domains' elements; the element status scale; the maturity ladder; materiality classes in place of a chance of success |
 | `geo-synthesis-audit` | the structure and citation rules of a synthesis, and its scientific audit |
 | `geo-investigation-report` | the close (the ledger's Synthesis section and Final status block, the synthesis given to the person, the ledger as a download, one closing sentence that offers the report, no question); on the person's request, `request_report`, the review of the draft with `report_draft`, three rounds at most, and the delivery |
+| `geo-report-editor` | Geo Oracle as the report's editor in chief: the commission to the writer, the reader's questions and a private answer key, starting the outside reader, reading the outline, the reader's report and the draft, the record check, few ranked notes that ask for revision, and the verdict |
 | `geo-human-on-the-loop` | how to ask (the summary in the chat, the decision in a short question), the supervision question, the objective and deliverables recorded at activation (one result per deliverable), the checkpoint, accept, refuse and edit, partial deliveries, changing mode mid-investigation, and the work gate |
 
 `geo-human-on-the-loop` is the counterpart of `hotl.py`: the gateway enforces the
 gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 
-### `literature-review-agent-skills` (9)
+### `literature-review-agent-skills` (11)
 
 | Skill | Covers |
 | --- | --- |
@@ -337,7 +338,9 @@ gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 | `lit-geoscience-question-bank` | question sets and evidence checklists for decomposing a request |
 | `lit-synthesis-report` | synthesis across sources, conflicting literature, careful language for consensus; methods statements for the investigation report |
 | `lit-investigation-report` | the mechanics of the formal investigation report: reading the frozen bundle with `lit_read_bundle` (the overview, digest, ledger and supervision record, each to its last page); the draft JSON (sections, headings, figures, tables, labels, hidden ledger tags, citation markers, derived values); the published work the writer may add to the Introduction, Setting and Discussion; conclusions that restate the investigation's and never raise, lower or add to them; what the renderer refuses and warns on; rendering with `lit_render_report`; revisions |
-| `lit-report-writing` | the content and register of each section, written as a peer-reviewed geoscience paper for the people who decide on the investigation: the executive summary in eight parts; the introduction (problem, prior work, question, contribution); the geological setting; the data; the methods by stage with the parameter table; the results by subject with uncertainties, figures and tables; the discussion with the Synthesis and the alternatives table; the conclusions and the record of the investigation; naming and terms; captions; the checks before a render |
+| `lit-report-examples` | worked examples for the investigation report: weak passages beside better ones, with the reason for each change, and how to answer a renderer's note by revising |
+| `lit-report-reader` | reading a finished report as its first outside reader: the report and nothing else (`lit_read_bundle` part `report`), three readings (the questions, the methods, the numbers and figures), a later round on a revised report, and what to return |
+| `lit-report-writing` | how to write the investigation report as an argument for a reader who was not in the investigation: how to work (read, decide the answer, outline, draft, reverse-outline, reread, tag last), a report whose main question stays open, what each section does, paragraphs, terms, numbers and status words, figures and captions, and how to answer the renderer's notes by revising and not by adding |
 
 ### `regional-geology-agent-skills` (9)
 

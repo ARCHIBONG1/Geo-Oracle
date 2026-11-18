@@ -11,7 +11,7 @@ The report reads clean: no ids in the text. Each block carries hidden tags that 
 
 ## 1. Read the bundle
 
-The gateway froze the investigation into a bundle when the person asked for the report. Read it with `lit_read_bundle`, one part at a time. **The renderer refuses to render until you have read the parts the overview's `read_before_render` names, each to its last page**: `overview`, `digest`, `ledger`, `supervision` and, when the bundle holds figures, `figures`. A long part comes in pages: when a reply gives `items_next_offset`, `tasks_next_offset` or `next_offset`, call the same part again with `offset` set to it, until a reply gives none. Every page you read is recorded.
+The gateway froze the investigation into a bundle when the person asked for the report. Read it with `lit_read_bundle`, one part at a time. **The renderer refuses to render until you have read the parts the overview's `read_before_render` names, each to its last page**: `overview`, `digest`, `ledger`, `supervision` and, when the bundle holds figures, `figures`. A long part comes in pages: when a reply gives `items_next_offset`, `tasks_next_offset` or `next_offset`, call the same part again with `offset` set to it, until a reply gives none. Every page you read is recorded. **Read one page in each step.** Several reads sent in one step are returned together, and together they exceed what one step can return: some come back as a short `Content too big` note in place of the page, and that page is not read.
 
 | Part | What it gives |
 |---|---|
@@ -67,8 +67,8 @@ The draft has the parts below. **Store each part with `lit_draft_section(investi
   - The figure name is one from the overview's `figures`. Tag a figure with the claims its specialist marked it as supporting (`supports`). Start its caption from the specialist's caption; the renderer adds the source line (the specialist's discipline).
   - A table has a caption, column titles, rows of cells, and at most eight columns. Its tags are the ledger ids its numbers rest on.
   - **Every figure and table needs a label** (lower-case letters, digits and hyphens, unique), and **the text must refer to each one** as `[[fig:<label>]]` or `[[tab:<label>]]`; the renderer refuses either gap. The marker prints the word and the number ("Figure 3", "Table 2"): write "as [[fig:tie]] shows", never "Figure [[fig:tie]]" or "Tables [[tab:a]]", which the renderer refuses. The data table's label is `data`; it exists when the bundle lists data, and the renderer prints it at the top of the Data section.
-- **`part`** on an executive summary paragraph names which of its eight parts the paragraph serves (`lit-report-writing`, section 1).
-- **Tags** are ledger ids: evidence and claim ids (`T03-seis/E2`, `T05-struct/C1`); task ids; Geo Oracle's `H#`, `X#`, `U#`, `Q#` and `F#`; `frame` (the ledger's Frame section) and `synthesis` (the ledger's Synthesis section), when the ledger has them. Tags never print. Each block of the executive summary, Results, Discussion and Conclusions needs at least one. The text never prints a tag: the renderer refuses a ledger label written in place of the hypothesis, contradiction or uncertainty it names (`lit-report-writing`, section 9).
+- **`part`** on an executive summary paragraph names which of its eight parts the paragraph serves (`lit-report-writing`, section 4.1).
+- **Tags** are ledger ids: evidence and claim ids (`T03-seis/E2`, `T05-struct/C1`); task ids; Geo Oracle's `H#`, `X#`, `U#`, `Q#` and `F#`; `frame` (the ledger's Frame section) and `synthesis` (the ledger's Synthesis section), when the ledger has them. Tags never print. Each block of the executive summary, Results, Discussion and Conclusions needs at least one. The text never prints a tag: the renderer refuses a ledger label written in place of the hypothesis, contradiction or uncertainty it names (`lit-report-writing`, section 6).
 - **Citations in the text** are markers only. A method is `[[m:<domain>/<name>]]`; it must have run in this investigation (it is in the overview's `methods_run`, or it is a connector method that a methods statement names, since a search keeps no local record). A source of the investigation is `[[lit:<evidence id>]]`, with an entry in `literature_references`; a source you found for the report is `[[lit:L<n>]]`, with an entry in `literature_sources` (section 5). Put the marker in the clause that names the step or the statement it supports, not at the end of a list.
 - **Derived values** (`derived`, on a paragraph of the executive summary, Results, Discussion or Conclusions): you may do arithmetic on recorded numbers, a sum, difference, product, ratio, mean or percent, when the result does not contradict the investigation. Give each as `{value, op, inputs}`. Every input must be in the items the paragraph is tagged with, and the value must be the result at the decimals you write. Mark the number in the text with `[[d:<n>]]` right after it (n counts from 1 in the paragraph); it prints a dagger with the footnote "Calculated for this report from recorded values." The renderer checks the arithmetic.
 - **No other ids in the text**: no `prov:` ids, no method ids outside a marker, no task, evidence, claim or job ids, no product paths. The renderer refuses a draft that shows one.
@@ -77,18 +77,7 @@ The draft has the parts below. **Store each part with `lit_draft_section(investi
 
 ## 3. The sections
 
-`lit-report-writing` says what each section holds and in what order. In short:
-
-| Section | Content |
-|---|---|
-| Executive summary | The abstract for the decision makers, in eight parts, from the Final status block and the Synthesis. |
-| Introduction | The problem, the prior work, the question, and what this investigation contributes. |
-| Geological setting | The regional and local geology; or, for a synthetic volume, a description of the model. |
-| Data | The data table (the renderer's), then the data, their quality and their gaps. |
-| Methods | The methods by stage of the workflow, each methods statement kept whole, and the parameter table. |
-| Results | One subsection per subject: each claim with its numbers, uncertainty, class and status, and its figures and tables. |
-| Discussion | How the results combine, the alternatives table, comparison with published work, then the limitations. |
-| Conclusions | The answer, each hypothesis by content with its status, what would settle the open items, the record of the investigation. |
+`lit-report-writing` says how to work, what each section does and how to write it. Read it before you plan the report.
 
 ## 4. What the renderer refuses and what it warns on
 
@@ -126,10 +115,10 @@ You restate Geo Oracle's conclusions. You never raise, lower or add one.
 
 ## 7. Render
 
-1. Read your stored parts against the checklist in `lit-report-writing` section 12, and store the corrected ones.
+1. Read your stored draft as its reader (`lit-report-writing`, sections 1 and 9), and store the corrected parts.
 2. Call `lit_render_report(investigation_id, review_round, wait_seconds=240)` with the round your brief gives and no `draft_json`.
 3. **Rejected:** the message lists every error that remains (or the bundle parts still unread). Correct them in the parts they name (store those parts again) and call again with the same round. **Keep correcting and rendering until the draft renders**: a round has no limit on renders, and a refused draft is no report. A corrected draft is a changed call, so the rule to stop after two refusals does not apply to `lit_render_report`. Stop only for an error the draft cannot correct (a missing bundle part, a server failure) or when you cannot finish the task (see Unfinished work), and name the remaining errors in `limitations`.
-4. **Running:** collect it with `get_literature_job_result`. Read every warning in `style_warnings`. Correct the draft and render again with the same round for each drift, content, uncertainty and `layout:` warning; style advice alone (`style:`) needs no new render.
+4. **Running:** collect it with `get_literature_job_result`. Read every warning in `style_warnings` as `lit-report-writing` section 8 says: revise the passage a drift, content, uncertainty or `layout:` warning points at, and render again with the same round. A warning that your reading shows does not apply stays, with the reason in your `limitations`. Style advice alone (`style:`) needs no new render.
 5. **`release_checks: failed`:** the PDF has no download link. Correct the problems and render again.
 6. **LaTeX could not compile:** the message gives the first LaTeX error and its line; correct what it names.
 
@@ -144,7 +133,7 @@ Put the ledger inconsistencies you found, and the published works you added, in 
 
 ## 9. Revisions
 
-A revision brief carries Geo Oracle's review notes as evidence `R1`, `R2` and so on. Each note is a contradiction between your draft and the analysis. For each note, read the bundle again and correct the draft; correct the warnings of the last render too. Then render with the round the brief gives. There are three rounds at most, so correct every note in one round. The bundle parts you read in round 1 stay read.
+A revision brief carries Geo Oracle's review notes as evidence `R1`, `R2` and so on. A note asks you to revise a passage for the reader, to cut one, or to correct a contradiction with the analysis. For each note, read the bundle again and revise the passage it names; read the warnings of the last render too (section 7). Then render with the round the brief gives. There are three rounds at most, so correct every note in one round. The bundle parts you read in round 1 stay read.
 
 ## Methods statements
 
