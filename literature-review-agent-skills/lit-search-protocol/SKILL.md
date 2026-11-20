@@ -1,6 +1,6 @@
 ---
 name: lit-search-protocol
-description: Search planning and execution for the geological literature specialist. It covers term expansion (formation, historical and local names, translations) and which tool to use for what (OpenAlex, Exa publication search, Tavily). It also covers iterative narrowing, citation chaining, challenge searches, author disambiguation, the search log, and when to stop. Use at the start of every literature task, when searching for papers by a named author, when results are thin, noisy or all from one group, and when deciding whether to keep searching.
+description: Search planning and execution for the geological literature specialist. It covers term expansion (formation, historical and local names, translations) and which tool to use for what (OpenAlex, Exa publication search, Tavily). It also covers iterative narrowing, citation chaining, challenge searches, author disambiguation, the search log, and when to stop. Use at the start of every literature task, when searching for papers by a named author, when results are thin, noisy or all from one group, and when deciding whether to keep searching. Not for a report-reading task (R1-lit-reading to R3-lit-reading).
 ---
 
 # Search protocol
@@ -90,7 +90,7 @@ The quality of an author's publication list is its completeness and its accuracy
 
 1. **Find the candidates.** `search_entities` `{"entity_type": "authors", "query": "<full name>"}`. If several people share the name, tell them apart by affiliation, topics, co-authors and ORCID, and say how you did.
 2. **Read the profile.** `get_entity` `{"entity_type": "authors", "id": "A…"}`. Note the affiliation history, the alternate names, the ORCID and `works_count`.
-3. **List the profile's works.** `search_works` `{"author_ids": ["A…"], "for_author": "A…", "limit": 50, "include_abstracts": false}`, with no `query`.
+3. **List the profile's works.** `search_works` `{"author_ids": ["A…"], "for_author": "A…", "limit": 20, "include_abstracts": false}`, with no `query`. Get further pages with `page`.
    - The echoed `oql` must contain the author filter.
    - `total_results` should be close to `works_count`.
    - Each result carries `this_authorship`, which gives the author's position in the byline and the affiliation printed on the paper.

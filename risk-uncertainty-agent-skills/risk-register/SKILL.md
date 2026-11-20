@@ -1,6 +1,6 @@
 ---
 name: risk-register
-description: How to collect every uncertainty from the ledger, the forwarded findings and the product sidecars. How to type and trace each one, merge duplicates, and build the claim graph. Load before ru_collect.
+description: How to collect every uncertainty from the ledger, the forwarded findings and the product sidecars. How to type and trace each one, merge duplicates, and build the claim graph. Load before ru_collect, ru_classify, ru_merge or ru_dependencies.
 ---
 
 # The register
@@ -16,7 +16,7 @@ Give the objectives by name. An entry naming two or more is shared. Also give `o
 
 The checks of one product that were not tested become one entry (`<product>: checks not tested: ...`). A failed check is its own entry. A check with the value `explained` failed and carries an accepted explanation: it is a limitation, not an open failure. When a prospect product says that a critical element or the play is contradicted while the candidate keeps its rung (`for_risk.contradicted_critical`, `for_risk.play_verdict`), that is an entry of kind contradiction.
 
-`ru_import_ledger` names the ledger sections that no rule reads (`unknown_sections`) and the ids whose row came again with other content (`changed_ids`). State both in `limitations`.
+`ru_import_ledger` names the ledger sections that no rule reads (`unknown_sections`; not the sections of the ledger's template that hold no register entry, such as the plan and the figure list) and the ids whose row came again with other content (`changed_ids`). State both in `limitations`.
 
 ## Classify (`ru_classify`)
 

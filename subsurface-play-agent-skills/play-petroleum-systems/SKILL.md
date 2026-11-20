@@ -22,6 +22,8 @@ Trap and timing usually come from interpretation links (the structural trap_geom
 
 A discovery in the play area lifts the charge chain to inferred: source, maturation, migration and timing, where they stood lower.
 
+The template also holds the supporting element `overburden`.
+
 ## The events chart (`play_events_chart`)
 
 The chart holds these events, each from a cited claim with a range: deposition of source, reservoir, seal and overburden; trap formation; generation and expulsion; migration; preservation.

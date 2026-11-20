@@ -1,6 +1,6 @@
 ---
 name: lit-inputs-library
-description: How the literature review specialist serves as librarian of the shared inputs folder. It covers complete listings and how to confirm what files contain. It also covers how to read and search documents with page citations, and how to preview tables. Then it covers how to import chat uploads, and how to route each file to the specialist that opens it. Load before any lit_* tool.
+description: How the literature review specialist serves as librarian of the shared inputs folder. It covers complete listings and how to confirm what files contain. It also covers how to read and search documents with page citations, and how to preview tables. Then it covers how to import chat uploads, and how to route each file to the specialist that opens it. Load before any lit_* tool or get_literature_job_result, except lit_read_bundle, lit_draft_section and lit_render_report.
 ---
 
 # The shared inputs folder
@@ -30,7 +30,7 @@ Only you can confirm what a file contains. Be exact: give paths as listed, and i
 | Type | Opened by | Tell Geo Oracle |
 |---|---|---|
 | document (PDF, Word, text) | you | read on request; cite pages |
-| table (CSV/TSV) | you (preview) and the specialist it concerns | e.g. tops, core, pressures → wells_petrophysics; horizon picks, time-depth → seismic_interpretation; point layers with coordinates, temperatures, backstrip columns → regional_geology |
+| table (CSV/TSV) | you (preview) and the specialist it concerns | per-well tops, core measurements, pressures, checkshots, deviation surveys, image-log dip picks → wells_petrophysics; core and cuttings descriptions, photo indexes → sedimentology; biostratigraphic, dated-sample and marker tables, tops quoted from reports → stratigraphy; structural measurements, fracture picks → structural_geology; well outcomes, shows, seeps, geochemistry → subsurface_play; horizon picks → seismic_interpretation; point layers with coordinates, temperatures, backstrip columns → regional_geology |
 | seismic (SEG-Y), array / volume | seismic_interpretation | pass the path as given |
 | well logs (LAS) | wells_petrophysics | pass the path as given |
 | well logs (DLIS/LIS) | not supported | ask for LAS |
@@ -136,9 +136,9 @@ implementation is correct.
 
 ## Reporting what you found
 
-Use the citation forms of your system prompt (section 7):
-- **Listing**: in `observations` (`classification` `data`, `source_type` `project_data`), with `source_reference` `project:operations/inputs | lit_list_inputs | prov:<id> | m:lit/list-inputs`.
-- **Document content**: one evidence item per point, with `source_reference` `project:<path> | <Author or organisation> <year> | title: <document title> | p. <n> | prov:<id> | m:lit/read-document | relevance: … | access: full-text` (give the author, year and title as the document states them, and leave out what it does not state).
+The `source_reference` forms are in `lit-evidence-extraction`, section 3:
+- **Listing**: in `observations` (`classification` `data`, `source_type` `project_data`), with the folder-listing form.
+- **Document content**: one evidence item per point, with the project-document form.
   - The readers have two limits. State them when they matter:
     - The reader does not extract a Word document's tables nested inside table cells, or any content inside tracked changes (python-docx documents both exclusions).
     - You may read a `.txt` file as a document with `lit_read_document`. If it is a delimited table, you may instead preview it with `lit_preview_table`. Say which you did.

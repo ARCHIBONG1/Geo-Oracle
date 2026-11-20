@@ -35,7 +35,7 @@ The table sets your measured values beside the expectations for rift, passive ma
 
 Each expectation has its `basis`: a publication (McKenzie 1978, Steckler & Watts 1978, Allen & Allen 2005 with page) or "Geo Oracle summary; no source recorded". Cite the latter as such, never as a published classification.
 
-The class is your `interpretation`. Carry the alternatives that fit the same evidence in `competing_interpretations`. The table alone never decides.
+The class is your `interpretation`. Carry each other class that fits the same evidence in the claim's `alternatives` (`statement`, `test`, `result`). The table alone never decides.
 
 ## Products and transfer
 

@@ -1,6 +1,6 @@
 ---
 name: lit-report-writing
-description: How to write the formal investigation report so that a person who was not in the investigation can read it and act on it. It covers how to work, a report whose main question stays open, what each section does, paragraphs, terms, numbers and status words, figures and captions, and the renderer's notes. Read it after lit-investigation-report and again before you render. Worked examples are in lit-report-examples.
+description: How to write the formal investigation report for a reader who was not in the investigation. It covers how to work, a report whose main question stays open, what each section does, paragraphs, terms, numbers and status words, figures and captions, and the renderer's notes. Read it after lit-investigation-report, before you plan the investigation report and before lit_draft_section, and again before lit_render_report.
 ---
 
 # Writing the investigation report

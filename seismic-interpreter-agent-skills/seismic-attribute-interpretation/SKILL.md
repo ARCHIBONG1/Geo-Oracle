@@ -5,7 +5,7 @@ description: Attribute-driven interpretation, extracted from attribute volumes b
 
 # Attribute-driven interpretation
 
-Fault likelihood (`seismic_interpret_faults`) is the default fault method; `fault_attribute` is its backup. The tools here are general: one engine, driven by recipes. It serves faults when likelihood is poor, channels, paleokarst and any body that an attribute can outline.
+The tools here are general: one engine, driven by recipes. It serves faults when likelihood is poor, channels, paleokarst and any body that an attribute can outline.
 
 ## Tools
 
@@ -23,7 +23,7 @@ Fault likelihood (`seismic_interpret_faults`) is the default fault method; `faul
 
 `seismic_interpret_faults` and `seismic_fault_likelihood` return `result.qc`. Read it before you trust the faults:
 
-1. **Dip beyond the lag**: if `qc.suggested_max_dip_samples` is present, reflectors dip more than the likelihood's correlation follows (`reflector_dip.steepest_samples_per_trace_p90` > `max_dip_samples`). Rerun with that `max_dip_samples` first.
+1. **Dip beyond the lag**: if `qc.suggested_max_dip_samples` is present, reflectors dip more than the likelihood's correlation follows (`reflector_dip.steepest_samples_per_trace_p90` > `max_dip_samples`). If `qc.rerun.followed` is true, `seismic_interpret_faults` has rerun at that value. After `seismic_fault_likelihood`, or with `follow_qc: false`, rerun with that `max_dip_samples` first.
 2. **Then judge** from the evidence, and say which evidence you used:
    - `measured_fraction` low: much of the interval is too quiet to measure, and likelihood is blind there.
    - `separability.otsu_eta` low, or null. Near 1, the likelihood splits clearly into two values. A smooth spread with no fault tail gives about 0.64, so eta alone does not show a small fault tail.
@@ -49,14 +49,8 @@ Fault likelihood (`seismic_interpret_faults`) is the default fault method; `faul
 
    **Read `result.verdict`. Do `verdict.next`. Report a doubtful or failed result with its reasons, never as a finding.**
 
-   **Read the body QC before the bodies** (`result.qc`). If the reply says that it was abridged, `seismic_get_record` with the provenance id and `field: "result.qc"` returns it whole.
-   - `selection`: how much of the window the bodies fill, and how many rounds the cap took. Report the final percentiles (`thresholds`), not the recipe's defaults. `final_exceeds_cap` means that the bodies are still merged with their surroundings: give the faults, narrow the window or seed.
-   - `stability.merges` / `merged_bodies`: bodies that become one a setting away are parts of one feature, or a threshold effect. Never report them as separate channels without saying so.
-   - `extent`: a body flagged `window_share`, `level_share` or `branching` is a sheet or a merger, never one channel. Its width, planform and sinuosity describe the merger. A channel does not have the survey's extents.
+   **Read the body QC before the bodies** (Reading the result, below).
    - **Faults, per recipe.** `channel`, `channel_thin`, `channel_submarine`: the fault zones are excluded; `result.fault_policy.comparison` lists the bodies found without the exclusion, and those along the faults (see `fault_overlap`). To keep them, give `exclude: false` with `exclude_reason`. `gas_chimney`, `paleokarst`: not excluded by default; chimneys and collapse are often fault-related, so the faults give an association only. Other recipes: excluded unless `exclude: false`. For a fault-bounded salt or MTD body, give `exclude: false` with `exclude_reason`, and bound it with `fault_side` or `polygon`. A warning that the faults are mostly interpolated means they may not be faults.
-   - `fault_overlap`: a body mostly in the fault zones runs along a fault: for a channel recipe a damage zone or a fault-read channel wall, for a chimney, karst, salt or MTD body a fault association. Check it on sections before you report it. Bodies outside the fault zones are not fault disruption.
-   - `cross_check`: the check marks an attribute that the recipe scored as `circular`. The bodies lie in its tail by construction, which says nothing about what they are. Only an attribute that the recipe did not use, or the faults, checks that.
-   - Stability `9/9` says that the body persists. It says nothing about what the body is. A merger of channels, sheets and fault zones is perfectly stable.
    - A body that passes these checks is a channel interpretation at its claim status (`partially_supported` from seismic alone). The status is the answer. It is never a reason to withhold the volume, or to call the bodies something else.
 
 2. Compute every input with its `compute_with` call (attribute tools). Pass the output path in `inputs` by the recipe's input names (`'path.h5::component'` for a multi-output attribute).
@@ -93,18 +87,21 @@ Fault likelihood (`seismic_interpret_faults`) is the default fault method; `faul
    The tool uses the strongest group present (`seed_policy: "all"` uses every valid seed).
 5. **Time volumes:** give `velocity_model` (as for `seismic_time_to_depth`), so that thickness, volume, dip and plunge are in metres. Without it, those are in index units. The dip rule (`min_dip_deg`) then uses the bin and sample lengths: `spacing_m`, else (in `fault_attribute`) stated defaults (`shape_filter.dip_spacing`). A volume without geometry (.npy) has no bin size: state the one you assume in `spacing_m`.
 6. Run `seismic_segment_volume` on attributes computed in this task from the volume you are interpreting. Files that earlier runs left in the work folder may come from an earlier version of the same file. The tool (and `seismic_structure_qc`) refuses volumes that derive from different loads of the seismic. The fix is to recompute them, not to override. Change a threshold only through `overrides` (for example `{"method": {"strong": {"percentile": 99}}}`), and say why. The result records the effective recipe.
-7. **Always publish `result.extraction_figure_markdown`** for every extraction you report, as for well ties. An extraction is a judgement, and a wrong one is easiest to see. You cannot see it, but the user can.
+7. **Always publish `result.extraction_figure_markdown`** for every extraction you report, as for well ties.
 8. For a 3D view (`seismic_render_3d`) or a download, follow `result.next`.
 
 ## Reading the result
 
-**`result.qc` first, as for faults.** Five questions, and a sixth when `cross_check` is given, each with a reading line:
-- *measured*: `valid_fraction`, the share of the volume that the constraints and finite inputs left.
-- *signal*: `separability` per input. `otsu_eta` tells how two-valued the histogram is. It does not show a small feature tail: read `tail_fraction`. The tool flags a constant input, which carries nothing.
-- *stability*: the extraction repeated at the nine neighbouring threshold settings. It gives each body's `found_at`, `stable` (two thirds) and `voxels_p10/p50/p90`. A body found at under two thirds is setting-dependent: report it as such, and never retune to keep or lose it. Settings that ran with the same thresholds (`thresholds_run`) count once (`collapsed`, `distinct_settings`). The tool skips this check above 60 million voxels (crop first).
-- *resolution*: `thickness_below_tuning` and `width_below_fresnel_diameter` per body, from the predominant frequency and the velocity. The predominant frequency is measured on the source seismic around the bodies (a window of at least 128 ms or 3 periods, `frequency_window_ms`), or given in `resolution`. The velocity is given, or a constant `velocity_model`. A flagged body is detected, not measured: never quote its thickness or width as resolved.
-- *truncation*: the share of a body on a constraint or data boundary. Over a quarter means that its size is a minimum.
-- *cross_check* (when `cross_check` names discontinuity volumes): each body's share in the attribute's anomalous tail, and the tall anomalies that no body explains. The seismic is the same, so this is consistency, not confirmation.
+**`result.qc` first, as for faults.** If the reply says that it was abridged, `seismic_get_record` with the provenance id and `field: "result.qc"` returns it whole. Stratal mode (the channel default) gives only the items marked *both*. The others need `segmentation='per_sample'`. `qc.not_run` names the options that did not run.
+- *measured* (per-sample): `valid_fraction`, the share of the volume that the constraints and finite inputs left.
+- *selection* (per-sample): how much of the window the bodies fill, and how many rounds the cap took. Report the final percentiles (`thresholds`), not the recipe's defaults. `final_exceeds_cap` means that the bodies are still merged with their surroundings: give the faults, narrow the window or seed.
+- *signal* (per-sample): `separability` per input. `otsu_eta` tells how two-valued the histogram is. It does not show a small feature tail: read `tail_fraction`. The tool flags a constant input, which carries nothing.
+- *stability* (per-sample): the extraction repeated at the nine neighbouring threshold settings. It gives each body's `found_at`, `stable` (two thirds) and `voxels_p10/p50/p90`. A body found at under two thirds is setting-dependent: report it as such, and never retune to keep or lose it. Settings that ran with the same thresholds (`thresholds_run`) count once (`collapsed`, `distinct_settings`). The tool skips this check above 60 million voxels (crop first). `merges` / `merged_bodies`: bodies that become one a setting away are parts of one feature, or a threshold effect. Never report them as separate channels without saying so. Stability `9/9` says that the body persists. It says nothing about what the body is: a merger of channels, sheets and fault zones is also stable.
+- *extent* (per-sample): a body flagged `window_share`, `level_share` or `branching` is a sheet or a merger, never one channel. Its width, planform and sinuosity describe the merger. A channel does not have the survey's extents.
+- *resolution* (both): `thickness_below_tuning` and `width_below_fresnel_diameter` per body, from the predominant frequency and the velocity. The predominant frequency is measured on the source seismic around the bodies (a window of at least 128 ms or 3 periods, `frequency_window_ms`), or given in `resolution`. The velocity is given, or a constant `velocity_model`. A flagged body is detected, not measured: never quote its thickness or width as resolved.
+- *truncation* (both; per body in stratal mode): the share of a body on a constraint or data boundary. Over a quarter means that its size is a minimum.
+- *fault_overlap* (both, with `faults`): a body mostly in the fault zones runs along a fault: for a channel recipe a damage zone or a fault-read channel wall, for a chimney, karst, salt or MTD body a fault association. Check it on sections before you report it. Bodies outside the fault zones are not fault disruption.
+- *cross_check* (per-sample, when `cross_check` names discontinuity volumes): each body's share in the attribute's anomalous tail, and the tall anomalies that no body explains. The seismic is the same, so this is consistency, not confirmation. An attribute marked `circular` was scored by the recipe: the bodies lie in its tail by construction.
 
 
 - **Thresholds** are percentiles of the score inside the constraints, or MADs above the median of a shape response (`fault_attribute`, `paleokarst`, `salt`, `gas_chimney`). A percentile selects a fixed share of any volume: its bodies do not show that the feature is present, so constrain tightly. When one or two masses hold the selection (`thresholds.percentile_quota`: `mtd`, `channel_submarine`, `salt` v1), the verdict is failed.
@@ -120,6 +117,6 @@ Fault likelihood (`seismic_interpret_faults`) is the default fault method; `faul
 
 ## Uncertainty to report
 
-The recipe and version, every override, thresholds and their source, connectivity, constraints, seed evidence and conflicts, units (metres or index), and the threshold sensitivity when it matters. Rerun with stricter and looser thresholds, and report how the body count and volume change.
+The recipe and version, every override, thresholds and their source, connectivity, constraints, seed evidence and conflicts, units (metres or index), and the threshold sensitivity when it matters. Stratal mode has no threshold sweep: rerun with another `min_cells` or `window_cells` in `stratal`, and report the change in body count and volume.
 
 <!-- end of skill: seismic-attribute-interpretation -->

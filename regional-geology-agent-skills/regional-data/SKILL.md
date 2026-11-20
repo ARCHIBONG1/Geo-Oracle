@@ -1,6 +1,6 @@
 ---
 name: regional-data
-description: Areas of interest and regional extents, the geodata snapshot catalogue, supplied GIS files, grid sampling and point queries, resolution and distance-to-data honesty. Load before any data tool.
+description: Areas of interest and regional extents, the geodata snapshot catalogue, supplied GIS files, grid sampling and point queries, resolution and distance-to-data honesty. Load before reg_aoi, reg_dataset_catalogue, reg_fetch_dataset, reg_register_layer, reg_grid_sample or reg_points_near.
 ---
 
 # Regional data

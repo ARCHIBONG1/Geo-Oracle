@@ -7,7 +7,7 @@ description: Water saturation. It covers the Rw hierarchy (water sample, SP, Pic
 
 ## 1. Rw first: `petro_rw`
 
-Use the first method the data allow, and record which:
+Run every method the data allow (see the comparison below). Use the highest-ranked one that is not an assumption for Sw, and record which:
 
 | Rank | Method | Needs | Notes |
 |---|---|---|---|
@@ -19,7 +19,7 @@ Use the first method the data allow, and record which:
 
 A water zone seen only on logs is not a proven water leg. `petro_rw` registers Rw as an assumption when Pickett runs over an interval that no recorded test, water sample or pressure water gradient proves, or when SP uses an Rmf that was not measured. The interval must lie inside the tested interval. `petro_parameters` refuses an rw with source log_crossplot, log_sp or water_sample that is not the `register_as` of a `petro_rw` run in this chat. To fit m, the porosity spread (P90-P10 of PHIE) must be at least 0.05 v/v and the fitted m must be within 1.1-4.0. Below 1.3 the tool warns (shale mixing or fractured rock). Above 3.0 it warns unless `rho_ma` is a carbonate matrix. Otherwise use m from the parameter set.
 
-Rw is never an assumption. Use a water sample, SP, Pickett in a proven water leg, a regional value, or a value the task gives. With none of these, Sw and net pay are blocked: put Rw in `missing_data`. `petro_saturation` and `petro_net_pay` warn when Rw has none of these sources and this chat has a water sample or a test that recovered formation water.
+Use a water sample, SP, Pickett in a proven water leg, a regional value, or a value the task gives. An Rw that `petro_rw` registers as an assumption (an unproven Pickett interval, or SP with an assumed Rmf) is none of these. The tools compute with it and do not refuse it. So use it only when no better source exists: register it with the range in `register_as`, name the assumption and its range in every evidence item that rests on it, and cap the claim at `partially_supported` or `proposed`. Without an `rw` in the parameter set, `petro_saturation` refuses: Sw and net pay are blocked, so put Rw in `missing_data`. `petro_saturation` and `petro_net_pay` warn when Rw has none of these sources and this chat has a water sample or a test that recovered formation water.
 
 With `pickett`, the tool draws the Pickett plot of the interval into `result.figures`. Iso-saturation lines need `n` in the parameter set. Without it, the plot shows only the Sw = 1 line.
 

@@ -18,6 +18,12 @@ description: Building trap, fill and contact alternatives from the upstream alte
 
 Each scenario cites the upstream claim or product that proposes it. A scenario that you invented is not a scenario. It is a hypothesis without a basis, and the tool refuses it.
 
+Give each scenario as one object, for example:
+
+`{"name": "part-fill", "kind": "fill", "description": "contact above the spill, from the seal capacity range", "contact_z_m": 2150, "basis": "<the upstream claim id>", "discriminating_evidence": "a pressure measurement in a well inside the closure"}`
+
+`kind` is `trap`, `fill`, `contact` or `correlation`. `contact_z_m` is the contact depth in m TVDSS, positive down. The tool refuses a `contact` scenario without `contact_z_m`, and a scenario without `basis`.
+
 ## Discriminating evidence
 
 Every scenario names what would separate it from the others: a contact from a well in the closure, a DHI, a pressure measurement, a seal capillary-entry pressure. `risk_uncertainty` reads this to say which uncertainty is reducible. So a scenario without it is incomplete work.

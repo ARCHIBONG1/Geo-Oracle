@@ -23,7 +23,7 @@ Most natural hydrogen systems are active. The gas is made now by serpentinisatio
 | trap | none from a map alone; a well result on the closure (hydrogen in a well inside it) | a depth closure passing its ledger, or a mapped stratigraphic trap (a trap_geometry link: inferred at most) | structural_geology |
 | preservation | temperature above the microbial window (about 90-120 °C) or hydrogen present despite it; no abiotic sink; low diffusive loss | nothing known: unknown | wells_petrophysics, supplied fluid_geochem, literature_review |
 
-Regional or analogue evidence for any element lifts it to analogue-supported at most, never to inferred.
+Regional or analogue evidence for any element lifts it to analogue-supported at most, never to inferred. The template also holds the supporting element `associated_gases`.
 
 Timing (PT4): with ongoing generation (`holds: true` on the generation event), a trap and seal present today suffice. A fossil hydrogen charge needs a trap that predates it, and a seal that has retained hydrogen since. That is rare, and you state it.
 
@@ -41,7 +41,7 @@ A measured hydrogen flux demonstrates generation_activity, and lifts source to i
 | geochemical_microbial_stability | brine and mineralogy showing no hydrogen-consuming reactions (sulphate reduction to H2S, methanogenesis, pyrite reduction) at reservoir temperature | wells_petrophysics, sedimentology |
 | cycling_integrity | caprock and wells holding through repeated pressure cycles | structural_geology, supplied test_summaries |
 
-Keep containment separate, as for CO2. For PT4, give `play_events_chart` one `containment` event per period (injection, cycling, post-operation), each with `holds: true` or `holds: false` and the claim that supports it. Every event needs start_ma and end_ma: 0 for the present day and for planned periods. An event without `holds` tests nothing, and PT4 stays not tested unless another event fails. Storage assessments most often omit the microbial and geochemical element. A porous-media site without brine chemistry leaves it unknown.
+The template also holds the supporting elements `cushion_gas` and `monitorability`. Keep containment separate, as for CO2. For PT4, give `play_events_chart` one `containment` event per period (injection, cycling, post-operation) and per barrier (caprock, faults, wells), each with `holds: true` or `holds: false` and the claim that supports it. Every event needs start_ma and end_ma: 0 for the present day and for planned periods. An event without `holds` tests nothing, and PT4 stays not tested unless another event fails. Storage assessments most often omit the microbial and geochemical element. A porous-media site without brine chemistry leaves it unknown.
 
 ## Pitfalls
 

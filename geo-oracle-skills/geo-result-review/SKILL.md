@@ -1,6 +1,6 @@
 ---
 name: geo-result-review
-description: Checklist and decision rules for Geo Oracle to evaluate every specialist result before relying on it. It covers separating what was established from what was interpreted, catching overreach and unsupported assertions, detecting double-counted evidence, classifying contradictions, and deciding whether to accept, qualify, follow up, validate, challenge, re-run or reject. Use every time a specialist tool returns a completed result, whenever two results disagree, and before any result feeds a play, prospect or risk task.
+description: Checklist and decision rules for Geo Oracle to evaluate every specialist result before relying on it. It covers separating what was established from what was interpreted, catching overreach and unsupported assertions, detecting double-counted evidence, classifying contradictions, and deciding whether to accept, qualify, follow up, validate, challenge, re-run or reject. Load when a specialist result arrives, or two results disagree, and before any result feeds a play, prospect or risk task.
 ---
 
 # Reviewing specialist results
@@ -11,7 +11,7 @@ A specialist result is evidence to be evaluated, not a verdict. Detail, fluency 
 
 - **`execution_status`** must be `completed`. Anything else is an execution outcome, never a finding.
 - **`scientific_status`**:
-  - `insufficient_data` or `cannot_determine`: record it as a result.
+  - `insufficient_data` or `cannot_determine`: record it as a result. If it replaces a requested product, see section 5a.
   - `requires_clarification`: answer it through a follow-up in the same session, or by asking the user.
   - `not_evaluated`: the reply could not be parsed. Read `raw_output` with extra care, since nothing in it has been validated.
 - **`warnings`**:
@@ -33,6 +33,13 @@ Sort the content by evidence class, and check that each classification is honest
 - **Upstream interpretations restated as the specialist's own observations.** Restating them this way hides a dependency.
 
 Reclassify in the ledger where needed, and note why.
+
+## 2a. Plan, rivals and history
+
+- **The plan.** Each numbered required output has a `plan` row. The gateway warns about a missing row, a delivered row with no receipt it can find, and each output left open, by its token (`T05-struct#2`). At the checkpoint, carry each open token forward or dismiss it.
+- **Rivals.** An interpretation comes with `alternatives`, each with a test and its result. Never drop a rival: record it in the ledger beside its claim until a test or a checkpoint resolves it. An interpretation without rivals, or a rival without a test, is a question for the specialist.
+- **History.** A structural or stratigraphic interpretation comes with its `evolution`, oldest event first. Ask for it when it is missing.
+- **Cautions.** `method_cautions` gives what the methods behind each claim mean for its numbers. A caution not reflected in the limitations is a question for the specialist.
 
 ## 3. Overreach and quality checks
 
@@ -58,13 +65,6 @@ Red flags:
 - a high-confidence conclusion with no stated uncertainty.
 
 A claim that fails a material check is not established evidence. Record it as unsupported, or send it for follow-up.
-
-## 2a. Plan, rivals and history
-
-- **The plan.** Each numbered required output has a `plan` row. The gateway warns about a missing row, a delivered row with no receipt it can find, and each output left open, by its token (`T05-struct#2`). At the checkpoint, carry each open token forward or dismiss it.
-- **Rivals.** An interpretation comes with `alternatives`, each with a test and its result. Never drop a rival: record it in the ledger beside its claim until a test or a checkpoint resolves it. An interpretation without rivals, or a rival without a test, is a question for the specialist.
-- **History.** A structural or stratigraphic interpretation comes with its `evolution`, oldest event first. Ask for it when it is missing.
-- **Cautions.** `method_cautions` gives what the methods behind each claim mean for its numbers. A caution not reflected in the limitations is a question for the specialist.
 
 ## 3a. Method and process checks
 

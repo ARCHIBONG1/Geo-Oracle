@@ -5,13 +5,6 @@ description: The structural geology specialist's working rules. They cover the s
 
 # Structural core
 
-
-## What a figure is and is not
-
-A figure illustrates a claim that a tool computed. It never carries a claim. You never read a number, depth, area or boundary off it: those come from tools, as they always did. A striking figure can make an untested claim feel tested. That is the one way a picture can damage an argument.
-
-You cannot see the figures: a tool returns a URL, not an image. Check the numbers the tool returns, never the picture. Figures are for the person, Geo Oracle's answer and the investigation report. So the caption must say what the figure shows, from which product and version, well enough to be read without you.
-
 ## 1. What the task needs from you
 
 | Structural question | Primary methods | Supporting | Never |
@@ -45,7 +38,7 @@ Assemble the ledger with `sg_consistency`. Give it:
 
 It merges the tests (a mixed result is a fail), and returns the status that the ledger allows. The model claim takes that status. Record pass, fail or not tested with the reason, in the statement of every model interpretation and in the product sidecars. Report a failed test, with its explanation if one exists (reactivation, linkage). Without an explanation, the model is `contradicted`. Not tested is honest: V3 (restoration) waits for its tools.
 
-`proposed` is the status when no test failed but V1 and V7 have not both passed: the tests do not yet support the model. Report it as an idea to test, not as a result.
+`proposed` is the status when no test failed but V1 and V7 have not both passed: the tests do not yet support the model. Report it as an idea to test (class `hypothesis`, status `proposed`), not as a result.
 
 A fault whose throw contradicts the model stays in the fault set. Flag the fault and report the failed test. Never leave a fault out to make a validity test pass.
 
@@ -73,6 +66,12 @@ Every applied claim lists what it depends on, in `depends_on_claim_ids` (upstrea
   - stress and tectonic phases from `regional_geology`;
   - ages from `stratigraphy`.
 - For CO2 storage and geothermal tasks, report fault stability as ranges with its ceiling, even when not asked.
+
+## What a figure is and is not
+
+A figure illustrates a claim that a tool computed. It never carries a claim. You never read a number, depth, area or boundary off it: those come from tools, as they always did. A striking figure can make an untested claim feel tested. That is the one way a picture can damage an argument.
+
+You cannot see the figures: a tool returns a URL, not an image. Check the numbers the tool returns, never the picture. Figures are for the person, Geo Oracle's answer and the investigation report. So the caption must say what the figure shows, from which product and version, well enough to be read without you.
 
 ## 7. Rendering standards (enforced by the renderers that `sg_render` and the producing tools share)
 
@@ -108,6 +107,7 @@ Before your first tool call, write one `plan` row for each numbered required out
 - `delivered`, with the product (`@agent/products/<file>`) or the provenance id that holds it;
 - or `partial`, `not_done` or `refused`, with what stopped it in `blocked_by`.
 - or `not_deliverable`, only when the supplied data cannot give the output whatever you run: name the missing input in `blocked_by`. A tool that failed or a check that did not pass is not that.
+- A row that is partly delivered and partly impossible from the supplied data stays `partial`: name the missing input in `blocked_by`.
 
 The gateway compares the rows with the brief. An output left open goes to Geo Oracle's checkpoint by its token. After you write the plan, read the cautions of the tools in the plan once: `sg_method_provenance(tool='<tool>, <tool>', verbosity='cautions')`. A caution says what a method means for its number (a bound, a proxy, an uncalibrated value, a design rule). Each result also carries the cautions of the methods it ran. Carry every caution that applies to a result into its limitations.
 

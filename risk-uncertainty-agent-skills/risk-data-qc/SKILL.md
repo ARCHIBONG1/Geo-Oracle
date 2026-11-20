@@ -28,6 +28,10 @@ Without the ledger (a direct chat, a task that did not name it, a path where the
 
 `ru_register_table(kind="decision_context")`: what is being decided and its geological thresholds with sources (a planned pressure increase, a minimum column, a minimum useful capacity). Thresholds are facts about the decision. A commercial threshold is out of scope. The tool refuses a probability in the table.
 
+## A prior register
+
+`ru_register_table(kind="prior_register")` registers a register from an earlier task, for a follow-up. Its columns are id and text. The columns type, nature, scope, owner, materiality, affects and sources are optional.
+
 ## Reporting
 
 Give the ledger as `[data, project_data]`, and products as `[data, upstream_specialist]` by reference. Cite claims by their full id.

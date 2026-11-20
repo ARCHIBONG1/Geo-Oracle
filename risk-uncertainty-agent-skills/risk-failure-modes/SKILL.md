@@ -22,7 +22,7 @@ When the matrix holds more than one play, give `play`: the tool refuses a matrix
 
 A mode is never rated. You say which elements it involves, where they stand, and which entries bear on it. The register's attention goes to a mode whose elements stand at unknown with several entries bearing on it. That is a count, not a score.
 
-In storage domains, caprock, faults and wells are separate modes, because they fail and are monitored differently. If you fold them into one "seal", you hide the one that matters.
+In CO2 storage, caprock, faults and wells are separate modes, because they fail and are monitored differently. If you fold them into one "seal", you hide the one that matters. In hydrogen storage, the library holds one `containment` mode over three elements: caprock_containment, fault_containment and well_containment. With the play matrix, the tool gives each element's status in `element_statuses`, and the weakest in `weakest_element_status`. Report the three statuses one by one, and name the element at the weakest status. Do not add modes that the tool did not return.
 
 ## Reporting
 

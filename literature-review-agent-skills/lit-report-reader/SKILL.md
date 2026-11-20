@@ -1,6 +1,6 @@
 ---
 name: lit-report-reader
-description: How to read a finished investigation report as its first outside reader and say what a reader takes from it. Use only when Geo Oracle's brief asks you to read a report as the reader (a reading task), never in a task that writes the report. It covers what you may read (the report and nothing else), the first reading and the questions, the second reading on the methods, the third reading on the numbers and figures, a later round on a revised report, and what to return.
+description: How to read a finished investigation report as its first outside reader and say what a reader takes from it. Load only when Geo Oracle's brief asks you to read a finished report as its reader (a task named R1-lit-reading to R3-lit-reading), before lit_read_bundle. Never load it in a task that writes the report. It covers what you may read (the report and nothing else), the first reading and the questions, the second reading on the methods, the third reading on the numbers and figures, a later round on a revised report, and what to return.
 ---
 
 # Reading the report as its reader
@@ -62,7 +62,7 @@ When the brief gives you a revised report, you are no longer a first reader: you
 
 ## 6. What to return
 
-Return the findings JSON as usual, with these in `conclusions`, each under its heading line:
+Return the findings JSON as usual. `conclusions` is a list of strings: one string for each answer and for each list item, each starting with its heading:
 
 - `Answers:` one entry for each question: the question's number, your answer, where you found it, and `clear`, `inferred` or `not found`.
 - `What I take from this report:` your five sentences.
@@ -70,6 +70,22 @@ Return the findings JSON as usual, with these in `conclusions`, each under its h
 - `Methods:` the findings of section 3.
 - `Numbers and figures:` the findings of section 4.
 - In a later round, `Earlier items:` with the status of each.
+
+An example, with invented content:
+
+```json
+"conclusions": [
+  "Answers: Q1. The sand is present at both wells and can be followed in the north; continuity in the south is open. Where: Results, paragraph 2. clear",
+  "Answers: Q2. Not found. I looked for the seal in Results and Discussion.",
+  "What I take from this report: ...",
+  "Where I stopped: Methods, paragraph 4. The depth conversion is named but not explained.",
+  "Terms not given: 'upper marker', first in Results, paragraph 1.",
+  "Not found: none",
+  "Repeated: the datum limitation, in Data, Results and Discussion.",
+  "Methods: ...",
+  "Numbers and figures: ..."
+]
+```
 
 Set `scientific_status` to `completed` when you read the whole report and answered every question; a "not found" is an answer. Put nothing in `claims`: you make no claim about the geology. Run no tool that computes, and leave `methods_statements` empty. Do not repeat a question's wording in your lists.
 

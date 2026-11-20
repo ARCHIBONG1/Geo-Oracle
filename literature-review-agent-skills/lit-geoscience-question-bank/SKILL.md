@@ -1,6 +1,6 @@
 ---
 name: lit-geoscience-question-bank
-description: Question sets and evidence checklists for decomposing geological literature requests into specific research questions. It covers tectonic, stratigraphic, sedimentological and structural frameworks, and petroleum-system elements (source, reservoir, seal, trap, migration, charge, timing, preservation). It also covers hydrocarbon occurrence, and CO2-storage, geothermal and mineral-system variants. Use when a request is broad, such as "research the petroleum system of basin X" or "what is known about formation Y", when deciding which domains matter, and when checking that no relevant element was skipped.
+description: Question sets and evidence checklists for decomposing geological literature requests into specific research questions. It covers tectonic, stratigraphic, sedimentological and structural frameworks, and petroleum-system elements (source, reservoir, seal, trap, migration, charge, timing, preservation). It also covers hydrocarbon occurrence, and CO2-storage, geothermal, natural-hydrogen, hydrogen-storage and mineral-system variants. Use when a request is broad, such as "research the petroleum system of basin X" or "what is known about formation Y", when deciding which domains matter, and when checking that no relevant element was skipped.
 ---
 
 # Geoscience question bank
@@ -59,6 +59,18 @@ Rules for petroleum-system research:
   - fluid chemistry and recharge;
   - cap rock;
   - the structural controls on fluid flow.
+- **Natural hydrogen** (the play elements are source, generation_activity, migration, reservoir, seal, trap and preservation, with associated_gases as support):
+  - the source rocks and the process that makes hydrogen (serpentinisation of ultramafic rock, radiolysis, other reactions);
+  - evidence of present-day generation: soil-gas or well hydrogen with a flux, temperature, isotopes;
+  - pathways, reservoirs, seals and traps, and what consumes or lets hydrogen escape (microbes, reactions, leakage);
+  - the gases found with it (helium, methane, nitrogen);
+  - for a hydrogen reading in mud gas: whether drilling could have made it (bit type, mud type, CO, ethene, propene) and whether the detector could see hydrogen at all (carrier gas).
+- **Hydrogen storage** (the play elements are storage_unit, injectivity_deliverability, caprock_containment, fault_containment, well_containment, geochemical_microbial_stability and cycling_integrity, with cushion_gas and monitorability as support):
+  - storage-unit capacity, permeability and deliverability;
+  - caprock, fault and legacy-well containment;
+  - reactions that consume hydrogen (sulphate reduction to H2S, methanogenesis, mineral reactions) at reservoir temperature;
+  - the behaviour of caprock and wells under repeated pressure cycles;
+  - cushion gas, monitoring, and analogue gas-storage or hydrogen-storage projects.
 - **Mineral systems:**
   - metal and fluid sources;
   - fluid pathways (crustal architecture);

@@ -1,6 +1,6 @@
 ---
 name: regional-visualisation
-description: Regional maps, rose diagrams, profiles, subsidence curves and geotherms - the figures the tools draw, the rendering standards, the describe-then-interpret protocol, and what figures may and may not support. Load before reg_render.
+description: Regional maps, rose diagrams, profiles, subsidence curves and geotherms - the figures the tools draw, the rendering standards, the describe-then-interpret protocol, and what figures may and may not support. Load before reg_render and before reporting any figure.
 ---
 
 # Regional visualisation

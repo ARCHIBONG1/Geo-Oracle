@@ -1,6 +1,6 @@
 ---
 name: sed-carbonates
-description: Carbonate rocks in the sedimentology specialist. It covers the texture-first vocabulary (Dunham; Embry & Klovan), allochems, skeletal groups, fabrics and diagenesis. It also covers the carbonate facies code, the platform-to-basin environment matrix and how diagenesis is reported. Load before standardising, coding or interpreting any interval whose lithology is a carbonate, a mixed carbonate-clastic succession, an evaporite or a coal.
+description: Carbonate rocks in the sedimentology specialist. It covers the texture-first vocabulary (Dunham; Embry & Klovan), allochems, skeletal groups, fabrics and diagenesis. It also covers the carbonate facies code, the platform-to-basin environment matrix and how diagenesis is reported. Load before standardising, coding or interpreting any carbonate or mixed carbonate-clastic interval, or a platform or sabkha evaporite.
 ---
 
 # Carbonates

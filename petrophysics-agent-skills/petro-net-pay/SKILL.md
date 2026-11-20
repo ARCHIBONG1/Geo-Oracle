@@ -66,7 +66,7 @@ A cutoff stands for a flow or storage criterion of this reservoir (Worthington &
 
 - **Measurements**: give one per zone, with the provenance id. For example: "SAND_B: net pay 21.9 m TVT (22.0 m MD), average porosity 0.25 and Sw 0.25 (Simandoux), hydrocarbon column 4.0 m (10th-90th percentile 3.9-4.1 m over 200 seeded runs)".
 - **Cutoffs**: put them in `assumptions`, with their sources.
-- **Conclusions**: give `Product: zone_summary — <path>`, so that Geo Oracle can forward it to prospect, play or risk work.
+- **Conclusions**: copy `result.products[].conclusion_line` (`Product: zone_summary — @petrophysics-agent/products/<file>`) exactly, so that Geo Oracle can forward it to prospect, play or risk work.
 - **Downstream consumers need ranges, not single numbers**: give the percentiles.
 
 <!-- end of skill: petro-net-pay -->

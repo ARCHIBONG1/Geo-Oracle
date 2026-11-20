@@ -47,10 +47,12 @@ The scale is ordinal: demonstrated > inferred > analogue-supported > hypothesise
 
 Every well in the play area is one of these:
 - a success (what it demonstrates);
-- a failure on a named element, which you give with `explanations` `{element, reason}` citing evidence;
-- not a test.
+- partial: a shows well (what it demonstrates);
+- a failure on a named element, which you give with `explanations` `{well: {element, reason}}` citing evidence;
+- not a test, which you give as `{well: {element: "not a test", reason}}`;
+- undetermined: a dry, mechanical or not-reached well that you have not settled yet.
 
-The tool only proposes: it reads candidate elements from the operator's stated reason (and proposes the trap-like element for a dry well outside every closure), and keeps the reason beside them. Every dry well stays undetermined, and fails PT5, until you settle it.
+The tool only proposes: it reads candidate elements from the operator's stated reason (and proposes the trap-like element for a dry well outside every closure), and keeps the reason beside them. Every dry well stays undetermined, and fails PT5, until you settle it. A well whose result the tool cannot read is missing data: PT5 reads not tested for it.
 
 One well's failure is local. Link it to the element as an interpretation against (`against: true`, kind `interpretation`), which disfavours the element. Link it as an observation against, which contradicts the element for the whole play, only when the failure is shown play-wide.
 
@@ -68,13 +70,17 @@ One well's failure is local. Link it to the element as an interpretation against
 
 Each test is pass, fail, not tested, explained or not informative. Key each explanation PT1 to PT7. PT5 is not explained in `play_tests`: settle every well in `play_classify_outcomes`. A failed test with an accepted explanation (`play_tests` `explanations`) reads `fail (explained: <reason>)` in the `play_tests` result, and `explained` in the published product's test record. An explained PT2-PT4 keeps the play below supported. `not informative` is a test that cannot fail on its input (PT1 on a play from the matrix): it neither passes nor blocks. PT1 and PT6 need not pass for supported; a failed PT1 or PT6 makes the play contradicted; PT7 is always not tested. An explained PT1 or PT6 failure does not block supported in the tool.
 
-Status:
-- supported: PT2-PT5 passed, PT1 not failed, and the weakest critical element inferred or better;
-- proposed: a critical element unknown or disfavoured (the tests list disfavoured elements);
-- proposed also when the only failed tests are PT2 or PT3 and no critical element is contradicted: these are bookkeeping states, named in `status_reason`; clear them by revising the matrix;
-- contradicted: any other failure (PT1, PT4, PT5, PT6) or a contradicted element;
-- partially_supported: otherwise;
-- unresolved: competing concepts that pass the same tests.
+`play_tests` sets the play's status. It applies the rows in this order, and the first row that matches gives the status. "Failed" here means a failure without an accepted explanation.
+
+| Order | When | Status |
+|---|---|---|
+| 1 | the only failed tests are PT2 or PT3, and no critical element is contradicted (bookkeeping states, named in `status_reason`: clear them by revising the matrix) | proposed |
+| 2 | any other failed test, or a contradicted critical element | contradicted |
+| 3 | PT2-PT5 passed, PT1 not failed, and the weakest critical element inferred or better | supported |
+| 4 | the weakest critical element hypothesised or better | partially_supported |
+| 5 | otherwise (a critical element unknown or disfavoured; the tests list disfavoured elements) | proposed |
+
+An explained failure of PT2-PT4 is not a pass, so it stops row 3. PT6 and PT7 do not enter row 3. The tool never gives `unresolved`: give it yourself when competing concepts pass the same tests.
 
 ## 5. Element claims
 
@@ -108,6 +114,7 @@ Before your first tool call, write one `plan` row for each numbered required out
 - `delivered`, with the product (`@agent/products/<file>`) or the provenance id that holds it;
 - or `partial`, `not_done` or `refused`, with what stopped it in `blocked_by`.
 - or `not_deliverable`, only when the supplied data cannot give the output whatever you run: name the missing input in `blocked_by`. A tool that failed or a check that did not pass is not that.
+- A row that is partly delivered and partly impossible from the supplied data stays `partial`: name the missing input in `blocked_by`.
 
 The gateway compares the rows with the brief. An output left open goes to Geo Oracle's checkpoint by its token. After you write the plan, read the cautions of the tools in the plan once: `play_method_provenance(tool='<tool>, <tool>', verbosity='cautions')`. A caution says what a method means for its number (a bound, a proxy, an uncalibrated value, a design rule). Each result also carries the cautions of the methods it ran. Carry every caution that applies to a result into its limitations.
 

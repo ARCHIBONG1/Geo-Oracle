@@ -1,6 +1,6 @@
 ---
 name: geo-investigation-planning
-description: How Geo Oracle turns an exploration objective into testable geological questions, specialist tasks and a dependency graph. It also covers how Geo Oracle runs them in parallel waves, budgets the turn's time, judges whether another specialist call is worth making, and decides when to stop. Use when you start an investigation; when the user changes the objective or supplies major new data; when a result changes the model enough to re-plan; when you choose the next specialist call; and when you decide whether the investigation is finished.
+description: How Geo Oracle turns an exploration objective into testable geological questions, specialist tasks and a dependency graph. It also covers how Geo Oracle runs them in parallel waves, budgets the turn's time, judges whether another specialist call is worth making, and decides when to stop. Load for planning, re-planning after a major change, choosing an additional specialist call, or deciding whether to stop.
 ---
 
 # Investigation planning
@@ -47,7 +47,7 @@ Check each task against the map and against `list_shared_inputs`:
 
 - Does the task need a product? Then a task that makes it must come first, and must be collected.
 - Does one brief hold work that needs such a product and work that does not? Split it. Send the independent part now. Send the dependent part after the product exists. Example: seismic quality control and fault extraction need no well product. A well tie and a depth map need the `time_depth` product of `wells_petrophysics`.
-- Ask for products in a brief. Do not name tool calls.
+- Ask for products in a brief. Do not name tool calls. The one exception is a tool that `geo-specialist-tasking` or `geo-evidence-inventory` names for a product: name that tool.
 - The gateway warns when a task starts before a `needed` product exists. If the task asks for that work, the warning shows a planning error: correct it. If the task does not ask for that work, ignore the warning.
 - Fault seal reads the `vshale_log` in TVDSS. The log has TVDSS only when the well's trajectory exists before the shale-volume step runs. Ask petrophysics for the trajectory first.
 - `structural_geology` needs the `horizon` and `fault_set` in depth, not in time.
@@ -60,21 +60,7 @@ Mark iterative loops explicitly. For example, stratigraphy and seismic often nee
 
 ## 4a. The risk gate and the reduction loop
 
-Risk runs after the play and prospect waves. The investigation does not end at its first answer:
-
-1. **Gate.** Task `risk_uncertainty` with:
-   - the ledger's absolute sandbox path, as kind `investigation_ledger`: the path you gave `set_hotl_mode` as `ledger_path`. Do not build it again from `pwd`. The gateway adds the path on record when the brief has none, and corrects a path that differs;
-   - every finding relied on, as `upstream_findings` with ids, statuses, scope tags and `depends_on`;
-   - every product, by reference;
-   - the objectives in scope, and the decision context.
-
-   It returns the register, the materiality report and a `reduction_plan`. The plan splits its items into `actionable_now` and `needs_acquisition`, each with an owner, an `analysis_mode` and a `task_framing`. The plan also lists:
-   - `irreducible` entries, with the reason;
-   - `settled_failures`: conclusions decided against in every case, which no reduction can change. They are not sent for reduction. The only checks on them are their threshold's source and the basis of their inputs.
-2. **Reduction wave.** Run every `actionable_now` item as one wave. Send each item as a task to the named owner, in the named mode (`challenge` or `validation`, never `initial`). Use the item's `task_framing` as the geological question, unchanged. It is framed as a test. The one thing that would make the loop harmful is to reframe it as a confirmation. Record each task in the ledger as an attempt: entry, task id, owner, mode, what it tries, why. If a human-on-the-loop setting is on, present the plan first, and run only what the human approves. If it is off, run the wave automatically. The `needs_acquisition` items are not tasks. They go to the user in the final answer.
-3. **Follow-up.** Task `risk_uncertainty` again in `follow_up` mode, with the new products, the prior materiality file and every attempt. It reruns the same flip tests and returns `reduction_outcomes`. For each attempt, these give what was tried, why, and what happened to the uncertainty: settled, settled as a failure (every case now fails), narrowed, unchanged, newly material, overturned (a settled failure no longer fails), newly a settled failure, changed, or entry withdrawn (the entry is gone from the current register).
-4. **One wave by default.** Run a second reduction wave only when the user asks. Never reissue an attempt already recorded in the ledger. Report an unchanged outcome; do not retry it.
-5. **Report every attempt.** The final answer says what was tried, why, and what happened, whichever way it went. A reduction that did not settle its uncertainty is one of the more useful things the investigation can report. The acquisition items are its recommendations.
+Risk runs after the play and prospect waves. The investigation does not end at its first answer: one reduction wave follows, then a risk follow-up. The brief, the reduction wave and the follow-up are in `geo-play-prospect-evaluation`, section 5.
 
 ## 4b. Human on the loop
 
@@ -101,7 +87,7 @@ Pass these to `set_hotl_mode` with the person's answer:
 - **Parallelism:** Geo Oracle makes one tool call per step. So start the independent tasks of a wave one after another, with `wait_seconds: 0`. Each call returns its job id at once, and the specialists run in parallel. Then collect them one by one. A wave is closed when its running jobs have returned. A task that you start after that belongs to the next wave, and the gateway refuses it until the checkpoint is filed.
 - **Large briefs:** One specialist turn may not be sufficient for a long list of required outputs, or for a sequence of long jobs on a large dataset (a large seismic volume: horizon tracking, fault and body extraction, attribute volumes). A specialist turn stops at the gateway's limit, `JOB_MAX_SECONDS` (six hours in this deployment). Split such a brief into smaller tasks, one after the other, in the same wave or in different waves. Do not write this limit, or any time limit, in a brief: the specialists are not told it.
 
-Write the plan into the ledger before you run it, and show it to the person in a few lines before the activation question (not inside the question). The plan has five parts:
+Write the plan into the ledger's *Plan* section before you run it, and show it to the person in a few lines before the activation question (not inside the question). The plan has five parts:
 
 - the objective, in one sentence;
 - the deliverables, one result each;
@@ -124,7 +110,7 @@ Example plan:
 
 ## 6. Is the next call worth it?
 
-Before any additional call, write one line in the ledger with:
+Before any additional call, write one line under the ledger's *Next steps* with:
 - the question the call resolves;
 - which interpretation or decision it could change;
 - why the existing evidence cannot answer it.
@@ -173,7 +159,7 @@ If the ledger is current, a turn cut at either ceiling loses nothing, because th
   - a short summary of results so far;
   - the next steps.
 - **Retries.** Retry an execution failure at most once, with a stated reason.
-- **Diagnose, then change the approach.** If a result missed, send it back to the same session as a `follow_up` that asks why, before any rerun. From the third attempt at one result, the gateway refuses the task unless `reason_for_reanalysis`:
+- **Diagnose, then change the approach.** If a result missed, send it back to the same session as a `follow_up` that asks why, before any rerun. From the fifth attempt at one result, the gateway refuses the task unless its reason (`reason_for_followup` or `reason_for_reanalysis`):
   - names what is different (another method, seed, input or scope);
   - and does not repeat an earlier attempt's reason.
 
@@ -197,6 +183,23 @@ The checkpoint that ends the work also records the final state. The gateway refu
 - `hypotheses`: every hypothesis of the ledger, including the ones that lost. Each has its status from the ledger's scale, and its basis (claim and evidence ids);
 - `objective_check`: the answer to the objective in one sentence, its status (answered, partly answered, not answerable) and what it lacks;
 - `pre_mortem`, when the risk specialist ran: up to three reasons the leading interpretation could be wrong. Each reason is covered by the test that addressed it, or by the open uncertainty that holds it. Ask the risk specialist for them in its follow-up.
+
+An example of the checkpoint that ends the work, in a supervised mode after the person accepted your proposal to close (all values invented; `items` answers this wave's items as in `geo-human-on-the-loop`, section 3):
+
+```
+hotl_checkpoint(investigation_id="INV-<slug>-YYYYMMDDTHHMM", decision="accept",
+  verbatim="<their whole reply>", approved_plan=[], record={
+  "why": "...", "contribution": "...",
+  "items": {"T07-risk#audit1": {"action": "accepted", "note": "..."}},
+  "deliverables": [
+    {"id": "dlv1", "status": "delivered", "basis": "T05-struct"},
+    {"id": "dlv2", "status": "partial", "basis": "T04-seis", "missing": "the depth map of the second horizon"}],
+  "hypotheses": [
+    {"id": "H1", "statement": "...", "status": "supported", "basis": "T05-struct/C1, T04-seis/E2"},
+    {"id": "H2", "statement": "...", "status": "contradicted", "basis": "T03-strat/C2"}],
+  "objective_check": {"answer": "...", "status": "partly answered", "missing": "the second horizon in depth"},
+  "pre_mortem": [{"reason": "...", "covered_by": "U2"}]})
+```
 
 Then read `geo-synthesis-audit` and produce the synthesis.
 

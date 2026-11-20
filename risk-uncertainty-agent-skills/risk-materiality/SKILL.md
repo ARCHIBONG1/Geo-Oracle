@@ -1,6 +1,6 @@
 ---
 name: risk-materiality
-description: The four flip tests (play status, maturity, threshold straddle, scenario comparison) and the sensitivity read. Which to use for which conclusion, what the classes mean, and the report and its refusal. Load before any flip test.
+description: The four flip tests (play status, maturity, threshold straddle, scenario comparison) and the sensitivity read. Which to use for which conclusion, what the classes mean, and the report and its refusal. Load before ru_flip_play, ru_flip_maturity, ru_straddle, ru_compare_scenarios, ru_sensitivity_read or ru_materiality_report.
 ---
 
 # Materiality

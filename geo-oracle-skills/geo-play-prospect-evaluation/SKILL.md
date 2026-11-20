@@ -1,6 +1,6 @@
 ---
 name: geo-play-prospect-evaluation
-description: Gates, element checklists, the element status scale and the maturity ladder for Geo Oracle's play, prospect/target and risk stages. It covers when the integrated model is ready for subsurface_play, prospect_target and risk_uncertainty; what each call must be given; the five domains those specialists assess (hydrocarbon, CO2 storage, geothermal, natural hydrogen, hydrogen storage); how element statuses are set and checked; and how to route critical uncertainties back to specialists. Use before you call any of those three tools. Also load it in these cases — when the user asks about prospectivity, plays, leads, prospects, drilling targets, chance of success (which this system does not produce) or risk; and when you review their results.
+description: Gates, element checklists, the element status scale and the maturity ladder for Geo Oracle's play, prospect/target and risk stages. It covers when the integrated model is ready for subsurface_play, prospect_target and risk_uncertainty; what each call must be given; the five domains those specialists assess (hydrocarbon, CO2 storage, geothermal, natural hydrogen, hydrogen storage); how element statuses are set and checked; the risk brief and the reduction loop; and how to route critical uncertainties back to specialists. Load before calling subsurface_play, prospect_target or risk_uncertainty, when the user asks about prospectivity, plays, leads, prospects, drilling targets, chance of success (which this system does not produce) or risk; and when you review their results.
 ---
 
 # Plays, prospects and risk
@@ -89,10 +89,25 @@ A lead gets no volume. Volumes are in place only. Never upgrade maturity because
 
 ## 5. Risk and uncertainty
 
+Risk runs after the play and prospect waves. This is the one list of what its brief carries.
+
 **Brief contents.** Pass `risk_uncertainty` the following:
+- the ledger's absolute sandbox path, as `available_evidence` of kind `investigation_ledger`: the path you gave `set_hotl_mode` as `ledger_path`. Do not build it again from `pwd`. The gateway adds the path on record when the brief has none, and corrects a path that differs. The risk specialist reads the ledger directly, so update it before the call;
+- every finding relied on, as `upstream_findings` with full ids, classification, status, `[regional]`/`[analogue]` tags and `depends_on`;
 - the plays and targets, with their element statuses and the products behind them;
-- their dependencies;
-- the contradictions and uncertainties from the ledger.
+- every product, by reference;
+- the contradictions and uncertainties from the ledger;
+- the objectives in scope, by name, and the decision context.
+
+It returns the register, the materiality report and a `reduction_plan`. The plan splits its items into `actionable_now` and `needs_acquisition`, each with an owner, an `analysis_mode` and a `task_framing`. The plan also lists:
+- `irreducible` entries, with the reason;
+- `settled_failures`: conclusions decided against in every case, which no reduction can change. They are not sent for reduction. The only checks on them are their threshold's source and the basis of their inputs.
+
+**The reduction loop.** The investigation does not end at its first answer:
+1. **Reduction wave.** Run every `actionable_now` item as one wave. Send each item as a task to the named owner, in the named mode (`challenge` or `validation`, never `initial`). Use the item's `task_framing` as the geological question, unchanged. It is framed as a test. The one thing that would make the loop harmful is to reframe it as a confirmation. Record each task in the ledger's *Reduction attempts* table: entry, task id, owner, mode, what it tries, why. If a human-on-the-loop setting is on, present the plan first, and run only what the human approves. If it is off, run the wave automatically. The `needs_acquisition` items are not tasks. They go to the user in the final answer.
+2. **Follow-up.** Task `risk_uncertainty` again in `follow_up` mode, with the new products, the prior materiality file and every attempt, copied from the ledger's *Reduction attempts* table (the risk tools do not read that table). It reruns the same flip tests and returns `reduction_outcomes`. For each attempt, these give what was tried, why, and what happened to the uncertainty: settled, settled as a failure (every case now fails), narrowed, unchanged, newly material, overturned (a settled failure no longer fails), newly a settled failure, changed, or entry withdrawn (the entry is gone from the current register).
+3. **One wave by default.** Run a second reduction wave only when the user asks. Never reissue an attempt already recorded in the ledger. Report an unchanged outcome; do not retry it.
+4. **Report every attempt.** The final answer says what was tried, why, and what happened, whichever way it went. A reduction that did not settle its uncertainty is one of the more useful things the investigation can report. The acquisition items are its recommendations.
 
 **No numerical chance of success.** The play, prospect and risk specialists refuse probabilities, chance factors, scores and risk matrices, whatever methodology is supplied. So never request one. Ask instead for materiality:
 - which uncertainties flip a categorical conclusion (`material`);

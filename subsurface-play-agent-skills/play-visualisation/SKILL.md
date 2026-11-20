@@ -1,6 +1,6 @@
 ---
 name: play-visualisation
-description: Status matrices, events charts, dependency graphs and segment maps. It covers the figures the tools draw, the standards they enforce (discrete classes, unknown hatched, no colour ramps, the weakest element outlined) and what a figure may support. Load before play_render and before you publish the figures the tools drew.
+description: Status matrices, events charts, dependency graphs and segment maps. It covers the figures the tools draw, the standards they enforce (discrete classes, unknown hatched, no colour ramps, the weakest element outlined) and what a figure may support. Load before play_render, and before you publish the figures the tools drew.
 ---
 
 # Play visualisation

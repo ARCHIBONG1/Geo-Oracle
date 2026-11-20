@@ -1,6 +1,6 @@
 ---
 name: geo-report-editor
-description: How Geo Oracle acts as the editor in chief of the formal investigation report. Use when a report is requested and each time a draft comes back, after geo-investigation-report. It covers the commission to the writer, the reader's questions and your private answer key, starting the reader, how to read the reader's report and the writer's outline, the editorial reading of the draft, the record check against the ledger, how to write few ranked notes that ask for revision and not addition, what the writer may and may not see of the reader's report, the verdict, and the later rounds.
+description: How Geo Oracle acts as the editor in chief of the formal investigation report. Load when a formal report is requested, before request_report, and each time a draft or a reading comes back, after geo-investigation-report. It covers the commission to the writer, the reader's questions and your private answer key, starting the reader, how to read the reader's report and the writer's outline, the editorial reading of the draft, the record check against the ledger, how to write few ranked notes that ask for revision and not addition, what the writer may and may not see of the reader's report, the verdict, and the later rounds.
 ---
 
 # Editing the investigation report
@@ -37,7 +37,7 @@ A reader who was not in the investigation reads the draft and answers your quest
 - **Ask open questions.** "What does the report conclude about the seal, and on what evidence?" tests the report. "Is the seal unproven because the pressure data are missing?" gives the reader the answer. Never put the answer, or a hint of it, in a question.
 - **Keep them few:** six to ten.
 
-Then write **your answer key**: for each question, the answer that a reader should reach, in two or three sentences, from your ledger. Keep the questions and the key in a file of your own in your sandbox, beside the ledger. Do not put them in the ledger: it is frozen. Do not send the key to anyone.
+Then write **your answer key**: for each question, the answer that a reader should reach, in two or three sentences, from your ledger. Keep the questions and the key in `report_key.md` in the ledger's folder (`<home>/investigation/`, or `<home>/investigation/<investigation_id>/`), so that they survive a compaction. Do not put them in the ledger: it is frozen. Do not send the key to anyone.
 
 ## 3. The reader
 
@@ -88,7 +88,18 @@ A note is an instruction to revise a passage for a reader. It never asks for a s
 - **Never give the writer the questions, the reader's answers as answers, or your key.** A writer who has the questions writes to them, and the next reading then tests nothing.
 - Do not ask the writer to add ids to the text. Do not write the passage for the writer.
 
-Send the notes with `request_report(investigation_id, review_notes=[...])`, one note for each entry.
+Send the notes with `request_report(investigation_id, review_notes=[...])`, one note for each entry. Each note is one string that starts with its kind. The three calls of a report, with invented values (`commission` is one string; `reader_questions` and `review_notes` are lists of strings, never in the same call):
+
+```
+request_report(investigation_id="INV-<slug>-YYYYMMDDTHHMM", person_words="<their request, word for word>",
+  executive_summary="<your closing summary, word for word>",
+  commission="Reader: the board that decides on a well. Question: ... Answer: ... (partly answered). Storyline: ... Believed before: ... Leave short: ...")
+request_report(investigation_id="INV-<slug>-YYYYMMDDTHHMM", reader_questions=[
+  "What did the investigation establish?", "What does the report conclude about the seal, and on what evidence?"])
+request_report(investigation_id="INV-<slug>-YYYYMMDDTHHMM", review_notes=[
+  "record: Results, paragraph 3 calls the closure a trap. The ledger keeps the trap hypothesis unresolved. Write it at that status.",
+  "revise: Discussion, paragraph 2. A reader gets two readings of the southern reflector but not the test that decides. Give the test where the readings are weighed."])
+```
 
 ## 6. The verdict
 
@@ -96,10 +107,15 @@ After each round, decide:
 
 - **Accept:** your record check finds no contradiction, the release checks passed, the reader's answers agree with your key, in substance and not in wording, on the questions that bear on the decision, and what the reader took from the report is your answer in substance. Deliver it.
 - **Revise:** a contradiction remains, or the reader misunderstood something that bears on the decision, while a round is left. Do not spend a round on a difference a reader would not act on.
-- **After the last round:** deliver the last report that passed its release checks, with your remaining objections, each in one line. If none passed, tell the person that the report could not be released, and why.
+- **A revision that reads worse:** compare each revised round with the rounds before it. Read each draft with `report_draft` (`review_round` gives an earlier round). A revision is worse in these cases:
+  - your record check finds a contradiction, an unsupported statement or a lost result that the earlier round did not have;
+  - on a question that the reader has not seen before, the reader does not reach your key on a point that the earlier round stated clearly.
+
+  Do not judge this from the questions that the reader answered in an earlier round. The reader remembers the earlier version, so those answers do not show what a new reader gets. If a round is left, send a note that names what the revision lost: a `record` note for a lost result or a contradiction, a `revise` note for a point that a reader no longer reaches. If no round is left, deliver the best round that passed its release checks: `report_draft` gives its link. If only the last round passed, deliver it with your objections. Tell the person which round you delivered, and why.
+- **After the last round:** deliver the last report that passed its release checks, unless an earlier round reads better (see above), with your remaining objections, each in one line. If none passed, tell the person that the report could not be released, and why.
 
 Do not hold a report back for style when the reader understood it. Do not accept a report that passed every check and that the reader misunderstood.
 
-When you deliver, add one line on the reading: that an outside reader read the report, and whether its understanding matched the investigation's answer.
+When you deliver, add one line on the reading: that an outside reader read the report, and whether its understanding matched the investigation's answer. If you deliver an earlier round, say which round the reader's last reading was of.
 
 <!-- end of skill: geo-report-editor -->

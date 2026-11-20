@@ -1,6 +1,6 @@
 ---
 name: geo-evidence-inventory
-description: How Geo Oracle characterises the evidence available to a geological investigation, and packages it for specialist agents. Use at the start of every investigation. Also load it in these cases — whenever the user supplies or mentions data (files, well logs, LAS, seismic, core, tops, maps, reports, tables); before you brief any specialist with project evidence; and whenever you are unsure whether a dataset or measurement actually exists.
+description: How Geo Oracle characterises the evidence available to a geological investigation, and packages it for specialist agents. Load when packaging evidence for a brief, when starting an investigation, or receiving or being told about new data (files, well logs, LAS, seismic, core, tops, maps, reports, tables), and whenever you are unsure whether a dataset or measurement actually exists.
 ---
 
 # Evidence inventory and packaging
@@ -28,7 +28,7 @@ For each item the user supplies or mentions, record the following:
 |---|---|---|
 | verified | You opened it and confirmed its content | Yes |
 | partial | Available, but key characteristics are undocumented, e.g. seismic with no processing report | Yes, with those gaps stated |
-| named | Mentioned but not supplied | No |
+| named | Mentioned, or listed by `list_shared_inputs`, but not opened | Not yet. A listed file can be briefed by its path |
 | unavailable | Known not to exist or not accessible | No |
 | unknown | Cannot tell | No; treat as unknown |
 
@@ -71,7 +71,7 @@ You may not interpret. Only the specialists compute properties, pick horizons, c
 
 ## 4. Ask for what matters, once
 
-If a planned question depends on evidence that is named, unknown or missing, ask the user in one grouped message. Say which question each item would unblock, for example "The density log for W2 would let the petrophysics specialist estimate porosity in the target interval."
+If a planned question depends on evidence that is named but not in the listing, unknown or missing, ask the user in one grouped message. Say which question each item would unblock, for example "The density log for W2 would let the petrophysics specialist estimate porosity in the target interval."
 
 If the user cannot provide the item, proceed with what exists. Record the gap in the ledger, and pass it to the specialists in `known_unknowns`.
 
@@ -84,11 +84,11 @@ If the user cannot provide the item, proceed with what exists. Record the gap in
   - `description`: the source, reference frames, units, and QC caveats.
   - `excerpt`: the content itself.
 - **Tables** keep their header row with units. If you send a subset, say so, e.g. "rows for W1–W3 only; the full table has 40 wells".
-- **Bulk data** (full-resolution curves, seismic volumes, grids) goes by an identifier, plus a short summary. Use an identifier that the specialists' own data tools can resolve, such as a project data-store URI or dataset ID. Never retype large numeric arrays: a single transcription error silently corrupts an analysis.
+- **Bulk data** (full-resolution curves, seismic volumes, grids) goes by its path or product reference, plus a short summary, as the items below say. Never retype large numeric arrays: a single transcription error silently corrupts an analysis.
 - **Seismic data** goes by its path relative to the shared inputs folder (`operations/inputs`), e.g. `{"id": "S1", "kind": "seismic_volume", "description": "survey_a/pstm_full.sgy", "excerpt": "3D PSTM, time, 2 ms; polarity and CRS not stated"}`. Only `seismic_interpretation` can open that folder.
   - A seismic file that the user uploaded to this chat is in your sandbox, not in the folder. Pass it as `{"id": "S1", "kind": "seismic_volume", "description": "uploaded to Geo Oracle chat: /opt/tf/uploads/seismic.npy", "excerpt": "3D volume, axes T,XL,IL, 4 ms"}`, with its real sandbox path. The seismic specialist imports it.
   - If the user states an array axis order other than the default IL,XL,T (inline, crossline, time), include it.
-  - If no file name is known, ask `seismic_interpretation` to list the available seismic data.
+  - If no file name is known, list the folder with `list_shared_inputs`.
 - **Well data** goes the same way: LAS and CSV files by their path relative to `operations/inputs` (e.g. `wells/W1.las`), or as a Geo Oracle upload. Only `wells_petrophysics` can open them. A petrophysics brief holds these items:
   - by path, each listed file in any subfolder that a requested deliverable can use: the logs, the tops table, the deviation survey or well track, checkshots, and the core, SCAL, capillary-pressure, water-analysis, pressure and temperature tables, and each test or fluid-recovery summary (DST recoveries, RFT or MDT samples) as kind `well_tests`. RFT or MDT pressure points stay a pressure table;
   - in each `excerpt`, what the file does not state: depth reference and unit, datum and its elevation, X, Y and CRS, water depth, a vertical well or its survey file, mud type (water-based or oil- or synthetic-based), the unit of each curve the file leaves blank, Rm and Rmf with their units and temperatures, BHT with its unit, and who picked the tops;
@@ -146,14 +146,7 @@ If the user cannot provide the item, proceed with what exists. Record the gap in
   - in `project_context`: the domain.
 
   The play specialist's `element_status_matrix`, `play_concepts` and `containment_assessment` go to `prospect_target` and `risk_uncertainty`. Its `discriminating_evidence` is the list to plan the next wave from.
-- **Risk tasks carry the whole investigation.** Give `risk_uncertainty`:
-  - the ledger path, as `available_evidence` of kind `investigation_ledger`: the path you gave `set_hotl_mode` as `ledger_path`, never a path built again from `pwd`;
-  - every finding relied on, as `upstream_findings` with full ids, classification, status, `[regional]`/`[analogue]` tags and `depends_on`;
-  - every product, by reference;
-  - the objectives, by name;
-  - the decision context.
-
-  The risk specialist reads Geo Oracle's ledger directly from the sandbox, so the ledger must be current before the call. In `follow_up` mode after a reduction wave, add the prior materiality file and every attempt (entry, task id, owner, mode, what was tried, why).
+- **Risk tasks carry the whole investigation**, with the ledger path. The brief is in `geo-play-prospect-evaluation`, section 5.
 - **Products of one specialist for another** go by their reference, exactly as it appeared in the producer's conclusions, e.g. `{"id": "T02-petro/P1", "kind": "time_depth", "description": "@petrophysics-agent/products/W1-time_depth-5cff9900cf.csv", "excerpt": "TWT from SRD at MSL; drift-corrected sonic; checkshots 300-1560 m"}`. The receiving specialist copies it into its own area. For a `well_header`, also put the well's X, Y, CRS and datum elevation from the producer's conclusions in the `excerpt`. The seismic specialist locates the well from the product with `seismic_convert_coordinates`.
 - **Pass a sandbox path in two forms only.** Specialists run in their own environments and cannot read your sandbox. The two forms are the ones above:
   - an upload, as `uploaded to Geo Oracle chat: <absolute sandbox path>`, which its owner imports;
@@ -174,13 +167,13 @@ Example entries:
     {
       "id": "W1-logs",
       "kind": "well_log",
-      "description": "LAS 2.0, 1500-2100 m MD, 0.1524 m step. Curves: GR (API), RHOB (g/cc), NPHI (v/v, limestone matrix). No resistivity. Readable by the petrophysics data tool as dataset W1-logs-v1.",
-      "excerpt": "Dataset reference: W1-logs-v1. Summary: GR 20-140 API; RHOB 2.18-2.62 g/cc in 2112-2178 m."
+      "description": "wells/W1.las",
+      "excerpt": "Listed, not opened. The person says it holds GR, RHOB and NPHI over the reservoir. They did not mention a resistivity log or a datum."
     }
   ],
   "known_unknowns": [
     "Deviation survey for W1 (TVDSS conversion)",
-    "Resistivity logs for W1"
+    "Whether a resistivity log exists for W1"
   ]
 }
 ```

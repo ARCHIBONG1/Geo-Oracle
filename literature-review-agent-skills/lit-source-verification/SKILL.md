@@ -77,7 +77,7 @@ Keep a working register of sources, and use it to build every `source_reference`
 Format (placeholders shown; always fill them from the resolved record):
 
 ```
-R4 | doi:<DOI> | openalex:<W-id> | <First author> et al. <year>, <venue> | title: <title> |
+R4 | doi:<DOI> | openalex:<W-id> | <First author> et al. <year>, <venue> | type: <type> | title: <title> |
      peer-reviewed article | access: full-text | retraction: none | relevance: basin-scale
 ```
 

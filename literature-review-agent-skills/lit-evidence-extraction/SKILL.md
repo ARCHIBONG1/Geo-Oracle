@@ -54,11 +54,16 @@ Use this mapping when the task includes an OUTPUT CONTRACT:
 
 `check_outcomes`: when the brief lists 'Claims to test', give one entry per claim: `target` (the claim id), `verdict` (`supported`, `contradicted`, `unresolved` or `not_tested`), the `evidence_ids` of your own evidence that decide it, and a one-sentence `basis`. A verdict says what your evidence shows, not whether the claim is true. A blind validation has no such list: leave it empty.
 
-**`source_reference` format** (pipe-separated, one source per item):
+**`source_reference` formats** (pipe-separated, one source per item). This is the one list of the forms; the other skills and the prompt refer to it.
 
 ```
-doi:<DOI> | openalex:<W-id> | <First author> et al. <year>, <venue> | type: <OpenAlex type, e.g. article, dissertation, book-chapter> | title: <title> | relevance: <class> | access: <level> | loc: <page/figure/table>
+published work:    doi:<DOI> | openalex:<W-id> | <First author> et al. <year>, <venue> | type: <OpenAlex type, e.g. article, dissertation, book-chapter> | title: <title> | relevance: <class> | access: <level> | loc: <page/figure/table>
+retrieved copy:    doi:<DOI> | openalex:<W-id> | project:retrieved/<file> | <First author> et al. <year>, <venue> | type: <type> | title: <title> | p. <n> | prov:<id of the read> | m:lit/read-document | retrieved <date> | relevance: <class> | access: full-text
+project document:  project:<path> | <Author or organisation> <year> | title: <document title> | p. <n> | prov:<id> | m:lit/read-document | relevance: <class> | access: full-text
+folder listing:    project:operations/inputs | lit_list_inputs | prov:<id> | m:lit/list-inputs
 ```
+
+The label before each form is not part of the string. Give the author, year and title of a project document as the document states them, and leave out what it does not state. Every item that rests on the result of a `lit_*` tool carries its `prov:` id and its `m:` ids (`lit-inputs-library`, *Methodological provenance*). The `prov:` of a retrieved copy is the id of the `lit_read_document` call, not the id in the `cite_as` of `lit_fetch_document`.
 
 Copy `type:` from the resolved record, as you copy the author, year and title. The investigation report prints a thesis, a book chapter or a report as that kind of work. A record that returns no author list is not a citable source: do not write a placeholder in the author's place. Record it as `UNVERIFIED |` with its DOI and title, so the report can describe it without citing it, or leave it out.
 
@@ -82,7 +87,7 @@ Angle brackets show placeholders. Real items carry resolved identifiers.
       "statement": "Basin-scale: Lower Shale TOC 1.8–6.2 wt% (n = 38 cuttings samples, wells B-2 and B-5).",
       "classification": "measurement",
       "source_type": "literature",
-      "source_reference": "doi:<DOI> | openalex:<W-id> | <Author> et al. <year>, <venue> | title: <title> | relevance: basin-scale | access: full-text | loc: Table 2",
+      "source_reference": "doi:<DOI> | openalex:<W-id> | <Author> et al. <year>, <venue> | type: article | title: <title> | relevance: basin-scale | access: full-text | loc: Table 2",
       "limitations": ["Wells B-2 and B-5 lie about 60 km from the study area"]
     }
   ],
@@ -92,7 +97,7 @@ Angle brackets show placeholders. Real items carry resolved identifiers.
       "statement": "Basin-scale: the authors interpret the Lower Shale as a Type II marine source rock.",
       "classification": "interpretation",
       "source_type": "literature",
-      "source_reference": "doi:<DOI> | openalex:<W-id> | <Author> et al. <year>, <venue> | title: <title> | relevance: basin-scale | access: full-text | loc: p. 9",
+      "source_reference": "doi:<DOI> | openalex:<W-id> | <Author> et al. <year>, <venue> | type: article | title: <title> | relevance: basin-scale | access: full-text | loc: p. 9",
       "supporting_evidence_ids": ["E1"]
     }
   ],

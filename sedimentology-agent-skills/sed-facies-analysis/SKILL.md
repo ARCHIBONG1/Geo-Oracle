@@ -12,7 +12,7 @@ description: Facies transitions, the embedded Markov test, and Walther's law and
 - The tool singles out transitions only when randomness is rejected (`non_random`). It singles out those with a normalized difference Z = (O - E)/sqrt(E) above 2 (`above_random`). These are the evidence of an association.
 - If randomness is accepted, the tool singles out no transition, since a positive difference is then chance.
 - Walther's law holds only within conformable successions. Give the framework's key surfaces at log depth, and the tool excludes the boundaries at them. For `sed_transitions_all`, give the `correlated_tops` product as `key_surfaces_product`, or the depths per well as `key_surfaces_by_well`. For `sed_transitions` (one well), give `key_surfaces_m`. Well names match without regard to case, and the tool warns about a surface well that is not in the coded file. Without the framework, say that the test includes unconformable boundaries.
-- Too few transitions give the test no power. S3 then reads not tested (`min_transitions`, ten by default, a power convention that you can change with a reason). The result gives the count available, so that a reader can judge it.
+- Too few transitions give the test no power. S3 then reads not tested (`min_transitions`, ten by default, a power convention that you can change with a reason). With exactly three facies in the transitions (one degree of freedom), S3 needs at least 30 transitions. The result gives the count available, so that a reader can judge it.
 
 ## Pooling and associations
 

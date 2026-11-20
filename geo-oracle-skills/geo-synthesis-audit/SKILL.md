@@ -1,6 +1,6 @@
 ---
 name: geo-synthesis-audit
-description: Structure, citation rules and the mandatory scientific audit for Geo Oracle's syntheses, from interim model summaries to final investigation reports and prospectivity conclusions. Use before you present any major synthesis, final report or conclusion about geology, plays, prospects or risk. Also load it in this case — whenever the user asks "what do we know", "summarise the findings", "what's your conclusion" or "is this prospective".
+description: Structure, citation rules and the mandatory scientific audit for Geo Oracle's syntheses, from interim model summaries to the final answer and prospectivity conclusions. Load before presenting a major synthesis or the final answer (not the formal report, which geo-investigation-report covers), or any conclusion about geology, plays, prospects or risk. Also load it whenever the user asks "what do we know", "summarise the findings", "what's your conclusion" or "is this prospective".
 ---
 
 # Synthesis and final audit
@@ -42,7 +42,7 @@ The closing message is the one exception, for the tags and for the evidence ids 
 
 **Methods are named, not cited, by you.** A method id (`m:<domain>/<name>`) is the method's name. You may write "computed with semblance-based edge detection (`m:seis/edge-semblance`)" because the specialist named it. You may write "Archie (1942), as the petrophysics specialist reports" only when that specialist's result carries the source. You may never add an author, a year, a DOI, an equation or a verification status to a specialist's method yourself. The owning specialist holds that record, and you do not own the tool. If the synthesis needs it and the ledger lacks it, that is an open question for the owner. It is not a gap for you to fill.
 
-## 2. Structure of a full report
+## 2. Structure of a full final answer
 
 Scale this down for interim summaries. But always keep the citations, the uncertainties and the gaps.
 
@@ -102,7 +102,7 @@ Run this audit before presenting a major synthesis. Fix every failure. If a fail
 
 ## 4. After presenting
 
-Update the ledger with a summary of the synthesis, the open questions and the next steps. Then the investigation can continue from exactly this state.
+Update the ledger: a one-line summary of the synthesis in the *Change log*, the open questions in *Open questions*, and the next steps in *Next steps*. Then the investigation can continue from exactly this state.
 
 At the close of the investigation, after the closing checkpoint is filed, follow `geo-investigation-report`: record every task, write the Synthesis section and the Final status block as the last two sections of the ledger (replace any earlier ones), give the person the synthesis without ids, give the ledger as a download, and end with one closing sentence that offers the formal report. Do not write the Synthesis or the Final status into the ledger before the closing checkpoint.
 

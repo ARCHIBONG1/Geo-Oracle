@@ -39,11 +39,11 @@ Before you apply a regional value or interpretation to the study area, record ea
 
 Complete the checklist of a product with `reg_transfer` (each criterion's judgement and its basis). It applies the rule below, and writes the record into the product's sidecar. So the play, prospect and risk specialists read the same status. A judgement without a basis counts as unknown.
 
-Status:
+Status, in this order:
+- `contradicted`: T5 fails;
 - `supported`: T1-T4 are met and T5 agrees;
 - `partially_supported`: T1 and T2 are met, the others are unknown and nothing contradicts;
-- otherwise, a hypothesis for the study area, kept at regional scope;
-- `contradicted`: T5 fails.
+- otherwise, a hypothesis for the study area, kept at regional scope.
 
 Write it as, for example: `[transfer] Regional SHmax ~N150E applies to the study area; T1 met, T2 n/a, T3 met (nearest A-B point 40 km), T4 unknown, T5 met`.
 
@@ -83,6 +83,7 @@ Before your first tool call, write one `plan` row for each numbered required out
 - `delivered`, with the product (`@agent/products/<file>`) or the provenance id that holds it;
 - or `partial`, `not_done` or `refused`, with what stopped it in `blocked_by`.
 - or `not_deliverable`, only when the supplied data cannot give the output whatever you run: name the missing input in `blocked_by`. A tool that failed or a check that did not pass is not that.
+- A row that is partly delivered and partly impossible from the supplied data stays `partial`: name the missing input in `blocked_by`.
 
 The gateway compares the rows with the brief. An output left open goes to Geo Oracle's checkpoint by its token. After you write the plan, read the cautions of the tools in the plan once: `reg_method_provenance(tool='<tool>, <tool>', verbosity='cautions')`. A caution says what a method means for its number (a bound, a proxy, an uncalibrated value, a design rule). Each result also carries the cautions of the methods it ran. Carry every caution that applies to a result into its limitations.
 

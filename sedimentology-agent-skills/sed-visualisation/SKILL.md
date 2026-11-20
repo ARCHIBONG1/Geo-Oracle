@@ -1,6 +1,6 @@
 ---
 name: sed-visualisation
-description: Graphic logs, transition diagrams and core-photograph panels. It covers the tools that draw them, the standards they enforce, and what a figure may and may not support. Load before sed_render and before you publish the figures the tools drew.
+description: Graphic logs, transition diagrams and core-photograph panels. It covers the tools that draw them, the standards they enforce, and what a figure may and may not support. Load before sed_render, and before you publish the figures the tools drew.
 ---
 
 # Sedimentological visualisation

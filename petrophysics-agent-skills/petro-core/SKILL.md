@@ -19,7 +19,7 @@ Use every field.
 | Field | What to do with it |
 |---|---|
 | `objective`, `geological_question` | Restate as petrophysical sub-questions: which wells, which zones, which properties |
-| `required_outputs` | Your checklist. Each item is either produced, or named in `limitations` with the reason |
+| `required_outputs` | Your checklist: each item is produced, or named in `limitations` with the reason |
 | `available_evidence` | Files (paths or uploads) and small tables (CSV in `excerpt`). The excerpt carries facts the file may lack: datum, units, mud, temperatures |
 | `upstream_findings` | Other specialists' results, e.g. tops from stratigraphy. Use them at their stated classification and cite them by full id; never restate them as your own |
 | `known_constraints` | Honour them exactly, e.g. "use Rw = 0.04 ohm.m at 90 degC from the water sample" becomes a parameter with source `task` |
@@ -31,8 +31,8 @@ Use every field.
 
 - **initial**: the procedure in your system prompt, with the steps that section 3a marks for the task.
 - **follow_up**: reuse earlier results by their paths and provenance ids (`petro_get_record` re-reads any stored result). Add the new data, and answer the new question completely. The cache answers identical calls at no cost. It replaces nothing.
-- **validation**: test an upstream claim against well data. For example, does a seismic amplitude anomaly coincide with log evidence of hydrocarbons at that depth? Report `supported`, `contradicted` or `unresolved`, with the discriminating data. A blind validation names no claim: answer the question of the brief from your own evidence.
-- **challenge**: seek well evidence against the favoured interpretation. Consider alternative parameters, alternative explanations of a feature, and bad-hole effects.
+- **validation**: test an upstream claim against well data: for example, does a seismic amplitude anomaly coincide with log evidence of hydrocarbons at that depth? Report `supported`, `contradicted` or `unresolved`, with the discriminating data. A blind validation names no claim: answer the question of the brief from your own evidence.
+- **challenge**: seek well evidence against the favoured interpretation. Consider alternative parameters and explanations of a feature, and bad-hole effects.
 - **reanalysis**: run the tools again with the new data or parameters; do not repeat the earlier result. It replaces the task in Previous task ID. Mark replaced claims `superseded`.
 `check_outcomes`: when the brief lists 'Claims to test', give one entry per claim: `target` (the claim id), `verdict` (`supported`, `contradicted`, `unresolved` or `not_tested`), the `evidence_ids` of your own evidence that decide it, and a one-sentence `basis`. In a challenge, also give `rival_claim_id` (your claim that states the alternative). A verdict says what your evidence shows, not whether the claim is true. A blind validation has no such list: leave it empty.
 
@@ -85,7 +85,7 @@ Conditions: (a) tops exist, for marker times. (b) a log contact or fluid reading
 | Lithology alternatives, fluid indicators | No number: name the data that discriminate |
 | Direct and empirical values (core and Timur permeability; measured and predicted Vs) | The band that the empirical result states |
 
-Each pair's `measurement` gives the two values, their difference, the tolerance and both provenance ids. A contradiction's `description` names the pair. Prefer the method that suits the setting, for example core over logs, or a shaly-sand model over Archie in shaly rock.
+Each pair's `measurement` gives the two values, their difference, the tolerance and both provenance ids. A contradiction's `description` names the pair. Prefer the method that suits the setting: core over logs, a shaly-sand model over Archie in shaly rock.
 
 ## 4. Writing evidence
 
@@ -99,7 +99,7 @@ Each item states one fact, with its depth reference and its source:
 - **Classification** is the evidence type: data, observation, measurement, interpretation, inference, hypothesis, assumption or unknown. The support level (`supported`, `partially_supported`, `unresolved`, ...) goes in the claim's `status`, never in `classification`.
 - **Header facts**: cite the loaded file plus the load's provenance id.
 - **Log features** from `petro_describe_interval` are `observation` / `derived`. Put what they mean in `interpretations` (`interpretation` / `derived`), and name the alternatives (section 5).
-- **Parameters** go in `assumptions`, with value and source. For example: `m = 2.0 (assumption, range 1.8-2.2; sensitivity required)`, or `Rw = 0.05 ohm.m at 75 degC (water sample, W2 DST)`. Cite the `petro_parameters` provenance id.
+- **Parameters** go in `assumptions`, with value and source: `m = 2.0 (assumption, range 1.8-2.2; sensitivity required)`, or `Rw = 0.05 ohm.m at 75 degC (water sample, W2 DST)`. Cite the `petro_parameters` provenance id.
 
 ## 5. Features have alternatives
 
@@ -110,7 +110,7 @@ Each item states one fact, with its depth reference and its source:
 | Wide neutron-density separation | Shale or bound water | Heavy minerals; a washout on the density |
 | Deep resistivity high relative to the interval | Hydrocarbons | Tight (low-porosity) rock; fresh formation water; a resistive mineral (anhydrite, coal) |
 | Shallow above deep resistivity | Invasion by mud filtrate more resistive than formation water (Rmf > Rw) in a permeable bed | Oil-based mud; salinity contrast rather than hydrocarbons |
-| Low gamma ray | Clean sand or carbonate | Clean but tight rock; radioactive-mineral-free shale is rare but possible |
+| Low gamma ray | Clean sand or carbonate | Clean but tight rock; rarely, shale free of radioactive minerals |
 | High gamma ray | Shale | Radioactive feldspar, mica or uranium in a clean reservoir: check with density, neutron and spectral gamma if present |
 
 A fluid claim built only on log features stays `proposed` or `partially_supported` until pressures, tests, samples or calibrated saturation support it.
@@ -120,7 +120,6 @@ A fluid claim built only on log features stays `proposed` or `partially_supporte
 List the delivery first (`petro-data-qc`, section 1). Each entry is exactly `<owner>: <item> — <form> — <why>`, with one entry per owner. The owner `user` is for data only the person can supply. Join several items of one owner with `;`:
 - `user: W1 deviation survey; a formation water sample or Rw — CSV md_m,inc_deg,azi_deg; ohm.m at a stated temperature — TVDSS of tops and contacts; water saturation needs an Rw source`
 - `stratigraphy: correlated tops for W3 — MD per top — zone averages consistent with W1 and W2`
-- `regional_geology: formation-water salinity range for Unit B — ppm NaCl equivalent — bound Rw where no sample exists`
 
 ## 7. Products for other specialists
 
@@ -131,7 +130,7 @@ Your products follow fixed formats:
 - **`zone_summary`**: JSON.
 - **`pressure_profile`**: CSV. **`fluid_contacts`**: JSON.
 - **`temperature_profile`** and **`thermal_properties`**: CSV. **`seal_capacity`**: JSON.
-- **`correlation_logs`** and **`well_tops`**: what the stratigraphy specialist correlates on (`petro_publish_correlation_logs`, or `petro_prepare_wells` for several wells). A task that asks for a correlation, a panel or a framework downstream is incomplete until these are published.
+- **`correlation_logs`** and **`well_tops`**: what the stratigraphy specialist correlates on (`petro_publish_correlation_logs`, or `petro_prepare_wells` for several wells). A task asking for a correlation, a panel or a framework downstream is incomplete until these are published.
 
 Each has a JSON sidecar with units, datum, source and provenance.
 
@@ -143,6 +142,7 @@ Before your first tool call, write one `plan` row for each numbered required out
 - `delivered`, with the product (`@agent/products/<file>`) or the provenance id that holds it;
 - or `partial`, `not_done` or `refused`, with what stopped it in `blocked_by`;
 - or `not_deliverable`, when the supplied data cannot give it (not a failed tool or check): name the missing input.
+- A row that is partly delivered and partly impossible from the supplied data stays `partial`: name the missing input in `blocked_by`.
 
 The gateway compares the rows with the brief; an open output goes to Geo Oracle's checkpoint. After you write the plan, read its tools' cautions once: `petro_method_provenance(tool='<tool>, <tool>', verbosity='cautions')`. A caution says what a method means for its number (a bound, a proxy, an uncalibrated value, a design rule). Each result also carries the cautions of the methods it ran. Carry every caution that applies to a result into its limitations.
 

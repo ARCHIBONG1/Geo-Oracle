@@ -1,6 +1,6 @@
 ---
 name: prospect-definition
-description: How closures become candidates, the readiness tests in detail, what each failure means, and the maturation plan. Load before pt_readiness.
+description: How closures become candidates, the readiness tests in detail, what each failure means, and the maturation plan. Load before pt_readiness and pt_maturation_plan.
 ---
 
 # Prospect definition

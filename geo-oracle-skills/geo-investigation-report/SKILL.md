@@ -1,6 +1,6 @@
 ---
 name: geo-investigation-report
-description: How Geo Oracle closes an investigation and, when the person asks, gets the formal investigation report written and reviews it. Use at the close of every investigation (when the closing checkpoint is filed), and whenever the person asks for a report, a formal report, a write-up or a PDF of a closed investigation. Covers the Synthesis section, the Final status block, the synthesis given to the person, the ledger download, the closing sentence, request_report, report_draft, the record check, the three review rounds and the delivery. How to edit the report (the commission, the reader, the notes and the verdict) is in geo-report-editor, which you read next.
+description: How Geo Oracle closes an investigation and, when the person asks, gets the formal investigation report written and reviews it. Load at the close of every investigation, and when the person asks for a formal report (a report, a write-up or a PDF of a closed investigation). The close starts when the closing checkpoint is filed. Covers the Synthesis section, the Final status block, the synthesis given to the person, the ledger download, the closing sentence, request_report, report_draft, the record check, the three review rounds and the delivery. How to edit the report (the commission, the reader, the notes and the verdict) is in geo-report-editor, which you read next.
 ---
 
 # The close and the investigation report
@@ -82,7 +82,10 @@ Call `request_report` with:
 - `person_words`: the person's words, copied exactly from their latest message:
   - a short yes to your offer ("yes", "yes please", "proceed", "go ahead"): their whole reply, as they wrote it. It counts only as the answer to the report offer in your previous message;
   - otherwise their whole sentence that asks for the report, word for word ("Please write the formal report.", "Could you write it up as a PDF?"), not a part of it;
-- `executive_summary`: the summary you gave the person at the close, word for word.
+- `executive_summary`: the summary you gave the person at the close, word for word;
+- `commission`: your commission to the writer, one string (`geo-report-editor`, section 1).
+
+Later calls take `reader_questions` to start the outside reader, or `review_notes` to send a round back, never both in one call (`geo-report-editor`, sections 3 and 5).
 
 The gateway checks that the investigation is closed and that the person's latest message in this chat asks for the report. The request must be a message the person typed, not an answer to `ask_user_question`.
 
@@ -108,7 +111,7 @@ Call `report_draft(investigation_id)`. It gives:
 
 - each paragraph (numbered from 1 within its section), with the ledger ids it rests on (the hidden tags); the headings, and each figure and table with its label;
 - the release checks;
-- the warnings (the first page, with their total and a count by kind: drift first, then the content warnings, then style; the rest with `part='warnings'` and the `offset` the reply gives);
+- the warnings (the first page, with their total and a count by kind: layout notes, drift, the content warnings, then style; the rest with `part='warnings'` and the `offset` the reply gives);
 - the `review_rule`, when there are drift or content warnings;
 - the literature references as they print (from what the literature evidence recorded). A source the writer found and verified for the report is marked `found_for_report`;
 - the download link (only when the release checks passed);
@@ -116,7 +119,7 @@ Call `report_draft(investigation_id)`. It gives:
 
 A long draft comes in pages: call again with `offset=next_offset` until no `next_offset` comes back.
 
-If `report_draft` gives `release_problem_owner: renderer`, the PDF failed a check that the writer cannot correct from the draft. Do not send the round back for it: tell the person that the report could not be released and why, and that the fault is in the report build.
+If `report_draft` gives `release_problem_owner: renderer`, the PDF failed a check that the writer cannot correct from the draft. Do not send the round back for it. If an earlier round passed its release checks, deliver that round and say why. If none did, tell the person that the report could not be released and why, and that the fault is in the report build.
 
 If `report_draft` gives a `release_note` about the drafting run's procedure (`process_audit`), or the drafting run carries the warning `Process audit: skills not opened: lit-investigation-report` or `... lit-report-writing`, the writer drafted without its procedure. Do not deliver it. Send the round back with a review note that asks it to read the skills and redraft from every part of the bundle.
 
@@ -150,7 +153,7 @@ The text may contain no ids; the hidden tags carry them. Do not ask the writer t
 
 - **Notes to send** (`geo-report-editor`, section 5): call `request_report(investigation_id, review_notes=[...])`, one note for each entry. A note on a contradiction names the paragraph (section and number), what it says, and what the ledger holds. Then collect the run and review again.
 - **The verdict is accept** (`geo-report-editor`, section 6), and the release checks passed: deliver it.
-- **Three rounds are the limit.** After the third round, deliver the last report with your remaining objections, but only if it passed its release checks. If it failed them, it has no download link: tell the person that it could not be released, and why.
+- **Three rounds are the limit.** After the third round, deliver the last report that passed its release checks, or an earlier round that passed them and reads better (`geo-report-editor`, section 6), with your remaining objections. A report that failed its release checks has no download link. If no round passed, tell the person that the report could not be released, and why.
 
 Deliver it in a short message:
 

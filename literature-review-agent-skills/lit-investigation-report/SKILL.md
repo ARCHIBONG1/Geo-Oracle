@@ -1,6 +1,6 @@
 ---
 name: lit-investigation-report
-description: How to read the frozen investigation bundle and render the formal investigation report. Use when Geo Oracle's brief asks you to draft, render or revise the investigation report (a task named R1-lit-report, R2-lit-report or R3-lit-report). It covers lit_read_bundle and the parts you must read to the end, the draft JSON with its sections, headings, figures, tables, labels, citations, derived values and hidden tags, the published work you may add, the narrow rule for conclusions, how to render with lit_render_report, and what to return. The content and register of each section are in lit-report-writing, which you read next.
+description: How to read the frozen investigation bundle and render the formal investigation report. Load when Geo Oracle asks you to write, render or revise the formal investigation report (tasks R1-lit-report to R3-lit-report), before lit_read_bundle, lit_draft_section or lit_render_report. Not for a reading task (R1-lit-reading to R3-lit-reading). It covers lit_read_bundle and the parts you must read to the end, the draft JSON with its sections, headings, figures, tables, labels, citations, derived values and hidden tags, the published work you may add, the narrow rule for conclusions, how to render with lit_render_report, and what to return. The content and register of each section are in lit-report-writing, which you read next.
 ---
 
 # The investigation report
@@ -55,7 +55,7 @@ The draft has the parts below. **Store each part with `lit_draft_section(investi
                     {"heading": "Record of the investigation"}, {"text": "...", "tags": ["T03-seis"]}]
   },
   "literature_references": [{"evidence_id": "T03-lit/E1"}],
-  "literature_sources": [{"source_id": "L1", "source_reference": "Author et al. 2015, Journal | title: ... | doi: 10.xxxx/... | access: abstract"}]
+  "literature_sources": [{"source_id": "L1", "source_reference": "doi:10.xxxx/... | openalex:W... | Author et al. 2015, Journal | type: article | title: ... | relevance: regional-analogue | access: abstract"}]
 }
 ```
 
@@ -117,8 +117,8 @@ You restate Geo Oracle's conclusions. You never raise, lower or add one.
 
 1. Read your stored draft as its reader (`lit-report-writing`, sections 1 and 9), and store the corrected parts.
 2. Call `lit_render_report(investigation_id, review_round, wait_seconds=240)` with the round your brief gives and no `draft_json`.
-3. **Rejected:** the message lists every error that remains (or the bundle parts still unread). Correct them in the parts they name (store those parts again) and call again with the same round. **Keep correcting and rendering until the draft renders**: a round has no limit on renders, and a refused draft is no report. A corrected draft is a changed call, so the rule to stop after two refusals does not apply to `lit_render_report`. Stop only for an error the draft cannot correct (a missing bundle part, a server failure) or when you cannot finish the task (see Unfinished work), and name the remaining errors in `limitations`.
-4. **Running:** collect it with `get_literature_job_result`. Read every warning in `style_warnings` as `lit-report-writing` section 8 says: revise the passage a drift, content, uncertainty or `layout:` warning points at, and render again with the same round. A warning that your reading shows does not apply stays, with the reason in your `limitations`. Style advice alone (`style:`) needs no new render.
+3. **Rejected:** the message lists every error that remains (or the bundle parts still unread). Correct them in the parts they name (store those parts again) and call again with the same round. **Keep correcting and rendering until the draft renders**: a round has no limit on renders, and a refused draft is no report. A corrected draft is a changed call, so the rule to stop after two refusals does not apply to `lit_render_report`. Stop only for an error the draft cannot correct (a missing bundle part, a server failure) or when you cannot finish the task (see *Unfinished work* in your prompt), and name the remaining errors in `limitations`.
+4. **Running:** collect it with `get_literature_job_result`. Read every warning in `style_warnings` as `lit-report-writing` section 8 says: revise the passage a drift, content, uncertainty or `layout:` warning points at, and render again with the same round. A warning that your reading shows does not apply stays, with the reason in your `limitations`. Style advice alone (`style:`), and a layout note that says there is nothing to change in the draft, need no new render.
 5. **`release_checks: failed`:** the PDF has no download link. Correct the problems and render again.
 6. **LaTeX could not compile:** the message gives the first LaTeX error and its line; correct what it names.
 
@@ -126,7 +126,7 @@ You restate Geo Oracle's conclusions. You never raise, lower or add one.
 
 Put these in `conclusions`:
 - `Report (round <n>): <download_url>` (if the release checks passed; if not, the problems that remain);
-- the release checks, the page count, and the number of drift, content and style warnings left;
+- the release checks, the page count, and the number of layout, drift, content and style warnings left;
 - for a revision, one line for each of Geo Oracle's review notes: what you changed, or why you did not.
 
 Put the ledger inconsistencies you found, and the published works you added, in `limitations`. Do not put the PDF in a `sandbox_artifacts` block: it is not in your sandbox.

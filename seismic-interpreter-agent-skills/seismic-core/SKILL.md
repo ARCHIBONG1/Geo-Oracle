@@ -37,11 +37,11 @@ A `required_outputs` entry names a product, and the product has a chain. Start t
 |---|---|---|
 | Data QC | `seismic_scan_segy` → `seismic_ingest_array` → `seismic_describe_volume` → `seismic_qc` (interval of interest) → `seismic_resolution_limits` | — |
 | Fault volume, fault set, strikes and dips | `seismic_interpret_faults` on the seismic (z_range to the reflective interval) → read `qc` and persistence → `seismic_fault_throw` with a horizon where one exists → `seismic_publish_structure` | `seismic_export_volume` (labels); `faults_figure_markdown` |
-| Channel or body volume (any stratigraphic feature or geobody) | envelope, semblance and chaos attributes (jobs) → `seismic_segment_volume` with `recipe: "channel"`, all tracked horizons as `horizons` (the whole volume; `interval` only when the person or Geo Oracle asks for one), and `faults` (required for `channel` and `channel_submarine`, also for a "channels only" request; other recipes take them by their own rule, `seismic-attribute-interpretation`) → read `qc` → `seismic_publish_bodies` | `seismic_export_volume` (labels); `extraction_figure_markdown` |
+| Channel or body volume (any stratigraphic feature or geobody) | envelope, semblance and chaos attributes (jobs) → `seismic_segment_volume` with `recipe: "channel"`, all tracked horizons as `horizons` (the whole volume; `interval` only when the person or Geo Oracle asks for one), and `faults` (required for `channel`, `channel_thin` and `channel_submarine`, also for a "channels only" request; other recipes take them by their own rule, `seismic-attribute-interpretation`) → read `qc` → `seismic_publish_bodies` | `seismic_export_volume` (labels); `extraction_figure_markdown` |
 | Horizon (time map) | `seismic_list_events` at the well (for a deviated well, at the marker's `seed_inline` and `seed_crossline` from `seismic_trace_events` with `well_track`) → `seismic_fault_throw` for each fault between blocks → a seed per block at the throw-corrected time → `seismic_track_horizon` with `faults` (the fault set) → read `qc.faults` → `seismic_horizon_map` `structure` | `seismic_export_volume` on the map (csv); its own map figure; `seismic_render_section` with the horizon and faults |
 | Depth map | the horizon above → `seismic_time_to_depth` (`method: table` with the well's time-depth, or the stated model) → `seismic_horizon_map` `structure` | export; its own map figure |
 | Well tie | `seismic_convert_coordinates(well_header)` → `seismic_trace_events` (seabed and markers) → `seismic_extract_wavelet` → `seismic_synthetic` (`elastic_logs` + `time_depth`) → `seismic_well_tie` → `seismic_depth_function_check` where a second well exists | all three `*_figure_markdown` lines, always |
-| Closure | the depth map above → `seismic_closure` → read `qc` (realisations) and `noise_handling.hole_bridging`. The search bridges an isolated unpicked cell inside the map. When the flag `CLOSURE_DEPENDS_ON_HOLE_FILL` or `CLOSURE_ASSUMES_CONTINUOUS_HORIZON` is set, report both readings | its own figure: closures on the horizon |
+| Closure | the depth map above → `seismic_closure` → read `qc` (realisations) and `noise_handling.hole_bridging`. The search bridges unpicked patches of up to two cells inside the map. When the flag `CLOSURE_DEPENDS_ON_HOLE_FILL` or `CLOSURE_ASSUMES_CONTINUOUS_HORIZON` is set, report both readings | its own figure: closures on the horizon |
 | Distance from a well to each feature | `seismic_feature_distance` on the fault volume and the body volume, with the well header, its track and the time-depth table | — |
 | Attribute volume | window → the attribute tool → `seismic_describe_section` on it | `seismic_export_volume` |
 | Facies, key surfaces | `seismic_detect_terminations` on two orientations; `seismic_classify_facies` on an interval | its own class-map figure; `seismic_render_section` with the horizons |
@@ -68,7 +68,7 @@ Read the resource type in the task. Fit the deliverables to it. The tools are th
 
 1. Check `execution_status`.
    - `completed`: the result is usable.
-   - `running`: poll the matching `get_*_job_result` tool. Do not return while a job that you started is running: collect its result first.
+   - `running`: poll the matching `get_*_job_result` tool. Do not return while a job that you started is running: collect its result first. Only if you must end before it finishes, list its job id and its tool under `limitations` as still running.
    - `rejected`: fix the arguments.
    - `error`: correct the call once, then record the failure in `limitations`.
 2. Read `qc_flags` and `warnings`. They describe the conditions under which the numbers hold.
@@ -143,6 +143,7 @@ Before your first tool call, write one `plan` row for each numbered required out
 - `delivered`, with the product (`@agent/products/<file>`) or the provenance id that holds it;
 - or `partial`, `not_done` or `refused`, with what stopped it in `blocked_by`.
 - or `not_deliverable`, only when the supplied data cannot give the output whatever you run: name the missing input in `blocked_by`. A tool that failed or a check that did not pass is not that.
+- A row that is partly delivered and partly impossible from the supplied data stays `partial`: name the missing input in `blocked_by`.
 
 The gateway compares the rows with the brief. An output left open goes to Geo Oracle's checkpoint by its token. After you write the plan, read the cautions of the tools in the plan once: `seismic_method_provenance(tool='<tool>, <tool>', verbosity='cautions')`. A caution says what a method means for its number (a bound, a proxy, an uncalibrated value, a design rule). Each result also carries the cautions of the methods it ran. Carry every caution that applies to a result into its limitations.
 
@@ -196,7 +197,7 @@ implementation is correct.
 
 - [ ] Every number traces to a tool result or the task.
 - [ ] Every `required_outputs` entry is covered or explained. A missing tie or a doubtful input is not a reason to leave a deliverable out: deliver it with its limitations.
-- [ ] No job that you started is still running.
+- [ ] Every job that you started is collected, or listed under `limitations` as still running.
 - [ ] Every interpretation has an alternative or a stated reason for excluding one.
 - [ ] Claim statuses obey the independence rule.
 - [ ] If any figure was drawn, the reply starts with each figure's markdown line and a one-line caption. Then comes the findings JSON, with no other prose, under about 10,000 characters.

@@ -1,6 +1,6 @@
 ---
 name: geo-human-on-the-loop
-description: The activation question, the checkpoint summary and its five parts, accept / refuse / edit, the work gate, and what a person may and may not change. Load at the start of every new objective, before any specialist call, and again before filing any checkpoint.
+description: The activation question, the checkpoint summary and its five parts, accept / refuse / edit, the work gate, and what a person may and may not change. Load at a new objective, before the first dispatch of a plan with more than one specialist; and before filing any checkpoint.
 ---
 
 # Human on the loop
@@ -62,7 +62,7 @@ The confirmation line quotes their reply back.
 - `delivered`, with the job, task or product (`@agent/products/<file>`) of this investigation that holds it. The gateway checks that it exists;
 - `partial`, with that reference and `missing` naming the part not there. It needs the person's decision or a follow-up wave, never an automatic close. In mode off only, it closes when `absent_input` names the input that does not exist;
 - `not_deliverable`, with the input that does not exist;
-- `declined`, with the person's words.
+- `declined`, only when the person declined it, with their words (the gateway checks them).
 
 The gateway refuses a "delivered" basis that says part of the result is unresolved, pending or not run: that is `partial`. Surface the returned `confirmation_line` unchanged, in the message that makes your next tool call (section 3c). Ask once per objective. A follow-up message inside an investigation inherits the setting. If a person asks to change it mid-flight, call `set_hotl_mode` again with `resume=true` and their words: the gateway records the change as an intervention. Never use `resume` to reuse an investigation id for new work.
 
@@ -80,7 +80,7 @@ Five parts, short enough to read in a minute:
 | **Next** | the proposed next wave: specialists, inputs, what each settles | tool names must exist |
 | **Work** | "n of 40 specialist runs used", from `hotl_status` | the gateway's counter |
 
-Mark the two halves plainly, so the reader knows which parts the system can vouch for. For example: *"Done and Next are checked against the jobs that ran; Why and Contribution are my reasoning."* Name a specialist that returned `insufficient_data` as such in **Done**. The gateway records that status itself and names it back in `needs_attention`, because a summary flatters the work in exactly that way.
+Mark plainly which parts the system can vouch for. Name a specialist that returned `insufficient_data` as such in **Done**. The gateway records that status itself and names it back in `needs_attention`.
 
 ## 3. Filing it
 
@@ -88,16 +88,16 @@ Mark the two halves plainly, so the reader knows which parts the system can vouc
 - `record` holds `why`, `contribution`, `next` [{specialist, objective, settles}] and `items`. The gateway records the jobs, their status and their figures itself. Your prose is kept, not checked.
 - **`items` answers the wave's items by id.** `hotl_status` lists them under `checkpoint`. First come the items with `actions`: process-audit flags and check outcomes (`chk`). Answer each: `{"T03-sed#audit1": {"action": "accepted", "note": "why"}}`. The others keep their `default`: missing data, follow-ups, open outputs and figures carried; rivals and contradictions kept open. Answer one only to change it: dismiss or plan it, or mark a rival tested or resolved, a contradiction resolved or followed_up. One answer can cover every item of one kind of one task (`{"T03-sed#md*": {...}}`), never check outcomes. A note is required, except to confirm a default.
 - The gateway keeps a refused record as a draft. File only what the refusal names, by id.
-- From the sixth refusal of a wave, stop filing. In `off`, write the unanswered items into the ledger under *Pending checkpoint*, tell the person, and end the turn. In a supervised mode, put them to the person. **Never file a decision the person did not make to get past a refusal.**
+- From the sixth refusal of a wave, stop filing. In `off`, write the unanswered items and the problems into the ledger under *Pending checkpoint*, tell the person, and end the turn. In a supervised mode, put them to the person. **Never file a decision the person did not make to get past a refusal.**
 - `decision` is what the person said. `verbatim` is their whole reply, exactly as given, or whole lines of their message. The gateway looks for it in this chat and refuses words the person did not write. `approved_plan` is the specialists they approved, **and only those will run**. An edit is binding in every mode: do not re-propose a struck specialist in the same wave.
 
 After a refuse or stop, no specialist runs until you file their next decision.
 
+When the person asks to stop or to close, in any mode: collect what is in flight, then file decision "stop" with their message as verbatim and record.deliverables with the real status of each result. Do not file "automatic". Do not mark a result declined unless the person declined it. When you end the work yourself, or the person accepts your proposal to close, the fields and an example are in `geo-investigation-planning`, section 9.
+
 **File a checkpoint record after every wave in every mode.** The gateway refuses the next wave until you file it. Only the pause differs:
 - in `every_wave`, file the record **after** the person answers, with their words;
-- in `off` and `key_decisions`, file it with `decision: "automatic"` and carry straight on.
-
-An unattended run so leaves the same audit trail as a supervised one.
+- in `off` and `key_decisions`, file it with `decision: "automatic"` and carry straight on (but not when the person asks to stop: see above).
 
 **`automatic` is only for those two modes.** In `every_wave` the gateway refuses it: it would open the next wave without anyone being asked. There, every checkpoint carries a real decision (accept, edit, refuse or stop) and the person's own words. If you have not asked them yet, use `ask_user_question` (section 3a). Their reply is what you file.
 
@@ -112,7 +112,7 @@ At every wave boundary, follow this sequence:
 4. They answer in the same turn.
 5. File the checkpoint with their words, and clear the pending block.
 
-If you file before they answer, the refusal catches that mistake.
+Filed before they answer, it is refused.
 
 **Do not end your turn to ask.** `ask_user_question` blocks and the turn survives it. An answered checkpoint carries straight on, and the whole investigation runs in one turn.
 
@@ -131,7 +131,7 @@ The same machinery as every-wave mode, fired at four moments instead of at every
 
 The last two can fire **mid-wave**, not only at a boundary. Ask when you reach them. Do not save them for the end of the wave: by then you may have built on the thing in question.
 
-**Between triggers, waves open without waiting.** File the record with `decision: "automatic"` and carry straight on. The gateway still requires the record, so the audit trail matches a supervised run. Do not ask at a wave boundary in this mode. The person chose not to be asked there. To ask anyway is the same failure as not to ask in every-wave mode, from the other side.
+**Between triggers, waves open without waiting.** File the record with `decision: "automatic"` and carry straight on. The gateway still requires the record, so the audit trail matches a supervised run. Do not ask at a wave boundary in this mode. The person chose not to be asked there.
 
 **The plan trigger fires once.** Its answer approves the plan, not the whole investigation: a later change of scope is its own question. File the answer with `hotl_checkpoint` (accept or edit, with their words and the specialists they approved). The gateway then holds you to it for the wave it opens. It refuses a specialist outside the plan until the person agrees to a change. The gateway does not enforce a plan that you file as `automatic` between triggers.
 
@@ -167,9 +167,9 @@ Read the second and third lines out: to someone who asked for key decisions, a b
 
 ## 5. The work gate
 
-**The ceiling is theirs, not yours.** It starts at 20. The gateway refuses a different one unless the person's own words contain that number, in digits or spelled out. Do not decide that a long investigation deserves more rope. The work gate is the only gate that holds in every mode, so it is the one thing between an unattended run and unlimited spending. To choose your own ceiling is to choose how much rope you get. If you think 20 is too low for the scope, say so when you ask the activation question, and let them name a number. Or let the gate fire at 20 and ask then, which costs one interruption.
+**The ceiling is theirs, not yours.** It starts at 40. The gateway refuses a different one unless the person's own words contain that number, in digits or spelled out. Do not decide that a long investigation deserves more rope. The work gate is the only gate that holds in every mode, so it is the one thing between an unattended run and unlimited spending. To choose your own ceiling is to choose how much rope you get. If you think 40 is too low for the scope, say so when you ask the activation question, and let them name a number. Or let the gate fire at 40 and ask then, which costs one interruption.
 
-Every specialist run counts, including a repeat of the same specialist, a follow-up, a challenge run and a reduction task. At the ceiling (20 by default) the gateway stops and waits, **in every mode**, and again at every later ceiling. Put the work line in every checkpoint summary, so the ceiling is never a surprise. The person can raise it at a checkpoint before it bites. Clear the gate with `decision: "work_acknowledged"` and their words, and with `new_ceiling` if they set one.
+Every specialist run counts, including a repeat of the same specialist, a follow-up, a challenge run and a reduction task. At the ceiling (40 by default) the gateway stops and waits, **in every mode**, and again at every later ceiling. Put the work line in every checkpoint summary, so the ceiling is never a surprise. The person can raise it at a checkpoint before it bites. Clear the gate with `decision: "work_acknowledged"` and their words, and with `new_ceiling` if they set one.
 
 ## 6. What a person may change, and what they may not
 
@@ -194,6 +194,6 @@ With more than five alternatives, say how many there are and offer those that di
 
 ## 8. What the system cannot vouch for
 
-Say it once, where it matters, not everywhere. The gateway checks the record against the jobs it ran, and the person's words against what they wrote in this chat. It cannot check that **your decision matches what those words meant**, or who the person is (it records a name and a role as given). That is why the confirmation line quotes their words back, and why you surface it unchanged.
+The gateway cannot check who the person is. It records a name and a role as given.
 
 <!-- end of skill: geo-human-on-the-loop -->

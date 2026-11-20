@@ -15,7 +15,7 @@ description: The diagnostic matrix per depositional environment, and how an asso
 | Wave-dominated shoreface | The succession of Plint 2010, p. 183, Fig. 20: hummocky (Hcs) sandstone below cross-bedded (Xb) sandstone, coarsening upward. It is diagnostic only when you bind `sed_diagnostic_check` to the coded file (`coded`, `well`) and the tool finds that order in one contiguous sand succession (no gap, no mud between) and an upward coarsening in its coded grain sizes. The `coarsening_upward` flag alone, and a carbonate texture, never make it diagnostic. No single feature, and no wave ripple, is diagnostic. A pass names the rivals the same succession fits (`shared_with`: delta front, lake, storm shelf, carbonate inner and mid ramp). The ledger then caps the status at `partially_supported`, the rung at `association`, and gives `unresolved_with`: report them as unresolved | Hummocky or swaley cross-stratification (Hcs) and wave ripples (Wr) (wave influence: also on the shelf, in lakes and on delta fronts, Dott & Bourgeois 1982), coarsening upward, planar lamination, marine traces, bioturbation | Mud drapes, tidal bundles (roots top the foreshore, Fig. 20D: not against) |
 | Deep-water turbidite system | Grading with planar lamination and hemipelagic mud | Grading with sole marks (turbidity currents also build delta fronts: Bhattacharya 2010), grading, convolute lamination, massive sands | Roots, wave ripples, hummocky, herringbone |
 | Aeolian dune | Grainflow and pin-stripe lamination (Gf) | Large cross-sets, good sorting, red colour | Bioturbation, marine traces, mud drapes, hummocky |
-| Lacustrine | Varves (annual laminae in a lake) | Evaporites with lamination (also in marine basins: Kendall 2010), planar lamination, organic-rich mud | Marine traces (hummocky is not against: it occurs in lakes, Dott & Bourgeois 1982) |
+| Lacustrine | Varves (Vv: annual laminae in a lake) | Evaporites with lamination (also in marine basins: Kendall 2010), planar lamination, organic-rich mud | Marine traces (hummocky is not against: it occurs in lakes, Dott & Bourgeois 1982) |
 | Delta front | None: the coarsening-upward succession is shared with wave-formed shorefaces (Bhattacharya 2010, p. 246) | Coarsening upward, cross-bedding, current ripples, planar lamination, grading, convolute lamination, wave ripples, hummocky (Bhattacharya 2010, p. 247) | None |
 | Storm-dominated shelf | None | Hummocky, planar lamination, bioturbation (Dott & Bourgeois 1982, p. 663) | None |
 | Prodelta | None | Heterolithic bedding, planar lamination, grading, massive beds (Bhattacharya 2010, p. 246) | None |
@@ -24,9 +24,12 @@ description: The diagnostic matrix per depositional environment, and how an asso
 
 The delta front, storm-dominated shelf, prodelta, estuary and clastic lagoon rows are rivals for the shoreface, the turbidite, the tidal channel and the lake. They have no diagnostic feature, so S2 for them is at most `suggestive_only`. The matrices cannot test an alluvial fan: report such a rival as not tested, never as rejected.
 
-`sed_diagnostic_check` takes two inputs:
+`sed_diagnostic_check` takes these inputs:
+- the `environment` to test;
 - the features seen in the association (from the scheme);
-- the succession pattern (fining or coarsening upward; unidirectional palaeocurrents when known).
+- the succession pattern (fining or coarsening upward; unidirectional palaeocurrents when known);
+- the flags `hemipelagic` and `large_cross_sets`, and for carbonates `pelagic`, `restricted_fauna` and `open_marine_fauna`;
+- the coded file (`coded`, `well`, `top_m`, `base_m`). Give it every time, as `sed-core` says: the shoreface row cannot be diagnostic without it.
 
 It returns S2 with the lists.
 

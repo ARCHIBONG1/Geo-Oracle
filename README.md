@@ -84,7 +84,7 @@ description: Core operating procedure for every seismic interpretation task -
   result of more than about 6,000 tokens with a short preview, and a skill read
   that is cut off fails without any other error. An agent that does not see the
   end marker knows its read was incomplete, and the gateway counts a read as
-  done only when it brought back both the `name:` line and the end marker. `tests/test_live_run_1019_fixes.py` checks that every skill
+  done only when it brought back both the `name:` line and the end marker. `tests/gateway/test_skill_gate.py` checks that every skill
   ends with its marker. Keep each skill well under that size; the longest are
   about 3,300 words.
 
@@ -118,7 +118,7 @@ Each system prompt in `agents/system_instructions/` ends with a table of every
 skill in the agent's pack and when to read it. The prompt holds the index and
 the skills hold the content. A skill without a row in that table is rarely read,
 and a skill renamed without editing the table sends the agent looking for a
-document that does not exist. `tests/test_agent_prompts.py` checks that the
+document that does not exist. `tests/static/test_prompts_skills_settings.py` checks that the
 table has exactly one row for each skill in the pack.
 
 ### Skills are read from GitHub, not from this folder
@@ -220,7 +220,7 @@ findings next to the provenance identifier, and to answer any question about an
 equation or a source from the lookup tool rather than from memory. Geo Oracle's
 pack does the reverse: it has no lookup tool, quotes identifiers from the
 investigation ledger as names only, and refers deeper questions to the
-specialist that owns the method. `tests/test_provenance_registry.py` checks
+specialist that owns the method. `tests/provenance/test_registry.py` checks
 offline that every identifier a skill quotes exists and that every specialist's
 system prompt names its lookup tool.
 
@@ -262,7 +262,7 @@ person, on which the supervision gates depend. No test here can check these.
 TrueForge draws the question as a card with no scroll bar, so
 `geo-human-on-the-loop` and Geo Oracle's prompt put the summary as text in the
 message that makes the call, and only the decision, at most 500 characters, in
-`question`. `tests/test_question_length.py` checks that no prompt or skill puts
+`question`. `tests/gateway/test_question_length.py` checks that no prompt or skill puts
 the summary in the question.
 
 The principle matches the rest of the system: a number must come from a tool in
@@ -312,12 +312,12 @@ compute tool.
 
 | Skill | Governs |
 | --- | --- |
-| `geo-investigation-planning` | turning an objective into testable questions, tasks and a dependency graph; what to record at activation (the person's constraints, the decision chain, a reserve of runs); waves of tasks started one call at a time; large briefs split to fit one specialist turn; the time budget; retries that change the approach; results built on a replaced result; a contradicted input sent back before the task that builds on it; the final state the closing checkpoint records; the risk gate and the reduction loop, including settled failures |
+| `geo-investigation-planning` | turning an objective into testable questions, tasks and a dependency graph; what to record at activation (the person's constraints, the decision chain, a reserve of runs); waves of tasks started one call at a time; large briefs split to fit one specialist turn; the time budget; retries that change the approach; results built on a replaced result; a contradicted input sent back before the task that builds on it; the final state the closing checkpoint records, with an example of that checkpoint |
 | `geo-evidence-inventory` | characterising the available evidence and packaging it for specialists |
 | `geo-specialist-tasking` | the brief for each specialist tool and the job tools, field by field, with common mistakes; starting several specialists one call at a time |
 | `geo-result-review` | the checklist for judging a specialist result before relying on it, including evidence the identifier check set aside and `record.set_aside`, counting lines of evidence from a check's independence class, and reading plan rows, rivals and the evolution |
-| `geo-investigation-ledger` | the format of `investigation/ledger.md`, the running record the synthesis is written from |
-| `geo-play-prospect-evaluation` | the gates before the play, prospect and risk stages; the five domains' elements; the element status scale; the maturity ladder; materiality classes in place of a chance of success |
+| `geo-investigation-ledger` | the format of `investigation/ledger.md`, the running record the synthesis is written from, with its plan section and its table of reduction attempts |
+| `geo-play-prospect-evaluation` | the gates before the play, prospect and risk stages; the five domains' elements; the element status scale; the maturity ladder; materiality classes in place of a chance of success; the one risk brief; the reduction loop, including settled failures |
 | `geo-synthesis-audit` | the structure and citation rules of a synthesis, and its scientific audit |
 | `geo-investigation-report` | the close (the ledger's Synthesis section and Final status block, the synthesis given to the person, the ledger as a download, one closing sentence that offers the report, no question); on the person's request, `request_report`, the review of the draft with `report_draft`, three rounds at most, and the delivery |
 | `geo-report-editor` | Geo Oracle as the report's editor in chief: the commission to the writer, the reader's questions and a private answer key, starting the outside reader, reading the outline, the reader's report and the draft, the record check, few ranked notes that ask for revision, and the verdict |
@@ -331,11 +331,11 @@ gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 | Skill | Covers |
 | --- | --- |
 | `lit-search-protocol` | search planning: expanding terms across formation, historical and stratigraphic names; which tool for which job; the reply-size settings for each connector; the search log and its methods statement |
-| `lit-inputs-library` | listing the shared inputs folder completely (paged by `offset`) and confirming what is there; reading, searching and importing; fetching open-access documents for one investigation, and what a landing page or a stub limits the access level to |
+| `lit-inputs-library` | listing the shared inputs folder completely (paged by `offset`) and confirming what is there; reading, searching and importing; fetching open-access documents for one investigation, and what a landing page or a stub limits the access level to; which specialist owns each kind of table |
 | `lit-source-appraisal` | the authority, evidence basis, geographic relevance and independence of a source |
 | `lit-source-verification` | resolving works to DOIs or OpenAlex identifiers; verifying every citation; the retraction check through `search_works` |
-| `lit-evidence-extraction` | mapping extracted evidence onto the findings structure, including the one `source_reference` format (the resolved record, the `type:` of the work, the read's `prov:` identifier) |
-| `lit-geoscience-question-bank` | question sets and evidence checklists for decomposing a request |
+| `lit-evidence-extraction` | mapping extracted evidence onto the findings structure, including the four `source_reference` forms (published work, retrieved copy, project document, folder listing), with `type:`, `prov:` and `m:` |
+| `lit-geoscience-question-bank` | question sets and evidence checklists for decomposing a request, for each resource type |
 | `lit-synthesis-report` | synthesis across sources, conflicting literature, careful language for consensus; methods statements for the investigation report |
 | `lit-investigation-report` | the mechanics of the formal investigation report: reading the frozen bundle with `lit_read_bundle` (the overview, digest, ledger and supervision record, each to its last page); the draft JSON (sections, headings, figures, tables, labels, hidden ledger tags, citation markers, derived values); the published work the writer may add to the Introduction, Setting and Discussion; conclusions that restate the investigation's and never raise, lower or add to them; what the renderer refuses and warns on; rendering with `lit_render_report`; revisions |
 | `lit-report-examples` | worked examples for the investigation report: weak passages beside better ones, with the reason for each change, and how to answer a renderer's note by revising |
@@ -407,7 +407,7 @@ gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 | `strat-core` | the two ledgers, the order of preference for tie points, the consistency record; what validation and challenge ask in a fresh session; the plan rows, alternatives with tests and the evolution; the method cautions read at planning; methods statements for the investigation report |
 | `strat-data-qc` | correlation logs and well tops, sidecars, the depth rule for deviated wells |
 | `strat-log-correlation` | ranking tie points, dynamic time warping constrained to anchors |
-| `strat-sequence` | stacking patterns from gamma ray, candidate maximum flooding and maximum regressive surfaces |
+| `strat-sequence` | stacking patterns from gamma ray, candidate maximum flooding and maximum regressive surfaces; the evidence that ties a sequence boundary, and the two models for its correlative conformity |
 | `strat-chronostratigraphy` | age models from dated samples and datums, the seeded envelope, missing time |
 | `strat-biostratigraphy` | biostratigraphic events as tie points, event ordering, graphic correlation |
 | `strat-unconformities-thickness` | isochores and isopachs, minimum eroded thickness, missing time at a hiatus, erosion against fault cut-out |
@@ -482,7 +482,7 @@ are done.
 - the tool names it mentions;
 - anything a core skill says about evidence classes, claim status, scientific
   status or missing data, which must match the models in `geological_mcp.py`;
-- the skills table in the system prompt, which `tests/test_agent_prompts.py`
+- the skills table in the system prompt, which `tests/static/test_prompts_skills_settings.py`
   checks;
 - the pack listing in `ops/agents.toml`, which the provisioner checks.
 

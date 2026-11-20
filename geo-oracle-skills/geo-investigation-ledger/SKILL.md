@@ -1,6 +1,6 @@
 ---
 name: geo-investigation-ledger
-description: Format and update rules for Geo Oracle's investigation ledger (investigation/ledger.md in the sandbox). The ledger holds the frame, evidence inventory, specialist tasks and job ids, the claims relied on, hypotheses and their status, contradictions, uncertainties, dependencies and open questions. Use at the start of every investigation. Also load it in these cases — after every reviewed specialist result; whenever an interpretation changes status; at every checkpoint or end of turn; and immediately after context compaction, or when you resume an investigation in a new turn.
+description: Format and update rules for Geo Oracle's investigation ledger (investigation/ledger.md in the sandbox). The ledger holds the frame, evidence inventory, specialist tasks and job ids, the claims relied on, hypotheses and their status, contradictions, uncertainties, dependencies and open questions. Load when starting an investigation, updating its state, or resuming in a new turn or after compaction. Its rules do not change between results, so one read in each turn, and one after compaction, is enough.
 ---
 
 # Investigation ledger
@@ -35,13 +35,13 @@ Long investigations outgrow the context window. Compaction removes ids and statu
 - **Resuming.** When you resume after a new turn or compaction:
   1. Read the ledger.
   2. For any task marked `running`, call `get_specialist_result(job_id)`.
-  3. Continue from *Next steps*.
+  3. Continue from *Pending checkpoint* if it holds items, then from *Next steps*.
 
 ## Template
 
 ```markdown
 # Investigation INV-... — <short title>
-Updated: <time> | Turn: <n>
+Updated: <time> | Turn: <n> | Turn started: <time> | Iterations: <n>
 
 ## Frame
 Objective: ...
@@ -49,6 +49,10 @@ Decision supported: ...
 Resource type: ...
 Area / intervals: ...
 Scope: screening | detailed
+
+## Plan
+- The plan's five parts (`geo-investigation-planning`, section 5): objective, deliverables, waves, expected runs and reserve, the result that would change the plan
+- <time> change: what changed, and the result that caused it
 
 ## Evidence inventory
 | ID | Type | Content actually present | Availability | Frames / units | Limitations |
@@ -78,6 +82,10 @@ The **Source** cell carries the specialist's tokens exactly as returned: the `pr
 | U# | Source | Affects (ids) | Consequence | Materiality (from risk_uncertainty's flip tests; blank until then) | Reducible? | How / by whom |
 |----|--------|---------------|-------------|----------|------------|---------------|
 
+## Reduction attempts
+| Entry | Task ID | Owner | Mode | What it tries | Why | Outcome |
+|-------|---------|-------|------|---------------|-----|---------|
+
 ## Figures
 | ID | Caption | URL | From task | Supports (claim ids) | Interactive |
 |----|---------|-----|-----------|----------------------|-------------|
@@ -102,8 +110,11 @@ The **Source** cell carries the specialist's tokens exactly as returned: the `pr
 | Plan awaiting decision | the specialists proposed |
 | Jobs still running | job ids, which keep running and stay collectable |
 
+## Pending checkpoint
+*Written only when the gateway tells you to stop filing a checkpoint: the unanswered items and the problems, with their ids. Clear it when the checkpoint is filed.*
+
 ## Next steps
-- ...
+- ... (also each line that justifies another call, `geo-investigation-planning` section 6)
 
 ## Change log
 - <time> T08-strat reanalysis: W2 Main Sand = two lobes → T04-seis/E2 and T05-struct/C1 need review.

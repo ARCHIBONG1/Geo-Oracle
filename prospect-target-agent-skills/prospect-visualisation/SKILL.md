@@ -1,6 +1,6 @@
 ---
 name: prospect-visualisation
-description: Closure maps, maturity tables, volume exceedance curves and tornadoes. It says which tools draw their own figure, what pt_render draws, and what a figure may support. Load before pt_render and before carrying result.figures.
+description: Closure maps, maturity tables, volume exceedance curves and tornadoes. It says which tools draw their own figure, what pt_render draws, and what a figure may support. Load before pt_render, and before carrying result.figures.
 ---
 
 # Prospect visualisation

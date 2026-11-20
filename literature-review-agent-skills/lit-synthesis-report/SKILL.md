@@ -1,6 +1,6 @@
 ---
 name: lit-synthesis-report
-description: How the literature specialist synthesises findings across sources. It covers conflicting literature, careful consensus language, the standalone literature report for direct conversations, and the final self-check before you return any result. Use when combining evidence from several sources into conclusions, when sources disagree, before returning any result to Geo Oracle, and when a person asks for a literature report directly.
+description: How the literature specialist synthesises findings across sources. It covers conflicting literature, careful consensus language, the standalone literature report for direct conversations, and the final self-check before you return any result. Use when combining evidence from several sources into conclusions, when sources disagree, before returning any result to Geo Oracle, and when a person asks for a literature report directly. Not for a report-reading task (R1-lit-reading to R3-lit-reading).
 ---
 
 # Synthesis and report

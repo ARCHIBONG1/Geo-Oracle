@@ -24,7 +24,7 @@ A petrothermal (enhanced or engineered) play has no natural fluid recharge. The 
 
 ## Timing (PT4)
 
-Heat and recharge must be sustained over the project life. In the events chart, give `heat` and `recharge` events with `holds`.
+Heat and recharge must be sustained over the project life. In the events chart, give at least one `heat` event and one `recharge` event, each with `holds: true` or `holds: false` and the claim that supports it. Every event needs start_ma and end_ma: 0 for the present day and for planned periods. Without both kinds, PT4 is not tested. An event without `holds` tests nothing, and PT4 stays not tested unless another event fails.
 
 ## Pitfalls
 

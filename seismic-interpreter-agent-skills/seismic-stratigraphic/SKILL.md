@@ -1,11 +1,11 @@
 ---
 name: seismic-stratigraphic
-description: Seismic stratigraphy and seismic facies, from the termination and facies tools, section descriptors and attributes. It covers termination detection and key surfaces, facies classification, stratal slices, reflection configuration and character, reflection terminations and sequence boundaries. Load for questions about depositional setting, sequences, facies, channels or reservoir distribution.
+description: Seismic stratigraphy and seismic facies, from the termination and facies tools, section descriptors and attributes. It covers termination detection and key surfaces, facies classification, stratal slices, reflection configuration and character, reflection terminations and sequence boundaries. Load for questions about depositional setting, sequences, facies or reservoir distribution. To extract channel or body volumes, read seismic-attribute-interpretation instead.
 ---
 
 # Seismic stratigraphy and facies
 
-**Channels and other depositional bodies as volumes:** if a task asks for stratigraphic features, bodies or channels, answer it by running them, not by reading sections. Run `seismic_segment_volume` with the generic `channel` recipe (skill `seismic-attribute-interpretation`, section 1):
+**Channels and other depositional bodies as volumes:** if a task asks for stratigraphic features, bodies or channels, answer it by running them, not by reading sections. Run `seismic_segment_volume` with the generic `channel` recipe (skill `seismic-attribute-interpretation`, Procedure, step 1):
 - compute envelope, semblance and chaos;
 - read the whole volume by default: give all tracked horizons as `horizons` (use `interval` only when the person or Geo Oracle asks for one);
 - give the extracted faults as `faults`.
@@ -54,7 +54,7 @@ Use `seismic_detect_terminations` on sections along and across depositional dip 
 
 ## Channels and bodies
 
-- A laterally limited zone suggests a channel or body if it has sharp edges on coherence, a distinct amplitude or frequency, and often a concave-up base. Run the generic `channel` recipe over that level (above). Read its QC (`fault_overlap`, `extent`, `stability.merges`) before you decide what the bodies are.
+- A laterally limited zone suggests a channel or body if it has sharp edges on coherence, a distinct amplitude or frequency, and often a concave-up base. Run the generic `channel` recipe on the whole volume (above). Read its result (`per_sample.category`, `qc.fault_overlap`) before you decide what the bodies are.
   - The recipe's inputs mark the bodies' edges by design. So a body in the low-semblance tail is not thereby "discontinuity-dominated".
   - A body outside the fault zones is not fault disruption.
 - Report its width in traces, converted to metres with the trace spacing from `seismic_convert_coordinates`. Report its thickness in ms, against the tuning thickness.

@@ -1,13 +1,21 @@
 ---
 name: prospect-volumetrics
-description: Quantities in place for every domain. It covers gross rock volume from a closure's cells, the sourced inputs and their refusals, sampling with a stated shape, and a correlation only with its source. It also covers the tornado sensitivity, the percentile convention, and what each quantity is not. Load before any volume.
+description: Quantities in place for every domain. It covers gross rock volume from a closure's cells, the sourced inputs and their refusals, sampling with a stated shape, and a correlation only with its source. It also covers the tornado sensitivity, the percentile convention, and what each quantity is not. Load before pt_resolve_inputs, pt_grv, pt_quantity or pt_sensitivity.
 ---
 
 # Volumetrics
 
 ## The order
 
-1. `pt_resolve_inputs`: every input that the domain needs, each as `{product, field, value}` (with `range_from_product` for the product's p10 and p90, and `row: {column: value}` to name the row of a table), `{range: [p10, p50, p90], source, convention}` or `{samples, source}`. The `field` must be a column or key of the product. The tool compares the value with the product within 0.5 %, and the range ends with its `<field>_p10` and `<field>_p90` in the same row. A `row` must name columns and select exactly one row; it is needed whenever the column holds more than one distinct value. For a JSON product the field must hold one number: quote a key or an indexed entry (`porosity_by_zone.2`), or give a set as `{samples, source}`; the range ends are the leaf's sibling keys `<leaf>_p10` / `<leaf>_p90`. When the field is the `p50`, `50th_percentile` or `median` key, the ends are `p10` / `p90` or `10th_percentile` / `90th_percentile` beside it. `row` is for a table only. Without those keys the range is given as `{range, source}`. A range on a table without those columns is refused: give it as `{range, source}`, citing the claim that states it. Any number that does not match is refused. It refuses a bare number. It refuses a missing input, with the owner to ask. `pt_readiness` reads the file that `pt_resolve_inputs` writes, for R4.
+1. `pt_resolve_inputs`: every input that the domain needs, in one of three forms. It refuses a bare number. It refuses a missing input, with the owner to ask. `pt_readiness` reads the file that `pt_resolve_inputs` writes, for R4.
+
+   | Form | Use it for | The tool refuses |
+   |---|---|---|
+   | `{product, field, value}`, with `range_from_product: [p10, p50, p90]` for the product's percentiles and `row: {column: value}` to name the row of a table | a number in a product or a registered table | a value or a range end more than 0.5 % from the product's own number; range ends that are not in the same row as the value; a `row` that names a column the table does not have, or that does not select exactly one row; a `range_from_product` on a table without the `<field>_p10` and `<field>_p90` columns |
+   | `{range: [p10, p50, p90], source, convention}` | a range that an upstream claim states | a range not in low, mid, high order; a range without a source; `convention: 'exceedance'` |
+   | `{samples, source}` | a realization set | fewer than three values; a set without a source |
+
+   The `field` must be a column or key of the product. A `row` is needed whenever the column holds more than one distinct value, and it is for a table only. For a JSON product the field must hold one number: quote a key or an indexed entry (`porosity_by_zone.2`), or give a set as `{samples, source}`; the range ends are the leaf's sibling keys `<leaf>_p10` / `<leaf>_p90`. When the field is the `p50`, `50th_percentile` or `median` key, the ends are `p10` / `p90` or `10th_percentile` / `90th_percentile` beside it. Without those keys or columns, give the range as `{range, source}`, citing the claim that states it.
 2. `pt_readiness` with that file: a prospect or a target may carry a quantity, and nothing lower may.
 3. `pt_grv` per scenario: the cell area times the summed column above the contact, exact on the grid.
    - The base of the reservoir is at the top plus its gross vertical thickness (`reservoir_thickness_m`, sourced: an isochore from stratigraphy or the wells). So a base above the contact truncates the volume (Samson et al. 1996).

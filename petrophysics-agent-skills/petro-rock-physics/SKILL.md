@@ -23,6 +23,8 @@ The methods are Batzle-Wang (1992) for brine, oil and gas, Span-Wagner for CO2 a
 
 **Needs**: a well with trajectory, DT, RHOB, VSH, PHIE (and SW where hydrocarbon-bearing), and the parameter set above. The parameter set also needs `srd_elevation_m`: the seismic reference datum above MSL, with source. Agree it with the seismic specialist.
 
+**For a first tie**, `vs_source="none"` gives depth, Vp and density only. It needs just a trajectory, DT, RHOB and `srd_elevation_m`: no VSH, PHIE, SW or fluid parameters. It refuses substitution and Backus (`petro-time-depth`).
+
 - **Vs**: `measured` (DTS) when present. Otherwise **Greenberg-Castagna**: predicted on the brine-substituted rock, then substituted back.
   - Predicted Vs carries its uncertainty into AVO: say "Vs predicted" wherever it matters.
   - Set `matrix` (sandstone, limestone, dolomite) from lithology.

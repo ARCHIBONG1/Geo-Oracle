@@ -124,6 +124,6 @@ The tool draws faults black and bodies yellow, so both stand out on the Petrel-c
 **How to present a 3D view**: show the static image inline (its `markdown` line). Then give `interactive_url` with the tool's `interactive_note`. For example: "TrueForge's chat can show images but not interactive 3D, so the static view is shown here; to rotate, zoom and pan the same scene, open the interactive link in a browser tab: <interactive_url>". The interactive page is the same CIGVIS scene, decimated when large.
 
 - Time slices cut across dipping strata. Label any time-slice pattern as mixed-level unless the strata are flat.
-- Never describe what a figure "shows". Describe the measurements behind it.
+- In findings, never describe what a figure "shows". Describe the measurements behind it. Only the caption says what the figure shows, and from which product.
 
 <!-- end of skill: seismic-visualisation -->

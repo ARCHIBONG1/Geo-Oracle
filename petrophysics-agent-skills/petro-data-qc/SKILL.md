@@ -15,6 +15,8 @@ description: Getting well data in and checking it. It covers importing uploads, 
 
 The import returns a path such as `uploads/W1.las`. Use it from then on. The import refuses a file that is not in any recent sandbox. Then ask, via `missing_data`, for the file to be uploaded again or copied into `operations/inputs`.
 
+**Documents** (a data sheet, report or note: PDF, Word, text): read them with `petro_read_document`, page by page, before you interpret. They can give the datum, units and location that a file lacks. Cite the page. The tool refuses a table: read it with `petro_preview_table`. `petro_list_data` does not list PDF or Word documents: take the path from the brief.
+
 **Before you call a well table missing** (tops, survey, checkshots, pressures, core), run `petro_list_data`. `input_files` covers all subfolders. Use such a table for a task well, even if the brief did not name it. Its evidence `statement` says that the listing found it. Do not use a table that the brief excludes. Only a table absent from a listing with no `truncated` field is missing.
 
 ## 2. Loading logs: `petro_load_well`
@@ -54,7 +56,7 @@ The loader reads LAS 2.0/3.0 or CSV logs. It does not support DLIS: ask for LAS.
 - **A curve with no unit** is read in its canonical unit only if its values are plausible. A unitless neutron with values above 1 is read as percent. A spectral curve (K, TH, U, CGR) whose unit or values fit no unit keeps its own name, with family `other`, and a warning. The well still loads. It becomes `<MNEMONIC>_FILE` only when another mnemonic (for example POTA) was read as that curve. A bare K or U with no unit can be another quantity. It is read as potassium or uranium only when the file has a thorium curve, or when `unit_overrides` states its unit. Each such reading is reported in `warnings`: carry those into `limitations`.
 - **CSV nulls**: -999.25, -999, -9999 and -9999.25 are read as no data (warned).
 - **Header facts kept**: well name, UWI, datum (from `LMF`) and elevations (`EKB`, `EDF`, `EGL`, converted to m), X/Y and CRS, mud type, Rm, Rmf and Rmc with their temperatures, BHT, bit size. The Rw and temperature tools read the header Rmf and BHT units. A blank or unknown temperature unit is refused there: then register `rmf_temp_c`, or `surface_temp_c` and `temperature_gradient_c_per_km`. A header bit size with no unit is read as inches only between 3 and 30 (warned); otherwise no BS curve is made.
-- **Mud-gas curves** (for example C1, H2) are kept under their own names. No petrophysics tool interprets them. A hydrogen reading in mud gas is an observation, not proof of natural hydrogen. Drilling can make it: bit heating with PDC or diamond bits cracks the drilling fluid, and CO, ethene and propene mark that gas. Steel in the well can also react with water (Zgonnik 2020). Gas chromatographs that use hydrogen as carrier gas cannot detect it. State the detector, the bit type and whether helium was measured. Report the reading as an observation with these alternatives.
+- **Mud-gas curves** (for example C1, H2) are kept under their own names. No petrophysics tool interprets them. A hydrogen reading in mud gas is an observation, not proof of natural hydrogen (`petro-core`, Hydrogen, gives the drilling markers). Steel in the well can also react with water (Zgonnik 2020). Gas chromatographs that use hydrogen as carrier gas cannot detect it. State the detector, the bit type and whether helium was measured, and report the reading with these alternatives.
 
 **What you must supply when the file does not say** (from the task excerpt or report, never assumed):
 - `depth_unit`;
@@ -153,17 +155,10 @@ Register every interpretation parameter before you use it, one set per zone or c
 ```
 
 - **Sources**: core, scal, water_sample, log_crossplot, log_sp, log_percentile, pressure_data, test, analogue, regional, task, assumption.
-- **Parameter names**: the list below adds to the names above. The property, rock and physics skills tell when each is necessary.
-  - Logs and shale: `nphi_ma`, `nd_gas_tolerance`, `sonic_c`, `pef_sh`, `sp_shale_mv`, `phi_sand_clean`, `phi_shale`.
-  - Rw and saturation: `rmf`, `rmf_temp_c`, `ssp_mv`, `qv`, `m_star`, `n_star`, `rwb`, `swirr`, `salinity_ppm`.
-  - Core and cutoffs: `overburden_porosity_factor`, `overburden_perm_factor`, `k_cutoff_md`.
-  - Capillary pressure: `sigma_cos_lab` (or `sigma_cos_air_mercury`, `sigma_cos_gas_brine`, `sigma_cos_oil_brine`, `sigma_cos_gas_oil`), `sigma_cos_res`, `buoyant_fluid_density`, `brine_density`, `fwl_tvdss_m`.
-  - Pressure, temperature and thermal: `hydrostatic_reference_elevation_m`, `ground_elevation_m`, `tc_shale_w_mk`, `circulation_hours`.
-  - Time-depth: `srd_elevation_m`, `source_offset_m`.
-  - Fluids: `oil_api`, `gor_l_per_l`, `gas_gravity`, `reservoir_pressure_mpa`, `reservoir_temp_c`.
+- **Parameter names**: each property, rock and physics skill names the parameters that its tool needs.
 - **What is refused**: a value with no source, or a value, `low` or `high` outside physical ranges. The result lists every assumption in `assumed`, and asks for `low`/`high` where they are missing.
 - **What is warned, not refused**: a `temperature_gradient_c_per_km` above 150 (a geothermal or convective setting only), and a `brine_density` below 0.9 g/cm3 without `reservoir_temp_c` of 200 degC or more. Confirm the value and the unit. The `hydrocarbon_density` floor is 0.001 g/cm3, so a hydrogen density is accepted.
-- **Report the set** in `assumptions`, and cite its provenance id. Rw is never a textbook default. Without a sample, an SP-derived value, a proven water zone, a regional value or a value the task gives, put Rw in `missing_data`.
+- **Report the set** in `assumptions`, and cite its provenance id. Rw is never a textbook default. With no Rw of any kind, put Rw in `missing_data`. An Rw that `petro_rw` registers as an assumption is used as `petro-saturation`, section 1, says.
 
 ## 9. Figures: `petro_render`
 
@@ -172,14 +167,10 @@ Register every interpretation parameter before you use it, one set per zone or c
   - `nd_crossplot`: neutron against density with sandstone, limestone and dolomite lines, coloured by gamma ray;
   - `pickett` and `poro_perm`: see `petro-saturation` and `petro-permeability`;
   - `pressure_depth`: pressures, fitted gradients, contacts and hydrostatic from a `pressure_profile` product (see `petro-pressure-temperature`).
-- **Tools that draw their own figure** return it in `result.figures`: `petro_porosity`, `petro_saturation`, `petro_net_pay`, `petro_rw` (pickett), `petro_permeability` (core_transform) and `petro_pressure`.
-- **You cannot see the image.** Read numbers from the describe tools.
-- **Publish a composite log of each well a claim rests on**, and at least of the most representative well. A user request can add figures (other wells, intervals, crossplots). It is never the condition for the standard ones.
-- **For each figure**, put its `markdown` line and a one-line caption at the top of your final message. The chat shows it inline. Also add it to `figures` and list it in `conclusions` as `Figure: <caption> — <url> — supports <claim ids>`.
+- **Publish a composite log of each well a claim rests on**, and at least of the most representative well. A user request can add figures. It is never the condition for the standard ones.
 
 ## 10. Exports: `petro_export`
 
-- **Formats**: a loaded well as LAS or CSV (MD, plus TVDSS when a trajectory exists, and the chosen curves).
-- **Delivery**: give the user `download_url` in `conclusions` as `Download: <file> — <url>`.
+A loaded well as LAS or CSV (MD, plus TVDSS when a trajectory exists, and the chosen curves).
 
 <!-- end of skill: petro-data-qc -->

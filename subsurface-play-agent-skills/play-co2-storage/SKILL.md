@@ -17,6 +17,8 @@ description: CO2 storage play elements, with containment kept separate (caprock,
 | well_containment | legacy-well inventory with integrity records | an inventory without records: unknown | supplied legacy_wells; literature_review |
 | pressure_limit | critical pressure of faults and caprock fracture pressure against the planned increase | fault stability alone | structural_geology, wells_petrophysics |
 
+The template also holds the supporting element `monitorability`.
+
 Containment is never one status. `play_containment` keeps caprock, faults and wells apart, because each fails and is monitored differently. It reports the pressure margin per fault from `fault_stability` against the planned increase. Give `caprock_limit_dp_mpa`, the pressure increase the caprock can take: its fracture pressure (or the minimum horizontal stress from a minifrac or leak-off test) minus the initial pore pressure at the caprock, in MPa, with `caprock_limit_source` (the test or claim id): the margin is then read against the caprock too. A value of 0 or less is refused. Without it, the result and a warning say the caprock limit was not tested.
 
 ## Timing (PT4)
@@ -41,6 +43,6 @@ A screening play rests on the first. The others need rock and brine data, and yo
 
 ## Reporting
 
-Give `containment_assessment` with the four statuses, and the storage play's matrix with the weakest link. The discriminating evidence usually names capillary data, well integrity and measured stress first.
+Give `containment_assessment` with the four statuses (caprock, faults, wells and the pressure limit), and the storage play's matrix with the weakest link. The discriminating evidence usually names capillary data, well integrity and measured stress first.
 
 <!-- end of skill: play-co2-storage -->

@@ -1,6 +1,6 @@
 ---
 name: geo-specialist-tasking
-description: Brief templates and rules for Geo Oracle's specialist tools (literature_review, regional_geology, seismic_interpretation, structural_geology, stratigraphy, sedimentology, wells_petrophysics, subsurface_play, prospect_target, risk_uncertainty) and their job tools (get_specialist_result, cancel_specialist_job, list_specialist_jobs). Use whenever you are about to call a specialist, especially for follow-up, validation, challenge or reanalysis tasks, parallel fan-outs, or when a call was rejected or returned warnings about its arguments.
+description: Brief templates and rules for Geo Oracle's specialist tools (literature_review, regional_geology, seismic_interpretation, structural_geology, stratigraphy, sedimentology, wells_petrophysics, subsurface_play, prospect_target, risk_uncertainty) and their job tools (get_specialist_result, cancel_specialist_job, list_specialist_jobs). Load when writing a specialist brief, especially for validation, challenge or reanalysis, and when a call was rejected or returned warnings about its arguments.
 ---
 
 # Specialist tasking
@@ -22,25 +22,27 @@ A specialist's answer can only be as good as its brief. A good brief gives the s
 | `task_id` | A new, meaningful id per run, e.g. `T07-seis-challenge` | Reusing an id; the gateway renames duplicates |
 | `analysis_mode` | `initial`, `follow_up`, `validation`, `challenge` or `reanalysis` | Leaving `initial` on reruns |
 | `project_context` | Area, target interval, resource type, decision context | Pasting the full chat history |
-| `available_evidence` | The evidence itself, or data-store references (see `geo-evidence-inventory`) | Sandbox paths; retyped large tables |
-| `upstream_findings` | `'<global id> [<classification>] <statement>'`, one per item | Paraphrasing without ids; promoting interpretations to observations |
+| `available_evidence` | The evidence itself, or paths and product references (see `geo-evidence-inventory`, section 5) | A sandbox path in a form other than the two of that section; retyped large tables |
+| `upstream_findings` | `'<global id> [<classification>] <statement>'`, one per item | Paraphrasing without ids; interpretations as observations |
 | `upstream_task_ids` | The tasks those findings came from | Omitting them |
-| `known_constraints` | Assumptions that must not be made; fixed facts; methods required or excluded; limits on the work (a tool-call budget) | Leaving them unstated; turning an upstream caveat into a prohibition (see 1a) |
-| `known_unknowns` | Missing data and open questions | Hiding gaps; calling a supplied file absent or empty |
+| `known_constraints` | Assumptions that must not be made; fixed facts; methods required or excluded; limits on the work (a tool-call budget) | Turning an upstream caveat into a prohibition (see 1a) |
+| `known_unknowns` | Missing data and open questions | Hiding gaps; calling a supplied file absent |
 | `competing_interpretations` | Rival models the specialist must test | Only the favoured model |
-| `required_outputs` | Concrete deliverables, each unconditional: "a depth map of the horizon at W1, converted with its time-depth table" | "A comprehensive analysis"; a conditional ("a depth map if a valid conversion exists; otherwise state cannot-determine"): the specialist takes the exit and tracks nothing. The chain behind a product is the specialist's job; the only acceptable "cannot" names a missing input. For a seismic volume with a well the standing set is: fault volume, body volume, a horizon at the well, the well tie, the depth map, and each feature's distance to the well. For a closure a prospect will use: `sg_build_model` on that horizon, then `sg_closure_spill` with it as `model` (without it the candidate stays a lead). Every analysis task also gets the standing line "figures for every product you publish that has a renderer" |
-| `downstream_use` | Which task or decision consumes the result | Leaving it out, so the specialist cannot judge the precision needed |
-| `previous_task_id`, `reason_for_reanalysis` | For every non-initial mode | Leaving them empty |
+| `required_outputs` | Concrete deliverables, each unconditional: "a depth map of the horizon at W1, converted with its time-depth table" | "A comprehensive analysis"; a conditional ("a depth map if a valid conversion exists; otherwise state cannot-determine"): the gateway refuses it. The chain behind a product is the specialist's job; the only acceptable "cannot" names a missing input. For a seismic volume with a well the standing set is: fault volume, body volume, a horizon at the well, the well tie, the depth map, and each feature's distance to the well. For a closure a prospect will use: `sg_build_model` on that horizon, then `sg_closure_spill` with it as `model` (without it the candidate stays a lead). Every analysis task also gets the standing line "figures for every product you publish that has a renderer" |
+| `downstream_use` | Which task or decision consumes the result | Leaving it out |
+| `previous_task_id`, and `reason_for_followup` (a follow-up) or `reason_for_reanalysis` (the other modes) | For every non-initial mode. From the fifth attempt at one result, the gateway refuses a task whose reason does not name what is different, or repeats an earlier one | Leaving them empty |
 | `check_targets` | Validation or challenge: the claim ids tested (ledger; a plan's `settles`) | Prose |
-| `instructions` | Leave empty: it replaces the default brief | Duplicating the output format, which the gateway already enforces |
+| `instructions` | Leave empty: it replaces the default brief | Duplicating the output format |
 | `specialist_session_id` | Leave it empty: the gateway continues each specialist's session for the investigation itself (section 2). Name one only to continue an earlier investigation's session from this chat | Copying an id from your notes or ledger; using it for validation or challenge (refused) |
-| `wait_seconds` | Omit it on a single call, so the gateway's default applies; `0` whenever another specialist starts in the same wave; never above the gateway's cap (its description states it: the harness's per-call timeout minus a margin) | Very short waits that force extra polling; a wait that outlasts the harness, which returns a server-execution-timeout and nothing else |
+| `wait_seconds` | Omit it on a single call, so the gateway's default applies; `0` whenever another specialist starts in the same wave; never above the gateway's cap | Very short waits that force extra polling; a wait that outlasts the harness (it returns only a server-execution-timeout) |
 
 ## 1a. Caveats are ceilings, not prohibitions
 
-An upstream result that is uncalibrated, bounded, assumed or regional is still an input. Pass it with its caveat in the evidence `description` and the finding's own status in `upstream_findings`. The specialist computes with it, flags the assumption, and caps its claim (`partially_supported` at most) through the dependency ceiling. Do not write constraints such as "do not assess seal from an uncalibrated Vsh". They stop the specialist from using its tools and leave the question unanswered. Reserve `known_constraints` for facts the specialist must not assume (an age, a location, a fluid) and for methods the user excludes. For values, write: "Do not assume a value without a stated source. Derive values from the data you hold." The gateway refuses a brief whose `known_unknowns` calls a supplied kind of evidence absent or empty. A scoped gap is fine.
+An upstream result that is uncalibrated, bounded, assumed or regional is still an input. Pass it with its caveat in the evidence `description` and the finding's own status in `upstream_findings`. The specialist computes with it, flags the assumption, and caps its claim (`partially_supported` at most) through the dependency ceiling. Do not write constraints such as "do not assess seal from an uncalibrated Vsh": they stop the specialist from using its tools and leave the question unanswered. Reserve `known_constraints` for facts the specialist must not assume (an age, a location, a fluid) and for methods the user excludes. For values, write: "Do not assume a value without a stated source. Derive values from the data you hold." The gateway refuses a brief whose `known_unknowns` calls a supplied kind of evidence absent or empty. A scoped gap is fine.
 
 Never invent a product reference. If a producer failed to publish a product, pass its findings in `upstream_findings` (with their ids and status), and name the missing product in `known_unknowns`. A fabricated `@agent/products/...` reference is a false evidence item. If a tool fault caused the failure (a dataset that would not read, a format the tool rejected), retry that producer once. Name the fault in `reason_for_reanalysis`. Only then move on without its product.
+
+A document that the person or a constraint names goes in each brief that needs it, as an evidence item with its exact path (from list_shared_inputs, or the source_reference of the result that read it).
 
 ## 1b. A specialist that returns partially_completed
 
@@ -57,16 +59,16 @@ The gateway keeps one session per specialist per investigation, and chooses it f
 | `validation` | a fresh session | blind: the question the claim answers and the data, not the earlier answer, and a different method, parameters or data from the run being checked |
 
 - **Why one session.** It keeps the specialist's context (files loaded, attempts, failures), which a follow-up, correction or reanalysis needs.
-- **Why a check is fresh.** A model that re-examines its own answer, with that answer in its context, tends to defend it. So a check in the same session is not independent. A fresh session alone is not independent either. The specialist's tools return the earlier result for identical inputs and parameters, and a brief that states the earlier conclusion anchors the check. Independence comes from what the task sees and the method it uses.
+- **Why a check is fresh.** A model that re-examines its own answer, with that answer in its context, tends to defend it. So a check in the same session is not independent. A fresh session alone is not independent either: the specialist's tools return the earlier result for identical inputs and parameters, and a brief that states the earlier conclusion anchors the check. Independence comes from what the task sees and the method it uses.
 - **`previous_task_id`** naming an earlier task of the same specialist continues that task's session. So a follow-up on a challenge's result stays with the challenge.
-- **One task at a time.** The gateway queues a task for a busy session (`session_route`: "queued behind task …"). The task starts when the turn ahead ends. Collect it with `get_specialist_result` as usual. Do not resend it.
+- **One task at a time.** The gateway queues a task for a busy session (`session_route`: "queued behind task …"). It starts when the turn ahead ends. Collect it with `get_specialist_result` as usual. Do not resend it.
 
 ## 2a. Relaying the person's reaction to a result
 
-When the person rejects or questions a result ("this is wrong", "coherence does a better job", "there are more faults than that"), the brief carries their words, not your theory of the fix. A remark briefed as a method ("use coherence as the principal input") can send run after run onto the wrong input.
+When the person rejects or questions a result ("this is wrong", "there are more faults than that"), the brief carries their words, not your theory of the fix. A remark briefed as a method ("use coherence as the principal input") can send run after run onto the wrong input.
 
 1. **Split the reaction into three parts**, each in its own field:
-   - what they saw, word for word, in `reason_for_reanalysis` (e.g. "The person: 'This tells me the binary fault interpretation was faulty.'");
+   - what they saw, word for word, in `reason_for_followup` (e.g. "The person: 'This tells me the binary fault interpretation was faulty.'");
    - the outcome they want, in `objective` and `required_outputs` (e.g. "a fault volume, 0 = no fault, 1 = F1, ..., that captures the faults visible on the coherence slices");
    - a method only if they named one, quoted in `known_constraints` as theirs ("The person asked: 'use the coherence attribute'"). Never add a method of your own, and never write "rather than <method>" unless they said it.
 2. **Ask when a reaction has two possible readings.** "Coherence does a better job" may describe what they see, or tell you how to compute. Before you spend a run, ask one question with both readings as options.
@@ -80,7 +82,7 @@ When the person rejects or questions a result ("this is wrong", "coherence does 
 **Initial task**
 ```json
 {
-  "investigation_id": "INV-2026-NorthBlock",
+  "investigation_id": "INV-<slug>-YYYYMMDDTHHMM",
   "task_id": "T03-strat",
   "analysis_mode": "initial",
   "objective": "Establish the Main Sand correlation across W1-W3.",
@@ -99,7 +101,7 @@ When the person rejects or questions a result ("this is wrong", "coherence does 
 
 **Validation** (fresh session, chosen by the gateway; blind)
 - `analysis_mode`: `validation`
-- `previous_task_id`: the task validated (required; the check runs in a fresh session)
+- `previous_task_id`: the task validated (required)
 - `geological_question`: the question the claim answers, asked afresh: "How many faults does the volume hold, and what are their strikes?", not "Is `T04-seis/C2` right?". You compare the two answers in review.
 - `upstream_findings`: nothing from the task under validation **when the same specialist validates** (it would anchor on its own answer).
 - **A different specialist validating** gets the products it must examine, without the conclusions from them. These products are the fault set or body set (`@seismic-interpreter-agent/products/...` from `seismic_publish_structure` / `seismic_publish_bodies`), the horizon maps and the well products. A structural specialist has no seismic tools: given only the SEG-Y path, it returns `insufficient_data`. Before you dispatch, check that `available_evidence` names the products.
@@ -120,7 +122,7 @@ When the person rejects or questions a result ("this is wrong", "coherence does 
 **Correction from the person** (asks why; section 2a)
 - `analysis_mode`: `follow_up`
 - `previous_task_id`: the corrected task
-- `reason_for_reanalysis`: the person's words, verbatim
+- `reason_for_followup`: the person's words, verbatim
 - `geological_question`: "Why does `T01-seis`'s fault volume miss what the person sees ('<their words>')? Check your tool calls against your skills' procedure."
 - `known_constraints`: a method only if the person named one, quoted as theirs
 
@@ -132,7 +134,7 @@ When the person rejects or questions a result ("this is wrong", "coherence does 
 **Provenance question** — only after the user has said yes (see the system prompt, *Questions about a specialist's methods*). Narrow by construction: one question, one method or tool, no analysis.
 ```json
 {
-  "investigation_id": "INV-2026-NorthBlock",
+  "investigation_id": "INV-<slug>-YYYYMMDDTHHMM",
   "task_id": "T09-seis-prov",
   "analysis_mode": "initial",
   "objective": "Report the methodological provenance of m:seis/edge-semblance as returned by seismic_method_provenance: the method's name, governing equation, assumptions, every recorded source with its DOI and locator, the verification status, and any recorded gaps. Do not compute anything and do not supply references the tool does not return.",
@@ -145,14 +147,14 @@ Route by the method id's domain (`m:seis/` → `seismic_interpretation`, `m:petr
 
 ## 4. Running jobs
 
-- **Starting several specialists.** This chat makes one tool call per step. A call waits up to `wait_seconds` (default the gateway's cap) before the next can start. So start independent specialists with `wait_seconds: 0`, one after another, and they run in parallel. Then collect each result with `get_specialist_result`.
-- **No result at all** (your call or poll errors out: "other side closed", "read ECONNRESET", "Failed to process successful response", a timeout) is the connection, not the specialist. The job runs on its own thread, and the job id stays valid. Poll it again. Never re-dispatch, and never record it as a failed specialist: either mistake throws away a finished wave.
+- **Starting several specialists**: `geo-investigation-planning`, section 5.
+- **No result at all** (your call or poll errors out: "other side closed", "read ECONNRESET", "Failed to process successful response", a call that timed out) is the connection, not the specialist. The job runs on its own thread, and the job id stays valid. Poll it again. Never re-dispatch, and never record it as a failed specialist: either mistake throws away a finished wave.
 - **A result reporting `execution_status: error`** ("the specialist's turn failed") is a dead turn. Retry with a new task id, as the `next_action` says. Record it as an execution failure, not a scientific one.
-- **A result with `transport_failure: true`** lost its result to a dropped connection. Part of the work may be done. When the connection is back, send the same brief again with the same `task_id`. Do not rewrite the brief. Up to three losses per task do not count as runs.
+- **A result with `transport_failure: true`** lost its result to a dropped connection. Part of the work may be done. When the connection is back, send the same brief, unchanged, with the same `task_id`. Up to three losses per task do not count as runs.
 - **Jobs still running.** If a result says `running`, call `get_specialist_result(job_id=...)` with `wait_seconds = min(cap, remaining turn time - 120)` (see `geo-investigation-planning`, section 7). The call returns as soon as the specialist finishes, so a long wait costs nothing. A wait that outlasts the turn costs the checkpoint. If a poll returns `running` again, poll again, and update the ledger between polls. A poll that fails is the connection (see **No result at all** above).
 - **Collecting a wave.** Each `get_specialist_result` returns one result in its own step, so TrueForge's single-result limit (about 6,000 tokens) applies (see **Trimmed results**).
 - **Trimmed results.** Results are size-limited. When `omitted` lists sections you need, call `get_specialist_result(job_id=..., sections=["claims"], offset=N)`, as `next_action` suggests. If TrueForge replaced a result with a "too big" preview, re-fetch it the same way.
-- **Unneeded work.** Cancel jobs you no longer need with `cancel_specialist_job`. TrueForge asks the person to approve each cancel first.
+- **Unneeded work.** Cancel unneeded jobs with `cancel_specialist_job`. TrueForge asks the person to approve each cancel first.
 - **Lost ids.** `list_specialist_jobs` recovers job ids, e.g. after context compaction.
 
 ## 5. Rejections and warnings
@@ -161,7 +163,7 @@ Route by the method id's domain (`m:seis/` → `seismic_interpretation`, `m:petr
 |---|---|---|
 | "Arguments repaired by the gateway: …" | Your call shape was fixed | Use the canonical shape next time |
 | "task_id … was already used" | Duplicate id | Use a new id per run |
-| "Queued behind task …" | The specialist's session is busy with an earlier task | Nothing: it starts when that turn ends; collect it with `get_specialist_result` |
+| "Queued behind task …" | The specialist's session is busy with an earlier task | Nothing: it starts when that turn ends; collect it as usual |
 | "Session … is still busy" | A session named from outside is running or paused | Wait for, or cancel, the earlier job |
 | "… is not a … session of investigation …" | A `specialist_session_id` that is not this investigation's session (usually a mistyped copy) | Call again without it: the gateway continues the right one |
 | "A validation/challenge task runs in a fresh … session" | A session id passed with an independent mode | Omit it, or use `follow_up` if you meant to continue that work |
@@ -172,6 +174,6 @@ Route by the method id's domain (`m:seis/` → `seismic_interpretation`, `m:petr
 
 ## 6. Retries
 
-Retry an execution failure (`error`, `timeout`, `protocol_error`) at most once, with a new `task_id` and a stated reason. If time was the problem, narrow the scope. If it fails again, record the analysis as not executed and tell the user. Never fill the gap yourself.
+Retry a result whose `execution_status` is `error`, `timeout` or `protocol_error` at most once, with a new `task_id` and a stated reason. If time was the problem, narrow the scope. If it fails again, record the analysis as not executed and tell the user. Never fill the gap yourself.
 
 <!-- end of skill: geo-specialist-tasking -->
