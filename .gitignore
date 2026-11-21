@@ -1,3 +1,41 @@
+# Secrets. keys.env holds live API keys: keep it out of any repository, and
+# chmod 600 on disk. trueforge.env is harness CONFIGURATION, not credentials,
+# so it ships -- see keys.env.example for the template of the one that does not.
 keys.env
+*.env.local
+
+# Editor / tooling
+.claude
+.vscode
+.idea
+.archify
+
+# Google Drive sync scratch
+.tmp.drivedownload
+.tmp.driveupload
 .DS_Store
 Icon?
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+
+
+# Runtime state: job records, rendered figures, provenance, HOTL state
+operations/work/
+#operations/inputs/*
+#!operations/inputs/.gitkeep
+logs/
+
+
+# Ignoring everything except the agent skills directory and the .gitignore file itself. This is to ensure that
+# the agent skills directory is always included in the repository, while other files and directories are ignored
+/*
+!/.gitignore
+!/agents/
+/agents/*
+!/agents/skills/
