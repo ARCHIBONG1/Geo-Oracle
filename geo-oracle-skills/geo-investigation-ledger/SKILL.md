@@ -24,6 +24,23 @@ Long investigations outgrow the context window. Compaction removes ids and statu
 
   Give the path that the command printed to `set_hotl_mode` as `ledger_path`. The gateway checks that the file is there, and gives this path to the risk specialist, the close and the report. From then on, write to that path only. Do not build the path again from `pwd`, and never write a second ledger. If you lose the path, find the file: `find / -name ledger.md -path '*investigation*' 2>/dev/null`.
 - **When to update.** Update after every reviewed result, before calling the next specialist.
+- **Read before you patch.** Before an edit replaces text in the ledger, read that text (`grep -n` or `sed -n`). A find-and-replace edit checks that the old text occurs exactly once. If not, it stops with a clear message and changes nothing. Before you add a section, check with `grep -n '^## <name>' <ledger path>` that the heading is not there yet. Never write a section heading that already exists: change the section that is there. For example:
+
+  ```
+  python3 - "<ledger path>" <<'EOF'
+  import sys
+  path = sys.argv[1]
+  old = "| T03-seis | seismic_interpretation | ... | running |"
+  new = "| T03-seis | seismic_interpretation | ... | completed |"
+  text = open(path).read()
+  n = text.count(old)
+  if n != 1:
+      sys.exit(f"Not changed: the old text occurs {n} times, not once. Read the ledger again.")
+  open(path, "w").write(text.replace(old, new))
+  print("Changed:", old, "->", new)
+  EOF
+  ```
+
 - **Global ids.** Use them exactly as returned, e.g. `T03-seis/E2` or `T05-struct/C1`. Your own items use `H#` (hypotheses), `X#` (contradictions), `U#` (uncertainties) and `Q#` (open questions). Each row of the Figures table uses `F#`.
 - **Sources.** Every row needs a source. Record only what exists.
 - **Figures.** Record every figure a specialist returns (its `figures` entries, or its `Figure:` conclusion lines), with the claims it supports. Otherwise the URLs do not survive compaction. The final answer places figures by these rows.
@@ -31,11 +48,15 @@ Long investigations outgrow the context window. Compaction removes ids and statu
 - **History.** Mark items as superseded. Do not delete them. The history is part of the audit trail.
 - **Rivals.** Record every alternative a specialist names, in the Hypotheses table or beside its claim, with its test and result. It stays until a test or a checkpoint resolves it.
 - **Open outputs.** List each required output a specialist left open by its token (`T05-struct#2`) in *Next steps* until it is delivered or dismissed.
-- **The close.** Only after the closing checkpoint is filed (its reply normally gives `ledger_download`), record every task, then write the *Synthesis* section and the *Final status* block as the last two sections (formats in skill `geo-investigation-report`). Replace any that you wrote earlier, and write nothing after them. Save, and give the ledger as a download: the closing checkpoint's reply gives the block (`ledger_download`). Write its absolute path plainly: never escape a slash (`\/`), because an escaped path does not download. After that, the ledger is frozen: the formal report prints it unchanged as its appendix, with its hash. Edit it again only when the person asks for more work and the investigation opens again, or when `request_report` refuses because the ledger does not yet describe the end of the work.
-- **Resuming.** When you resume after a new turn or compaction:
-  1. Read the ledger.
-  2. For any task marked `running`, call `get_specialist_result(job_id)`.
-  3. Continue from *Pending checkpoint* if it holds items, then from *Next steps*.
+- **The close.** Only after the closing checkpoint is filed (its reply normally gives `ledger_download`), record every task, then write the *Synthesis* section and the *Final status* block as the last two sections (formats in skill `geo-investigation-report`). Replace any that you wrote earlier, and write nothing after them. Save, and give the ledger as a download: the closing checkpoint's reply gives the block (`ledger_download`). Write its absolute path plainly: never escape a slash (`\/`), because an escaped path does not download. After that, the ledger is frozen: the formal report prints it unchanged as its appendix, with its hash. Edit it again only when the person asks for more work and the investigation opens again, or when `request_report` refuses because the ledger does not yet describe the end of the work. Then complete it as the refusal says, and call `request_report` again with the same words in the same turn.
+- **Resuming.** When you resume after a new turn or compaction, use the ledger path that you gave as `ledger_path` (`hotl_status` also gives it). A long ledger is more than one tool reply holds (about 24,000 characters), and a `cat` of it does not come back whole. So read it by sections:
+  1. List the sections: `grep -n '^## ' <ledger path>`.
+  2. Read only the parts you need, by their line numbers: `sed -n '<start>,<end>p' <ledger path>`. Read *Tasks*, *Pending checkpoint*, *Pending question* and *Next steps*.
+  3. For any task marked `running`, call `get_specialist_result(job_id='<session>:<turn>')` or `get_specialist_result(task_id='T06-...')`.
+  4. Call `hotl_status` before you ask anything. It gives the last checkpoints on file, the approved plan and whether a checkpoint is due.
+  5. Continue from *Pending checkpoint* if it holds items, then from *Next steps*.
+
+  Never ask the person again a question whose answer is already on file.
 
 ## Template
 

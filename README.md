@@ -316,12 +316,12 @@ compute tool.
 | `geo-evidence-inventory` | characterising the available evidence and packaging it for specialists |
 | `geo-specialist-tasking` | the brief for each specialist tool and the job tools, field by field, with common mistakes; starting several specialists one call at a time |
 | `geo-result-review` | the checklist for judging a specialist result before relying on it, including evidence the identifier check set aside and `record.set_aside`, counting lines of evidence from a check's independence class, and reading plan rows, rivals and the evolution |
-| `geo-investigation-ledger` | the format of `investigation/ledger.md`, the running record the synthesis is written from, with its plan section and its table of reduction attempts |
+| `geo-investigation-ledger` | the format of `investigation/ledger.md`, the running record the synthesis is written from, with its plan section and its table of reduction attempts; reading a long ledger by its sections when resuming, and reading before patching |
 | `geo-play-prospect-evaluation` | the gates before the play, prospect and risk stages; the five domains' elements; the element status scale; the maturity ladder; materiality classes in place of a chance of success; the one risk brief; the reduction loop, including settled failures |
 | `geo-synthesis-audit` | the structure and citation rules of a synthesis, and its scientific audit |
 | `geo-investigation-report` | the close (the ledger's Synthesis section and Final status block, the synthesis given to the person, the ledger as a download, one closing sentence that offers the report, no question); on the person's request, `request_report`, the review of the draft with `report_draft`, three rounds at most, and the delivery |
 | `geo-report-editor` | Geo Oracle as the report's editor in chief: the commission to the writer, the reader's questions and a private answer key, starting the outside reader, reading the outline, the reader's report and the draft, the record check, few ranked notes that ask for revision, and the verdict |
-| `geo-human-on-the-loop` | how to ask (the summary in the chat, the decision in a short question), the supervision question, the objective and deliverables recorded at activation (one result per deliverable), the checkpoint, accept, refuse and edit, partial deliveries, changing mode mid-investigation, and the work gate |
+| `geo-human-on-the-loop` | how to ask (the summary in the chat, the decision in a short question), the supervision question, the objective and deliverables recorded at activation (one result per deliverable), the checkpoint, accept, refuse and edit, partial deliveries, changing mode mid-investigation, and the work gate; one decision per question, and an upstream follow-up option when a result fails a test |
 
 `geo-human-on-the-loop` is the counterpart of `hotl.py`: the gateway enforces the
 gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
@@ -391,7 +391,7 @@ gates by refusing calls, and this skill tells Geo Oracle how to satisfy them.
 
 | Skill | Covers |
 | --- | --- |
-| `structural-core` | the task procedure, the rule against inventing structure, the validity record; what validation and challenge ask in a fresh session; the plan rows, alternatives with tests and the evolution; the method cautions read at planning; methods statements for the investigation report |
+| `structural-core` | the task procedure, the rule against inventing structure, the validity record with evidenced explanations of failed tests for `sg_consistency`; what validation and challenge ask in a fresh session; the plan rows, alternatives with tests and the evolution; the method cautions read at planning; methods statements for the investigation report |
 | `structural-data-qc` | other agents' products and sidecars: domain, pick uncertainty, scope, validity |
 | `structural-geometry` | orientation statistics, mean planes and sets, fold axes by the pi method |
 | `structural-displacement` | throw profiles, displacement against length, growth by expansion index |

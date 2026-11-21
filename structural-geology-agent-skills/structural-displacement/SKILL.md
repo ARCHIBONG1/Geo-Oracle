@@ -20,7 +20,7 @@ description: Throw profiles from horizon cutoffs, displacement-length against th
   - Another fault of the set can abut or cross this one from the side (`junctions` of kind `interior`). There, the horizon offset across this trace, along the abutting fault's hanging wall, is the sum of the two throws. So the profile steps there.
   - A junction of kind `tip` is where this fault itself ends against another. Its offset is not summed, the profile is not split, and its own maximum is the whole profile's.
   - `segments_between_junctions` gives the median and maximum per segment.
-  - `max_throw_own_m` (the maximum of the segment away from the junctions) is this fault's own displacement. The D/L check uses it.
+  - `max_throw_own_m` (the maximum of the segment away from the junctions) is this fault's own displacement. The D/L check uses it. It is null when no segment away from the junctions has three samples (`own_throw` gives the reason); the D/L check then uses `max_throw_m`, and `dmax_basis` says so.
   - Quote `max_throw_m` as the composite offset at the junction, never as the fault's throw.
   - The tool does not sample a side whose sample line crosses another trace (`masked_by_other_faults`).
 - Near a tightly curved surface (a crest within a few cells of the fault), the extrapolation over-corrects. Use a smaller `offset_m` there, and say so.

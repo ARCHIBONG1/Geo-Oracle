@@ -38,6 +38,8 @@ Assemble the ledger with `sg_consistency`. Give it:
 
 It merges the tests (a mixed result is a fail), and returns the status that the ledger allows. The model claim takes that status. Record pass, fail or not tested with the reason, in the statement of every model interpretation and in the product sidecars. Report a failed test, with its explanation if one exists (reactivation, linkage). Without an explanation, the model is `contradicted`. Not tested is honest: V3 (restoration) waits for its tools.
 
+Explain a failed or mixed test when your evidence accounts for it, for example a fault oriented for an older stress regime, or an inherited or reactivated fault. Give it to `sg_consistency` in `explanations`: one sentence per test, with the evidence in it (`{'V5': 'F2 strikes parallel to the older rift faults, which T02-reg/E3 dates; it is reactivated'}`). The test stays recorded as `explained`, not as a pass, and the failure stays in your statement. `sg_consistency` ignores an explanation shorter than a sentence, or one for a test that did not fail, and warns. Never invent an explanation: a failure that no evidence accounts for stays a failure.
+
 `proposed` is the status when no test failed but V1 and V7 have not both passed: the tests do not yet support the model. Report it as an idea to test (class `hypothesis`, status `proposed`), not as a result.
 
 A fault whose throw contradicts the model stays in the fault set. Flag the fault and report the failed test. Never leave a fault out to make a validity test pass.

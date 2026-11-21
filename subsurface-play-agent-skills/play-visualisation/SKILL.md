@@ -5,7 +5,6 @@ description: Status matrices, events charts, dependency graphs and segment maps.
 
 # Play visualisation
 
-
 ## What a figure is and is not
 
 A figure illustrates a claim that a tool computed. It never carries a claim, and you never read a number, depth, area or boundary off it: those come from tools, as they always did. A striking figure can make an untested claim feel tested. That is the one way a picture can damage an argument.
@@ -23,7 +22,6 @@ Each comes in `result.figures` with its `url`, `caption`, `product` and `markdow
 ## `play_render`
 
 Draw a product that no tool drew, or an extra view the person asks for.
-
 
 - `status_matrix`: plays as rows, elements as columns, the status word in every cell, unknown hatched, the weakest critical element outlined, supporting elements marked.
 - `events_chart`: the dated events on a Ma axis with their sources, the critical moment as a line.

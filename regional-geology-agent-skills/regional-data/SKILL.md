@@ -22,6 +22,7 @@ description: Areas of interest and regional extents, the geodata snapshot catalo
 - **Earthquakes**: `reg_fetch_dataset('usgs_comcat', aoi=<record>, start, min_magnitude)` snapshots the catalogue for the regional extent's bounding box.
   - The id (`usgs_comcat_<hash>`) names the query. The result tells you the id to use as `source`.
   - If the task asks for current data, `refresh=true` takes a new snapshot. The old one stays.
+- **Datum grids**: when a result's note says a datum grid is missing, call `reg_fetch_dataset('proj_grids', aoi=<record>, crs=<the data's CRS>)` once for that area. Later transforms read the grid offline: nothing is downloaded during a transform. A grid file that the person supplies in the shared inputs, under the name PROJ gives it, is used the same way. Until the grid is there, positions are good only to the coarser accuracy that the note states.
 - **Custom datasets** (a national survey's download, a published compilation): `reg_fetch_dataset(<new id>, custom={url, name, version, licence, resolution, kind, columns...})`. Take every item from the dataset's own documentation, never guess it. Report a download that fails in `limitations`, and do not work around it.
 - **A dataset that is neither catalogued nor fetchable cannot be used.**
 - **A public source can close or move.** The catalogue lists such a dataset under `not_available`, or `reg_fetch_dataset` refuses it and gives the reason. Then:

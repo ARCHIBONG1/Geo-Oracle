@@ -47,7 +47,7 @@ description: Structural interpretation from seismic - horizon tracking, faults a
    - `result.qc`: `measured.coverage`, `signal.correlation_p10`, and `stability` (the same tracking with the stopping threshold x0.9 and x1.1, and `z_margin` x2 on a band-limited run: the share of cells within one sample). Cells that move with the setting are uncertain picks: report their share.
    - Coverage below 1 is expected at faults, polarity changes and fading reflectors: say where the gaps are.
    - `low_correlation` stops mean that the event changes character. Do not lower `min_correlation` to fill the map without saying so: a lower threshold lets the tracker cross a fault onto another loop, and a depth map inherits the error.
-   - `window_edge` stops mean the horizon reached the edge of `z_band` (`z_margin` above and below the seeds).
+   - `window_edge` stops mean the horizon reached the edge of `z_band` (`z_margin` above and below the seeds). Stops at the volume's top or base (flag `HORIZON_VOLUME_EDGE`) are not: a larger `z_margin` does not help. Report the area the flag names as not mapped.
    - `result.qc.faults` (with `faults` given): `cycle_skip_suspected` means that the block beyond is on the wrong loop. Retrack with that block's seed at the throw-corrected time, or report the block as untracked. Never deliver a horizon with a suspected skip as it stands, and never convert it to depth. The tools still convert and publish it, with a warning and the mark `cycle_skip_faults`. A fault in `cycle_skip_unchecked_faults` was not checked.
 4. A polarity change along a horizon (for example a soft gas sand becoming a weak hard brine sand) stops a peak or trough tracker: that is information, not a failure. Seed and track the opposite event beyond the change. Report where the change sits, as a candidate fluid or lithology boundary (`seismic-qi`).
 
@@ -85,6 +85,7 @@ description: Structural interpretation from seismic - horizon tracking, faults a
 
 1. `seismic_closure` on a structure map gives four-way closures only. For each, it gives the crest, spill z and location, spill type, column height and area.
    - `saddle`: the closure spills into a neighbouring culmination; the spill point location is part of the answer.
+   - `open_basin`: the closure spills at a saddle into a low that reaches the edge of the mapped data. Held by relief, it has a real spill point (`spill_note`).
    - `data_edge`: the closure reaches the edge of the mapped data. The true closure may be larger or fault-bounded: report the numbers as minimum values.
    - The tool does not compute fault-dependent closure. If a fault bounds the structure, state this as a limitation.
 2. A closure in time always carries the velocity warning. Convert with `seismic_time_to_depth`, using a supplied time-depth table or a stated velocity model. Then run `seismic_closure` on the depth map. Report both and whether the closure survives conversion.

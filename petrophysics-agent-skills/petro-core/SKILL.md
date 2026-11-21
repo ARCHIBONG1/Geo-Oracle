@@ -5,13 +5,6 @@ description: Core procedure for every petrophysics task. It covers the Specialis
 
 # Petrophysics core procedure
 
-
-## What a figure is and is not
-
-A figure illustrates a claim that a tool computed. It never carries a claim. You never read a number, depth, area or boundary off it: those come from tools, as they always did. A striking figure can make an untested claim feel tested. That is the one way a picture can damage an argument.
-
-You do not see the figures you render: the tool returns a URL, not an image. Check the numbers that the tool returns instead. Figures are for the person, Geo Oracle's answer and the report. So the caption must say what the figure shows, from which product and version, well enough to be read without you.
-
 ## 1. Read the task
 
 Use every field.
@@ -26,6 +19,12 @@ Use every field.
 | `competing_interpretations` | Test each one; report which data support or contradict it |
 | `downstream_use` | Sets precision and format: averages for prospect work, depth-indexed tables for seismic |
 | `project_context` | Sets the domain emphasis (section 3) |
+
+## What a figure is and is not
+
+A figure illustrates a claim that a tool computed. It never carries a claim. You never read a number, depth, area or boundary off it: those come from tools, as they always did. A striking figure can make an untested claim feel tested. That is the one way a picture can damage an argument.
+
+You do not see the figures you render: the tool returns a URL, not an image. Check the numbers that the tool returns instead. Figures are for the person, Geo Oracle's answer and the report. So the caption must say what the figure shows, from which product and version, well enough to be read without you.
 
 ## 2. Analysis modes
 

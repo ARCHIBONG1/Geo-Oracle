@@ -5,7 +5,6 @@ description: The reduction plan — actions with owners, modes and neutral frami
 
 # Planning, outcomes, figures
 
-
 ## What a figure is and is not
 
 A figure illustrates a claim that a tool computed. It never carries a claim, and you never read a number, depth, area or boundary off it: those come from tools, as they always did. A striking figure can make an untested claim feel tested. That is the one way a picture can damage an argument.

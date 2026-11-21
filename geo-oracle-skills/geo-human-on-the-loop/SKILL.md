@@ -30,10 +30,12 @@ ask_user_question(
 )
 ```
 
-**Three rules about options.**
+**Rules about options.**
 - Five is the hard maximum, so design for three or four and let the free-text box carry the rest. An edit is free text, so accept / refuse / stop plus the box reads best.
 - Append the exact suffix `" (Recommended)"` to one option **only** where you ask the person to sanity-check your judgement: a plan, a retry, a reduction wave. **Never at an alternatives checkpoint**: a recommendation is pre-selection in a thin disguise. That question asks for their judgement, not your agreement (section 7).
 - More than five alternatives: section 7.
+- One decision per question. When two issues need a decision, ask two questions, in two calls. Never ask one question whose options cover only one of them.
+- When a result is contradicted or fails a test, at least one option names the upstream step and the specialist that can resolve it, for example "Send <specialist> a follow-up to <action>", beside accept / refuse / stop.
 
 ## 1. The question, once per objective
 
@@ -45,7 +47,7 @@ ask_user_question(
 | more than one specialist, or any waves | **ask before dispatching anything**, then set the mode, then start |
 | you cannot tell | ask. A line costs little; an unasked investigation costs a wave |
 
-The test is your plan, not the person's wording. If the planning skill gives you more than one task, the objective is multi-specialist, however casually the person asked it. If a one-shot grows (a follow-up needs a second specialist), ask at that moment, before the second dispatch.
+The test is your plan, not the person's wording. If the planning skill gives you more than one task, the objective is multi-specialist, however casually the person asked it.
 
 Ask it with `ask_user_question`, and carry on in the same turn when they answer. Ask it alone, with no other question in the call, and give the three options of section 0 word for word. The gateway sets a mode only from words that name it: `run automatically`, `every wave`, `key decisions`, or a whole answer of `no` or `off`. It refuses words that name no mode, and words that name two.
 
@@ -66,7 +68,7 @@ The confirmation line quotes their reply back.
 
 The gateway refuses a "delivered" basis that says part of the result is unresolved, pending or not run: that is `partial`. Surface the returned `confirmation_line` unchanged, in the message that makes your next tool call (section 3c). Ask once per objective. A follow-up message inside an investigation inherits the setting. If a person asks to change it mid-flight, call `set_hotl_mode` again with `resume=true` and their words: the gateway records the change as an intervention. Never use `resume` to reuse an investigation id for new work.
 
-The gateway allows **one** specialist call before the mode is set, so a single lookup costs nobody a question. It refuses every call after that. **The refusal is the backstop, not the route.** If you reach it, you asked too late. Ask now. The gateway keeps the work already done, but the person should have been asked before the first specialist ran.
+The gateway allows **one** specialist call before the mode is set, so a single lookup costs nobody a question. It refuses every call after that. **The refusal is the backstop, not the route.** If you reach it, you asked too late. Ask now.
 
 ## 2. What a checkpoint says
 
@@ -108,15 +110,15 @@ The activation answer approves wave 1 and nothing else. Every later wave is a qu
 At every wave boundary, follow this sequence:
 1. File nothing yet.
 2. **Update the ledger, including its Pending question block.**
-3. Write the five-part summary as text, and in that message call **`ask_user_question`** (section 0). Give accept / refuse / stop as options, and let the free-text box carry any edit.
+3. Write the five-part summary as text, and in that message call **`ask_user_question`** (section 0). Give accept / refuse / stop as options, and let the free-text box carry any edit. Follow the rules about options (section 0).
 4. They answer in the same turn.
 5. File the checkpoint with their words, and clear the pending block.
 
 Filed before they answer, it is refused.
 
-**Do not end your turn to ask.** `ask_user_question` blocks and the turn survives it. An answered checkpoint carries straight on, and the whole investigation runs in one turn.
+**Do not end your turn to ask.** An answered checkpoint carries straight on, and the whole investigation runs in one turn.
 
-**If nobody answers, the harness cuts the turn at its limit with no message.** That is the accepted cost of supervision: a supervised investigation is only as alive as its supervisor. Nothing is lost if you wrote the ledger first. That is why the pending block goes in before the question, not after. An investigation meant to run unattended is `off` mode, not `every_wave`.
+**If nobody answers, the harness cuts the turn at its limit with no message.** Nothing is lost if you wrote the ledger first. An investigation meant to run unattended is `off` mode, not `every_wave`.
 
 ## 3b. Key decisions only
 
@@ -152,7 +154,7 @@ Wave 3: Stopped at your request — nothing further opened. 7 of 40 runs used.
 
 Read the second and third lines out: to someone who asked for key decisions, a bare "Wave 2 automatic" reads as if you skipped them.
 
-**Where it goes.** Put the line, unchanged, in the message that makes your next tool call. If nothing else runs, put it in your final answer. Never send it as a reply on its own: a reply with no tool call ends your turn, and in `off` or `key_decisions` nothing else opens the next wave. This also holds for the line that `set_hotl_mode` returns.
+**Where it goes.** Put the line, unchanged, in the message that makes your next tool call. If nothing else runs, put it in your final answer. Never send it as a reply on its own: a reply with no tool call ends your turn, and in `off` or `key_decisions` nothing else opens the next wave.
 
 **Two of the four triggers are checked, not trusted.** If any specialist in the wave returned a contradiction, or published a `reduction_plan`, the gateway refuses a record filed as "no key decision here" and tells you to ask. The gateway cannot see a change of scope and some refusals, so those remain your judgement. If the plan you had approved no longer fits what you found, that is a trigger, whether or not anything flags it.
 

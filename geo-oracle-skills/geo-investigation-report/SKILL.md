@@ -12,7 +12,7 @@ The person gets the ledger at the close of every investigation. The formal repor
 The close starts when the closing checkpoint is filed: its reply normally gives `ledger_download`. Do not write the Synthesis or the Final status before that. The gateway can send the work on after a checkpoint, and blocks written before the last results describe an earlier state. Do these steps in this order:
 
 1. **Record every task** in the ledger: each task that the investigation ran, by its full task id, with its result.
-2. **Write the Synthesis section** (format in section 2) and then **the Final status block** (format in section 3), from the state of the work now, as the last two sections of the ledger. If you wrote either one earlier, replace it: remove the old one. Write nothing after the Final status block. Then save the ledger.
+2. **Write the Synthesis section** (format in section 2) and then **the Final status block** (format in section 3), from the state of the work now, as the last two sections of the ledger. If you wrote either one earlier, replace it: remove the old one. Read before you patch (`geo-investigation-ledger`, Rules): a heading written twice keeps the report from starting. Write nothing after the Final status block. Then save the ledger.
 3. **Give the person the synthesis** in your closing message, in plain words, before the ledger download. Give it at every close, also when the person does not ask for a report. Write it from the Synthesis section: how the results combine, what the key figures show, the provenance, the open questions with their competing readings and tests, and what was not in scope. Do not use ledger labels or ids in it, not even as citations in brackets: write each hypothesis and uncertainty by its content. The ledger that the person downloads carries the ids. This rule replaces the citation rule of your prompt for this one message.
 4. **Give the ledger as a download.** The closing checkpoint's reply gives `ledger_download`, a `sandbox_artifacts` block with the path on record. Put it, unchanged, near the end of your message, just before the closing sentence (step 5). If the reply has no `ledger_download`, write this block with the path you gave as `ledger_path`. Do not build the path again from `pwd`. Write the path plainly: never escape a slash (`\/`), because an escaped path does not download:
 
@@ -29,7 +29,7 @@ The report writer reads the Synthesis section and carries it into the Discussion
 
 Do not call `ask_user_question` at the close. A question blocks the turn until the person answers. The person may not want a report, and the turn must end.
 
-**After the close, the ledger is frozen.** Do not edit it, with one exception: when `request_report` refuses because the ledger does not yet describe the end of the work, complete it as the refusal says (record the tasks it names, and put the Synthesis and the Final status at the end), then call again with the same words. The report prints it as its appendix with its SHA-256, so any edit after the close breaks the match between the report and the ledger. If the person asks for more work instead of a report, the investigation opens again. Work through the human-on-the-loop rules as usual, add to the ledger, and close again with a new Final status block and a new download.
+**After the close, the ledger is frozen.** Do not edit it, with one exception: when `request_report` refuses because the ledger does not yet describe the end of the work, complete it as the refusal says (record the tasks it names, and put the Synthesis and the Final status at the end), then call again with the same words, in the same turn. Do not end the turn in between. The report prints it as its appendix with its SHA-256, so any edit after the close breaks the match between the report and the ledger. If the person asks for more work instead of a report, the investigation opens again. Work through the human-on-the-loop rules as usual, add to the ledger, and close again with a new Final status block and a new download.
 
 ## 2. The Synthesis section
 
@@ -72,6 +72,8 @@ The Synthesis adds no finding. Each statement comes from the ledger and the resu
 
 Copy each status from the ledger and the Synthesis. The block summarises the ledger and adds no new finding. Its hypotheses, answer and pre-mortem are the ones the closing checkpoint recorded (`hypotheses`, `objective_check`, `pre_mortem`), word for word.
 
+The report's renderer reads two rows by their labels: *Preserved contradictions* and *Material uncertainties*. Keep both labels word for word, with each X# or U# in its row. The report must carry every item these rows list.
+
 ## 4. When the person asks for a report
 
 Start a report only when the person's latest message asks for one. Do not start one on your own.
@@ -99,11 +101,13 @@ Never write the request for the person. Never quote words they did not write. Th
 
 **After more work.** If the person asked for more work after a report and you closed again, call `request_report` again with `person_words` when they ask for a new report. A new report starts, and the gateway keeps the earlier one.
 
-**If it refuses**, tell the person why in one or two sentences. An open item (a checkpoint not filed, more work approved, a run still running, evidence set aside and not corrected) must be closed first. Do not work around a refusal.
+**If the ledger does not yet describe the end of the work**, do not tell the person and do not end the turn. Fix the ledger as the refusal says (section 1), and call `request_report` again in the same turn with the same words.
+
+**If it refuses for another reason**, tell the person why in one or two sentences. An open item (a checkpoint not filed, more work approved, a run still running, evidence set aside and not corrected) must be closed first. Do not work around a refusal.
 
 **If the ledger was not found**, do not tell the person. Follow the `next_action`: find the ledger file you wrote (never one under `unpacked/`), check that it opens with `# Investigation <investigation_id>`, and call `request_report` again with `ledger_path` set to its absolute path and the same words. The ledger stays in your sandbox until the chat is deleted. Never write a new ledger: the report prints the ledger word for word, so a ledger written again from memory puts a false record in the report. If the reply has a `ledger_note`, tell the person what it says in one sentence.
 
-Then tell the person that the report is in progress, and collect the run with `get_specialist_result(job_id, wait_seconds=...)`. The draft takes some minutes.
+Then tell the person that the report is in progress, and collect the run with `get_specialist_result(job_id='<session>:<turn>', wait_seconds=...)` or `get_specialist_result(task_id='<task id>', wait_seconds=...)`. The draft takes some minutes.
 
 ## 5. Review the draft
 

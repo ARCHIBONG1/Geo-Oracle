@@ -7,7 +7,6 @@ description: How the agent "sees" seismic. It covers reading seismic_describe_se
 
 You cannot view images. Tool results reach you as text. Figures are for the person, Geo Oracle's answer and the report. Your view of the data is `seismic_describe_section`. Never claim to have looked at a display.
 
-
 ## What a figure is and is not
 
 A figure illustrates a claim that a tool computed. It never carries a claim, and you never read a number, depth, area or boundary off it: those come from tools, as they always did. A striking figure can make an untested claim feel tested. That is the one way a picture can damage an argument.

@@ -10,7 +10,7 @@ description: Juxtaposition, shale gouge ratio, shale smear factor and calibrated
 - A `vshale_log` product from wells_petrophysics at a well near the fault, read with `sg_read_product` (method, endpoints, depth columns). Use `tvdss_m`.
 - A throw at the interval of interest, with its source. Cite the source in `depends_on`. The source is one of these:
   - a seismic throw measurement;
-  - a throw profile (`sg_throw_profile`: `max_throw_own_m`, the fault's own maximum away from the junctions with other faults);
+  - a throw profile (`sg_throw_profile`: `max_throw_own_m`, the fault's own maximum away from the junctions with other faults; null with a reason in `own_throw` when no segment qualifies);
   - a stated offset.
 - The interval on the fault (top and base) must lie inside the log, and the log must reach `top - throw`. Otherwise, the tool refuses, and tells you the log's range.
 

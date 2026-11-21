@@ -18,7 +18,7 @@ A report is not a list of all that the investigation produced: the appendix is.
 3. **Outline the argument.** List the subsections of Results and Discussion, and under each one the point it makes in one sentence. Then give every item a home in the outline before you draft:
    - every claim that is supported, partially supported, unresolved or contradicted;
    - every methods statement;
-   - every hypothesis, contradiction and material uncertainty of the ledger;
+   - every hypothesis, and each contradiction and material uncertainty the Final status lists (one table can carry them; else `omitted_items`, with a reason);
    - every figure that shows something a conclusion rests on.
    An item with no home shows a gap in the outline: change the outline.
 4. **Draft section by section, from the outline.** Write prose first, for the reader, without thinking about ids.
@@ -29,7 +29,7 @@ A report is not a list of all that the investigation produced: the appendix is.
 
 ## 2. What a good report does
 
-It gives the answer early. It shows the reader where things are before it says what was found there. It says once what it does not try to do. It gives a reason for each choice of method. It explains its terms and its figures. Its discussion argues to a picture. It says nothing twice. A rule of this skill that you satisfy with a sentence written only for the rule has failed.
+It gives the answer early. It shows the reader where things are before it says what was found there. It says once what it does not try to do. It gives a reason for each choice of method. It explains its terms and its figures. Its discussion argues to a picture. A rule of this skill that you satisfy with a sentence written only for the rule has failed.
 
 ## 3. When the main question stays open
 
@@ -108,7 +108,7 @@ Every claim that is supported, partially supported, unresolved or contradicted i
 Write the discussion as an argument, in this order:
 1. **What the results mean together.** Which result depends on which, where they agree, where they disagree, and what follows for the question. Geo Oracle's Synthesis section is the source: write its reading into this argument, and tag those paragraphs `synthesis`. Do not go through the results again one by one: end on the picture that the evidence favours, at its status, and on what the reader cannot yet be told.
 2. **The rival readings.** For each hypothesis and each claim with a recorded alternative: the competing readings, the evidence for and against each, the test that would decide, and whether it ran. Give them in a table block with the columns reading, evidence for, evidence against and deciding test. In the text, discuss those that matter to the decision, and say which the evidence favours.
-3. **The contradictions** the ledger preserves, each with what would resolve it, weighed in prose: which of them the decision turns on, and why. Sentences of one form in a row are a list.
+3. **The contradictions** that the Final status lists, each with what would resolve it, weighed in prose: which of them the decision turns on, and why. Sentences of one form in a row are a list.
 4. **Comparison with published work,** cited. It gives context and never changes a conclusion. Where it differs from a result, say so and say what would explain it. With no published work, leave this part out.
 5. **Limitations.** What the data and methods could not do, each with the conclusion it can change and the conclusions it leaves standing.
 
@@ -137,19 +137,19 @@ An execution event (work cut off, a dropped connection, work run again) is not a
 - **Horizons and markers keep their names,** with the full name at first mention (the label, the formation name and the word horizon), then the short name.
 - **Numbers:** copy each number and unit as the ledger, the findings or the records give it. When one quantity has two values in the report (a depth at the well and the median of its map), say what each is where the second appears. Do not round, convert or average, except as a derived value (`lit-investigation-report`, section 2).
 - **Status words.** A ledger hypothesis is untested, weakly constrained, partially constrained, supported, strongly supported, contradicted, unresolved or superseded. A claim is proposed, supported, partially supported, contradicted, unresolved or superseded. The objective is answered, partly answered or not answerable. Use the word the ledger or the findings give. Certainty comes only from these words: use no intensifier ("clearly", "robustly", "strongly suggests") that raises a status.
-- **No platform words.** Write of the investigation, not of a person or a request ("the investigation sought to address", not "the requester asked" or "the request asked"; "the investigation ended before ...", not "the requester stopped ..."). Write "the investigation record", not "the bundle"; "withheld", not "set aside". Do not write "gateway", "HOTL", "specialist call", "iteration", "job", "turn", "session", "ledger" or "the tool". Name the specialists by discipline. What happened to the software is not geology: a table that did not register, a refused run and a product "admitted" or not are written by their effect on what is known, and the event itself goes in the record paragraph.
+- **No platform words.** Write of the investigation, not of a person or a request ("the investigation sought to address", not "the requester asked" or "the request asked"). Write "the investigation record", not "the bundle"; "withheld", not "set aside". Do not write "gateway", "HOTL", "specialist call", "iteration", "job", "turn", "session", "ledger" or "the tool". Name the specialists by discipline. What happened to the software is not geology: a table that did not register, a refused run and a product "admitted" or not are written by their effect on what is known, and the event itself goes in the record paragraph.
 
 ## 7. Figures, tables and captions
 
 - **A figure is part of a sentence.** Name it and say what the reader should see: "As [[fig:thickness]] shows, the sand thickens to the north-east, from 18 m at the first well to 31 m at the second."
-- **Choose figures.** Use a figure only when a conclusion rests on what it shows, and place it after the paragraph that first uses it. When two show nearly the same thing, use one. Most reports need about a dozen or fewer. A sentence that only names figures ("Figures 8 and 9 show two more sections") reads nothing: when you cannot say what the reader should see in a figure, leave the figure out. The unused-figure warning is no reason to place one.
+- **Choose figures.** Use a figure only when a conclusion rests on what it shows, and place it after the paragraph that first uses it. When two show nearly the same thing, use one. Most reports need about a dozen or fewer. A sentence that only names figures reads nothing: when you cannot say what the reader should see in a figure, leave the figure out. The unused-figure warning is no reason to place one.
 - **A caption has three parts:** what is shown, with its units and its slice, horizon or line; what the reader should see, in one sentence; and what it rests on. Start from the specialist's caption, and check its numbers against the findings.
 
 ## 8. The renderer's notes
 
 The renderer answers with errors and warnings. Read them as a proofreader's notes: each points at a place where the report fails a reader or the record. It is not a list of things to add.
 
-- **Find the cause first,** from all the notes of a render together. Most come from the outline: a claim with no home, a method at the wrong stage.
+- **Find the cause first,** from all the notes of a render together. Most come from the outline: an item with no home, a method at the wrong stage.
 - **Revise the paragraph the note points at,** so that the item is part of the argument. Do not add a sentence or a paragraph whose only purpose is to make the note go away: a report made of such additions passes every check and cannot be read.
 - **A note may be wrong for your draft.** When your reading of the paragraph shows that a warning does not apply, leave the text and say why in your `limitations`.
 

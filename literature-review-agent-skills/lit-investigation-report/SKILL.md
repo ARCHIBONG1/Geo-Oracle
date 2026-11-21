@@ -11,7 +11,7 @@ The report reads clean: no ids in the text. Each block carries hidden tags that 
 
 ## 1. Read the bundle
 
-The gateway froze the investigation into a bundle when the person asked for the report. Read it with `lit_read_bundle`, one part at a time. **The renderer refuses to render until you have read the parts the overview's `read_before_render` names, each to its last page**: `overview`, `digest`, `ledger`, `supervision` and, when the bundle holds figures, `figures`. A long part comes in pages: when a reply gives `items_next_offset`, `tasks_next_offset` or `next_offset`, call the same part again with `offset` set to it, until a reply gives none. Every page you read is recorded. **Read one page in each step.** Several reads sent in one step are returned together, and together they exceed what one step can return: some come back as a short `Content too big` note in place of the page, and that page is not read.
+The gateway froze the investigation into a bundle when the person asked for the report. Read it with `lit_read_bundle`, one part at a time. **The renderer refuses to render until you have read the parts the overview's `read_before_render` names, each to its last page**: `overview`, `digest`, `ledger`, `supervision` and, when the bundle holds figures, `figures`. A long part comes in pages: when a reply gives `items_next_offset`, `tasks_next_offset` or `next_offset`, call the same part again with `offset` set to it, until a reply gives none. **Read one page in each step.** Reads sent together exceed what one step returns: some come back as a short `Content too big` note, and those pages are not read.
 
 | Part | What it gives |
 |---|---|
@@ -29,7 +29,7 @@ Use only the bundle for results and conclusions, and do not use your general kno
 
 ## 2. The draft
 
-The draft has the parts below. **Store each part with `lit_draft_section(investigation_id, section, blocks_json, review_round)`**: first `title` (one object with the top-level fields: title, keywords, setting_title, figures_omitted_reason, literature_references, literature_sources), then each section's block list (`executive_summary`, `introduction`, `setting`, `data`, `methods`, `results`, `discussion`, `conclusions`). Each reply lists that part's `errors`: correct them and store the part again until it has none. Store a long section in pieces with `append: true`; a part stored on its own cannot regress when another is corrected. In a revision round the store starts from the previous round's draft: store only the parts you change. The stored parts assemble to the draft below:
+The draft has the parts below. **Store each part with `lit_draft_section(investigation_id, section, blocks_json, review_round)`**: first `title` (one object with the top-level fields: title, keywords, setting_title, figures_omitted_reason, literature_references, literature_sources, omitted_items), then each section's block list (`executive_summary`, `introduction`, `setting`, `data`, `methods`, `results`, `discussion`, `conclusions`). Each reply lists that part's `errors`: correct them and store the part again until it has none. Store a long section in pieces with `append: true`; a part stored on its own cannot regress when another is corrected. In a revision round the store starts from the previous round's draft: store only the parts you change. The stored parts assemble to the draft below:
 
 ```json
 {
@@ -55,13 +55,15 @@ The draft has the parts below. **Store each part with `lit_draft_section(investi
                     {"heading": "Record of the investigation"}, {"text": "...", "tags": ["T03-seis"]}]
   },
   "literature_references": [{"evidence_id": "T03-lit/E1"}],
-  "literature_sources": [{"source_id": "L1", "source_reference": "doi:10.xxxx/... | openalex:W... | Author et al. 2015, Journal | type: article | title: ... | relevance: regional-analogue | access: abstract"}]
+  "literature_sources": [{"source_id": "L1", "source_reference": "doi:10.xxxx/... | openalex:W... | Author et al. 2015, Journal | type: article | title: ... | relevance: regional-analogue | access: abstract"}],
+  "omitted_items": [{"id": "U4", "reason": "..."}]
 }
 ```
 
 - **`keywords`**: three to eight short terms for the PDF metadata.
 - **`setting_title`** (optional): `Geological setting` (the default) or `Description of the synthetic model`, for a study of a synthetic volume.
 - **`figures_omitted_reason`**: only when no bundle figure supports a claim the report states; the renderer checks this and refuses the reason otherwise. Place each figure beside the paragraph that states a claim it supports.
+- **`omitted_items`** (never printed): `{id, reason}` for each X#, U# or Q# that the report leaves out on purpose.
 - **A block** is a paragraph `{text, tags}`, a heading `{heading}`, a figure `{figure, caption, label, tags}` or a table `{table: {caption, columns, rows, label}, tags}`.
   - A heading opens a subsection; it has no tags and no marker. The executive summary has no headings, figures or tables.
   - The figure name is one from the overview's `figures`. Tag a figure with the claims its specialist marked it as supporting (`supports`). Start its caption from the specialist's caption; the renderer adds the source line (the specialist's discipline).
@@ -86,6 +88,7 @@ It **refuses** (correct every one and render again):
 - a claim that is supported, partially supported, unresolved or contradicted and that no Results or Discussion block is tagged with;
 - a methods statement that lost a method, or two or more of its numbers and a quarter of them, in Methods;
 - no parameter table in Methods, when the bundle records computations; no alternatives table in Discussion, when the investigation has hypotheses or alternatives;
+- an X# or U# that the Final status lists, in no tagged block (one table with a row each is enough) and not in `omitted_items`;
 - a ledger Synthesis section that no Discussion or Conclusions paragraph is tagged `synthesis` with;
 - a figure or table with no label, or one the text never refers to;
 - a derived value whose inputs are not in its tags or whose arithmetic is wrong;
@@ -97,7 +100,7 @@ It **warns** (correct them before you return the draft):
 - a number not in the items a paragraph is tagged with; a caption value that differs from the figure's record;
 - strong wording ("proven", "confirmed", "commercial", "will produce") not negated in its clause;
 - a Results paragraph that states measurements with no uncertainty;
-- a ledger contradiction or uncertainty that no block is tagged with; an executive summary part not marked;
+- an untagged Q#, or an untagged X# or U# that the Final status does not list; an executive summary part not marked;
 - bundle figures the report does not use; an alternatives table without columns for the evidence against and the deciding test;
 - a sentence longer than about 40 words (style advice, marked `style:`; split it where that helps).
 
